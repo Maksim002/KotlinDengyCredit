@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.login
+package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +10,13 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.ExistingBottomListener
+import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.Top
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ExistingBottomFragment
+import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
@@ -23,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.HashMap
 import java.util.concurrent.Executor
 
-class MainActivity : AppCompatActivity(), PintCodeBottomListener {
+class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
 
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener {
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                Toast.makeText(this, data.error.message, Toast.LENGTH_LONG).show()
+                                loadingMistake(this)
                             } else {
                                 tokenId = data.result.token
                                 if (main_login_code.isChecked) {
@@ -91,7 +94,10 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener {
                                 }
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
+                        Status.ERROR -> {
+                            loadingMistake(this)
+                        }
+                        Status.NETWORK -> {
                             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                         }
                     }
@@ -142,7 +148,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener {
 
     private fun initBottomSheet() {
         if (AppPreferences.savePin!!.isNotEmpty()) {
-            val bottomSheetDialogFragment = ExistingBottomFragment()
+            val bottomSheetDialogFragment = ExistingBottomFragment(this)
             bottomSheetDialogFragment.isCancelable = false;
             bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
         } else if (AppPreferences.savePin!!.isEmpty()) {
@@ -152,7 +158,17 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener {
         }
     }
 
+    private fun initMistakeBottomSheet() {
+        val bottomSheetDialogFragment = MistakeBottomSheetFragment()
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+    }
+
     override fun pinCodeClockListener() {
+        main_login_code.isChecked = false
+    }
+
+    override fun existingClockListener() {
         main_login_code.isChecked = false
     }
 

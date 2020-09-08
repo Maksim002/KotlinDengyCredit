@@ -5,20 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.ExistingBottomListener
+import com.example.kotlinscreenscanner.ui.Top
 import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 
-class ExistingBottomFragment : BottomSheetDialogFragment() {
+class ExistingBottomFragment(private val listener: ExistingBottomListener) : BottomSheetDialogFragment() {
     var currentPinInput = ""
     var initpin = ""
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_existing_bottom, container, false)
     }
@@ -80,21 +83,26 @@ class ExistingBottomFragment : BottomSheetDialogFragment() {
             check()
         }
         existing_btn.setOnClickListener {
-            currentPinInput = ""
-            pin_verification_code.setText(initpin)
+            listener.existingClockListener()
+            this.dismiss()
+            AppPreferences.savePin = null
         }
         existing_removal.setOnClickListener {
             if (currentPinInput.isNotEmpty())
                 currentPinInput = currentPinInput.substring(0, currentPinInput.length - 1)
-                pin_verification_code.setText(currentPinInput)
+            pin_verification_code.setText(currentPinInput)
         }
     }
 
-    fun check(){
-        if (currentPinInput.length == 4){
-            if (AppPreferences.savePin == currentPinInput){
-                val intent = Intent(context, QuestionnaireActivity::class.java)
+    fun check() {
+        if (currentPinInput.length == 4) {
+            if (AppPreferences.savePin == currentPinInput) {
+                val intent = Intent(context, Top::class.java)
                 startActivity(intent)
+            } else {
+                currentPinInput = ""
+                pin_verification_code.setText(initpin)
+                existing_liner_anim.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake))
             }
         }
     }

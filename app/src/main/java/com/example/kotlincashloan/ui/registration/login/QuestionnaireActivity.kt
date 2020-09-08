@@ -13,10 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomSheetFragment
+import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
@@ -46,10 +48,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     private fun iniClock() {
         questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
-            if (b){
+            if (b) {
                 questionnaire_enter.isClickable = true
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
-            }else{
+            } else {
                 questionnaire_enter.isClickable = false
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
             }
@@ -79,12 +81,19 @@ class QuestionnaireActivity : AppCompatActivity() {
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
-                                    Toast.makeText(this, data.error.message, Toast.LENGTH_LONG).show()
+                                    if (data.error.code != 409) {
+                                        loadingMistake(this)
+                                    } else {
+                                        initBusyBottomSheet()
+                                    }
                                 } else {
                                     initBottomSheet()
                                 }
                             }
-                            Status.ERROR, Status.NETWORK -> {
+                            Status.ERROR -> {
+                                loadingMistake(this)
+                            }
+                            Status.NETWORK -> {
                                 Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                             }
                         }
@@ -95,6 +104,12 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     private fun initBottomSheet() {
         val bottomSheetDialogFragment = AuthorizationBottomSheetFragment()
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+    }
+
+    private fun initBusyBottomSheet() {
+        val bottomSheetDialogFragment = AuthorizationBusyBottomFragment()
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -123,7 +138,8 @@ class QuestionnaireActivity : AppCompatActivity() {
         questionnaire_date_birth.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
-                val dialog = DatePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                val dialog = DatePickerDialog(
+                    this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                     { _, year, month, dayOfMonth ->
                         questionnaire_date_birth.setText(
                             MyUtils.convertDate(
@@ -147,68 +163,82 @@ class QuestionnaireActivity : AppCompatActivity() {
     }
 
     private fun getIdSxs() {
-        var list:  ArrayList<ListGenderResultModel> = arrayListOf()
+        var list: ArrayList<ListGenderResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result->
+        viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
-                    val adapterIdSxs = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data!!.result)
-                    questionnaire_id_sxs.setAdapter(adapterIdSxs)
-                    list = data.result
+                    if (data!!.result != null) {
+                        val adapterIdSxs = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
+                        questionnaire_id_sxs.setAdapter(adapterIdSxs)
+                        list = data.result
+                    }else{
+                        loadingMistake(this)
+                    }
                 }
-                Status.ERROR, Status.NETWORK -> {
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 }
             }
         })
         questionnaire_id_sxs.keyListener = null
         questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
-                questionnaire_id_sxs.showDropDown()
-                idSex = list[position].id!!
-                questionnaire_id_sxs.clearFocus()
-            }
+            questionnaire_id_sxs.showDropDown()
+            idSex = list[position].id!!
+            questionnaire_id_sxs.clearFocus()
+        }
         questionnaire_id_sxs.setOnClickListener {
             questionnaire_id_sxs.showDropDown()
         }
         questionnaire_id_sxs.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-                try {
-                    if (hasFocus) {
-                        questionnaire_id_sxs.showDropDown()
-                    }
-                } catch (e: Exception) {
+            try {
+                if (hasFocus) {
+                    questionnaire_id_sxs.showDropDown()
                 }
+            } catch (e: Exception) {
             }
+        }
         questionnaire_id_sxs.clearFocus()
     }
 
 
     private fun getListNationality() {
-        var list:  ArrayList<ListNationalityResultModel> = arrayListOf()
+        var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        viewModel.listNationality(map).observe(this, Observer { result->
+        viewModel.listNationality(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
-                    val adapterListNationality = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data!!.result)
-                    questionnaire_id_nationality.setAdapter(adapterListNationality)
-                    list = data.result
+                    if (data!!.result != null) {
+                        val adapterListNationality = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
+                        questionnaire_id_nationality.setAdapter(adapterListNationality)
+                        list = data.result
+                    } else {
+                        loadingMistake(this)
+                    }
                 }
-                Status.ERROR, Status.NETWORK -> {
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 }
             }
         })
         questionnaire_id_nationality.keyListener = null
         questionnaire_id_nationality.setOnItemClickListener { adapterView, view, position, l ->
-                questionnaire_id_nationality.showDropDown()
-                listNationalityId = list[position].id!!
-                questionnaire_id_nationality.clearFocus()
-            }
+            questionnaire_id_nationality.showDropDown()
+            listNationalityId = list[position].id!!
+            questionnaire_id_nationality.clearFocus()
+        }
         questionnaire_id_nationality.setOnClickListener {
             questionnaire_id_nationality.showDropDown()
         }
@@ -226,19 +256,30 @@ class QuestionnaireActivity : AppCompatActivity() {
     }
 
     private fun getAutoOperation() {
-        var list:  ArrayList<ListSecretQuestionResultModel> = arrayListOf()
+        var list: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        viewModel.listSecretQuestion(map).observe(this, Observer { result->
+        viewModel.listSecretQuestion(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
-                    val adapterListSecretQuestion = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data!!.result)
-                    questionnaire_id_secret.setAdapter(adapterListSecretQuestion)
-                    list = data.result
+                    if (data!!.result != null) {
+                        val adapterListSecretQuestion = ArrayAdapter(
+                            this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            data!!.result
+                        )
+                        questionnaire_id_secret.setAdapter(adapterListSecretQuestion)
+                        list = data.result
+                    }else{
+                        loadingMistake(this)
+                    }
                 }
-                Status.ERROR, Status.NETWORK -> {
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 }
             }
@@ -257,13 +298,14 @@ class QuestionnaireActivity : AppCompatActivity() {
         questionnaire_id_secret.setOnClickListener {
             questionnaire_id_secret.showDropDown()
         }
-        questionnaire_id_secret.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-            try {
-                questionnaire_id_secret.showDropDown()
-            } catch (e: Exception) {
+        questionnaire_id_secret.onFocusChangeListener =
+            View.OnFocusChangeListener { view, hasFocus ->
+                try {
+                    questionnaire_id_secret.showDropDown()
+                } catch (e: Exception) {
 
+                }
             }
-        }
         questionnaire_id_secret.clearFocus()
 
     }
@@ -288,36 +330,36 @@ class QuestionnaireActivity : AppCompatActivity() {
         if (questionnaire_date_birth.text!!.toString().isEmpty()) {
             questionnaire_date_birth.error = "Выберите дату"
             valid = false
-        }else{
+        } else {
             questionnaire_date_birth.error = null
         }
 
         if (questionnaire_id_sxs.text!!.toString().isEmpty()) {
             questionnaire_id_sxs.error = "Выберите пол"
             valid = false
-        }else{
+        } else {
             questionnaire_id_sxs.error = null
         }
 
         if (questionnaire_id_nationality.text.toString().isEmpty()) {
             questionnaire_id_nationality.error = "Выберите гражданство"
             valid = false
-        }else{
+        } else {
             questionnaire_id_nationality.error = null
         }
 
-        if (AppPreferences.numberCharacters != 11){
+        if (AppPreferences.numberCharacters != 11) {
             if (questionnaire_phone_additional.text!!.toString().length != 19) {
                 questionnaire_phone_additional.error = "Ввидите валидный номер"
                 valid = false
-            }else{
+            } else {
                 questionnaire_phone_additional.error = null
             }
-        }else{
+        } else {
             if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
                 questionnaire_phone_additional.error = "Ввидите валидный номер"
                 valid = false
-            }else{
+            } else {
                 questionnaire_phone_additional.error = null
             }
         }
@@ -325,7 +367,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         if (questionnaire_id_secret.text.toString().isEmpty()) {
             questionnaire_id_secret.error = "Выберите секретный вопрос"
             valid = false
-        }else{
+        } else {
             questionnaire_id_secret.error = null
         }
 

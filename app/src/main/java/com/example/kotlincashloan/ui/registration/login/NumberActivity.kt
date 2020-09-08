@@ -7,16 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.login.MainActivity
+import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
+import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -36,6 +37,12 @@ class NumberActivity : AppCompatActivity() {
 
     private fun initBottomSheet(id: Int) {
         val bottomSheetDialogFragment = NumberBottomSheetFragment(id)
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+    }
+
+    private fun initBusyBottomSheet() {
+        val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -64,13 +71,21 @@ class NumberActivity : AppCompatActivity() {
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                Toast.makeText(this, data.error.message, Toast.LENGTH_LONG).show()
+                                if (data.error.code != 409){
+                                    loadingMistake(this)
+                                }else{
+                                    initBusyBottomSheet()
+                                }
                             } else {
                                 AppPreferences.number = number_phone.text.toString()
                                 initBottomSheet(data.result.id!!)
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
+                        Status.ERROR -> {
+                            loadingMistake(this)
+
+                        }
+                        Status.NETWORK ->{
                             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                         }
                     }
@@ -88,17 +103,25 @@ class NumberActivity : AppCompatActivity() {
         viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
+
             when (result.status) {
                 Status.SUCCESS -> {
-                    val adapterListCountry = ArrayAdapter(
-                        this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        data!!.result
-                    )
-                    number_list_country.setAdapter(adapterListCountry)
-                    list = data.result
+                    if (data!!.result != null) {
+                        val adapterListCountry = ArrayAdapter(
+                            this,
+                            android.R.layout.simple_dropdown_item_1line,
+                            data!!.result
+                        )
+                        number_list_country.setAdapter(adapterListCountry)
+                        list = data.result
+                    }else{
+                        loadingMistake(this)
+                    }
                 }
-                Status.ERROR, Status.NETWORK -> {
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
                 }
             }
@@ -143,7 +166,7 @@ class NumberActivity : AppCompatActivity() {
         if (number_list_country.text.isEmpty()) {
             number_list_country.error = "Выберите страну"
             valid = false
-        }else{
+        } else {
             number_phone.error = null
         }
 

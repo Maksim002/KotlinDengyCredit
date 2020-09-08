@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_authorization_bottom_sheet.*
 
