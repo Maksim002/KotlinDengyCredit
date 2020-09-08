@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/whiteColor"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/questionnaire_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whiteColor"
+            android:theme="@style/ToolBarStyle"
+            app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Регистрация"
+                android:textColor="#001"
+                android:textSize="30sp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_text_surnames"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:hint="Фамилия"
+                    android:inputType="textPersonName"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_text_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:hint="Имя"
+                    android:inputType="textPersonName"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_text_patronymics"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:hint="Отчество"
+                    android:inputType="textPersonName"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_date_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:focusable="false"
+                    android:hint="Дата рождения"
+                    android:inputType="number"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/questionnaire_id_sxs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="ID поле"
+                    android:inputType="number"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/questionnaire_id_nationality"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="ID гражданства"
+                    android:inputType="number"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:hint="Номер телефона"
+                    android:inputType="number"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/questionnaire_phone_additional"
+                    android:layout_width="match_parent"
+                    android:padding="14dp"
+                    android:layout_height="wrap_content"
+                    android:background="#E8E8E8"
+                    android:textSize="15sp"
+                    android:digits="0123456789"
+                    android:ellipsize="end"
+                    android:hint="Дополнительный номер телефона"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:scrollHorizontally="true"/>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/questionnaire_id_secret"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#E8E8E8"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="ID секретного вопроса"
+                    android:inputType="text"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#E8E8E8"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/questionnaire_secret_response"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#E8E8E8"
+                    android:hint="Ответ на секретный вопрос"
+                    android:inputType="text"
+                    android:padding="14dp"
+                    android:textSize="15dp" />
+            </androidx.cardview.widget.CardView>
+
+            <CheckBox
+                android:id="@+id/questionnaire_agreement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Я согласен с условиями обработки персональных данных"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/questionnaire_enter"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Зарегистрироваться"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:id="@+id/questionnaire_registration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="21dp"
+                android:gravity="center"
+                android:text="Уже зарегистрированы?"
+                android:textColor="#FF9900"
+                android:textSize="18sp" />
+
+            <include
+                android:id="@+id/questionnaire_owner"
+                layout="@layout/item_focus" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

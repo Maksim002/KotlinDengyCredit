@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/whiteColor"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolBarStyle"
+        android:background="@color/whiteColor"
+        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Регистрация"
+        android:textColor="#001"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:padding="16dp"
+        android:layout_marginTop="37dp"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:textColor="#001"
+        android:layout_marginBottom="25dp"
+        android:layout_height="wrap_content"
+        android:text="Введите номер телефона и нажмите “Далее”"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#E8E8E8"
+            app:cardCornerRadius="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/number_list_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#E8E8E8"
+                android:drawableEnd="@drawable/ic_expend"
+                android:hint="Список доступных стран"
+                android:padding="14dp"
+                android:textSize="15dp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/number_phone_visibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:background="#E8E8E8"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="8dp">
+
+            <com.santalu.maskedittext.MaskEditText
+                android:id="@+id/number_phone"
+                android:layout_width="match_parent"
+                android:padding="14dp"
+                android:layout_height="wrap_content"
+                android:background="#E8E8E8"
+                android:textSize="15sp"
+                android:digits="0123456789"
+                android:ellipsize="end"
+                android:hint="Номер телефона"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                android:scrollHorizontally="true"/>
+        </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/number_next"
+        style="@style/RoundedOrangeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="Далее"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/number_focus_text"
+        android:visibility="gone"
+        layout="@layout/item_focus" />
+</LinearLayout>

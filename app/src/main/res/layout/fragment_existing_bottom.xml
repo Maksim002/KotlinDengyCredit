@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Ввод кода доступа"
+        android:textColor="@color/orangeColor" />
+
+    <com.example.kotlincashloan.custom_view.PinEntryEditText
+        android:id="@+id/pin_verification_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:digits="1234567890"
+        android:focusable="false"
+        app:pinLineColors="@color/whiteColor"
+        android:textColor="@color/orangeColor"
+        android:inputType="number|numberPassword"
+        android:maxLength="4"
+        android:paddingLeft="100dp"
+        android:paddingRight="100dp"
+        android:textIsSelectable="false"
+        android:textSize="40sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/existing_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="16dp"
+            android:textSize="20dp"
+            android:text="1"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="20dp"
+            android:text="2"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:padding="16dp"
+            android:text="3"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/existing_four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:textSize="20dp"
+            android:padding="16dp"
+            android:text="4"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_five"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="5"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_six"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textSize="20dp"
+            android:padding="16dp"
+            android:text="6"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/existing_seven"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="16dp"
+            android:textSize="20dp"
+            android:text="7"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_eight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="20dp"
+            android:text="8"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_nine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="16dp"
+            android:textSize="20dp"
+            android:text="9"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/existing_btn"
+            android:layout_width="131dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="16dp"
+            android:text="Отмена"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_zero"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:padding="16dp"
+            android:text="0"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/existing_removal"
+            android:layout_width="133dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="16dp"
+            android:text="Удаление"
+            android:textColor="@color/orangeColor"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

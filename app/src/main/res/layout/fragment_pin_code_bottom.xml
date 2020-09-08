@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/bottom_sheet_closed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_esc" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выберите пин-код"
+        android:textSize="30sp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#001"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем"
+        android:textColor="#373435"
+        android:gravity="center"
+        android:textSize="16sp"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/bottom_sheet_pin_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E8E8E8"
+            android:hint="Пин - код"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:padding="16dp"
+            android:textSize="16dp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="8dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/bottom_sheet_repeat_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E8E8E8"
+            android:hint="Повторите пин-код"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:padding="16dp"
+            android:textSize="16dp" />
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/bottom_sheet_resume"
+        style="@style/RoundedOrangeBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:text="Продолжить"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</LinearLayout>
