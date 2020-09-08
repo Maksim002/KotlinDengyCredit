@@ -6,15 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.Top
+import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
+import java.util.HashMap
 
-class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
-    BottomSheetDialogFragment() {
+class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : BottomSheetDialogFragment() {
+    private var viewModel = LoginViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +61,28 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
     private fun initRequest(numberOne: String, secondNumber: String) {
         if (numberOne.isNotEmpty() && secondNumber.isNotEmpty()) {
             AppPreferences.savePin = numberOne
-            initTransition()
+            val map = HashMap<String, String>()
+            map.put("password", AppPreferences.password.toString())
+            map.put("login", AppPreferences.login.toString())
+            MainActivity.alert.show()
+            viewModel.auth(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
+                        } else {
+                            AppPreferences.token = data.result.token
+                            initTransition()
+                        }
+                    }
+                    Status.ERROR, Status.NETWORK -> {
+                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                    }
+                }
+                MainActivity.alert.hide()
+            })
         }
     }
 

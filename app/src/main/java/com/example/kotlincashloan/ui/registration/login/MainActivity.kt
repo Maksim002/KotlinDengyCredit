@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.widget.Toast
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
@@ -71,12 +72,18 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                loadingMistake(this)
+                                if (data.error.code == 400){
+                                    main_incorrect.visibility = View.VISIBLE
+                                }else{
+                                    loadingMistake(this)
+                                }
                             } else {
                                 tokenId = data.result.token
                                 if (main_login_code.isChecked) {
+                                    main_incorrect.visibility = View.GONE
                                     initBottomSheet()
                                 } else {
+                                    main_incorrect.visibility = View.GONE
                                     startMainActivity()
                                 }
                                 if (main_remember_username.isChecked) {
@@ -250,8 +257,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
             .build()
 
         // 1
-        val biometricPrompt =
-            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult

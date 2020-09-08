@@ -71,6 +71,18 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/main_incorrect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+        android:drawablePadding="10dp"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:text="Неверный логин или пароль"
+        android:textColor="@color/colorRed"/>
+
     <CheckBox
         android:id="@+id/main_remember_username"
         android:layout_width="wrap_content"
