@@ -95,9 +95,11 @@ class QuestionnaireActivity : AppCompatActivity() {
     private fun iniClock() {
         questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                layout_check.visibility = View.VISIBLE
+                questionnaire_enter.isClickable = true
+                questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
             }else{
-                layout_check.visibility = View.GONE
+                questionnaire_enter.isClickable = false
+                questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
             }
         }
     }
@@ -128,6 +130,7 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        questionnaire_enter.isClickable = false
         questionnaire_phone_number.setText(AppPreferences.number.toString())
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
     }
