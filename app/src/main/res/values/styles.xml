@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/biometric_error_color</item>
-        <item name="colorPrimaryDark">@color/biometric_error_color</item>
+        <item name="colorPrimary">@color/colorDrawer</item>
+        <item name="colorPrimaryDark">@color/colorDrawer</item>
         <item name="colorAccent">@color/orangeColor</item>
 
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/design_default_color_on_primary</item>
@@ -13,7 +13,6 @@
     <style name="RoundedOrangeBackground" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/circle_orange_backround</item>
     </style>
-
 
     <style name="SCBSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->

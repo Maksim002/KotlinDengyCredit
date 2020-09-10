@@ -17,34 +17,24 @@
         android:textColor="#001"
         android:textSize="30sp" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="8dp">
 
         <AutoCompleteTextView
             android:id="@+id/main_text_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#E8E8E8"
             android:hint="Логин"
-            android:imeOptions="actionNext"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/circle_orange_background_edit"
             android:inputType="number"
             android:padding="16dp"
             android:textSize="16dp" />
-    </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#E8E8E8"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/circle_orange_background_edit"
             android:orientation="horizontal">
 
             <AutoCompleteTextView
@@ -69,7 +59,6 @@
                 android:text="Показать"
                 android:textColor="#FF9900" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/main_incorrect"

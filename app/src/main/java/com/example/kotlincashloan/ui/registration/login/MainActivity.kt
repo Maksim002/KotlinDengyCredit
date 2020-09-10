@@ -201,6 +201,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
     override fun onStart() {
         super.onStart()
         AppPreferences.isValid = false
+        main_text_login.getPaint().clearShadowLayer();
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -100,6 +100,7 @@ class QuestionnaireActivity : AppCompatActivity() {
             }else{
                 questionnaire_enter.isClickable = false
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
+
             }
         }
     }
@@ -131,6 +132,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         questionnaire_enter.isClickable = false
+        questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
         questionnaire_phone_number.setText(AppPreferences.number.toString())
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
     }

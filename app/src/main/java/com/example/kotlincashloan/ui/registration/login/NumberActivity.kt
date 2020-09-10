@@ -143,7 +143,7 @@ class NumberActivity : AppCompatActivity() {
                 number_phone.mask = list[position].phoneMask
             }
             if (number_list_country.text.toString() != "") {
-                number_phone_visibility.visibility = View.VISIBLE
+                number_phone.visibility = View.VISIBLE
             }
 
             number_list_country.clearFocus()

@@ -43,47 +43,32 @@
         android:layout_height="wrap_content"
         android:text="Введите номер телефона и нажмите “Далее”"/>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="#E8E8E8"
-            app:cardCornerRadius="8dp">
-
             <AutoCompleteTextView
                 android:id="@+id/number_list_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#E8E8E8"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
                 android:drawableEnd="@drawable/ic_expend"
                 android:hint="Список доступных стран"
                 android:padding="14dp"
                 android:textSize="15dp" />
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/number_phone_visibility"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="#E8E8E8"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="8dp">
 
             <com.santalu.maskedittext.MaskEditText
                 android:id="@+id/number_phone"
                 android:layout_width="match_parent"
                 android:padding="14dp"
                 android:layout_height="wrap_content"
-                android:background="#E8E8E8"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
                 android:textSize="15sp"
                 android:digits="0123456789"
+                android:visibility="gone"
                 android:ellipsize="end"
                 android:hint="Номер телефона"
                 android:imeOptions="actionDone"
                 android:inputType="phone"
                 android:scrollHorizontally="true"/>
-        </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/number_next"
