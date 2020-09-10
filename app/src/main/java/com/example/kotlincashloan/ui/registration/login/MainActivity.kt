@@ -185,7 +185,6 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
             main_text_login.error = "Введите логин"
             valid = false
         }
-
         if (main_text_password.text.toString().isEmpty()) {
             main_text_password.error = "Введите пароль"
             valid = false
