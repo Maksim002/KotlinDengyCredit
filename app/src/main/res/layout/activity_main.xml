@@ -87,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Вход по коду"
+        android:text="Вход по пин-коду"
         android:textSize="11sp"
         tools:layout_editor_absoluteX="114dp"
         tools:layout_editor_absoluteY="105dp" />
@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Вход по Touch ID"
+        android:text="Вход с помощью отпечатка"
         android:textSize="11sp"
         tools:layout_editor_absoluteX="114dp"
         tools:layout_editor_absoluteY="105dp" />

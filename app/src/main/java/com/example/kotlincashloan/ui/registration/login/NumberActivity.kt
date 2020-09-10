@@ -33,6 +33,7 @@ class NumberActivity : AppCompatActivity() {
         initClick()
         initViews()
         initToolBar()
+
     }
 
     private fun initBottomSheet(id: Int) {
@@ -172,18 +173,21 @@ class NumberActivity : AppCompatActivity() {
 
         if (numberCharacters != 11) {
             if (number_phone.text!!.toString().length != 19) {
-                number_phone.error = "Ввидите валидный номер"
+                number_phone.error = "Введите валидный номер"
                 valid = false
             } else {
                 number_phone.error = null
             }
         } else {
             if (number_phone.text!!.toString().toFullPhone().length != 20) {
-                number_phone.error = "Ввидите валидный номер"
+                number_phone.error = "Введите валидный номер"
                 valid = false
             } else {
                 number_phone.error = null
             }
+        }
+        if (!valid){
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
     }

@@ -183,14 +183,21 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
         var valid = true
         if (main_text_login.text.toString().isEmpty()) {
             main_text_login.error = "Введите логин"
+            main_incorrect.visibility = View.GONE
             valid = false
         }
 
         if (main_text_password.text.toString().isEmpty()) {
             main_text_password.error = "Введите пароль"
+            main_incorrect.visibility = View.GONE
             valid = false
         }
+        if (!valid){
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
+        }
+
         return valid
+
     }
 
     private fun startMainActivity() {

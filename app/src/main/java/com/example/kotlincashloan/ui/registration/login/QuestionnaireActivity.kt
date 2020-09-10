@@ -17,7 +17,6 @@ import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomShee
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
@@ -44,11 +43,10 @@ class QuestionnaireActivity : AppCompatActivity() {
         initCheck()
     }
 
-
-
     private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
+
                 val map = mutableMapOf<String, String>()
                 map["last_name"] = questionnaire_text_surnames.text.toString()
                 map["first_name"] = questionnaire_text_name.text.toString()
@@ -58,8 +56,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                 map["nationality"] = listNationalityId.toString()
                 map["first_phone"] =
                     MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
-                map["second_phone"] =
+                map["second_phone"] = try {
                     MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+                }catch (e: Exception){
+                    ""
+                }
                 map["question"] = listSecretQuestionId.toString()
                 map["response"] = questionnaire_secret_response.text.toString()
                 map["sms_code"] = AppPreferences.receivedSms.toString()
@@ -334,22 +335,6 @@ class QuestionnaireActivity : AppCompatActivity() {
             questionnaire_id_nationality.error = null
         }
 
-        if (AppPreferences.numberCharacters != 11) {
-            if (questionnaire_phone_additional.text!!.toString().length != 19) {
-                questionnaire_phone_additional.error = "Ввидите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
-        } else {
-            if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
-                questionnaire_phone_additional.error = "Ввидите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
-        }
-
         if (questionnaire_id_secret.text.toString().isEmpty()) {
             questionnaire_id_secret.error = "Выберите секретный вопрос"
             valid = false
@@ -360,6 +345,9 @@ class QuestionnaireActivity : AppCompatActivity() {
         if (questionnaire_secret_response.text.toString().isEmpty()) {
             questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
+        }
+        if (!valid){
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
     }
