@@ -1,10 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login
 
-import android.app.DatePickerDialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -27,6 +23,7 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import java.util.*
 
+
 class QuestionnaireActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var data: String = ""
@@ -44,19 +41,12 @@ class QuestionnaireActivity : AppCompatActivity() {
         getAutoOperation()
         iniClock()
         initViews()
+        initCheck()
     }
 
-    private fun iniClock() {
-        questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
-            if (b) {
-                questionnaire_enter.isClickable = true
-                questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
-            } else {
-                questionnaire_enter.isClickable = false
-                questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
-            }
-        }
 
+
+    private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
                 val map = mutableMapOf<String, String>()
@@ -102,6 +92,16 @@ class QuestionnaireActivity : AppCompatActivity() {
         }
     }
 
+    private fun iniClock() {
+        questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
+            if (b) {
+                layout_check.visibility = View.VISIBLE
+            }else{
+                layout_check.visibility = View.GONE
+            }
+        }
+    }
+
     private fun initBottomSheet() {
         val bottomSheetDialogFragment = AuthorizationBottomSheetFragment()
         bottomSheetDialogFragment.isCancelable = false;
@@ -128,38 +128,19 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        questionnaire_enter.isClickable = false
-        questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
         questionnaire_phone_number.setText(AppPreferences.number.toString())
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
     }
 
     private fun iniData() {
-        questionnaire_date_birth.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_UP) {
-                val calendar: Calendar = Calendar.getInstance(TimeZone.getDefault())
-                val dialog = DatePickerDialog(
-                    this, android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                    { _, year, month, dayOfMonth ->
-                        questionnaire_date_birth.setText(
-                            MyUtils.convertDate(
-                                dayOfMonth,
-                                month + 1,
-                                year
-                            )
-                        )
-                        data = (MyUtils.convertDate(year, month + 1, dayOfMonth))
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-
-                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                dialog.show()
+        questionnaire_date_birth.setOnClickListener(View.OnClickListener { v: View? ->
+            val datePickerDialogFragment = com.example.kotlincashloan.custom_view.DatePickerDialogFragment()
+            datePickerDialogFragment.setOnDateChooseListener { year, month, day ->
+                questionnaire_date_birth.setText("$day-$month-$year")
+                data = (MyUtils.convertDate(year, month, day))
             }
-            false
-        }
+            datePickerDialogFragment.show(fragmentManager, "DatePickerDialogFragment")
+        })
     }
 
     private fun getIdSxs() {

@@ -111,6 +111,11 @@
                     android:textSize="15dp" />
             </androidx.cardview.widget.CardView>
 
+            <com.ycuwq.datepicker.date.DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -236,28 +241,37 @@
                 android:text="Я согласен с условиями обработки персональных данных"
                 android:textSize="11sp" />
 
-            <Button
-                android:id="@+id/questionnaire_enter"
-                style="@style/RoundedOrangeBackground"
+            <LinearLayout
+                android:id="@+id/layout_check"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Зарегистрироваться"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/questionnaire_registration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
-                android:gravity="center"
-                android:text="Уже зарегистрированы?"
-                android:textColor="#FF9900"
-                android:textSize="18sp" />
+                <Button
+                    android:id="@+id/questionnaire_enter"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:text="Зарегистрироваться"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/questionnaire_registration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="21dp"
+                    android:gravity="center"
+                    android:text="Уже зарегистрированы?"
+                    android:textColor="#FF9900"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
             <include
                 android:id="@+id/questionnaire_owner"

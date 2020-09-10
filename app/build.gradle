@@ -89,4 +89,7 @@ dependencies {
 
     //mask phone
     implementation 'com.github.santalu:mask-edittext:1.1.1'
+
+    //DatePickerDialog(
+    implementation 'com.ycuwq.widgets:datepicker:1.2.0'
 }
