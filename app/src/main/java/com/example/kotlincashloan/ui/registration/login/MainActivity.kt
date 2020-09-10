@@ -13,11 +13,11 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.Top
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ExistingBottomFragment
-import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
@@ -53,6 +53,11 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                 AppPreferences.isValid = true
                 main_text_password.transformationMethod = null
             }
+        }
+
+        main_forget_password.setOnClickListener {
+            val intent = Intent(this, PasswordRecoveryActivity::class.java)
+            startActivity(intent)
         }
 
         main_registration.setOnClickListener {
@@ -165,11 +170,11 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
         }
     }
 
-    private fun initMistakeBottomSheet() {
-        val bottomSheetDialogFragment = MistakeBottomSheetFragment()
-        bottomSheetDialogFragment.isCancelable = false;
-        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
-    }
+//    private fun initMistakeBottomSheet() {
+//        val bottomSheetDialogFragment = MistakeBottomSheetFragment()
+//        bottomSheetDialogFragment.isCancelable = false;
+//        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+//    }
 
     override fun pinCodeClockListener() {
         main_login_code.isChecked = false

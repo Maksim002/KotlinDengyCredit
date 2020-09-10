@@ -20,6 +20,8 @@
         <activity android:name="com.example.kotlinscreenscanner.ui.Top" />
         <activity android:name="com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity" />
         <activity android:name="com.example.kotlinscreenscanner.ui.login.NumberActivity" />
+        <activity android:name=".ui.registration.recovery.PasswordRecoveryActivity" />
+        <activity android:name=".ui.registration.recovery.ContactingServiceActivity" />
     </application>
 
 </manifest>
