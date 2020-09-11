@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/password_recovery_toolbar"
@@ -15,8 +20,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="16dp"
+        android:gravity="center"
         android:orientation="vertical">
 
     <TextView
@@ -28,30 +34,59 @@
         android:textColor="#001"
         android:textSize="30sp" />
 
+            <EditText
+                android:id="@+id/questionnaire_phone_surnames"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Фамилия"
+                android:inputType="textPersonName"
+                android:padding="14dp"
+                android:textSize="15dp" />
 
-    <AutoCompleteTextView
-        android:id="@+id/questionnaire_phone_list_country"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/circle_orange_background_edit"
-        android:drawableEnd="@drawable/ic_expend"
-        android:hint="Список доступных стран"
-        android:padding="14dp"
-        android:textSize="15dp" />
 
-        <EditText
-            android:id="@+id/password_recovery_word"
+            <EditText
+                android:id="@+id/questionnaire_phone_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Имя"
+                android:inputType="textPersonName"
+                android:padding="14dp"
+                android:textSize="15dp" />
+
+            <EditText
+                android:id="@+id/questionnaire_phone_patronymics"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Отчество"
+                android:inputType="textPersonName"
+                android:padding="14dp"
+                android:textSize="15dp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/questionnaire_phone_list_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:drawableEnd="@drawable/ic_expend"
+                android:hint="Список доступных стран"
+                android:padding="14dp"
+                android:textSize="15dp" />
+
+        <LinearLayout
+            android:id="@+id/layout_visible"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="ФИО"
-            android:inputType="text"
-            android:padding="14dp"
-            android:textSize="15dp" />
+            android:orientation="vertical">
 
-        <com.santalu.maskedittext.MaskEditText
+            <com.santalu.maskedittext.MaskEditText
             android:id="@+id/questionnaire_phone_additional"
             android:layout_width="match_parent"
             android:padding="14dp"
@@ -65,14 +100,27 @@
             android:imeOptions="actionDone"
             android:inputType="phone"
             android:scrollHorizontally="true"/>
+        </LinearLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/password_recovery_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/circle_orange_background_edit"
+            android:drawableEnd="@drawable/ic_expend"
+            android:hint="Выберите тему обращения"
+            android:padding="14dp"
+            android:textSize="15dp" />
 
         <EditText
+           android:id="@+id/password_recovery_comments"
            android:inputType="textMultiLine"
            android:lines="8"
            android:minLines="3"
            android:gravity="left|center"
-            android:padding="16dp"
-            android:textSize="16dp"
+           android:padding="16dp"
+           android:textSize="16dp"
            android:hint="Ваш комментарий(не обязательно)"
            android:layout_marginTop="16dp"
            android:background="@drawable/circle_orange_background_edit"
@@ -82,7 +130,7 @@
            android:scrollbars="vertical" />
 
         <Button
-            android:id="@+id/main_enter"
+            android:id="@+id/password_recovery_send"
             style="@style/RoundedOrangeBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,4 +139,5 @@
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

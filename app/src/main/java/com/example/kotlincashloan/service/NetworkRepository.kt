@@ -185,4 +185,44 @@ class NetworkRepository {
             emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
         }
     }
+
+    fun listSupportType(map: Map<String, Int>) = liveData(Dispatchers.IO) {
+        try {
+            val response = RetrofitService.apiService().listSupportType(map)
+            when {
+                response.isSuccessful -> {
+                    if (response.body() != null) {
+                        emit(ResultStatus.success(response.body()))
+                    } else {
+                        emit(ResultStatus.error("Запрос прошел успешно"))
+                    }
+                }
+                else -> {
+                    emit(ResultStatus.error("Не известная ошибка"))
+                }
+            }
+        } catch (e: Exception) {
+            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+        }
+    }
+
+    fun supportTicket(map: Map<String, String>) = liveData(Dispatchers.IO) {
+        try {
+            val response = RetrofitService.apiService().supportTicket(map)
+            when {
+                response.isSuccessful -> {
+                    if (response.body() != null) {
+                        emit(ResultStatus.success(response.body()))
+                    } else {
+                        emit(ResultStatus.error("Запрос прошел успешно"))
+                    }
+                }
+                else -> {
+                    emit(ResultStatus.error("Не известная ошибка"))
+                }
+            }
+        } catch (e: Exception) {
+            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+        }
+    }
 }

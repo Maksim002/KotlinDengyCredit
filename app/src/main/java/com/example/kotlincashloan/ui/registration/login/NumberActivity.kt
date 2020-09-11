@@ -12,6 +12,7 @@ import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
+import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.NetworkRepository
@@ -22,14 +23,12 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class NumberActivity : AppCompatActivity() {
-    private var viewModel = NetworkRepository()
+    private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number)
-        number_focus_text.requestFocus()
-        getListCountry()
         initClick()
         initViews()
         initToolBar()
@@ -52,12 +51,18 @@ class NumberActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Регистрация"
+        supportActionBar!!.title = ""
     }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
+    }
+
+    override fun onStart() {
+        super.onStart()
+        number_focus_text.requestFocus()
+        getListCountry()
     }
 
     private fun initClick() {
@@ -66,7 +71,7 @@ class NumberActivity : AppCompatActivity() {
                 MainActivity.alert.show()
                 val map = HashMap<String, String>()
                 map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
-                viewModel.numberPhone(map).observe(this, Observer { result ->
+                viewModel.numberPhones(map).observe(this, Observer { result ->
                     val msg = result.msg
                     val data = result.data
                     when (result.status) {
@@ -111,7 +116,7 @@ class NumberActivity : AppCompatActivity() {
                         val adapterListCountry = ArrayAdapter(
                             this,
                             android.R.layout.simple_dropdown_item_1line,
-                            data!!.result
+                            data.result
                         )
                         number_list_country.setAdapter(adapterListCountry)
                         list = data.result

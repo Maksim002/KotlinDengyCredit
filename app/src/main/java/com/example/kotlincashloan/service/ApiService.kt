@@ -1,6 +1,8 @@
 package com.timelysoft.tsjdomcom.service
 
+import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
+import com.example.kotlincashloan.service.model.recovery.SupportTicketResultModel
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.myapplication.model.ResultModel
 import retrofit2.Response
@@ -53,5 +55,15 @@ interface ApiService {
     @FormUrlEncoded
     @POST("recoveryAccess?token=oYyxhIFgJjAb")
     suspend fun recoveryAccess(@FieldMap params: Map<String, String>): Response<CommonResponse<RecoveryAccessResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listSupportType?token=oYyxhIFgJjAb")
+    suspend fun listSupportType(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<ListSupportTypeResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("supportTicket?token=oYyxhIFgJjAb")
+    suspend fun supportTicket(@FieldMap params: Map<String, String>): Response<CommonResponse<SupportTicketResultModel>>
 }
 

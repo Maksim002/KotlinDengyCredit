@@ -16,7 +16,9 @@ import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import java.util.ArrayList
 
@@ -28,8 +30,8 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_recovery)
+        MainActivity.alert = LoadingAlert(this)
         initToolBar()
-        getListCountry()
         iniClick()
     }
 
@@ -38,10 +40,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             if (validate()) {
                 MainActivity.alert.show()
                 val map = HashMap<String, String>()
-                map.put(
-                    "phone",
-                    MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
-                )
+                map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
                 map.put("response", password_recovery_word.text.toString())
                 myModel.recoveryAccess(map).observe(this, Observer { result ->
                     val msg = result.msg
@@ -78,12 +77,14 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         setSupportActionBar(password_recovery_toolbar)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Восстановление пароля"
+        supportActionBar!!.title = ""
     }
 
     override fun onStart() {
         super.onStart()
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
+        password_focus_text.requestFocus()
+        getListCountry()
     }
 
     private fun initBusyBottomSheetError() {
@@ -160,6 +161,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     questionnaire_phone_list_country.showDropDown()
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

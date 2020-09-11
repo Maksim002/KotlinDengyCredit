@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                                     loadingMistake(this)
                                 }
                             } else {
+                                AppPreferences.isLogined = true
                                 tokenId = data.result.token
                                 if (main_login_code.isChecked) {
                                     main_incorrect.visibility = View.GONE
@@ -169,12 +170,6 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
             bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
         }
     }
-
-//    private fun initMistakeBottomSheet() {
-//        val bottomSheetDialogFragment = MistakeBottomSheetFragment()
-//        bottomSheetDialogFragment.isCancelable = false;
-//        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
-//    }
 
     override fun pinCodeClockListener() {
         main_login_code.isChecked = false

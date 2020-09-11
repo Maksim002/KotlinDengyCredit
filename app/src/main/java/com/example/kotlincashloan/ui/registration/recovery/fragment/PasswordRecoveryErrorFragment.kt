@@ -1,11 +1,13 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_password_recovery_error.*
 
@@ -26,6 +28,11 @@ class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
     private fun initClick() {
         password_sheer_time.setOnClickListener {
             this.dismiss()
+        }
+
+        password_sheer_service.setOnClickListener {
+            val intent = Intent(context, ContactingServiceActivity::class.java)
+            startActivity(intent)
         }
     }
 }

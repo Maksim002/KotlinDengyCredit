@@ -10,6 +10,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.Top
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.fragment_password_recovery.*
 import kotlinx.android.synthetic.main.fragment_your_application.*
 
 class PasswordRecoveryFragment() : BottomSheetDialogFragment() {
