@@ -5,25 +5,68 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
-import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
+import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryErrorFragment
+import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryFragment
+import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.NetworkRepository
+import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import java.util.ArrayList
 
 class PasswordRecoveryActivity : AppCompatActivity() {
-    private var viewModel = NetworkRepository()
+    private var viewModel = LoginViewModel()
+    private var myModel = PasswordViewMode()
+    private var numberCharacters: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_recovery)
         initToolBar()
         getListCountry()
+        iniClick()
+    }
+
+    private fun iniClick() {
+        password_recovery_enter.setOnClickListener {
+            if (validate()) {
+                MainActivity.alert.show()
+                val map = HashMap<String, String>()
+                map.put(
+                    "phone",
+                    MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+                )
+                map.put("response", password_recovery_word.text.toString())
+                myModel.recoveryAccess(map).observe(this, Observer { result ->
+                    val msg = result.msg
+                    val data = result.data
+                    when (result.status) {
+                        Status.SUCCESS -> {
+                            if (data!!.result == null) {
+                                if (data.error.code == 404){
+                                    initBusyBottomSheetError()
+                                }
+                            } else {
+                                initBusyBottomSheet()
+                            }
+                        }
+                        Status.ERROR -> {
+                            loadingMistake(this)
+                        }
+                        Status.NETWORK -> {
+                            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    MainActivity.alert.hide()
+                })
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -43,8 +86,14 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
     }
 
+    private fun initBusyBottomSheetError() {
+        val bottomSheetDialogFragment = PasswordRecoveryErrorFragment()
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+    }
+
     private fun initBusyBottomSheet() {
-        val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
+        val bottomSheetDialogFragment = PasswordRecoveryFragment()
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -86,6 +135,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             questionnaire_phone_list_country.showDropDown()
             AppPreferences.numberCharacters = list[position].phoneLength!!.toInt()
             AppPreferences.isFormatMask = list[position].phoneMask
+            numberCharacters = list[position].phoneLength!!.toInt()
             questionnaire_phone_additional.setText("")
             questionnaire_phone_additional.mask = ""
             if (position == 0) {
@@ -112,5 +162,40 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             } catch (e: Exception) {
             }
         }
+    }
+
+    private fun validate(): Boolean {
+        var valid = true
+        if (questionnaire_phone_list_country.text.isEmpty()) {
+            questionnaire_phone_list_country.error = "Выберите страну"
+            valid = false
+        } else {
+            questionnaire_phone_list_country.error = null
+        }
+
+        if (numberCharacters != 11) {
+            if (questionnaire_phone_additional.text!!.toString().length != 19) {
+                questionnaire_phone_additional.error = "Введите валидный номер"
+                valid = false
+            } else {
+                questionnaire_phone_additional.error = null
+            }
+        } else {
+            if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
+                questionnaire_phone_additional.error = "Введите валидный номер"
+                valid = false
+            } else {
+                questionnaire_phone_additional.error = null
+            }
+        }
+        if (password_recovery_word.text.toString().isEmpty()) {
+            password_recovery_word.error = "Введите кодовое слово"
+            valid = false
+        }
+
+        if (!valid){
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
+        }
+        return valid
     }
 }

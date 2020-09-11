@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="16dp"
-        android:text="Выберите тему обращения"
+        android:text="Обращение в службу поддержки"
         android:textColor="#001"
         android:textSize="30sp" />
 
@@ -80,5 +80,15 @@
            android:layout_height="wrap_content"
            android:layout_width="match_parent"
            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/main_enter"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="Отправить"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

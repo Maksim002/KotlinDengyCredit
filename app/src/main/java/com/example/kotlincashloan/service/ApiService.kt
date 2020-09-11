@@ -1,5 +1,6 @@
 package com.timelysoft.tsjdomcom.service
 
+import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.myapplication.model.ResultModel
 import retrofit2.Response
@@ -47,5 +48,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listAvailableCountry?token=oYyxhIFgJjAb")
     suspend fun listAvailableCountry(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<CounterResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("recoveryAccess?token=oYyxhIFgJjAb")
+    suspend fun recoveryAccess(@FieldMap params: Map<String, String>): Response<CommonResponse<RecoveryAccessResultModel>>
 }
 
