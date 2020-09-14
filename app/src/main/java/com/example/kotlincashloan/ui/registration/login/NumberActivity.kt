@@ -17,6 +17,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import java.util.*
@@ -29,6 +30,7 @@ class NumberActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number)
+        MainActivity.alert = LoadingAlert(this)
         initClick()
         initViews()
         initToolBar()

@@ -1,5 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +9,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.number_next
 
@@ -29,6 +32,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        MainActivity.alert = LoadingAlert(Activity())
         initClick()
     }
 

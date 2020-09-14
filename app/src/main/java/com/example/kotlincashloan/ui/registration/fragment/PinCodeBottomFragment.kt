@@ -1,6 +1,7 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
 import java.util.HashMap
@@ -33,6 +35,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        MainActivity.alert = LoadingAlert(Activity())
         iniClick()
     }
 

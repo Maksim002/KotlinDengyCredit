@@ -10,6 +10,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.ui.registration.login.MainActivity
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
@@ -18,6 +19,7 @@ import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottom
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import java.util.*
@@ -33,6 +35,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actyviti_questionnaire)
+        MainActivity.alert = LoadingAlert(this)
         initToolBar()
         iniData()
         getListNationality()

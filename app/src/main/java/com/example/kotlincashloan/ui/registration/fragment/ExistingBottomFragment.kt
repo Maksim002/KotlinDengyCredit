@@ -19,6 +19,7 @@ import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 import java.util.HashMap
 
@@ -38,6 +39,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        MainActivity.alert = LoadingAlert(activity)
         initClick()
     }
 

@@ -17,6 +17,7 @@ import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
@@ -31,6 +32,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
+        MainActivity.alert = LoadingAlert(this)
         initToolBar()
         getListCountry()
         getType()
