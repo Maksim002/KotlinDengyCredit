@@ -15,7 +15,7 @@
         android:id="@+id/navigation_profile"
         android:name="com.example.kotlincashloan.ui.profile.ProfileFragment"
         android:label=""
-        tools:layout="@layout/fragment_redemption" />
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/navigation_notification"
@@ -26,7 +26,7 @@
     <fragment
         android:id="@+id/navigation_support"
         android:name="com.example.kotlincashloan.ui.support.SupportFragment"
-        android:label=""
+        android:label="FAQ"
         tools:layout="@layout/fragment_support" />
 
     <fragment

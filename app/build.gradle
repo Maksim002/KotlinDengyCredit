@@ -92,4 +92,7 @@ dependencies {
 
     //DatePickerDialog(
     implementation 'com.ycuwq.widgets:datepicker:1.2.0'
+
+    //textExpandable
+    implementation 'com.github.hakobast:dropdown-textview:0.3.1'
 }

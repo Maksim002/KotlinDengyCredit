@@ -16,6 +16,10 @@
         <item name="android:background">@drawable/circle_orange_backround</item>
     </style>
 
+    <style name="SupportDropdownTextView" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/support_dropdown_dext_view</item>
+    </style>
+
     <style name="SCBSwitch" parent="Theme.AppCompat.Light">
         <!-- active thumb & track color (30% transparency) -->
         <item name="colorControlActivated">#FF9116</item>

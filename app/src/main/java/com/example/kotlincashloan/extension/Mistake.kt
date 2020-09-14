@@ -4,6 +4,7 @@ package com.example.kotlincashloan.extension
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 
 val bottomSheetDialogFragment = MistakeBottomSheetFragment()
