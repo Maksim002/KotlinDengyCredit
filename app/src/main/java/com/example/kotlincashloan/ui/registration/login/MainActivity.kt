@@ -30,7 +30,6 @@ import java.util.concurrent.Executor
 class MainActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
-
     companion object {
         lateinit var alert: LoadingAlert
     }
