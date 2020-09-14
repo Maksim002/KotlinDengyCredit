@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ToolBarStyle"
+        android:gravity="center"
         android:background="@color/whiteColor"
         app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
         app:layout_constraintTop_toTopOf="parent"

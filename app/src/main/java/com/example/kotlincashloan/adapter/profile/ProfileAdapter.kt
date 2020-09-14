@@ -20,6 +20,14 @@ class ProfileAdapter (item: ArrayList<ListFaqResultModel> = arrayListOf()): Gene
             holder.itemView.themed_dropdown_text_view.setContentText(Html.fromHtml(item.text).toString())
         }
     }
+//
+//    holder.itemView.discount_image.loadImage(AppPreferences.baseUrl+item.prefix+"/"+item.infoImages.firstOrNull()?.fileName)
+//
+//    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//        holder.itemView.discount_description.text = Html.fromHtml(item.boldDescription, Html.FROM_HTML_MODE_LEGACY).trim()
+//    } else {
+//        holder.itemView.discount_description.text = Html.fromHtml(item.boldDescription)
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_profile)
