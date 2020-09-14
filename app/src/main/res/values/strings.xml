@@ -15,4 +15,6 @@
     <string name="new_data">Новые данные для входа отправлены вам в СМС-сообщении по номеру регистрации. Вы можете сменить их при первом входе в систему.</string>
     <string name="our_specialist_will_contact">Наш специалист свяжется с вами в ближайшее время. Не оставляйте больше одной заявки и дождитесь ответа оператора.</string>
     <string name="your_appeal">Ваше обращение уже отправлено и обрабатывается нашими специалистами. В ближайшее время мы свяжемся с вами. Спасибо за обращение!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
