@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.adapter
+package com.example.kotlincashloan.adapter.listener
 
 interface ExistingBottomListener {
     fun existingClockListener()

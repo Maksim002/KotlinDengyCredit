@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.adapter.ExistingBottomListener
+import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.HomeActivity
@@ -38,7 +38,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MainActivity.alert = LoadingAlert(activity)
+        MainActivity.alert = LoadingAlert(requireActivity())
         initClick()
     }
 

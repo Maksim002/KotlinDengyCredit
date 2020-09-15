@@ -28,6 +28,7 @@
             android:launchMode="singleTop"/>
         <activity android:name="com.example.kotlincashloan.ui.main.registration.recovery.ContactingServiceActivity"
             android:launchMode="singleTop"/>
+        <activity android:name=".ui.main.registration.error.NoInternetActivity" />
     </application>
 
 </manifest>

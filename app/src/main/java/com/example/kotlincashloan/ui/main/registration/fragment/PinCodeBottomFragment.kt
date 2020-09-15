@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.HomeActivity
@@ -34,7 +37,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MainActivity.alert = LoadingAlert(Activity())
+        MainActivity.alert = LoadingAlert(activity as AppCompatActivity)
         iniClick()
     }
 
@@ -73,14 +76,14 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
+                            loadingMistake(activity as AppCompatActivity)
                         } else {
                             AppPreferences.token = data.result.token
                             initTransition()
                         }
                     }
                     Status.ERROR, Status.NETWORK -> {
-                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                        loadingMistake(activity as AppCompatActivity)
                     }
                 }
                 MainActivity.alert.hide()

@@ -9,6 +9,12 @@
     android:padding="16dp"
     tools:context=".ui.main.registration.login.MainActivity">
 
+    <LinearLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -135,4 +141,9 @@
         android:text="Регистрация"
         android:textColor="#FF9900"
         android:textSize="18sp" />
+    </LinearLayout>
+
+    <include layout="@layout/item_no_connection"
+        android:id="@+id/main_no_connection"
+        android:visibility="gone"/>
 </LinearLayout>

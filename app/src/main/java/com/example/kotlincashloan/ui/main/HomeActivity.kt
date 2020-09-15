@@ -8,13 +8,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        MainActivity.alert = LoadingAlert(this)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         val navController = findNavController(R.id.nav_host_fragment)

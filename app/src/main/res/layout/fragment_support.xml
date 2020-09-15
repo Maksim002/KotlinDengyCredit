@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/whiteColor"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.support.SupportFragment">
@@ -14,4 +15,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <include layout="@layout/item_access_restricted"
+        android:id="@+id/layout_access_restricted"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_no_connection"
+        android:id="@+id/support_no_connection"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_technical_work"
+        android:id="@+id/support_technical_work"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_not_found"
+        android:id="@+id/support_not_found"
+        android:visibility="gone"/>
+
 </LinearLayout>

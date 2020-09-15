@@ -33,6 +33,15 @@
         </item>
     </style>
 
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">@color/orangeColor</item>
+        <item name="android:textSize">10dp</item>
+    </style>
+
+    <style name="BottomNavigationView" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">9dp</item>
+    </style>
+
     <style name="ToolBarStyle" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/whiteColor</item>
         <item name="android:textColorPrimary">@color/colorDrawer</item>
