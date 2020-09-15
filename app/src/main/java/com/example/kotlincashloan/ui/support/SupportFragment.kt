@@ -103,19 +103,11 @@ class SupportFragment : Fragment(){
                     }
                 }
                 Status.ERROR -> {
-                    if (data!!.code == 404){
-                        support_not_found.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        layout_access_restricted.visibility = View.GONE
-                        support_technical_work.visibility = View.GONE
-                    }else if (data.code == 500){
-                        support_technical_work.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        layout_access_restricted.visibility = View.GONE
-                        support_not_found.visibility == View.GONE
-                    }
+                    support_not_found.visibility = View.VISIBLE
+                    profile_recycler.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
                 }
 
                 Status.NETWORK ->{
