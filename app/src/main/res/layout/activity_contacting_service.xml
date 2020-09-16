@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/contacting_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/password_recovery_toolbar"
@@ -139,5 +145,24 @@
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
     </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/password_no_questionnaire"
+        layout="@layout/item_no_connection"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_access_restricted"
+        android:id="@+id/password_access_restricted"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_not_found"
+        android:id="@+id/password_not_found"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_technical_work"
+        android:id="@+id/password_technical_work"
+        android:visibility="gone"/>
+</LinearLayout>
+

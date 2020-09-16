@@ -1,5 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -23,7 +24,11 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_support.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 
 
@@ -56,6 +61,18 @@ class QuestionnaireActivity : AppCompatActivity() {
         }
 
         no_connection_repeat.setOnClickListener {
+            initResult()
+        }
+
+        access_restricted.setOnClickListener {
+            initResult()
+        }
+
+        not_found.setOnClickListener {
+            initResult()
+        }
+
+        technical_work.setOnClickListener {
             initResult()
         }
     }
@@ -126,6 +143,11 @@ class QuestionnaireActivity : AppCompatActivity() {
         }
     }
 
+    private fun initAuthorized(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun initBottomSheet() {
         val bottomSheetDialogFragment = AuthorizationBottomSheetFragment()
         bottomSheetDialogFragment.isCancelable = false;
@@ -184,11 +206,39 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_id_sxs.setAdapter(adapterIdSxs)
                         list = data.result
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404"){
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "500"){
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "403"){
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
                     questionnaire_no_questionnaire.visibility = View.VISIBLE
@@ -233,11 +283,39 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_id_nationality.setAdapter(adapterListNationality)
                         list = data.result
                     } else {
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "500") {
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "403") {
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
                     questionnaire_no_questionnaire.visibility = View.VISIBLE
@@ -282,16 +360,44 @@ class QuestionnaireActivity : AppCompatActivity() {
                         val adapterListSecretQuestion = ArrayAdapter(
                             this,
                             android.R.layout.simple_dropdown_item_1line,
-                            data!!.result
+                            data.result
                         )
                         questionnaire_id_secret.setAdapter(adapterListSecretQuestion)
                         list = data.result
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "500") {
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "403") {
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
                     questionnaire_no_questionnaire.visibility = View.VISIBLE

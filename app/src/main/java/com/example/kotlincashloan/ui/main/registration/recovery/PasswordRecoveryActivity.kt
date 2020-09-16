@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.main.registration.recovery
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -19,6 +20,12 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_password_recovery.*
+import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.ArrayList
 
 class PasswordRecoveryActivity : AppCompatActivity() {
@@ -37,34 +44,66 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     private fun iniClick() {
         password_recovery_enter.setOnClickListener {
             if (validate()) {
-                MainActivity.alert.show()
-                val map = HashMap<String, String>()
-                map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
-                map.put("response", password_recovery_word.text.toString())
-                myModel.recoveryAccess(map).observe(this, Observer { result ->
-                    val msg = result.msg
-                    val data = result.data
-                    when (result.status) {
-                        Status.SUCCESS -> {
-                            if (data!!.result == null) {
-                                if (data.error.code == 404){
-                                    initBusyBottomSheetError()
-                                }
-                            } else {
-                                initBusyBottomSheet()
-                            }
-                        }
-                        Status.ERROR -> {
-                            loadingMistake(this)
-                        }
-                        Status.NETWORK -> {
-                            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    MainActivity.alert.hide()
-                })
+                initResult()
             }
         }
+
+        no_connection_repeat.setOnClickListener {
+            initResult()
+        }
+
+        access_restricted.setOnClickListener {
+            initResult()
+        }
+
+        not_found.setOnClickListener {
+            initResult()
+        }
+
+        technical_work.setOnClickListener {
+            initResult()
+        }
+    }
+
+    fun initResult(){
+        MainActivity.alert.show()
+        val map = HashMap<String, String>()
+        map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
+        map.put("response", password_recovery_word.text.toString())
+        myModel.recoveryAccess(map).observe(this, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result == null) {
+                        if (data.error.code == 404){
+                            initBusyBottomSheetError()
+                        }
+                    } else {
+                        initBusyBottomSheet()
+                        initVisibilities()
+                    }
+                }
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
+                    recovery_no_questionnaire.visibility = View.VISIBLE
+                    password_recovery_enter.visibility = View.GONE
+                }
+            }
+            MainActivity.alert.hide()
+        })
+    }
+
+    fun initVisibilities(){
+        recovery_no_questionnaire.visibility = View.GONE
+        password_recovery_enter.visibility = View.VISIBLE
+    }
+
+    private fun initAuthorized(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -117,15 +156,45 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                         )
                         questionnaire_phone_list_country.setAdapter(adapterListCountry)
                         list = data.result
+                        initVisibilities()
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            recovery_access_restricted.visibility = View.VISIBLE
+                            password_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            recovery_technical_work.visibility = View.VISIBLE
+                            password_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            recovery_not_found.visibility = View.VISIBLE
+                            password_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404"){
+                        recovery_not_found.visibility = View.VISIBLE
+                        password_layout.visibility = View.GONE
+
+                    }else if (msg == "500"){
+                        recovery_technical_work.visibility = View.VISIBLE
+                        password_layout.visibility = View.GONE
+
+                    }else if (msg == "403"){
+                        recovery_access_restricted.visibility = View.VISIBLE
+                        password_layout.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    recovery_no_questionnaire.visibility = View.VISIBLE
+                    password_layout.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()

@@ -96,6 +96,18 @@
         android:id="@+id/number_no_connection"
         android:visibility="gone"/>
 
+    <include layout="@layout/item_access_restricted"
+        android:id="@+id/number_access_restricted"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_not_found"
+        android:id="@+id/number_not_found"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_technical_work"
+        android:id="@+id/number_technical_work"
+        android:visibility="gone"/>
+
     <include
         android:id="@+id/number_focus_text"
         layout="@layout/item_focus" />

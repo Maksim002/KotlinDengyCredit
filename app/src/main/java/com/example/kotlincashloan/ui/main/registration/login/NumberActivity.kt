@@ -1,5 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -20,7 +21,10 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_support.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -111,6 +115,22 @@ class NumberActivity : AppCompatActivity() {
             if (numberCharacters != 0){
                 initResult()
             }
+
+            no_connection_repeat.setOnClickListener {
+                initResult()
+            }
+
+            access_restricted.setOnClickListener {
+                initResult()
+            }
+
+            not_found.setOnClickListener {
+                initResult()
+            }
+
+            technical_work.setOnClickListener {
+                initResult()
+            }
         }
 
         number_next.setOnClickListener {
@@ -140,21 +160,40 @@ class NumberActivity : AppCompatActivity() {
                         val adapterListCountry = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
                         number_list_country.setAdapter(adapterListCountry)
                         list = data.result
+                        initVisibilities()
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            number_access_restricted.visibility = View.VISIBLE
+                            number_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            number_technical_work.visibility = View.VISIBLE
+                            number_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            number_not_found.visibility = View.VISIBLE
+                            number_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
                     if (msg == "404"){
-                        support_not_found.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
+                        number_not_found.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
 
                     }else if (msg == "500"){
-                        loadingMistake(this)
+                        number_technical_work.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
 
                     }else if (msg == "403"){
-                        layout_access_restricted.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
+                        number_access_restricted.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
                     }
                 }
                 Status.NETWORK -> {
@@ -196,6 +235,11 @@ class NumberActivity : AppCompatActivity() {
             } catch (e: Exception) {
             }
         }
+    }
+
+    private fun initAuthorized(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun validate(): Boolean {

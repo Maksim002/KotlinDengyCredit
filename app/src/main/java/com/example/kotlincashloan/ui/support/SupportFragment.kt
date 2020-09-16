@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.support
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -78,6 +79,8 @@ class SupportFragment : Fragment(){
                         }else if (data.error.code == 404){
                             support_not_found.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
+                        }else if (data.error.code == 401){
+                            initAuthorized()
                         }
                     }
 
@@ -99,6 +102,9 @@ class SupportFragment : Fragment(){
                     }else if (msg == "403"){
                         layout_access_restricted.visibility = View.VISIBLE
                         profile_recycler.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
                     }
                 }
 
@@ -110,6 +116,12 @@ class SupportFragment : Fragment(){
             MainActivity.alert.hide()
         })
     }
+
+    private fun initAuthorized(){
+        val intent = Intent(context, MainActivity::class.java)
+        startActivity(intent)
+    }
+
     fun initVisibilities(){
         profile_recycler.visibility = View.VISIBLE
         support_no_connection.visibility = View.GONE

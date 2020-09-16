@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.main.registration.recovery
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -21,6 +22,11 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.ArrayList
 
 class ContactingServiceActivity : AppCompatActivity() {
@@ -40,38 +46,64 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun iniClick() {
+        no_connection_repeat.setOnClickListener {
+            initResult()
+        }
+
+        access_restricted.setOnClickListener {
+            initResult()
+        }
+
+        not_found.setOnClickListener {
+            initResult()
+        }
+
+        technical_work.setOnClickListener {
+            initResult()
+        }
+
         password_recovery_send.setOnClickListener {
             if (validate()) {
-                MainActivity.alert.show()
-                val map = mutableMapOf<String, String>()
-                map["type"] = typeId.toString()
-                map["last_name"] = questionnaire_phone_surnames.text.toString()
-                map["first_name"] = questionnaire_phone_name.text.toString()
-                map["second_name"] = questionnaire_phone_patronymics.text.toString()
-                map["phone"] = MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
-                map["comment"] = password_recovery_comments.text.toString()
-                myViewMode.supportTicket(map).observe(this, Observer { result ->
-                    val msg = result.msg
-                    val data = result.data
-                    when (result.status) {
-                        Status.SUCCESS -> {
-                            if (data!!.result != null) {
-                                initBottomSheet()
-                            } else {
-                                initBottomSheetMistake()
-                            }
-                        }
-                        Status.ERROR -> {
-                            loadingMistake(this)
-                        }
-                        Status.NETWORK -> {
-                            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    MainActivity.alert.hide()
-                })
+                initResult()
             }
         }
+    }
+
+    private fun initResult(){
+        val map = mutableMapOf<String, String>()
+        map["type"] = typeId.toString()
+        map["last_name"] = questionnaire_phone_surnames.text.toString()
+        map["first_name"] = questionnaire_phone_name.text.toString()
+        map["second_name"] = questionnaire_phone_patronymics.text.toString()
+        map["phone"] = MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+        map["comment"] = password_recovery_comments.text.toString()
+        MainActivity.alert.show()
+        myViewMode.supportTicket(map).observe(this, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        if (data.error.code != 409) {
+                            loadingMistake(this)
+                        }else{
+                            initBottomSheet()
+                            initVisibilities()
+                        }
+                    } else {
+                        initBottomSheetMistake()
+                    }
+                }
+                Status.ERROR -> {
+                    loadingMistake(this)
+                }
+                Status.NETWORK -> {
+                    password_no_questionnaire.visibility = View.VISIBLE
+                    contacting_layout.visibility = View.GONE
+                }
+            }
+            MainActivity.alert.hide()
+        })
     }
 
     private fun initBottomSheet() {
@@ -110,21 +142,46 @@ class ContactingServiceActivity : AppCompatActivity() {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         val adapterListCountry = ArrayAdapter(
-                            this,
-                            android.R.layout.simple_dropdown_item_1line,
-                            data.result
-                        )
+                            this, android.R.layout.simple_dropdown_item_1line, data.result)
                         questionnaire_phone_list_country.setAdapter(adapterListCountry)
                         list = data.result
+                        initVisibilities()
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            loadingMistake(this)
+
+                        }else if (data.error.code == 404){
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "500") {
+                        loadingMistake(this)
+
+                    } else if (msg == "403") {
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    password_no_questionnaire.visibility = View.VISIBLE
+                    contacting_layout.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()
@@ -163,6 +220,16 @@ class ContactingServiceActivity : AppCompatActivity() {
         }
     }
 
+    private fun initAuthorized(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun initVisibilities(){
+        password_no_questionnaire.visibility = View.GONE
+        contacting_layout.visibility = View.VISIBLE
+    }
+
     private fun getType() {
         var list: ArrayList<ListSupportTypeResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
@@ -179,12 +246,39 @@ class ContactingServiceActivity : AppCompatActivity() {
                         )
                         password_recovery_type.setAdapter(adapterType)
                         list = data.result
+                        initVisibilities()
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 500){
+                            loadingMistake(this)
+
+                        }else if (data.error.code == 404){
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "500") {
+                        loadingMistake(this)
+
+                    } else if (msg == "403") {
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }
                 }
                 Status.NETWORK -> {
                     Toast.makeText(this, msg, Toast.LENGTH_LONG).show()

@@ -226,8 +226,20 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-        <include
-            android:id="@+id/questionnaire_no_questionnaire"
-            layout="@layout/item_no_connection"
-            android:visibility="gone"/>
+    <include
+        android:id="@+id/questionnaire_no_questionnaire"
+        layout="@layout/item_no_connection"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_access_restricted"
+        android:id="@+id/questionnaire_access_restricted"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_not_found"
+        android:id="@+id/questionnaire_not_found"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_technical_work"
+        android:id="@+id/questionnaire_technical_work"
+        android:visibility="gone"/>
 </LinearLayout>

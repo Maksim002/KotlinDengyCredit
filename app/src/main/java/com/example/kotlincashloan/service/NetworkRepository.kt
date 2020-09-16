@@ -158,7 +158,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
