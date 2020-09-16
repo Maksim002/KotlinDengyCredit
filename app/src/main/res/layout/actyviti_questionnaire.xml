@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/questionnaire_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -215,6 +216,9 @@
                 android:id="@+id/questionnaire_owner"
                 layout="@layout/item_focus" />
 
+            <include layout="@layout/item_no_connection"
+                android:id="@+id/questionnaire_no_connection"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

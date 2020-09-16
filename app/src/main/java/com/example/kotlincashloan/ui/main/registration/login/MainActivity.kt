@@ -68,7 +68,10 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
         }
 
         no_connection_repeat.setOnClickListener {
-            if (validate()) {
+            if (main_touch_id.isChecked == true){
+                iniTouchId()
+                main_incorrect.visibility = View.GONE
+            }else{
                 iniResult()
             }
         }
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
             }
         }
     }
+
 
     private fun iniResult() {
         val map = HashMap<String, String>()
@@ -303,6 +307,8 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                                         Toast.LENGTH_LONG
                                     ).show()
                                 } else {
+                                    main_no_connection.visibility = View.GONE
+                                    main_layout.visibility = View.VISIBLE
                                     tokenId = data.result.token
                                     viewModel.save(
                                         main_text_login.text.toString(),
@@ -312,8 +318,12 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                                     startActivity(intent)
                                 }
                             }
-                            Status.ERROR, Status.NETWORK -> {
-                                Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
+                            Status.ERROR -> {
+                                loadingMistake(this@MainActivity)
+                            }
+                            Status.NETWORK -> {
+                                main_no_connection.visibility = View.VISIBLE
+                                main_layout.visibility = View.GONE
                             }
                         }
                         alert.hide()

@@ -63,36 +63,26 @@ class SupportFragment : Fragment(){
         map.put("token", AppPreferences.token.toString())
         viewModel.listFaq(map).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
+            val msg = result.msg
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.error != null){
                         if (data.error.code == 403){
                             layout_access_restricted.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
-                            support_no_connection.visibility = View.GONE
-                            support_technical_work.visibility = View.GONE
-                            support_not_found.visibility == View.GONE
+
                         }else if (data.error.code == 500){
                             support_technical_work.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
-                            support_no_connection.visibility = View.GONE
-                            layout_access_restricted.visibility = View.GONE
-                            support_not_found.visibility == View.GONE
 
                         }else if (data.error.code == 404){
                             support_not_found.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
-                            support_no_connection.visibility = View.GONE
-                            layout_access_restricted.visibility = View.GONE
-                            support_technical_work.visibility = View.GONE
                         }
                     }else if (data.code != null){
                         if (data.code == 403){
                             layout_access_restricted.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
-                            support_no_connection.visibility = View.GONE
-                            support_technical_work.visibility = View.GONE
-                            support_not_found.visibility == View.GONE
                         }
                     }
 
@@ -103,11 +93,15 @@ class SupportFragment : Fragment(){
                     }
                 }
                 Status.ERROR -> {
-                    support_not_found.visibility = View.VISIBLE
-                    profile_recycler.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
-                    support_technical_work.visibility = View.GONE
+                    if (msg == "404"){
+                        support_not_found.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+
+                    }else if (msg == "500"){
+                        support_technical_work.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+                    }
+
                 }
 
                 Status.NETWORK ->{

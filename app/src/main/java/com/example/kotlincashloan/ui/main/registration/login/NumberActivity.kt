@@ -19,6 +19,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -34,6 +35,43 @@ class NumberActivity : AppCompatActivity() {
         initViews()
         initToolBar()
 
+    }
+
+    private fun initResult() {
+            MainActivity.alert.show()
+            val map = HashMap<String, String>()
+            map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
+            viewModel.numberPhones(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            if (data.error.code != 409){
+                                loadingMistake(this)
+                            }else{
+                                initBusyBottomSheet()
+                                initVisibilities()
+                            }
+                        } else {
+                            initVisibilities()
+                            AppPreferences.number = number_phone.text.toString()
+                            initBottomSheet(data.result.id!!)
+                        }
+                    }
+                    Status.ERROR -> {
+                        loadingMistake(this)
+                        number_no_connection.visibility = View.GONE
+                        number_layout.visibility = View.VISIBLE
+
+                    }
+                    Status.NETWORK ->{
+                        number_no_connection.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
+                    }
+                }
+                MainActivity.alert.hide()
+            })
     }
 
     private fun initBottomSheet(id: Int) {
@@ -62,44 +100,27 @@ class NumberActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        number_focus_text.requestFocus()
         getListCountry()
     }
 
     private fun initClick() {
-        number_next.setOnClickListener {
-            if (validate()) {
-                MainActivity.alert.show()
-                val map = HashMap<String, String>()
-                map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
-                viewModel.numberPhones(map).observe(this, Observer { result ->
-                    val msg = result.msg
-                    val data = result.data
-                    when (result.status) {
-                        Status.SUCCESS -> {
-                            if (data!!.result == null) {
-                                if (data.error.code != 409){
-                                    loadingMistake(this)
-                                }else{
-                                    initBusyBottomSheet()
-                                }
-                            } else {
-                                AppPreferences.number = number_phone.text.toString()
-                                initBottomSheet(data.result.id!!)
-                            }
-                        }
-                        Status.ERROR -> {
-                            loadingMistake(this)
-
-                        }
-                        Status.NETWORK ->{
-                            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    MainActivity.alert.hide()
-                })
+        no_connection_repeat.setOnClickListener {
+            getListCountry()
+            if (numberCharacters != 0){
+                initResult()
             }
         }
+
+        number_next.setOnClickListener {
+            if (validate()) {
+                initResult()
+            }
+        }
+    }
+
+    fun initVisibilities(){
+        number_no_connection.visibility = View.GONE
+        number_layout.visibility = View.VISIBLE
     }
 
     private fun getListCountry() {
@@ -110,10 +131,10 @@ class NumberActivity : AppCompatActivity() {
         viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
-
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
+                        initVisibilities()
                         val adapterListCountry = ArrayAdapter(
                             this,
                             android.R.layout.simple_dropdown_item_1line,
@@ -129,7 +150,8 @@ class NumberActivity : AppCompatActivity() {
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    number_no_connection.visibility = View.VISIBLE
+                    number_layout.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()

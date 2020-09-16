@@ -21,6 +21,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import java.util.*
 
@@ -44,12 +45,16 @@ class QuestionnaireActivity : AppCompatActivity() {
         iniClock()
         initViews()
         initCheck()
+        initResult()
+    }
+
+    private fun initResult() {
+
     }
 
     private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
-
                 val map = mutableMapOf<String, String>()
                 map["last_name"] = questionnaire_text_surnames.text.toString()
                 map["first_name"] = questionnaire_text_name.text.toString()
@@ -79,21 +84,29 @@ class QuestionnaireActivity : AppCompatActivity() {
                                         loadingMistake(this)
                                     } else {
                                         initBusyBottomSheet()
+                                        initVisibilities()
                                     }
                                 } else {
                                     initBottomSheet()
+                                    initVisibilities()
                                 }
                             }
                             Status.ERROR -> {
                                 loadingMistake(this)
                             }
                             Status.NETWORK -> {
-                                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                                questionnaire_no_connection.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
                             }
                         }
                     })
             }
         }
+    }
+
+    fun initVisibilities(){
+        questionnaire_no_connection.visibility = View.GONE
+        questionnaire_layout.visibility = View.VISIBLE
     }
 
     private fun iniClock() {
