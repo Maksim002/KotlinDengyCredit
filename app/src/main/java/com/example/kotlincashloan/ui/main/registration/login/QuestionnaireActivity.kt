@@ -23,6 +23,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 
 
@@ -45,67 +46,70 @@ class QuestionnaireActivity : AppCompatActivity() {
         iniClock()
         initViews()
         initCheck()
-        initResult()
-    }
-
-    private fun initResult() {
-
     }
 
     private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
-                val map = mutableMapOf<String, String>()
-                map["last_name"] = questionnaire_text_surnames.text.toString()
-                map["first_name"] = questionnaire_text_name.text.toString()
-                map["second_name"] = questionnaire_text_patronymics.text.toString()
-                map["u_date"] = data
-                map["gender"] = idSex.toString()
-                map["nationality"] = listNationalityId.toString()
-                map["first_phone"] =
-                    MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
-                map["second_phone"] = try {
-                    MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
-                }catch (e: Exception){
-                    ""
-                }
-                map["question"] = listSecretQuestionId.toString()
-                map["response"] = questionnaire_secret_response.text.toString()
-                map["sms_code"] = AppPreferences.receivedSms.toString()
-
-                viewModel.questionnaire(map)
-                    .observe(this, Observer { result ->
-                        val msg = result.msg
-                        val data = result.data
-                        when (result.status) {
-                            Status.SUCCESS -> {
-                                if (data!!.result == null) {
-                                    if (data.error.code != 409) {
-                                        loadingMistake(this)
-                                    } else {
-                                        initBusyBottomSheet()
-                                        initVisibilities()
-                                    }
-                                } else {
-                                    initBottomSheet()
-                                    initVisibilities()
-                                }
-                            }
-                            Status.ERROR -> {
-                                loadingMistake(this)
-                            }
-                            Status.NETWORK -> {
-                                questionnaire_no_connection.visibility = View.VISIBLE
-                                questionnaire_layout.visibility = View.GONE
-                            }
-                        }
-                    })
+                initResult()
             }
+        }
+
+        no_connection_repeat.setOnClickListener {
+            initResult()
         }
     }
 
+    private fun initResult() {
+        val map = mutableMapOf<String, String>()
+        map["last_name"] = questionnaire_text_surnames.text.toString()
+        map["first_name"] = questionnaire_text_name.text.toString()
+        map["second_name"] = questionnaire_text_patronymics.text.toString()
+        map["u_date"] = data
+        map["gender"] = idSex.toString()
+        map["nationality"] = listNationalityId.toString()
+        map["first_phone"] =
+            MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
+        map["second_phone"] = try {
+            MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+        }catch (e: Exception){
+            ""
+        }
+        map["question"] = listSecretQuestionId.toString()
+        map["response"] = questionnaire_secret_response.text.toString()
+        map["sms_code"] = AppPreferences.receivedSms.toString()
+        MainActivity.alert.show()
+        viewModel.questionnaire(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            if (data.error.code != 409) {
+                                loadingMistake(this)
+                            } else {
+                                initBusyBottomSheet()
+                                initVisibilities()
+                            }
+                        } else {
+                            initBottomSheet()
+                            initVisibilities()
+                        }
+                    }
+                    Status.ERROR -> {
+                        loadingMistake(this)
+                    }
+                    Status.NETWORK -> {
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
+                }
+            })
+        MainActivity.alert.hide()
+    }
+
     fun initVisibilities(){
-        questionnaire_no_connection.visibility = View.GONE
+        questionnaire_no_questionnaire.visibility = View.GONE
         questionnaire_layout.visibility = View.VISIBLE
     }
 
@@ -169,6 +173,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListGenderResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        MainActivity.alert.show()
         viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -186,9 +191,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    questionnaire_no_questionnaire.visibility = View.VISIBLE
+                    questionnaire_layout.visibility = View.GONE
                 }
             }
+            MainActivity.alert.show()
         })
         questionnaire_id_sxs.keyListener = null
         questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
@@ -215,6 +222,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        MainActivity.alert.show()
         viewModel.listNationality(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -232,9 +240,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    questionnaire_no_questionnaire.visibility = View.VISIBLE
+                    questionnaire_layout.visibility = View.GONE
                 }
             }
+            MainActivity.alert.hide()
         })
         questionnaire_id_nationality.keyListener = null
         questionnaire_id_nationality.setOnItemClickListener { adapterView, view, position, l ->
@@ -262,6 +272,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        MainActivity.alert.show()
         viewModel.listSecretQuestion(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -283,9 +294,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    questionnaire_no_questionnaire.visibility = View.VISIBLE
+                    questionnaire_layout.visibility = View.GONE
                 }
             }
+            MainActivity.alert.hide()
         })
 
         questionnaire_id_secret.setKeyListener(null)

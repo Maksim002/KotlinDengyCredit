@@ -6,12 +6,6 @@
     android:padding="16dp"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/closed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_esc"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,6 +25,18 @@
             android:padding="16dp"
             android:inputType="number"
             android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/number_incorrect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+        android:drawablePadding="10dp"
+        android:visibility="visible"
+        android:layout_marginTop="8dp"
+        android:text="Неверный смс код"
+        android:textColor="@color/colorRed"/>
 
     <Button
         android:id="@+id/number_next"

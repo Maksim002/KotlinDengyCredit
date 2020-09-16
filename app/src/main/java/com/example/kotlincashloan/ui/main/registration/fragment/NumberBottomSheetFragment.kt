@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingConnection
+import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
 import com.example.myapplication.LoginViewModel
@@ -16,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.number_next
 
@@ -39,9 +43,6 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         number_bottom_code.setOnClickListener {
             this.dismiss()
         }
-        closed.setOnClickListener {
-            this.dismiss()
-        }
 
         number_next.setOnClickListener {
             if (validate()) {
@@ -54,21 +55,33 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                Toast.makeText(context, data.error.message, Toast.LENGTH_LONG)
-                                    .show()
+                                    if (data.error.code == 400) {
+                                        number_incorrect.visibility = View.VISIBLE
+                                    } else {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    }
                             } else {
+                                number_incorrect.visibility = View.GONE
                                 AppPreferences.receivedSms = number_text_sms.text.toString()
                                 val intent = Intent(context, QuestionnaireActivity::class.java)
                                 startActivity(intent)
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
-                            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                        Status.ERROR ->{
+                            loadingMistake(activity as AppCompatActivity)
+                        }
+                        Status.NETWORK -> {
+                            loadingConnection(activity as AppCompatActivity)
                         }
                     }
                 })
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        number_incorrect.visibility = View.GONE
     }
 
     private fun validate(): Boolean {

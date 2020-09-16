@@ -19,6 +19,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -100,6 +101,7 @@ class NumberActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        number_focus_text.requestFocus()
         getListCountry()
     }
 
@@ -135,11 +137,7 @@ class NumberActivity : AppCompatActivity() {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         initVisibilities()
-                        val adapterListCountry = ArrayAdapter(
-                            this,
-                            android.R.layout.simple_dropdown_item_1line,
-                            data.result
-                        )
+                        val adapterListCountry = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
                         number_list_country.setAdapter(adapterListCountry)
                         list = data.result
                     }else{
@@ -147,7 +145,17 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404"){
+                        support_not_found.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+
+                    }else if (msg == "500"){
+                        loadingMistake(this)
+
+                    }else if (msg == "403"){
+                        layout_access_restricted.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+                    }
                 }
                 Status.NETWORK -> {
                     number_no_connection.visibility = View.VISIBLE

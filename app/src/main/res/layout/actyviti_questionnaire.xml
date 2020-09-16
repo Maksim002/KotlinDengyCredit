@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,11 +7,17 @@
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/questionnaire_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="visible"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/questionnaire_toolbar"
@@ -25,7 +31,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
@@ -216,9 +222,12 @@
                 android:id="@+id/questionnaire_owner"
                 layout="@layout/item_focus" />
 
-            <include layout="@layout/item_no_connection"
-                android:id="@+id/questionnaire_no_connection"
-                android:visibility="gone"/>
         </LinearLayout>
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+        <include
+            android:id="@+id/questionnaire_no_questionnaire"
+            layout="@layout/item_no_connection"
+            android:visibility="gone"/>
+</LinearLayout>

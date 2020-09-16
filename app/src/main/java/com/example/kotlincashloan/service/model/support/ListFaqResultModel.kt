@@ -11,5 +11,7 @@ class ListFaqResultModel (
     var name: String? = null,
 
     @SerializedName("text")
-    var text: String? = null
+    var text: String? = null,
+
+   var isOpen: Boolean = false
 )

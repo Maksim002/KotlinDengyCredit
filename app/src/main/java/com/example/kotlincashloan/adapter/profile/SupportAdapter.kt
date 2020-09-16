@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.item_support.view.*
 import java.util.Collections.addAll
 
 class SupportAdapter (item: ArrayList<ListFaqResultModel> = arrayListOf()): GenericRecyclerAdapter<ListFaqResultModel>(item){
+    var row: Int = -1
     override fun bind(item: ListFaqResultModel, holder: ViewHolder) {
         holder.itemView.support_name.text = item.name
         holder.itemView.support_text.setMarkDownText(item.text)
@@ -29,6 +30,19 @@ class SupportAdapter (item: ArrayList<ListFaqResultModel> = arrayListOf()): Gene
             }
         }
     }
+
+//    private fun positionPost(): Int {
+//        items.forEachIndexed { index, listFaqResultModel ->
+//            if (listFaqResultModel.isOpen){
+//                listFaqResultModel.isOpen = false
+//                return index
+//            }else{
+//                listFaqResultModel.isOpen = true
+//                return index
+//            }
+//        }
+//        return -1
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_support)

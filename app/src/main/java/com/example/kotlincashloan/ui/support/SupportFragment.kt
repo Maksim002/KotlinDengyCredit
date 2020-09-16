@@ -79,11 +79,6 @@ class SupportFragment : Fragment(){
                             support_not_found.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
                         }
-                    }else if (data.code != null){
-                        if (data.code == 403){
-                            layout_access_restricted.visibility = View.VISIBLE
-                            profile_recycler.visibility = View.GONE
-                        }
                     }
 
                     if (data.result != null){
@@ -100,8 +95,11 @@ class SupportFragment : Fragment(){
                     }else if (msg == "500"){
                         support_technical_work.visibility = View.VISIBLE
                         profile_recycler.visibility = View.GONE
-                    }
 
+                    }else if (msg == "403"){
+                        layout_access_restricted.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+                    }
                 }
 
                 Status.NETWORK ->{
