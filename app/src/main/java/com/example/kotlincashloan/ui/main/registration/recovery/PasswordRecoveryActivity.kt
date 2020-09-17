@@ -49,21 +49,26 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
 
         no_connection_repeat.setOnClickListener {
-            initResult()
+            if (numberCharacters != 0){
+                initResult()
+            }else{
+                getListCountry()
+            }
         }
 
         access_restricted.setOnClickListener {
-            initResult()
+            getListCountry()
         }
 
         not_found.setOnClickListener {
-            initResult()
+            getListCountry()
         }
 
         technical_work.setOnClickListener {
-            initResult()
+            getListCountry()
         }
     }
+
 
     fun initResult(){
         MainActivity.alert.show()
@@ -78,6 +83,9 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     if (data!!.result == null) {
                         if (data.error.code == 404){
                             initBusyBottomSheetError()
+                            initVisibilities()
+                        }else if (data.error.code == 400 || data.error.code == 500){
+                            loadingMistake(this)
                         }
                     } else {
                         initBusyBottomSheet()
@@ -89,7 +97,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                 }
                 Status.NETWORK -> {
                     recovery_no_questionnaire.visibility = View.VISIBLE
-                    password_recovery_enter.visibility = View.GONE
+                    password_layout.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()
@@ -98,7 +106,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
     fun initVisibilities(){
         recovery_no_questionnaire.visibility = View.GONE
-        password_recovery_enter.visibility = View.VISIBLE
+        password_layout.visibility = View.VISIBLE
     }
 
     private fun initAuthorized(){
@@ -159,14 +167,17 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                         initVisibilities()
                     }else{
                         if (data.error.code == 403){
+                            recovery_no_questionnaire.visibility = View.GONE
                             recovery_access_restricted.visibility = View.VISIBLE
                             password_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
+                        }else if (data.error.code == 500 || data.error.code == 400){
+                            recovery_no_questionnaire.visibility = View.GONE
                             recovery_technical_work.visibility = View.VISIBLE
                             password_layout.visibility = View.GONE
 
                         }else if (data.error.code == 404){
+                            recovery_no_questionnaire.visibility = View.GONE
                             recovery_not_found.visibility = View.VISIBLE
                             password_layout.visibility = View.GONE
 
@@ -177,14 +188,17 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404"){
+                        recovery_no_questionnaire.visibility = View.GONE
                         recovery_not_found.visibility = View.VISIBLE
                         password_layout.visibility = View.GONE
 
-                    }else if (msg == "500"){
+                    }else if (msg == "500" || msg == "400"){
+                        recovery_no_questionnaire.visibility = View.GONE
                         recovery_technical_work.visibility = View.VISIBLE
                         password_layout.visibility = View.GONE
 
                     }else if (msg == "403"){
+                        recovery_no_questionnaire.visibility = View.GONE
                         recovery_access_restricted.visibility = View.VISIBLE
                         password_layout.visibility = View.GONE
 

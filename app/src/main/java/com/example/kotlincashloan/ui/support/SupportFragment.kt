@@ -85,6 +85,7 @@ class SupportFragment : Fragment(){
                     }
 
                     if (data.result != null){
+                        data.result.addAll(data.result)
                         myAdapter.update(data.result)
                         profile_recycler.adapter = myAdapter
                         initVisibilities()

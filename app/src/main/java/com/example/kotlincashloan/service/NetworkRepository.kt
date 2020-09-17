@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 
 class NetworkRepository {
     fun auth(params: Map<String, String>) = liveData(Dispatchers.IO) {
-
         try {
             val response = RetrofitService.apiService().auth(params)
             when {
@@ -18,7 +17,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -38,7 +37,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -58,7 +57,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -78,7 +77,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -98,7 +97,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -118,11 +117,11 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            emit(ResultStatus.netwrok("600", null))
         }
     }
 
@@ -138,7 +137,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -178,7 +177,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -198,7 +197,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -218,7 +217,7 @@ class NetworkRepository {
                     }
                 }
                 else -> {
-                    emit(ResultStatus.error("Не известная ошибка"))
+                    emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
@@ -234,7 +233,7 @@ class NetworkRepository {
                     if (response.body() != null) {
                         emit(ResultStatus.success(response.body()))
                     } else {
-                        emit(ResultStatus.error("Запрос прошел успешно"))
+                        emit(ResultStatus.error(response.code().toString()))
                     }
                 }
                 else -> {

@@ -20,7 +20,6 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
-import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -59,16 +58,20 @@ class NumberActivity : AppCompatActivity() {
                                 initVisibilities()
                             }
                         } else {
-                            initVisibilities()
                             AppPreferences.number = number_phone.text.toString()
                             initBottomSheet(data.result.id!!)
+                            initVisibilities()
                         }
                     }
                     Status.ERROR -> {
-                        loadingMistake(this)
-                        number_no_connection.visibility = View.GONE
-                        number_layout.visibility = View.VISIBLE
-
+                        if (msg == "409"){
+                            initBusyBottomSheet()
+                            initVisibilities()
+                        }else{
+                            loadingMistake(this)
+                            number_no_connection.visibility = View.GONE
+                            number_layout.visibility = View.VISIBLE
+                        }
                     }
                     Status.NETWORK ->{
                         number_no_connection.visibility = View.VISIBLE
@@ -111,27 +114,24 @@ class NumberActivity : AppCompatActivity() {
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
-            getListCountry()
             if (numberCharacters != 0){
                 initResult()
+            }else{
+                getListCountry()
             }
-
-            no_connection_repeat.setOnClickListener {
-                initResult()
-            }
+        }
 
             access_restricted.setOnClickListener {
-                initResult()
+                getListCountry()
             }
 
-            not_found.setOnClickListener {
-                initResult()
+             not_found.setOnClickListener {
+                getListCountry()
             }
 
             technical_work.setOnClickListener {
-                initResult()
+                getListCountry()
             }
-        }
 
         number_next.setOnClickListener {
             if (validate()) {
@@ -163,14 +163,17 @@ class NumberActivity : AppCompatActivity() {
                         initVisibilities()
                     }else{
                         if (data.error.code == 403){
+                            number_no_connection.visibility = View.GONE
                             number_access_restricted.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
                         }else if (data.error.code == 500){
+                            number_no_connection.visibility = View.GONE
                             number_technical_work.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
                         }else if (data.error.code == 404){
+                            number_no_connection.visibility = View.GONE
                             number_not_found.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
@@ -181,14 +184,17 @@ class NumberActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404"){
+                        number_no_connection.visibility = View.GONE
                         number_not_found.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 
                     }else if (msg == "500"){
+                        number_no_connection.visibility = View.GONE
                         number_technical_work.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 
                     }else if (msg == "403"){
+                        number_no_connection.visibility = View.GONE
                         number_access_restricted.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 

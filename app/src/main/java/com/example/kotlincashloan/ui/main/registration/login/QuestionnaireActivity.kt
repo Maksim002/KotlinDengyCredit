@@ -61,23 +61,48 @@ class QuestionnaireActivity : AppCompatActivity() {
         }
 
         no_connection_repeat.setOnClickListener {
-            initResult()
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
         }
 
         access_restricted.setOnClickListener {
-            initResult()
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
         }
 
         not_found.setOnClickListener {
-            initResult()
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
         }
 
         technical_work.setOnClickListener {
-            initResult()
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
         }
     }
 
     private fun initResult() {
+        MainActivity.alert.show()
         val map = mutableMapOf<String, String>()
         map["last_name"] = questionnaire_text_surnames.text.toString()
         map["first_name"] = questionnaire_text_name.text.toString()
@@ -95,7 +120,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         map["question"] = listSecretQuestionId.toString()
         map["response"] = questionnaire_secret_response.text.toString()
         map["sms_code"] = AppPreferences.receivedSms.toString()
-        MainActivity.alert.show()
+
         viewModel.questionnaire(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -104,7 +129,9 @@ class QuestionnaireActivity : AppCompatActivity() {
                         if (data!!.result == null) {
                             if (data.error.code != 409) {
                                 loadingMistake(this)
-                            } else {
+                            }else if (data.error.code == 401){
+                                initAuthorized()
+                            }else {
                                 initBusyBottomSheet()
                                 initVisibilities()
                             }
@@ -114,8 +141,15 @@ class QuestionnaireActivity : AppCompatActivity() {
                         }
                     }
                     Status.ERROR -> {
-                        loadingMistake(this)
+                        if (msg == "401"){
+                            initAuthorized()
+                        }else{
+                            questionnaire_layout.visibility = View.VISIBLE
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            loadingMistake(this)
+                        }
                     }
+
                     Status.NETWORK -> {
                         questionnaire_no_questionnaire.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
@@ -207,14 +241,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                         list = data.result
                     }else{
                         if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 500){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
@@ -225,14 +262,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     }else if (msg == "500"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     }else if (msg == "403"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
@@ -245,7 +285,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                     questionnaire_layout.visibility = View.GONE
                 }
             }
-            MainActivity.alert.show()
+            MainActivity.alert.hide()
         })
         questionnaire_id_sxs.keyListener = null
         questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
@@ -284,14 +324,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                         list = data.result
                     } else {
                         if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 500){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
@@ -302,24 +345,30 @@ class QuestionnaireActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "500") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "403") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "401") {
                         initAuthorized()
+
                     }
                 }
                 Status.NETWORK -> {
-                    questionnaire_no_questionnaire.visibility = View.VISIBLE
-                    questionnaire_layout.visibility = View.GONE
+                    if (msg == "600"){
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
                 }
             }
             MainActivity.alert.hide()
@@ -366,14 +415,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                         list = data.result
                     }else{
                         if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 500){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
@@ -384,14 +436,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "500") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "403") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 

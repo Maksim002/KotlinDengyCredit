@@ -45,7 +45,6 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         }
 
         number_next.setOnClickListener {
-            if (validate()) {
                 val map = HashMap<String, Int>()
                 map.put("id", idPhone)
                 map.put("code", number_text_sms.text.toString().toInt())
@@ -75,24 +74,11 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                         }
                     }
                 })
-            }
         }
     }
 
     override fun onStart() {
         super.onStart()
         number_incorrect.visibility = View.GONE
-    }
-
-    private fun validate(): Boolean {
-        var valid = true
-        if (number_text_sms.text!!.toString().length != 4) {
-            number_text_sms.error = "Введите валидный sms"
-            valid = false
-        } else {
-            number_text_sms.error = null
-        }
-
-        return valid
     }
 }

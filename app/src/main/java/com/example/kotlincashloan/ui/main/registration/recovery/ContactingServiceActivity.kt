@@ -47,19 +47,30 @@ class ContactingServiceActivity : AppCompatActivity() {
 
     private fun iniClick() {
         no_connection_repeat.setOnClickListener {
-            initResult()
+            if (typeId != 0){
+                initResult()
+            }else{
+                getListCountry()
+            }
         }
 
         access_restricted.setOnClickListener {
-            initResult()
+            if (typeId != 0){
+                getListCountry()
+            }
         }
 
         not_found.setOnClickListener {
-            initResult()
+            if (typeId != 0){
+                getListCountry()
+            }
+
         }
 
         technical_work.setOnClickListener {
-            initResult()
+            if (typeId != 0){
+                getListCountry()
+            }
         }
 
         password_recovery_send.setOnClickListener {
@@ -86,6 +97,8 @@ class ContactingServiceActivity : AppCompatActivity() {
                     if (data!!.result != null) {
                         if (data.error.code != 409) {
                             loadingMistake(this)
+                        }else if (data.error.code == 401){
+                            initAuthorized()
                         }else{
                             initBottomSheet()
                             initVisibilities()
@@ -95,7 +108,11 @@ class ContactingServiceActivity : AppCompatActivity() {
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "401"){
+                        initAuthorized()
+                    }else{
+                        loadingMistake(this)
+                    }
                 }
                 Status.NETWORK -> {
                     password_no_questionnaire.visibility = View.VISIBLE
@@ -104,6 +121,11 @@ class ContactingServiceActivity : AppCompatActivity() {
             }
             MainActivity.alert.hide()
         })
+    }
+
+    private fun initAuthorized(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun initBottomSheet() {
@@ -148,6 +170,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                         initVisibilities()
                     }else{
                         if (data.error.code == 403){
+                            password_no_questionnaire.visibility = View.GONE
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
@@ -155,6 +178,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                             loadingMistake(this)
 
                         }else if (data.error.code == 404){
+                            password_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
@@ -165,6 +189,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     if (msg == "404") {
+                        password_no_questionnaire.visibility = View.GONE
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
@@ -172,6 +197,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                         loadingMistake(this)
 
                     } else if (msg == "403") {
+                        password_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
@@ -218,11 +244,6 @@ class ContactingServiceActivity : AppCompatActivity() {
             } catch (e: Exception) {
             }
         }
-    }
-
-    private fun initAuthorized(){
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
     }
 
     fun initVisibilities(){
