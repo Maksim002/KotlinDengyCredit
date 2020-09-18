@@ -2,6 +2,7 @@ package com.example.kotlinscreenscanner.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -22,9 +23,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -56,6 +55,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
+                questionnaire_enter.isEnabled = false
                 initResult()
             }
         }
@@ -102,7 +102,6 @@ class QuestionnaireActivity : AppCompatActivity() {
     }
 
     private fun initResult() {
-        MainActivity.alert.show()
         val map = mutableMapOf<String, String>()
         map["last_name"] = questionnaire_text_surnames.text.toString()
         map["first_name"] = questionnaire_text_name.text.toString()
@@ -120,7 +119,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         map["question"] = listSecretQuestionId.toString()
         map["response"] = questionnaire_secret_response.text.toString()
         map["sms_code"] = AppPreferences.receivedSms.toString()
-
+        MainActivity.alert.show()
         viewModel.questionnaire(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -128,22 +127,38 @@ class QuestionnaireActivity : AppCompatActivity() {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
                             if (data.error.code != 409) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
                             }else if (data.error.code == 401){
                                 initAuthorized()
-                            }else {
+                            }else if (data.error.code == 400 || data.error.code == 500){
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            }
+                            else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
                                 initBusyBottomSheet()
                                 initVisibilities()
                             }
                         } else {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
                             initBottomSheet()
                             initVisibilities()
                         }
                     }
                     Status.ERROR -> {
-                        if (msg == "401"){
+                        if (msg == "401") {
                             initAuthorized()
-                        }else{
+                        } else if (msg == "409") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        } else {
+                            // Предотврощение 2 нажатия
                             questionnaire_layout.visibility = View.VISIBLE
                             questionnaire_no_questionnaire.visibility = View.GONE
                             loadingMistake(this)
@@ -155,8 +170,9 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_layout.visibility = View.GONE
                     }
                 }
+            questionnaire_enter.isEnabled = true
+            MainActivity.alert.hide()
             })
-        MainActivity.alert.hide()
     }
 
     fun initVisibilities(){
@@ -245,7 +261,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
+                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
@@ -266,7 +282,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    }else if (msg == "500"){
+                    }else if (msg == "500" || msg == "400" || msg == "409"){
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
@@ -328,7 +344,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
+                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
@@ -349,7 +365,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500") {
+                    } else if (msg == "500" || msg == "400" || msg == "409") {
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
@@ -419,7 +435,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
+                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
@@ -440,7 +456,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500") {
+                    } else if (msg == "500" || msg == "400" || msg == "409") {
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_technical_work.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE

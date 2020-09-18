@@ -99,7 +99,11 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                             main_incorrect.visibility = View.VISIBLE
                             main_no_connection.visibility = View.GONE
                             main_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
                         }else{
+                            main_no_connection.visibility = View.GONE
+                            main_layout.visibility = View.VISIBLE
+                            main_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
                         }
                     } else {
@@ -131,10 +135,12 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                     }
                 }
                 Status.ERROR -> {
+                    main_no_connection.visibility = View.GONE
+                    main_layout.visibility = View.VISIBLE
+                    main_incorrect.visibility = View.VISIBLE
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    main_no_connection.visibility = View.GONE
                     main_no_connection.visibility = View.VISIBLE
                     main_layout.visibility = View.GONE
                 }

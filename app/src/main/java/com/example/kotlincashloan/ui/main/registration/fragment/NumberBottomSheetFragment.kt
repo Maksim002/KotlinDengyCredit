@@ -1,6 +1,5 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,13 +11,11 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.number_next
@@ -47,18 +44,21 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         number_next.setOnClickListener {
                 val map = HashMap<String, Int>()
                 map.put("id", idPhone)
-                map.put("code", number_text_sms.text.toString().toInt())
+                if (number_text_sms.text.isNotEmpty()){
+                    map.put("code", number_text_sms.text.toString().toInt())
+                }
+            if (validate()) {
                 viewModel.smsConfirmation(map).observe(viewLifecycleOwner, Observer { result ->
                     val msg = result.msg
                     val data = result.data
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                    if (data.error.code == 400) {
-                                        number_incorrect.visibility = View.VISIBLE
-                                    } else {
-                                        loadingMistake(activity as AppCompatActivity)
-                                    }
+                                if (data.error.code == 400 || data.error.code == 500) {
+                                    number_incorrect.visibility = View.VISIBLE
+                                } else {
+                                    loadingMistake(activity as AppCompatActivity)
+                                }
                             } else {
                                 number_incorrect.visibility = View.GONE
                                 AppPreferences.receivedSms = number_text_sms.text.toString()
@@ -66,7 +66,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                                 startActivity(intent)
                             }
                         }
-                        Status.ERROR ->{
+                        Status.ERROR -> {
                             loadingMistake(activity as AppCompatActivity)
                         }
                         Status.NETWORK -> {
@@ -74,11 +74,23 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                         }
                     }
                 })
+            }
         }
     }
 
     override fun onStart() {
         super.onStart()
         number_incorrect.visibility = View.GONE
+    }
+
+    private fun validate(): Boolean {
+        var valid = true
+        if (number_text_sms.text.toString().isEmpty()) {
+            number_text_sms.error = "Заполните поле"
+            number_incorrect.visibility = View.GONE
+            valid = false
+        }
+        return valid
+
     }
 }

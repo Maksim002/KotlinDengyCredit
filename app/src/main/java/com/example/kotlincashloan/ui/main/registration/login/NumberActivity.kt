@@ -51,9 +51,19 @@ class NumberActivity : AppCompatActivity() {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code != 409){
+                            if (data.error.code == 500 || data.error.code == 400){
+                                number_no_connection.visibility = View.GONE
+                                number_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
+                            }else if (data.error.code != 409){
+                                number_no_connection.visibility = View.GONE
+                                number_layout.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            }else if (data.error.code == 401){
+                                initAuthorized()
                             }else{
+                                number_no_connection.visibility = View.GONE
+                                number_layout.visibility = View.VISIBLE
                                 initBusyBottomSheet()
                                 initVisibilities()
                             }
@@ -67,7 +77,9 @@ class NumberActivity : AppCompatActivity() {
                         if (msg == "409"){
                             initBusyBottomSheet()
                             initVisibilities()
-                        }else{
+                        }else if(msg == "401"){
+                            initAuthorized()
+                        } else{
                             loadingMistake(this)
                             number_no_connection.visibility = View.GONE
                             number_layout.visibility = View.VISIBLE
@@ -167,11 +179,6 @@ class NumberActivity : AppCompatActivity() {
                             number_access_restricted.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
-                            number_no_connection.visibility = View.GONE
-                            number_technical_work.visibility = View.VISIBLE
-                            number_layout.visibility = View.GONE
-
                         }else if (data.error.code == 404){
                             number_no_connection.visibility = View.GONE
                             number_not_found.visibility = View.VISIBLE
@@ -179,6 +186,10 @@ class NumberActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            number_no_connection.visibility = View.GONE
+                            number_technical_work.visibility = View.VISIBLE
+                            number_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -188,11 +199,6 @@ class NumberActivity : AppCompatActivity() {
                         number_not_found.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 
-                    }else if (msg == "500"){
-                        number_no_connection.visibility = View.GONE
-                        number_technical_work.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-
                     }else if (msg == "403"){
                         number_no_connection.visibility = View.GONE
                         number_access_restricted.visibility = View.VISIBLE
@@ -200,6 +206,10 @@ class NumberActivity : AppCompatActivity() {
 
                     }else if (msg == "401"){
                         initAuthorized()
+                    } else{
+                        number_no_connection.visibility = View.GONE
+                        number_technical_work.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {

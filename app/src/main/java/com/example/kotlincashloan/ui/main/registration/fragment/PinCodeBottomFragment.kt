@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
 import java.util.HashMap
 
@@ -54,7 +55,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                 val secondNumber = bottom_sheet_repeat_code.text.toString()
                 if (AppPreferences.savePin!!.isNotEmpty()) {
                     if (numberOne == AppPreferences.savePin && secondNumber == AppPreferences.savePin) {
-                        initTransition()
+                        initRequest(numberOne, secondNumber)
                     }
                 } else {
                     initRequest(numberOne, secondNumber)
@@ -76,7 +77,11 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            loadingMistake(activity as AppCompatActivity)
+                            if (data.error.code == 400 || data.error.code == 500){
+                                loadingMistake(activity as AppCompatActivity)
+                            }else{
+                                loadingMistake(activity as AppCompatActivity)
+                            }
                         } else {
                             AppPreferences.token = data.result.token
                             initTransition()
