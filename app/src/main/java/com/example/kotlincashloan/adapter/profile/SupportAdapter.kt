@@ -10,6 +10,7 @@ import com.timelysoft.tsjdomcom.common.GenericRecyclerAdapter
 import com.timelysoft.tsjdomcom.common.ViewHolder
 import kotlinx.android.synthetic.main.item_support.view.*
 
+
 class SupportAdapter(item: ArrayList<ListFaqResultModel> = arrayListOf()) :
     GenericRecyclerAdapter<ListFaqResultModel>(item) {
     var selectedItem: Int = -1
@@ -18,6 +19,7 @@ class SupportAdapter(item: ArrayList<ListFaqResultModel> = arrayListOf()) :
     override fun bind(item: ListFaqResultModel, holder: ViewHolder) {
         holder.itemView.support_name.text = item.name
         holder.itemView.support_text.setMarkDownText(item.text)
+        holder.itemView.support_text.getSettings().loadWithOverviewMode = true
 
         if (selectedItem == prev) {
             if (holder.itemView.support_text.visibility == View.VISIBLE) {

@@ -1,11 +1,11 @@
 package com.example.kotlincashloan.ui.main.registration.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -25,7 +25,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_no_connection.*
-import java.util.HashMap
+import java.util.*
 import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity(), PintCodeBottomListener,

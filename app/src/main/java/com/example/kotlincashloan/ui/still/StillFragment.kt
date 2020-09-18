@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.still
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_still.*
 
 class StillFragment : Fragment() {
 
@@ -21,5 +25,13 @@ class StillFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
+        initClick()
+    }
+
+    private fun initClick() {
+        still_exit.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
