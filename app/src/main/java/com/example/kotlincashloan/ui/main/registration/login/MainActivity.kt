@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result == null) {
-                        if (data.error.code == 400 || data.error.code == 500){
+                        if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
                             main_incorrect.visibility = View.VISIBLE
                             main_no_connection.visibility = View.GONE
                             main_layout.visibility = View.VISIBLE

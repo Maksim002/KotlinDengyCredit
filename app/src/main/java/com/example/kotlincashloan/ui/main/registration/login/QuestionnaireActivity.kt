@@ -261,11 +261,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_technical_work.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-
                         }else if (data.error.code == 404){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
@@ -273,6 +268,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -282,11 +281,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    }else if (msg == "500" || msg == "400" || msg == "409"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
                     }else if (msg == "403"){
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
@@ -294,6 +288,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                     }else if (msg == "401"){
                         initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {
@@ -344,11 +342,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_technical_work.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-
                         }else if (data.error.code == 404){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
@@ -356,6 +349,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -365,11 +362,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500" || msg == "400" || msg == "409") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
                     } else if (msg == "403") {
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
@@ -377,7 +369,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
-
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {
@@ -435,11 +430,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500 || data.error.code == 400 || data.error.code == 409){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_technical_work.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-
                         }else if (data.error.code == 404){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
@@ -447,6 +437,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -456,11 +450,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500" || msg == "400" || msg == "409") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
                     } else if (msg == "403") {
                         questionnaire_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
@@ -468,6 +457,10 @@ class QuestionnaireActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {

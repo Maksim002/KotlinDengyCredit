@@ -171,11 +171,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                             recovery_access_restricted.visibility = View.VISIBLE
                             password_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500 || data.error.code == 400){
-                            recovery_no_questionnaire.visibility = View.GONE
-                            recovery_technical_work.visibility = View.VISIBLE
-                            password_layout.visibility = View.GONE
-
                         }else if (data.error.code == 404){
                             recovery_no_questionnaire.visibility = View.GONE
                             recovery_not_found.visibility = View.VISIBLE
@@ -183,6 +178,10 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            recovery_no_questionnaire.visibility = View.GONE
+                            recovery_technical_work.visibility = View.VISIBLE
+                            password_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -192,11 +191,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                         recovery_not_found.visibility = View.VISIBLE
                         password_layout.visibility = View.GONE
 
-                    }else if (msg == "500" || msg == "400"){
-                        recovery_no_questionnaire.visibility = View.GONE
-                        recovery_technical_work.visibility = View.VISIBLE
-                        password_layout.visibility = View.GONE
-
                     }else if (msg == "403"){
                         recovery_no_questionnaire.visibility = View.GONE
                         recovery_access_restricted.visibility = View.VISIBLE
@@ -204,6 +198,10 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
                     }else if (msg == "401"){
                         initAuthorized()
+                    }else{
+                        recovery_no_questionnaire.visibility = View.GONE
+                        recovery_technical_work.visibility = View.VISIBLE
+                        password_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {

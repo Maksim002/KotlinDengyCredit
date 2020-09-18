@@ -94,16 +94,22 @@ class ContactingServiceActivity : AppCompatActivity() {
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        if (data.error.code != 409) {
+                    if (data!!.result == null) {
+                        if (data.error.code == 409 || data.error.code == 500 || data.error.code == 400) {
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                             loadingMistake(this)
                         }else if (data.error.code == 401){
                             initAuthorized()
                         }else{
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                             initBottomSheet()
                             initVisibilities()
                         }
                     } else {
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                         initBottomSheetMistake()
                     }
                 }
@@ -111,6 +117,8 @@ class ContactingServiceActivity : AppCompatActivity() {
                     if (msg == "401"){
                         initAuthorized()
                     }else{
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                         loadingMistake(this)
                     }
                 }
@@ -174,9 +182,6 @@ class ContactingServiceActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
-                            loadingMistake(this)
-
                         }else if (data.error.code == 404){
                             password_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
@@ -184,6 +189,8 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            loadingMistake(this)
                         }
                     }
                 }
@@ -193,16 +200,15 @@ class ContactingServiceActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500") {
-                        loadingMistake(this)
-
-                    } else if (msg == "403") {
+                    }else if (msg == "403") {
                         password_no_questionnaire.visibility = View.GONE
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "401") {
                         initAuthorized()
+                    }else{
+                        loadingMistake(this)
                     }
                 }
                 Status.NETWORK -> {
@@ -273,15 +279,14 @@ class ContactingServiceActivity : AppCompatActivity() {
                             questionnaire_access_restricted.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
-                            loadingMistake(this)
-
                         }else if (data.error.code == 404){
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                        }else{
+                            loadingMistake(this)
                         }
                     }
                 }
@@ -290,15 +295,14 @@ class ContactingServiceActivity : AppCompatActivity() {
                         questionnaire_not_found.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
-                    } else if (msg == "500") {
-                        loadingMistake(this)
-
-                    } else if (msg == "403") {
+                    }else if (msg == "403") {
                         questionnaire_access_restricted.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
 
                     } else if (msg == "401") {
                         initAuthorized()
+                    }else{
+                        loadingMistake(this)
                     }
                 }
                 Status.NETWORK -> {

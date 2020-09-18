@@ -42,9 +42,9 @@ class NumberActivity : AppCompatActivity() {
     }
 
     private fun initResult() {
-            MainActivity.alert.show()
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
+        MainActivity.alert.show()
             viewModel.numberPhones(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
