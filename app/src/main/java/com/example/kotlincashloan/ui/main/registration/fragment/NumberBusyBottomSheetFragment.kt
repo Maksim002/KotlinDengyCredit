@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlincashloan.ui.main.registration.recovery.ContactingServiceActivity
 import com.example.kotlincashloan.ui.main.registration.recovery.PasswordRecoveryActivity
 import com.example.myapplication.LoginViewModel
@@ -39,8 +40,10 @@ class NumberBusyBottomSheetFragment() : BottomSheetDialogFragment() {
         }
 
         number_busy_support.setOnClickListener {
+            MainActivity.alert.show()
             val intent = Intent(context, ContactingServiceActivity::class.java)
             startActivity(intent)
+            MainActivity.alert.hide()
         }
     }
 }
