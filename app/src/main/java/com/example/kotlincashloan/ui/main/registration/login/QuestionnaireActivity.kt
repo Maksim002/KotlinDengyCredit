@@ -132,7 +132,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                                 loadingMistake(this)
                             }else if (data.error.code == 401){
                                 initAuthorized()
-                            }else if (data.error.code == 400 || data.error.code == 500){
+                            }else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403){
                                 questionnaire_no_questionnaire.visibility = View.GONE
                                 questionnaire_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
@@ -158,7 +158,6 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_layout.visibility = View.VISIBLE
                             loadingMistake(this)
                         } else {
-                            // Предотврощение 2 нажатия
                             questionnaire_layout.visibility = View.VISIBLE
                             questionnaire_no_questionnaire.visibility = View.GONE
                             loadingMistake(this)
@@ -168,6 +167,9 @@ class QuestionnaireActivity : AppCompatActivity() {
                     Status.NETWORK -> {
                         questionnaire_no_questionnaire.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
                     }
                 }
             questionnaire_enter.isEnabled = true
@@ -297,6 +299,9 @@ class QuestionnaireActivity : AppCompatActivity() {
                 Status.NETWORK -> {
                     questionnaire_no_questionnaire.visibility = View.VISIBLE
                     questionnaire_layout.visibility = View.GONE
+                    questionnaire_technical_work.visibility = View.GONE
+                    questionnaire_not_found.visibility = View.GONE
+                    questionnaire_access_restricted.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()
@@ -379,6 +384,12 @@ class QuestionnaireActivity : AppCompatActivity() {
                     if (msg == "600"){
                         questionnaire_no_questionnaire.visibility = View.VISIBLE
                         questionnaire_layout.visibility = View.GONE
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
                     }
                 }
             }

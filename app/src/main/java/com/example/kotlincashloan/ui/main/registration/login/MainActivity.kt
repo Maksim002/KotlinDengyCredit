@@ -90,17 +90,20 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
         map.put("login", main_text_login.text.toString())
         alert.show()
         viewModel.auth(map).observe(this, Observer { result ->
-            val msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result == null) {
-                        if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
+                        if (data.error.code == 500 || data.error.code == 409){
                             main_incorrect.visibility = View.VISIBLE
                             main_no_connection.visibility = View.GONE
                             main_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        }else if (data.error.code == 400){
+                            main_incorrect.visibility = View.VISIBLE
+                            main_no_connection.visibility = View.GONE
+                            main_layout.visibility = View.VISIBLE
+                        }else {
                             main_no_connection.visibility = View.GONE
                             main_layout.visibility = View.VISIBLE
                             main_incorrect.visibility = View.VISIBLE

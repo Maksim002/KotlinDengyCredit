@@ -1,5 +1,7 @@
 package com.timelysoft.tsjdomcom.service
 
+
+import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -58,7 +60,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("listSupportType?token=oYyxhIFgJjAb")
+    @POST("error400?token=oYyxhIFgJjAb")
     suspend fun listSupportType(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<ListSupportTypeResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
@@ -70,5 +72,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listFaq?token=oYyxhIFgJjAb")
     suspend fun listFaq(@FieldMap params: Map<String, String>): Response<CommonResponse<ArrayList<ListFaqResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFaq?token=oYyxhIFgJjAb")
+    suspend fun listNews(@FieldMap params: Map<String, String>): Response<CommonResponse<ArrayList<ListNewsResultModel>>>
 }
 

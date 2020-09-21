@@ -95,27 +95,31 @@ class ContactingServiceActivity : AppCompatActivity() {
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result == null) {
-                        if (data.error.code == 409 || data.error.code == 500 || data.error.code == 400) {
+                        if (data.error.code == 500 || data.error.code == 400) {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else if (data.error.code == 401){
-                            initAuthorized()
-                        }else{
+                        }else if (data.error.code == 409){
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            initBottomSheet()
-                            initVisibilities()
+                            initBottomSheetMistake()
+                        } else if (data.error.code == 401){
+                            initAuthorized()
                         }
-                    } else {
+                    }else {
                         password_no_questionnaire.visibility = View.GONE
                         contacting_layout.visibility = View.VISIBLE
-                        initBottomSheetMistake()
+                        initBottomSheet()
+                        initVisibilities()
                     }
                 }
                 Status.ERROR -> {
                     if (msg == "401"){
                         initAuthorized()
+                    }else if(msg == "500" || msg == "400"){
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
+                        loadingMistake(this)
                     }else{
                         password_no_questionnaire.visibility = View.GONE
                         contacting_layout.visibility = View.VISIBLE
@@ -125,6 +129,8 @@ class ContactingServiceActivity : AppCompatActivity() {
                 Status.NETWORK -> {
                     password_no_questionnaire.visibility = View.VISIBLE
                     contacting_layout.visibility = View.GONE
+                    questionnaire_access_restricted.visibility = View.GONE
+                    questionnaire_not_found.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()
@@ -189,8 +195,12 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                         }else{
                             loadingMistake(this)
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -207,13 +217,19 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                     }else{
                         loadingMistake(this)
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                     }
                 }
                 Status.NETWORK -> {
                     password_no_questionnaire.visibility = View.VISIBLE
                     contacting_layout.visibility = View.GONE
+                    questionnaire_access_restricted.visibility = View.GONE
+                    questionnaire_not_found.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()
@@ -285,8 +301,12 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                         }else{
                             loadingMistake(this)
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -301,12 +321,19 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                     }else{
                         loadingMistake(this)
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
                     }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    password_no_questionnaire.visibility = View.VISIBLE
+                    contacting_layout.visibility = View.GONE
+                    questionnaire_access_restricted.visibility = View.GONE
+                    questionnaire_not_found.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()

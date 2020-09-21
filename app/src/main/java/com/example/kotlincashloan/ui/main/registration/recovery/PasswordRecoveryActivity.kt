@@ -84,8 +84,12 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                         if (data.error.code == 404){
                             initBusyBottomSheetError()
                             initVisibilities()
-                        }else if (data.error.code == 400 || data.error.code == 500){
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }else{
                             loadingMistake(this)
+                            recovery_no_questionnaire.visibility = View.GONE
+                            password_layout.visibility = View.VISIBLE
                         }
                     } else {
                         initBusyBottomSheet()
@@ -93,7 +97,17 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404"){
+                        initBusyBottomSheetError()
+                        initVisibilities()
+                    }else if (msg == "401"){
+                        initAuthorized()
+                    }
+                    else{
+                        recovery_no_questionnaire.visibility = View.GONE
+                        password_layout.visibility = View.VISIBLE
+                        loadingMistake(this)
+                    }
                 }
                 Status.NETWORK -> {
                     recovery_no_questionnaire.visibility = View.VISIBLE

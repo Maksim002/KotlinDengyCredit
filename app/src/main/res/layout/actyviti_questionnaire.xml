@@ -7,6 +7,16 @@
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/questionnaire_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteColor"
+        android:theme="@style/ToolBarStyle"
+        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/questionnaire_layout"
         android:layout_width="match_parent"
@@ -18,16 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/questionnaire_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/whiteColor"
-            android:theme="@style/ToolBarStyle"
-            app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
 
         <LinearLayout
             android:layout_width="match_parent"

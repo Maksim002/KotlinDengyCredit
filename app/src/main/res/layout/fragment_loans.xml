@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".ui.Loans.LoansFragment">
+
+    <LinearLayout
+        android:id="@+id/loans_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="vertical"
+        android:padding="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +73,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="8dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -145,7 +161,7 @@
        <LinearLayout
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:padding="16dp"
+           android:padding="13dp"
            android:gravity="center"
            android:background="@color/orangeColor"
            android:orientation="horizontal">
@@ -226,4 +242,109 @@
                 android:text="Параллельный заём"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/layout_top"
+        android:background="@drawable/layout_bg">
+
+        <TextView
+            android:id="@+id/text_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Следующее погашение:"
+            android:textColor="@color/whiteColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_internal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_center">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_currency_white"
+                    android:drawablePadding="5dp"
+                    android:text="5 000 "
+                    android:textColor="@color/whiteColor"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:src="@drawable/ic_trait" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="01.08.20"
+                android:textColor="@color/whiteColor"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:background="@drawable/layout_bg_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/layout_internal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/loans_recycler"
+                android:layout_width="match_parent"
+                android:layout_marginTop="25dp"
+                android:background="@color/whiteColor"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <include layout="@layout/item_no_connection"
+            android:id="@+id/loans_no_connection"
+            android:visibility="gone"/>
+
+        <include layout="@layout/item_access_restricted"
+            android:id="@+id/loans_access_restricted"
+            android:visibility="gone"/>
+
+        <include layout="@layout/item_not_found"
+            android:id="@+id/loans_not_found"
+            android:visibility="gone"/>
+
+        <include layout="@layout/item_technical_work"
+            android:id="@+id/loans_technical_work"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

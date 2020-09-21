@@ -44,27 +44,25 @@ class NumberActivity : AppCompatActivity() {
     private fun initResult() {
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
-        MainActivity.alert.show()
+            MainActivity.alert.show()
             viewModel.numberPhones(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 400){
-                                number_no_connection.visibility = View.GONE
-                                number_layout.visibility = View.VISIBLE
-                                loadingMistake(this)
-                            }else if (data.error.code != 409){
+                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404){
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
                             }else if (data.error.code == 401){
                                 initAuthorized()
-                            }else{
+                            }else if (data.error.code == 409){
+                                initBusyBottomSheet()
+                                initVisibilities()
+                            } else{
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.VISIBLE
-                                initBusyBottomSheet()
                                 initVisibilities()
                             }
                         } else {
@@ -74,11 +72,15 @@ class NumberActivity : AppCompatActivity() {
                         }
                     }
                     Status.ERROR -> {
-                        if (msg == "409"){
-                            initBusyBottomSheet()
+                        if (msg == "500" || msg == "400" || msg == "404"){
+                            number_layout.visibility = View.GONE
                             initVisibilities()
+                            loadingMistake(this)
                         }else if(msg == "401"){
                             initAuthorized()
+                        }else if (msg == "409"){
+                            initBusyBottomSheet()
+                            initVisibilities()
                         } else{
                             loadingMistake(this)
                             number_no_connection.visibility = View.GONE
