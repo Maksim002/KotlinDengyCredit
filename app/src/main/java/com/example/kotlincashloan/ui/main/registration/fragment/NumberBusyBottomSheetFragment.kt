@@ -16,7 +16,6 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_number_busy_bottom_sheet.*
 
 class NumberBusyBottomSheetFragment() : BottomSheetDialogFragment() {
-    private var viewModel = LoginViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,23 +33,17 @@ class NumberBusyBottomSheetFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         number_busy_esc.setOnClickListener {
-            MainActivity.alert.show()
             this.dismiss()
-            MainActivity.alert.hide()
         }
 
         number_busy_password.setOnClickListener {
-            MainActivity.alert.show()
             val intent = Intent(context, PasswordRecoveryActivity::class.java)
             startActivity(intent)
-            MainActivity.alert.hide()
         }
 
         number_busy_support.setOnClickListener {
-            MainActivity.alert.show()
             val intent = Intent(context, ContactingServiceActivity::class.java)
             startActivity(intent)
-            MainActivity.alert.hide()
         }
     }
 }

@@ -75,7 +75,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("listFaq?token=oYyxhIFgJjAb")
+    @POST("listNews?token=oYyxhIFgJjAb")
     suspend fun listNews(@FieldMap params: Map<String, String>): Response<CommonResponse<ArrayList<ListNewsResultModel>>>
 }
 

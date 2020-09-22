@@ -72,7 +72,7 @@ class SupportFragment : Fragment(){
                             layout_access_restricted.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
 
-                        }else if (data.error.code == 500){
+                        }else if (data.error.code == 500 || data.error.code == 400){
                             support_technical_work.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
 
@@ -85,7 +85,6 @@ class SupportFragment : Fragment(){
                     }
 
                     if (data.result != null){
-//                        data.result.addAll(data.result)
                         myAdapter.update(data.result)
                         profile_recycler.adapter = myAdapter
                         initVisibilities()
@@ -96,7 +95,7 @@ class SupportFragment : Fragment(){
                         support_not_found.visibility = View.VISIBLE
                         profile_recycler.visibility = View.GONE
 
-                    }else if (msg == "500"){
+                    }else if (msg == "500" || msg == "400"){
                         support_technical_work.visibility = View.VISIBLE
                         profile_recycler.visibility = View.GONE
 
@@ -112,6 +111,9 @@ class SupportFragment : Fragment(){
                 Status.NETWORK ->{
                     support_no_connection.visibility = View.VISIBLE
                     profile_recycler.visibility = View.GONE
+                    support_not_found.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()

@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
         map.put("login", main_text_login.text.toString())
         alert.show()
         viewModel.auth(map).observe(this, Observer { result ->
+            var msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
@@ -119,8 +120,13 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                             main_incorrect.visibility = View.GONE
                             initBottomSheet()
                         } else {
-                            main_incorrect.visibility = View.GONE
-                            startMainActivity()
+                            AppPreferences.token = data.result.token
+                            AppPreferences.login = data.result.login
+                            AppPreferences.password = main_text_password.text.toString()
+                            if (AppPreferences.token != null){
+                                main_incorrect.visibility = View.GONE
+                                startMainActivity()
+                            }
                         }
                         if (main_remember_username.isChecked) {
                             AppPreferences.isRemember = main_remember_username.isChecked

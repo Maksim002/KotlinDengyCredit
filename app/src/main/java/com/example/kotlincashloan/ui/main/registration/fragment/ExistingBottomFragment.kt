@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.ui.HomeActivity
@@ -26,7 +27,6 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
     private var viewModel = LoginViewModel()
     var currentPinInput = ""
     var initpin = ""
-    lateinit var activity: AppCompatActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,16 +118,32 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                loadingMistake(activity)
-                                Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
-                            } else {
+                                if (data.error.code == 401){
+                                    initAuthorized()
+                                }else{
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as  AppCompatActivity)
+                                }
+                            }else {
                                 AppPreferences.token = data.result.token
                                 val intent = Intent(context, HomeActivity::class.java)
                                 startActivity(intent)
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
-                            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                        Status.ERROR ->{
+                            if (msg == "401"){
+                                initAuthorized()
+                            }else{
+                                pin_verification_code.setText(initpin)
+                                currentPinInput = ""
+                                loadingMistake(activity as  AppCompatActivity)
+                            }
+                        }
+                        Status.NETWORK -> {
+                            pin_verification_code.setText(initpin)
+                            currentPinInput = ""
+                            loadingConnection(activity as  AppCompatActivity)
                         }
                     }
                     MainActivity.alert.hide()
@@ -138,5 +154,9 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                 existing_liner_anim.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake))
             }
         }
+    }
+
+    private fun initAuthorized(){
+        this.dismiss()
     }
 }

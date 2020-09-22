@@ -221,6 +221,9 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                 Status.NETWORK -> {
                     recovery_no_questionnaire.visibility = View.VISIBLE
                     password_layout.visibility = View.GONE
+                    recovery_technical_work.visibility = View.GONE
+                    recovery_not_found.visibility = View.GONE
+                    recovery_access_restricted.visibility = View.GONE
                 }
             }
             MainActivity.alert.hide()

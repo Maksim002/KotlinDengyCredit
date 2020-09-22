@@ -199,8 +199,6 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
-                            password_no_questionnaire.visibility = View.GONE
-                            contacting_layout.visibility = View.VISIBLE
                         }else{
                             loadingMistake(this)
                             password_no_questionnaire.visibility = View.GONE
@@ -221,8 +219,6 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
-                        password_no_questionnaire.visibility = View.GONE
-                        contacting_layout.visibility = View.VISIBLE
                     }else{
                         loadingMistake(this)
                         password_no_questionnaire.visibility = View.GONE
@@ -305,8 +301,6 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                         }else if (data.error.code == 401){
                             initAuthorized()
-                            password_no_questionnaire.visibility = View.GONE
-                            contacting_layout.visibility = View.VISIBLE
                         }else{
                             loadingMistake(this)
                             password_no_questionnaire.visibility = View.GONE
@@ -325,8 +319,6 @@ class ContactingServiceActivity : AppCompatActivity() {
 
                     } else if (msg == "401") {
                         initAuthorized()
-                        password_no_questionnaire.visibility = View.GONE
-                        contacting_layout.visibility = View.VISIBLE
                     }else{
                         loadingMistake(this)
                         password_no_questionnaire.visibility = View.GONE
