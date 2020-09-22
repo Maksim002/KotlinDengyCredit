@@ -161,7 +161,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            emit(ResultStatus.netwrok("600", null))
         }
     }
 

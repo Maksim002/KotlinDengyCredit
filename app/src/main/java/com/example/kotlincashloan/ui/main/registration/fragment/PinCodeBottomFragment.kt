@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
@@ -73,9 +74,12 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 400 || data.error.code == 500){
+                            if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
                                 loadingMistake(activity as AppCompatActivity)
-                            }else{
+                            }else if (data.error.code == 401){
+                                initAuthorized()
+                            }
+                            else{
                                 loadingMistake(activity as AppCompatActivity)
                             }
                         } else {
@@ -83,13 +87,27 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                             initTransition()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
-                        loadingMistake(activity as AppCompatActivity)
+                    Status.ERROR ->{
+                        if (msg == "400" || msg == "500" || msg == "409"){
+                            loadingMistake(activity as AppCompatActivity)
+                        }else if (msg == "401"){
+                            initTransition()
+                        }else{
+                            loadingMistake(activity as AppCompatActivity)
+                        }
+                    }
+                    Status.NETWORK -> {
+                        loadingConnection(activity as AppCompatActivity)
                     }
                 }
                 MainActivity.alert.hide()
             })
         }
+    }
+
+    private fun initAuthorized(){
+        val intent = Intent(context, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun initTransition() {

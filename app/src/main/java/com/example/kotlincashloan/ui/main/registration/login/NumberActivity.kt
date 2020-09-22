@@ -31,6 +31,8 @@ class NumberActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
 
+    val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number)
@@ -45,6 +47,7 @@ class NumberActivity : AppCompatActivity() {
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
             MainActivity.alert.show()
+            no_connection_repeat.isEnabled = false
             viewModel.numberPhones(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -93,6 +96,7 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 MainActivity.alert.hide()
+                no_connection_repeat.isEnabled = true
             })
     }
 
@@ -103,9 +107,8 @@ class NumberActivity : AppCompatActivity() {
     }
 
     private fun initBusyBottomSheet() {
-        val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
-        bottomSheetDialogFragment.isCancelable = false;
-        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+            bottomSheetDialogFragment.isCancelable = false;
+            bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     private fun initToolBar() {
@@ -215,8 +218,16 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 Status.NETWORK -> {
-                    number_no_connection.visibility = View.VISIBLE
-                    number_layout.visibility = View.GONE
+                    if (msg == "600"){
+                        number_no_connection.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
+                        number_access_restricted.visibility = View.GONE
+                        number_not_found.visibility = View.GONE
+                        number_technical_work.visibility = View.GONE
+                        if (bottomSheetDialogFragment.isResumed == true){
+                            bottomSheetDialogFragment.dismiss()
+                        }
+                    }
                 }
             }
             MainActivity.alert.hide()

@@ -60,7 +60,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("error400?token=oYyxhIFgJjAb")
+    @POST("listSupportType?token=oYyxhIFgJjAb")
     suspend fun listSupportType(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<ListSupportTypeResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")

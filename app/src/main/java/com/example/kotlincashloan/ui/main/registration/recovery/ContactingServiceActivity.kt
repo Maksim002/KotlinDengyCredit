@@ -116,7 +116,11 @@ class ContactingServiceActivity : AppCompatActivity() {
                 Status.ERROR -> {
                     if (msg == "401"){
                         initAuthorized()
-                    }else if(msg == "500" || msg == "400"){
+                    }else if (msg == "409"){
+                        password_no_questionnaire.visibility = View.GONE
+                        contacting_layout.visibility = View.VISIBLE
+                        initBottomSheetMistake()
+                    } else if(msg == "500" || msg == "400"){
                         password_no_questionnaire.visibility = View.GONE
                         contacting_layout.visibility = View.VISIBLE
                         loadingMistake(this)
