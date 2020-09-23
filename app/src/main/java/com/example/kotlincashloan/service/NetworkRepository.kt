@@ -264,4 +264,24 @@ class NetworkRepository {
             emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
         }
     }
+
+    fun getNews(map: Map<String, String>) = liveData(Dispatchers.IO) {
+        try {
+            val response = RetrofitService.apiService().getNews(map)
+            when {
+                response.isSuccessful -> {
+                    if (response.body() != null) {
+                        emit(ResultStatus.success(response.body()))
+                    } else {
+                        emit(ResultStatus.error(response.code().toString()))
+                    }
+                }
+                else -> {
+                    emit(ResultStatus.error(response.code().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+        }
+    }
 }

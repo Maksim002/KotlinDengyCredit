@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class ListNewsResultModel {
     @SerializedName("id")
-    var id: String? = null
+    var id: Int? = null
 
     @SerializedName("thumbnail")
     var thumbnail: String? = null

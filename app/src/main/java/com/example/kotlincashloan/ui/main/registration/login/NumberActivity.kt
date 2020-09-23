@@ -95,6 +95,7 @@ class NumberActivity : AppCompatActivity() {
                         number_layout.visibility = View.GONE
                     }
                 }
+                number_next.isEnabled = true
                 MainActivity.alert.hide()
                 no_connection_repeat.isEnabled = true
             })
@@ -152,6 +153,7 @@ class NumberActivity : AppCompatActivity() {
 
         number_next.setOnClickListener {
             if (validate()) {
+                number_next.isEnabled = false
                 initResult()
             }
         }

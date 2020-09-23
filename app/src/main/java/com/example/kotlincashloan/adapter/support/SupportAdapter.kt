@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.adapter.profile
+package com.example.kotlincashloan.adapter.support
 
 
 import android.view.View

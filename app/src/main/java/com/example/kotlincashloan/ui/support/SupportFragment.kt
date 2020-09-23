@@ -9,8 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.adapter.profile.SupportAdapter
-import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.ui.main.registration.login.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status

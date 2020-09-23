@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.adapter
+package com.example.kotlincashloan.adapter.loans
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +9,7 @@ import com.timelysoft.tsjdomcom.common.GenericRecyclerAdapter
 import com.timelysoft.tsjdomcom.common.ViewHolder
 import kotlinx.android.synthetic.main.item_loans.view.*
 
-class LoansAdapter (item: ArrayList<ListNewsResultModel> = arrayListOf()): GenericRecyclerAdapter<ListNewsResultModel>(item){
+class LoansAdapter (var listener: LoansListener, item: ArrayList<ListNewsResultModel> = arrayListOf()): GenericRecyclerAdapter<ListNewsResultModel>(item){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_loans)
@@ -23,5 +23,9 @@ class LoansAdapter (item: ArrayList<ListNewsResultModel> = arrayListOf()): Gener
             .with(holder.itemView.loans_image)
             .load(item.thumbnail)
             .into(holder.itemView.loans_image)
+
+        holder.itemView.setOnClickListener {
+            listener.loansClickListener(holder.adapterPosition, item.id!!)
+        }
     }
 }

@@ -34,4 +34,10 @@
         android:name="com.example.kotlincashloan.ui.still.StillFragment"
         android:label=""
         tools:layout="@layout/fragment_still" />
+
+    <fragment
+        android:id="@+id/navigation_loans_details"
+        android:name="com.example.kotlincashloan.ui.Loans.LoansDetailsFragment"
+        android:label=""
+        tools:layout="@layout/fragment_loans_details" />
 </navigation>

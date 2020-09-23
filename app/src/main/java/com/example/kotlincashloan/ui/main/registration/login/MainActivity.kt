@@ -88,9 +88,9 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
         val map = HashMap<String, String>()
         map.put("password", main_text_password.text.toString())
         map.put("login", main_text_login.text.toString())
+        main_enter.isEnabled = false
         alert.show()
         viewModel.auth(map).observe(this, Observer { result ->
-            var msg = result.msg
             val data = result.data
             when (result.status) {
                 Status.SUCCESS -> {
@@ -154,6 +154,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                     main_layout.visibility = View.GONE
                 }
             }
+            main_enter.isEnabled = true
             alert.hide()
         })
     }
