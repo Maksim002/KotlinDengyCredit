@@ -24,6 +24,8 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.HashMap
+import javax.xml.datatype.DatatypeFactory.newInstance
+import javax.xml.validation.SchemaFactory.newInstance
 
 class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
@@ -44,7 +46,6 @@ class LoansFragment : Fragment(), LoansListener {
         initLogicSeekBar()
         iniRecyclerView()
         initClick()
-
     }
 
     private fun initClick() {
