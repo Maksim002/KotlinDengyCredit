@@ -13,16 +13,17 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 
 class HomeActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
         setContentView(R.layout.activity_home)
-        val navController = findNavController(R.id.nav_host_fragment)
+
         MainActivity.alert = LoadingAlert(this)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val appBarConfiguration = AppBarConfiguration(setOf(
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
                 R.id.navigation_loans,
                 R.id.navigation_profile,
                 R.id.navigation_notification,
