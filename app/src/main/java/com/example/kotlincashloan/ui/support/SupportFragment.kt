@@ -2,28 +2,28 @@ package com.example.kotlincashloan.ui.support
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
+import kotlin.collections.HashMap
+
 
 class SupportFragment : Fragment() {
     private var myAdapter = SupportAdapter()
     private var viewModel = SupportViewModel()
-    val map = HashMap<String, String>()
+    private val map = HashMap<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +71,12 @@ class SupportFragment : Fragment() {
         not_found.setOnClickListener {
             initRestart()
         }
+
+        support_swipe_layout.setOnRefreshListener {
+                initRestart()
+                support_swipe_layout.isRefreshing = false
+        }
+        support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
     private fun initRecycler() {
@@ -83,19 +89,19 @@ class SupportFragment : Fragment() {
                 profile_recycler.adapter = myAdapter
                 initVisibilities()
                 support_no_connection.visibility = View.GONE
-                profile_recycler.visibility = View.VISIBLE
+                support_swipe_layout.visibility = View.VISIBLE
                 support_not_found.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
             }else if (result.error.code == 403) {
                 layout_access_restricted.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
             } else if (result.error.code == 500 || result.error.code == 400) {
                 support_technical_work.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
             } else if (result.error.code == 404) {
                 support_not_found.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
             } else if (result.error.code == 401) {
                 initAuthorized()
             }
@@ -105,23 +111,23 @@ class SupportFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             if (error == "404") {
                 support_not_found.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
 
             } else if (error == "500" || error == "400") {
                 support_technical_work.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
 
             } else if (error == "403") {
                 layout_access_restricted.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
 
             } else if (error == "401") {
                 initAuthorized()
             } else if (error == "600") {
                 support_no_connection.visibility = View.VISIBLE
-                profile_recycler.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
                 support_not_found.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
@@ -129,67 +135,6 @@ class SupportFragment : Fragment() {
 
             HomeActivity.alert.hide()
         })
-
-//        HomeActivity.alert.show()
-//        val map = HashMap<String, String>()
-//        map.put("login", AppPreferences.login.toString())
-//        map.put("token", AppPreferences.token.toString())
-//        viewModel.listFaq(map).observe(viewLifecycleOwner, Observer { result ->
-//            val data = result.data
-//            val msg = result.msg
-//            when (result.status) {
-//                Status.SUCCESS -> {
-//                    if (data!!.error != null){
-//                        if (data.error.code == 403){
-//                            layout_access_restricted.visibility = View.VISIBLE
-//                            profile_recycler.visibility = View.GONE
-//
-//                        }else if (data.error.code == 500 || data.error.code == 400){
-//                            support_technical_work.visibility = View.VISIBLE
-//                            profile_recycler.visibility = View.GONE
-//
-//                        }else if (data.error.code == 404){
-//                            support_not_found.visibility = View.VISIBLE
-//                            profile_recycler.visibility = View.GONE
-//                        }else if (data.error.code == 401){
-//                            initAuthorized()
-//                        }
-//                    }
-//
-//                    if (data.result != null){
-//                        myAdapter.update(data.result)
-//                        profile_recycler.adapter = myAdapter
-//                        initVisibilities()
-//                    }
-//                }
-//                Status.ERROR -> {
-//                    if (msg == "404"){
-//                        support_not_found.visibility = View.VISIBLE
-//                        profile_recycler.visibility = View.GONE
-//
-//                    }else if (msg == "500" || msg == "400"){
-//                        support_technical_work.visibility = View.VISIBLE
-//                        profile_recycler.visibility = View.GONE
-//
-//                    }else if (msg == "403"){
-//                        layout_access_restricted.visibility = View.VISIBLE
-//                        profile_recycler.visibility = View.GONE
-//
-//                    }else if (msg == "401"){
-//                        initAuthorized()
-//                    }
-//                }
-//
-//                Status.NETWORK ->{
-//                    support_no_connection.visibility = View.VISIBLE
-//                    profile_recycler.visibility = View.GONE
-//                    support_not_found.visibility = View.GONE
-//                    support_technical_work.visibility = View.GONE
-//                    layout_access_restricted.visibility = View.GONE
-//                }
-//            }
-//            HomeActivity.alert.hide()
-//        })
     }
 
     private fun initAuthorized() {

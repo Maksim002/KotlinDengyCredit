@@ -8,12 +8,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.support.SupportFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profile_recycler"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:id="@+id/support_swipe_layout"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include layout="@layout/item_access_restricted"
         android:id="@+id/layout_access_restricted"
