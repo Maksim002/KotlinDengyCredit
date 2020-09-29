@@ -8,8 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
-import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import kotlinx.android.synthetic.main.fragment_still.*
 
 class StillFragment : Fragment() {
@@ -30,7 +29,7 @@ class StillFragment : Fragment() {
 
     private fun initClick() {
         still_exit.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, HomeActivity::class.java)
             startActivity(intent)
         }
     }

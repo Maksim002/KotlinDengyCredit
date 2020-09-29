@@ -11,9 +11,9 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
-import com.example.kotlinscreenscanner.ui.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
@@ -35,7 +35,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        MainActivity.alert = LoadingAlert(activity as AppCompatActivity)
+        HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         iniClick()
     }
 
@@ -67,7 +67,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
             val map = HashMap<String, String>()
             map.put("password", AppPreferences.password.toString())
             map.put("login", AppPreferences.login.toString())
-            MainActivity.alert.show()
+            HomeActivity.alert.show()
             viewModel.auth(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -100,18 +100,18 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                         loadingConnection(activity as AppCompatActivity)
                     }
                 }
-                MainActivity.alert.hide()
+                HomeActivity.alert.hide()
             })
         }
     }
 
     private fun initAuthorized(){
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }
 
     private fun initTransition() {
-        val intent = Intent(context, HomeActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
         startActivity(intent)
     }
 

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_support.*
@@ -18,10 +18,12 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 
-class SupportFragment : Fragment(){
+class SupportFragment : Fragment() {
     private var myAdapter = SupportAdapter()
     private var viewModel = SupportViewModel()
+    val map = HashMap<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,93 +40,164 @@ class SupportFragment : Fragment(){
         iniClick()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.listFaqDta.value == null)
+            viewModel.listFaq(map)
+        initRecycler()
+    }
+
+    private fun initRestart() {
+        initRecycler()
+        viewModel.listFaqDta.removeObservers(this);
+        viewModel.error.value = null
+        if (viewModel.listFaqDta.value != null)
+            viewModel.listFaq(map)
+    }
+
     private fun iniClick() {
         no_connection_repeat.setOnClickListener {
-            initRecycler()
+            initRestart()
         }
 
         access_restricted.setOnClickListener {
-            initRecycler()
+            initRestart()
         }
 
         technical_work.setOnClickListener {
-            initRecycler()
+            initRestart()
         }
 
         not_found.setOnClickListener {
-            initRecycler()
+            initRestart()
         }
     }
 
     private fun initRecycler() {
-        MainActivity.alert.show()
-        val map = HashMap<String, String>()
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        viewModel.listFaq(map).observe(viewLifecycleOwner, Observer { result ->
-            val data = result.data
-            val msg = result.msg
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.error != null){
-                        if (data.error.code == 403){
-                            layout_access_restricted.visibility = View.VISIBLE
-                            profile_recycler.visibility = View.GONE
-
-                        }else if (data.error.code == 500 || data.error.code == 400){
-                            support_technical_work.visibility = View.VISIBLE
-                            profile_recycler.visibility = View.GONE
-
-                        }else if (data.error.code == 404){
-                            support_not_found.visibility = View.VISIBLE
-                            profile_recycler.visibility = View.GONE
-                        }else if (data.error.code == 401){
-                            initAuthorized()
-                        }
-                    }
-
-                    if (data.result != null){
-                        myAdapter.update(data.result)
-                        profile_recycler.adapter = myAdapter
-                        initVisibilities()
-                    }
-                }
-                Status.ERROR -> {
-                    if (msg == "404"){
-                        support_not_found.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-
-                    }else if (msg == "500" || msg == "400"){
-                        support_technical_work.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-
-                    }else if (msg == "403"){
-                        layout_access_restricted.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-
-                    }else if (msg == "401"){
-                        initAuthorized()
-                    }
-                }
-
-                Status.NETWORK ->{
-                    support_no_connection.visibility = View.VISIBLE
-                    profile_recycler.visibility = View.GONE
-                    support_not_found.visibility = View.GONE
-                    support_technical_work.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
-                }
+        HomeActivity.alert.show()
+        viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null ) {
+                myAdapter.update(result.result)
+                profile_recycler.adapter = myAdapter
+                initVisibilities()
+                support_no_connection.visibility = View.GONE
+                profile_recycler.visibility = View.VISIBLE
+                support_not_found.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
+                layout_access_restricted.visibility = View.GONE
+            }else if (result.error.code == 403) {
+                layout_access_restricted.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+            } else if (result.error.code == 500 || result.error.code == 400) {
+                support_technical_work.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+            } else if (result.error.code == 404) {
+                support_not_found.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+            } else if (result.error.code == 401) {
+                initAuthorized()
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
+        HomeActivity.alert.show()
+        viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+            if (error == "404") {
+                support_not_found.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+                support_no_connection.visibility = View.GONE
+
+            } else if (error == "500" || error == "400") {
+                support_technical_work.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+                support_no_connection.visibility = View.GONE
+
+            } else if (error == "403") {
+                layout_access_restricted.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+
+            } else if (error == "401") {
+                initAuthorized()
+            } else if (error == "600") {
+                support_no_connection.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
+                support_not_found.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
+                layout_access_restricted.visibility = View.GONE
+            }
+
+            HomeActivity.alert.hide()
+        })
+
+//        HomeActivity.alert.show()
+//        val map = HashMap<String, String>()
+//        map.put("login", AppPreferences.login.toString())
+//        map.put("token", AppPreferences.token.toString())
+//        viewModel.listFaq(map).observe(viewLifecycleOwner, Observer { result ->
+//            val data = result.data
+//            val msg = result.msg
+//            when (result.status) {
+//                Status.SUCCESS -> {
+//                    if (data!!.error != null){
+//                        if (data.error.code == 403){
+//                            layout_access_restricted.visibility = View.VISIBLE
+//                            profile_recycler.visibility = View.GONE
+//
+//                        }else if (data.error.code == 500 || data.error.code == 400){
+//                            support_technical_work.visibility = View.VISIBLE
+//                            profile_recycler.visibility = View.GONE
+//
+//                        }else if (data.error.code == 404){
+//                            support_not_found.visibility = View.VISIBLE
+//                            profile_recycler.visibility = View.GONE
+//                        }else if (data.error.code == 401){
+//                            initAuthorized()
+//                        }
+//                    }
+//
+//                    if (data.result != null){
+//                        myAdapter.update(data.result)
+//                        profile_recycler.adapter = myAdapter
+//                        initVisibilities()
+//                    }
+//                }
+//                Status.ERROR -> {
+//                    if (msg == "404"){
+//                        support_not_found.visibility = View.VISIBLE
+//                        profile_recycler.visibility = View.GONE
+//
+//                    }else if (msg == "500" || msg == "400"){
+//                        support_technical_work.visibility = View.VISIBLE
+//                        profile_recycler.visibility = View.GONE
+//
+//                    }else if (msg == "403"){
+//                        layout_access_restricted.visibility = View.VISIBLE
+//                        profile_recycler.visibility = View.GONE
+//
+//                    }else if (msg == "401"){
+//                        initAuthorized()
+//                    }
+//                }
+//
+//                Status.NETWORK ->{
+//                    support_no_connection.visibility = View.VISIBLE
+//                    profile_recycler.visibility = View.GONE
+//                    support_not_found.visibility = View.GONE
+//                    support_technical_work.visibility = View.GONE
+//                    layout_access_restricted.visibility = View.GONE
+//                }
+//            }
+//            HomeActivity.alert.hide()
+//        })
     }
 
-    private fun initAuthorized(){
-        val intent = Intent(context, MainActivity::class.java)
+    private fun initAuthorized() {
+        val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }
 
-    fun initVisibilities(){
+    fun initVisibilities() {
         profile_recycler.visibility = View.VISIBLE
         support_no_connection.visibility = View.GONE
         layout_access_restricted.visibility = View.GONE

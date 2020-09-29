@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loans_details.*
@@ -49,7 +49,7 @@ class LoansDetailsFragment : Fragment() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", isNews.toString())
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.getNews(map).observe(viewLifecycleOwner, Observer{ result ->
             val msg = result.msg
             val data = result.data
@@ -109,11 +109,11 @@ class LoansDetailsFragment : Fragment() {
                     loans_detail_no_connection.visibility = View.VISIBLE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
     }
     private fun initAuthorized(){
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }
 }

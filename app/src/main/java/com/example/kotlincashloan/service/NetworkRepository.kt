@@ -225,25 +225,25 @@ class NetworkRepository {
         }
     }
 
-    fun listFaq(map: Map<String, String>) = liveData(Dispatchers.IO) {
-        try {
-            val response = RetrofitService.apiService().listFaq(map)
-            when {
-                response.isSuccessful -> {
-                    if (response.body() != null) {
-                        emit(ResultStatus.success(response.body()))
-                    } else {
-                        emit(ResultStatus.error(response.code().toString()))
-                    }
-                }
-                else -> {
-                    emit(ResultStatus.error(response.code().toString()))
-                }
-            }
-        } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
-        }
-    }
+//    fun listFaq(map: Map<String, String>) = liveData(Dispatchers.IO) {
+//        try {
+//            val response = RetrofitService.apiService().listFaq(map)
+//            when {
+//                response.isSuccessful -> {
+//                    if (response.body() != null) {
+//                        emit(ResultStatus.success(response.body()))
+//                    } else {
+//                        emit(ResultStatus.error(response.code().toString()))
+//                    }
+//                }
+//                else -> {
+//                    emit(ResultStatus.error(response.code().toString()))
+//                }
+//            }
+//        } catch (e: Exception) {
+//            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+//        }
+//    }
 
     fun listNews(map: Map<String, String>) = liveData(Dispatchers.IO) {
         try {

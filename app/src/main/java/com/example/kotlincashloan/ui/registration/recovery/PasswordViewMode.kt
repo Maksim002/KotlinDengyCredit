@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.main.registration.recovery
+package com.example.kotlincashloan.ui.registration.recovery
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

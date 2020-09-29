@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.main.registration.login
+package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,9 +13,9 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.recovery.PasswordRecoveryActivity
+import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
-import com.example.kotlinscreenscanner.ui.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ExistingBottomFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
@@ -23,12 +23,12 @@ import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
-class MainActivity : AppCompatActivity(), PintCodeBottomListener,
+class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_home)
         AppPreferences.init(application)
         iniClick()
         initCheck()
@@ -47,36 +47,36 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
 
 
     private fun iniClick() {
-        main_show.setOnClickListener {
+        home_show.setOnClickListener {
             if (AppPreferences.isValid) {
                 AppPreferences.isValid = false
-                main_text_password.transformationMethod = PasswordTransformationMethod()
+                home_text_password.transformationMethod = PasswordTransformationMethod()
             } else {
                 AppPreferences.isValid = true
-                main_text_password.transformationMethod = null
+                home_text_password.transformationMethod = null
             }
         }
 
-        main_forget_password.setOnClickListener {
+        home_forget_password.setOnClickListener {
             val intent = Intent(this, PasswordRecoveryActivity::class.java)
             startActivity(intent)
         }
 
-        main_registration.setOnClickListener {
+        home_registration.setOnClickListener {
             val intent = Intent(this, NumberActivity::class.java)
             startActivity(intent)
         }
 
         no_connection_repeat.setOnClickListener {
-            if (main_touch_id.isChecked == true){
+            if (home_touch_id.isChecked == true){
                 iniTouchId()
-                main_incorrect.visibility = View.GONE
+                home_incorrect.visibility = View.GONE
             }else{
                 iniResult()
             }
         }
 
-        main_enter.setOnClickListener {
+        home_enter.setOnClickListener {
             if (validate()) {
                 iniResult()
             }
@@ -86,9 +86,9 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
 
     private fun iniResult() {
         val map = HashMap<String, String>()
-        map.put("password", main_text_password.text.toString())
-        map.put("login", main_text_login.text.toString())
-        main_enter.isEnabled = false
+        map.put("password", home_text_password.text.toString())
+        map.put("login", home_text_login.text.toString())
+        home_enter.isEnabled = false
         alert.show()
         viewModel.auth(map).observe(this, Observer { result ->
             val data = result.data
@@ -96,47 +96,47 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                 Status.SUCCESS -> {
                     if (data!!.result == null) {
                         if (data.error.code == 500 || data.error.code == 409){
-                            main_incorrect.visibility = View.VISIBLE
-                            main_no_connection.visibility = View.GONE
-                            main_layout.visibility = View.VISIBLE
+                            home_incorrect.visibility = View.VISIBLE
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
                             loadingMistake(this)
                         }else if (data.error.code == 400){
-                            main_incorrect.visibility = View.VISIBLE
-                            main_no_connection.visibility = View.GONE
-                            main_layout.visibility = View.VISIBLE
+                            home_incorrect.visibility = View.VISIBLE
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
                         }else {
-                            main_no_connection.visibility = View.GONE
-                            main_layout.visibility = View.VISIBLE
-                            main_incorrect.visibility = View.VISIBLE
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
+                            home_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
                         }
                     } else {
-                        main_no_connection.visibility = View.GONE
-                        main_layout.visibility = View.VISIBLE
+                        home_no_connection.visibility = View.GONE
+                        home_layout.visibility = View.VISIBLE
 
                         AppPreferences.isLogined = true
                         tokenId = data.result.token
-                        if (main_login_code.isChecked) {
-                            main_incorrect.visibility = View.GONE
+                        if (home_login_code.isChecked) {
+                            home_incorrect.visibility = View.GONE
                             initBottomSheet()
                         } else {
                             AppPreferences.token = data.result.token
                             AppPreferences.login = data.result.login
-                            AppPreferences.password = main_text_password.text.toString()
+                            AppPreferences.password = home_text_password.text.toString()
                             if (AppPreferences.token != null){
-                                main_incorrect.visibility = View.GONE
+                                home_incorrect.visibility = View.GONE
                                 startMainActivity()
                             }
                         }
-                        if (main_remember_username.isChecked) {
-                            AppPreferences.isRemember = main_remember_username.isChecked
-                            AppPreferences.isTouchId = main_touch_id.isChecked
-                            AppPreferences.isLoginCode = main_login_code.isChecked
+                        if (home_remember_username.isChecked) {
+                            AppPreferences.isRemember = home_remember_username.isChecked
+                            AppPreferences.isTouchId = home_touch_id.isChecked
+                            AppPreferences.isLoginCode = home_login_code.isChecked
                             viewModel.save(
-                                main_text_login.text.toString(),
+                                home_text_login.text.toString(),
                                 data.result.token
                             )
-                            AppPreferences.password = main_text_password.text.toString()
+                            AppPreferences.password = home_text_password.text.toString()
                         } else {
                             AppPreferences.isRemember = false
                             AppPreferences.clearLogin()
@@ -144,55 +144,55 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                     }
                 }
                 Status.ERROR -> {
-                    main_no_connection.visibility = View.GONE
-                    main_layout.visibility = View.VISIBLE
-                    main_incorrect.visibility = View.VISIBLE
+                    home_no_connection.visibility = View.GONE
+                    home_layout.visibility = View.VISIBLE
+                    home_incorrect.visibility = View.VISIBLE
                     loadingMistake(this)
                 }
                 Status.NETWORK -> {
-                    main_no_connection.visibility = View.VISIBLE
-                    main_layout.visibility = View.GONE
+                    home_no_connection.visibility = View.VISIBLE
+                    home_layout.visibility = View.GONE
                 }
             }
-            main_enter.isEnabled = true
+            home_enter.isEnabled = true
             alert.hide()
         })
     }
 
     private fun initCheck() {
         if (AppPreferences.isRemember) {
-            main_remember_username.isChecked = AppPreferences.isRemember
-            main_text_login.setText(AppPreferences.login)
+            home_remember_username.isChecked = AppPreferences.isRemember
+            home_text_login.setText(AppPreferences.login)
         }
 
         if (AppPreferences.isTouchId) {
-            main_touch_id.isChecked = AppPreferences.isTouchId
+            home_touch_id.isChecked = AppPreferences.isTouchId
             iniTouchId()
         }
 
         if (AppPreferences.isLoginCode) {
-            main_login_code.isChecked = AppPreferences.isLoginCode
+            home_login_code.isChecked = AppPreferences.isLoginCode
             initBottomSheet()
         }
 
-        main_login_code.setOnCheckedChangeListener { compoundButton, b ->
+        home_login_code.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                main_touch_id.isChecked = false
-                main_remember_username.isChecked = true
-                main_remember_username.isClickable = false
+                home_touch_id.isChecked = false
+                home_remember_username.isChecked = true
+                home_remember_username.isClickable = false
             } else {
-                main_remember_username.isClickable = true
+                home_remember_username.isClickable = true
                 AppPreferences.isLoginCode = false
             }
         }
 
-        main_touch_id.setOnCheckedChangeListener { compoundButton, b ->
+        home_touch_id.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
-                main_login_code.isChecked = false
-                main_remember_username.isChecked = true
-                main_remember_username.isClickable = false
+                home_login_code.isChecked = false
+                home_remember_username.isChecked = true
+                home_remember_username.isClickable = false
             } else {
-                main_remember_username.isClickable = true
+                home_remember_username.isClickable = true
                 AppPreferences.isTouchId = false
             }
         }
@@ -211,24 +211,24 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
     }
 
     override fun pinCodeClockListener() {
-        main_login_code.isChecked = false
+        home_login_code.isChecked = false
     }
 
     override fun existingClockListener() {
-        main_login_code.isChecked = false
+        home_login_code.isChecked = false
     }
 
     private fun validate(): Boolean {
         var valid = true
-        if (main_text_login.text.toString().isEmpty()) {
-            main_text_login.error = "Введите логин"
-            main_incorrect.visibility = View.GONE
+        if (home_text_login.text.toString().isEmpty()) {
+            home_text_login.error = "Введите логин"
+            home_incorrect.visibility = View.GONE
             valid = false
         }
 
-        if (main_text_password.text.toString().isEmpty()) {
-            main_text_password.error = "Введите пароль"
-            main_incorrect.visibility = View.GONE
+        if (home_text_password.text.toString().isEmpty()) {
+            home_text_password.error = "Введите пароль"
+            home_incorrect.visibility = View.GONE
             valid = false
         }
         if (!valid){
@@ -240,14 +240,14 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
     }
 
     private fun startMainActivity() {
-        val intent = Intent(this, HomeActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
     }
 
     override fun onStart() {
         super.onStart()
         AppPreferences.isValid = false
-        main_text_login.getPaint().clearShadowLayer();
+        home_text_login.getPaint().clearShadowLayer();
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -282,7 +282,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                     Toast.LENGTH_LONG
                 ).show()
                 AppPreferences.isTouchId = false
-                main_touch_id.isChecked = false
+                home_touch_id.isChecked = false
             }
         }
     }
@@ -312,37 +312,37 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                     super.onAuthenticationSucceeded(result)
                     val map = HashMap<String, String>()
                     map.put("password", AppPreferences.password.toString())
-                    map.put("login", main_text_login.text.toString())
+                    map.put("login", home_text_login.text.toString())
                     alert.show()
-                    viewModel.auth(map).observe(this@MainActivity, Observer { result ->
+                    viewModel.auth(map).observe(this@HomeActivity, Observer { result ->
                         val msg = result.msg
                         val data = result.data
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
                                     Toast.makeText(
-                                        this@MainActivity,
+                                        this@HomeActivity,
                                         data.error.message,
                                         Toast.LENGTH_LONG
                                     ).show()
                                 } else {
-                                    main_no_connection.visibility = View.GONE
-                                    main_layout.visibility = View.VISIBLE
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
                                     tokenId = data.result.token
                                     viewModel.save(
-                                        main_text_login.text.toString(),
+                                        home_text_login.text.toString(),
                                         data.result.token
                                     )
-                                    val intent = Intent(this@MainActivity, HomeActivity::class.java)
+                                    val intent = Intent(this@HomeActivity, MainActivity::class.java)
                                     startActivity(intent)
                                 }
                             }
                             Status.ERROR -> {
-                                loadingMistake(this@MainActivity)
+                                loadingMistake(this@HomeActivity)
                             }
                             Status.NETWORK -> {
-                                main_no_connection.visibility = View.VISIBLE
-                                main_layout.visibility = View.GONE
+                                home_no_connection.visibility = View.VISIBLE
+                                home_layout.visibility = View.GONE
                             }
                         }
                         alert.hide()
@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity(), PintCodeBottomListener,
                         getString(R.string.error_msg_auth_error, errString),
                         Toast.LENGTH_SHORT
                     ).show()
-                    main_touch_id.isChecked = false
+                    home_touch_id.isChecked = false
                 }
 
                 // 4

@@ -9,7 +9,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
@@ -36,7 +36,7 @@ class NumberActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_number)
-        MainActivity.alert = LoadingAlert(this)
+        HomeActivity.alert = LoadingAlert(this)
         initClick()
         initViews()
         initToolBar()
@@ -46,7 +46,7 @@ class NumberActivity : AppCompatActivity() {
     private fun initResult() {
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
-            MainActivity.alert.show()
+            HomeActivity.alert.show()
             no_connection_repeat.isEnabled = false
             viewModel.numberPhones(map).observe(this, Observer { result ->
                 val msg = result.msg
@@ -96,7 +96,7 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 number_next.isEnabled = true
-                MainActivity.alert.hide()
+                HomeActivity.alert.hide()
                 no_connection_repeat.isEnabled = true
             })
     }
@@ -168,7 +168,7 @@ class NumberActivity : AppCompatActivity() {
         var list: ArrayList<CounterResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -232,7 +232,7 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         number_list_country.keyListener = null
         number_list_country.setOnItemClickListener { adapterView, view, position, l ->
@@ -269,7 +269,7 @@ class NumberActivity : AppCompatActivity() {
     }
 
     private fun initAuthorized(){
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 

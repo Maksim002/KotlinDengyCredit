@@ -2,7 +2,6 @@ package com.example.kotlinscreenscanner.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -12,7 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
@@ -41,7 +40,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actyviti_questionnaire)
-        MainActivity.alert = LoadingAlert(this)
+        HomeActivity.alert = LoadingAlert(this)
         initToolBar()
         iniData()
         getListNationality()
@@ -119,7 +118,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         map["question"] = listSecretQuestionId.toString()
         map["response"] = questionnaire_secret_response.text.toString()
         map["sms_code"] = AppPreferences.receivedSms.toString()
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.questionnaire(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -173,7 +172,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                     }
                 }
             questionnaire_enter.isEnabled = true
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
             })
     }
 
@@ -196,7 +195,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     }
 
     private fun initAuthorized(){
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 
@@ -247,7 +246,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListGenderResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -304,7 +303,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                     questionnaire_access_restricted.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         questionnaire_id_sxs.keyListener = null
         questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
@@ -331,7 +330,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listNationality(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -393,7 +392,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                     }
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         questionnaire_id_nationality.keyListener = null
         questionnaire_id_nationality.setOnItemClickListener { adapterView, view, position, l ->
@@ -421,7 +420,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listSecretQuestion(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -479,7 +478,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                     questionnaire_layout.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
 
         questionnaire_id_secret.setKeyListener(null)

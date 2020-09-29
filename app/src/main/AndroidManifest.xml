@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.kotlincashloan.ui.main.registration.login.MainActivity"
+        <activity android:name=".ui.registration.login.HomeActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,15 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.kotlinscreenscanner.ui.HomeActivity"
+        <activity android:name="com.example.kotlinscreenscanner.ui.MainActivity"
             android:launchMode="singleTop"/>
         <activity android:name="com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity"
             android:launchMode="singleTop"/>
         <activity android:name="com.example.kotlinscreenscanner.ui.login.NumberActivity"
             android:launchMode="singleTop"/>
-        <activity android:name="com.example.kotlincashloan.ui.main.registration.recovery.PasswordRecoveryActivity"
+        <activity android:name="com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity"
             android:launchMode="singleTop"/>
-        <activity android:name="com.example.kotlincashloan.ui.main.registration.recovery.ContactingServiceActivity"
+        <activity android:name="com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity"
             android:launchMode="singleTop"/>
     </application>
 

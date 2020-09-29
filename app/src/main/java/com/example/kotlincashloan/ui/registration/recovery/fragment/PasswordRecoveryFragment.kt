@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_password_recovery.*
 
@@ -27,7 +27,7 @@ class PasswordRecoveryFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         password_recovery_enter.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, HomeActivity::class.java)
             startActivity(intent)
         }
     }

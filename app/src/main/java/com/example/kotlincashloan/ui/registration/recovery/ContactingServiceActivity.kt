@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.main.registration.recovery
+package com.example.kotlincashloan.ui.registration.recovery
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.YourApplicationFragment
@@ -38,7 +38,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
-        MainActivity.alert = LoadingAlert(this)
+        HomeActivity.alert = LoadingAlert(this)
         initToolBar()
         getListCountry()
         getType()
@@ -88,7 +88,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         map["second_name"] = questionnaire_phone_patronymics.text.toString()
         map["phone"] = MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
         map["comment"] = password_recovery_comments.text.toString()
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         myViewMode.supportTicket(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -137,12 +137,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                     questionnaire_not_found.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
     }
 
     private fun initAuthorized(){
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 
@@ -174,7 +174,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         var list: ArrayList<CounterResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -232,7 +232,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                     questionnaire_not_found.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         questionnaire_phone_list_country.keyListener = null
         questionnaire_phone_list_country.setOnItemClickListener { adapterView, view, position, l ->
@@ -277,7 +277,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         var list: ArrayList<ListSupportTypeResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         myViewMode.listSupportType(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -332,7 +332,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                     questionnaire_not_found.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         password_recovery_type.keyListener = null
         password_recovery_type.setOnItemClickListener { adapterView, view, position, l ->

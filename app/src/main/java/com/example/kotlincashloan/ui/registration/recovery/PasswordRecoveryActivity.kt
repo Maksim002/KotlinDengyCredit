@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.main.registration.recovery
+package com.example.kotlincashloan.ui.registration.recovery
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.main.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryErrorFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryFragment
@@ -21,7 +21,6 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -36,7 +35,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_recovery)
-        MainActivity.alert = LoadingAlert(this)
+        HomeActivity.alert = LoadingAlert(this)
         initToolBar()
         iniClick()
     }
@@ -71,7 +70,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
 
     fun initResult(){
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         val map = HashMap<String, String>()
         map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
         map.put("response", password_recovery_word.text.toString())
@@ -114,7 +113,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     password_layout.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
     }
 
@@ -124,7 +123,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     }
 
     private fun initAuthorized(){
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
 
@@ -163,7 +162,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         var list: ArrayList<CounterResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
-        MainActivity.alert.show()
+        HomeActivity.alert.show()
         viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -226,7 +225,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     recovery_access_restricted.visibility = View.GONE
                 }
             }
-            MainActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
         questionnaire_phone_list_country.keyListener = null
         questionnaire_phone_list_country.setOnItemClickListener { adapterView, view, position, l ->

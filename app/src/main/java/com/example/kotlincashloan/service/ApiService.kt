@@ -9,6 +9,7 @@ import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultMod
 import com.example.kotlincashloan.service.model.recovery.SupportTicketResultModel
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.myapplication.model.ResultModel
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 import kotlin.collections.ArrayList
@@ -72,7 +73,7 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("listFaq?token=oYyxhIFgJjAb")
-    suspend fun listFaq(@FieldMap params: Map<String, String>): Response<CommonResponse<ArrayList<ListFaqResultModel>>>
+    fun listFaq(@FieldMap params: Map<String, String>): Call<CommonResponse<ArrayList<ListFaqResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
