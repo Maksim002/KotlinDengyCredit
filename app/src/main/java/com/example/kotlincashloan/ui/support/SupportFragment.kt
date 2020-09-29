@@ -12,6 +12,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -38,13 +39,14 @@ class SupportFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.show()
         initRecycler()
         iniClick()
+        initRefresh()
     }
 
     override fun onResume() {
         super.onResume()
         if (viewModel.listFaqDta.value == null)
             viewModel.listFaq(map)
-        initRecycler()
+            initRecycler()
     }
 
     private fun initRestart() {
@@ -71,10 +73,12 @@ class SupportFragment : Fragment() {
         not_found.setOnClickListener {
             initRestart()
         }
+    }
 
+    private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
-                initRestart()
-                support_swipe_layout.isRefreshing = false
+            initRestart()
+            support_swipe_layout.isRefreshing = false
         }
         support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
@@ -84,7 +88,7 @@ class SupportFragment : Fragment() {
         map.put("token", AppPreferences.token.toString())
         HomeActivity.alert.show()
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null ) {
+            if (result.result != null) {
                 myAdapter.update(result.result)
                 profile_recycler.adapter = myAdapter
                 initVisibilities()
@@ -93,7 +97,7 @@ class SupportFragment : Fragment() {
                 support_not_found.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
-            }else if (result.error.code == 403) {
+            } else if (result.error.code == 403) {
                 layout_access_restricted.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
             } else if (result.error.code == 500 || result.error.code == 400) {
@@ -107,7 +111,6 @@ class SupportFragment : Fragment() {
             }
             HomeActivity.alert.hide()
         })
-        HomeActivity.alert.show()
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             if (error == "404") {
                 support_not_found.visibility = View.VISIBLE
@@ -132,7 +135,6 @@ class SupportFragment : Fragment() {
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
             }
-
             HomeActivity.alert.hide()
         })
     }

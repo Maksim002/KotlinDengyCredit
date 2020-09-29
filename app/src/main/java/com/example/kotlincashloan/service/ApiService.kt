@@ -78,11 +78,11 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("listNews?token=oYyxhIFgJjAb")
-    suspend fun listNews(@FieldMap params: Map<String, String>): Response<CommonResponse<ArrayList<ListNewsResultModel>>>
+    fun listNews(@FieldMap params: Map<String, String>): Call<CommonResponse<ArrayList<ListNewsResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("getNews?token=oYyxhIFgJjAb")
-    suspend fun getNews(@FieldMap params: Map<String, String>): Response<CommonResponse<GetNewsResultModel>>
+    fun getNews(@FieldMap params: Map<String, String>):Call<CommonResponse<GetNewsResultModel>>
 }
 

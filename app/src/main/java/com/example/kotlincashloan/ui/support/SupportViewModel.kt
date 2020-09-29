@@ -31,8 +31,4 @@ class SupportViewModel : ViewModel(){
             }
         })
     }
-
-//    fun listFaq(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<ArrayList<ListFaqResultModel>>>> {
-//        return repository.listFaq(phone)
-//    }
 }

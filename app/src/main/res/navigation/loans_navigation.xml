@@ -10,4 +10,10 @@
         android:name="com.example.kotlincashloan.ui.Loans.LoansFragment"
         android:label="fragment_blank"
         tools:layout="@layout/fragment_loans" />
+
+    <fragment
+        android:id="@+id/loans_details_navigation"
+        android:name="com.example.kotlincashloan.ui.Loans.LoansDetailsFragment"
+        android:label=""
+        tools:layout="@layout/fragment_loans_details" />
 </navigation>
