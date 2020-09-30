@@ -41,16 +41,16 @@ class LoansDetailsFragment : Fragment() {
         iniArgument()
         initRequest()
         initClick()
-        initRefresh()
     }
 
-    private fun initRefresh() {
-        loans_detail_layout.setOnRefreshListener {
-            initRestart()
-            loans_detail_layout.isRefreshing = false
-        }
-        loans_detail_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
-    }
+//    private fun initRefresh() {
+//        loans_detail_layout.setOnRefreshListener {
+//            loans_details_text.setMarkDownText("")
+//            initRestart()
+//            loans_detail_layout.isRefreshing = false
+//        }
+//        loans_detail_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
+//    }
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
@@ -90,10 +90,15 @@ class LoansDetailsFragment : Fragment() {
 
     private fun initRestart() {
         initRequest()
-        viewModel.listGetDta.removeObservers(this);
-        viewModel.errorGet.value = null
-        if (viewModel.listGetDta.value != null)
+//        viewModel.listGetDta.removeObservers(this);
+//        viewModel.errorGet.value = null
+        if (viewModel.listGetDta.value != null){
             viewModel.getNews(map)
+        }else {
+            viewModel.errorGet.value = null
+            viewModel.getNews(map)
+        }
+
     }
 
     private fun initRequest() {

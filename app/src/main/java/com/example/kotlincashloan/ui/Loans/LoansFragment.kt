@@ -80,10 +80,12 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRestart() {
         initRecycler()
-        viewModel.listNewsDta.removeObservers(this);
-        viewModel.errorNews.value = null
-        if (viewModel.listNewsDta.value != null)
+        if (viewModel.listNewsDta.value != null) {
             viewModel.listNews(map)
+        }else{
+            viewModel.errorNews.value = null
+            viewModel.listNews(map)
+        }
     }
 
     private fun initRecycler() {

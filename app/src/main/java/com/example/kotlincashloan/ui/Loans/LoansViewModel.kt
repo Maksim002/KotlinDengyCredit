@@ -7,6 +7,7 @@ import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.ResultStatus
@@ -22,6 +23,7 @@ class LoansViewModel: ViewModel() {
     var listNewsDta = MutableLiveData<CommonResponse<ArrayList<ListNewsResultModel>>>()
 
     fun listNews(map: Map<String, String>){
+        HomeActivity.alert.show()
         RetrofitService.apiService().listNews(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
@@ -33,6 +35,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorNews.postValue(response.code().toString())
                 }
+                HomeActivity.alert.hide()
             }
         })
     }
@@ -41,6 +44,7 @@ class LoansViewModel: ViewModel() {
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
+        HomeActivity.alert.show()
         RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
                 errorGet.postValue( "600")
@@ -51,6 +55,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorGet.postValue(response.code().toString())
                 }
+                HomeActivity.alert.hide()
             }
         })
     }
