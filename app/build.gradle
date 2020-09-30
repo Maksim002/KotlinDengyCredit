@@ -95,4 +95,7 @@ dependencies {
 
     //READING HTML
     implementation 'com.github.mukeshsolanki:MarkdownView-Android:1.1.1'
+
+    //закругление углов картинки
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
 }

@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/loans_navigation"
         android:name="com.example.kotlincashloan.ui.Loans.LoansFragment"
-        android:label="fragment_blank"
+        android:label="Займ"
         tools:layout="@layout/fragment_loans" />
 
     <fragment

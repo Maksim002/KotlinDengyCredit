@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/profile_navigation"
         android:name="com.example.kotlincashloan.ui.profile.ProfileFragment"
-        android:label="fragment_blank"
+        android:label="Профиль"
         tools:layout="@layout/fragment_profile" />
 </navigation>
