@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.support
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +18,13 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import kotlin.collections.HashMap
 
 
 class SupportFragment : Fragment() {
     private var myAdapter = SupportAdapter()
     private var viewModel = SupportViewModel()
     private val map = HashMap<String, String>()
+    val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,16 +44,19 @@ class SupportFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.listFaqDta.value == null)
-            viewModel.listFaq(map)
-            initRecycler()
+        if (viewModel.listFaqDta.value == null) {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                viewModel.listFaq(map)
+                initRecycler()
+            }, 500)
+        }
     }
 
     private fun initRestart() {
         initRecycler()
         if (viewModel.listFaqDta.value != null) {
             viewModel.listFaq(map)
-        }else{
+        } else {
             viewModel.error.value = null
             viewModel.listFaq(map)
         }
@@ -78,8 +82,10 @@ class SupportFragment : Fragment() {
 
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
             initRestart()
             support_swipe_layout.isRefreshing = false
+            }, 1000)
         }
         support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }

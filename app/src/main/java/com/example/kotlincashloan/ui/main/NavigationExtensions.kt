@@ -103,10 +103,10 @@ fun BottomNavigationView.setupWithNavController(
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
                     fragmentManager.beginTransaction().setCustomAnimations(
-                            R.anim.slide_in_from_right,
-                            R.anim.slide_in_from_right,
-                            R.anim.slide_out_to_left,
-                            R.anim.slide_in_from_left)
+                        R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right)
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
@@ -130,6 +130,7 @@ fun BottomNavigationView.setupWithNavController(
             }
         }
     }
+
 
     // Optional: on item reselected, pop back stack to the destination of the graph
     setupItemReselected(graphIdToTagMap, fragmentManager)

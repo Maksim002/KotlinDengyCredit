@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.Loans
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
+    val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,9 +49,13 @@ class LoansFragment : Fragment(), LoansListener {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.listNewsDta.value == null)
+        val handler = Handler()
+        if (viewModel.listNewsDta.value == null) {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
             viewModel.listNews(map)
-        initRecycler()
+            initRecycler()
+            }, 500)
+        }
     }
 
     private fun initClick() {
@@ -72,8 +78,10 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRefresh(){
         loans_layout.setOnRefreshListener {
+            handler.postDelayed(Runnable {
             initRestart()
             loans_layout.isRefreshing = false
+            }, 1000)
         }
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
