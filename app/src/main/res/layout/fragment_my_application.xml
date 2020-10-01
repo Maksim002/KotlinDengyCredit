@@ -8,30 +8,9 @@
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
-
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/application_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="Выгодная сторона"
-            android:textColor="@color/blackColor"
-            android:textSize="18dp" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/RoundedOrangeBackground"
-        android:text="Статус"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:layout_marginTop="12dp"
-        android:textColor="@color/whiteColor"
-        android:textSize="11sp" />
-
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>

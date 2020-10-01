@@ -12,6 +12,7 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
+
     <style name="RoundedOrangeBackground" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/circle_orange_backround</item>
     </style>
@@ -31,6 +32,10 @@
         <!-- inactive track color (30% transparency) -->
         <item name="android:colorForeground">#FF9116
         </item>
+    </style>
+
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">

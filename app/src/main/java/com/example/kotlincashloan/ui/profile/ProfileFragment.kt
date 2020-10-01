@@ -1,12 +1,13 @@
 package com.example.kotlincashloan.ui.profile
 
 
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -31,6 +32,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
         initPager()
     }
@@ -58,15 +60,35 @@ class ProfileFragment : Fragment() {
                 params.leftMargin = translationOffset.toInt()
                 profile_indicator.setLayoutParams(params)
             }
-
             override fun onPageSelected(i: Int) {}
             override fun onPageScrollStateChanged(i: Int) {}
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.profile_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val settingsMenuItem = menu.findItem(R.id.profile_settings)
+        val s = SpannableString(settingsMenuItem.title)
+        s.setSpan(ForegroundColorSpan(Color.WHITE), 0, s.length, 0)
+        settingsMenuItem.title = s
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.profile_settings->{
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onResume() {
-        super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
@@ -76,8 +98,7 @@ class ProfileFragment : Fragment() {
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
             toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
-
-
+        super.onResume()
     }
 
     override fun onPause() {
