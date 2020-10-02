@@ -125,6 +125,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                                     loadingMistake(activity as  AppCompatActivity)
                                 }
                             }else {
+                                this.dismiss()
                                 AppPreferences.token = data.result.token
                                 val intent = Intent(context, MainActivity::class.java)
                                 startActivity(intent)

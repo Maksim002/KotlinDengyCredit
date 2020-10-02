@@ -77,14 +77,15 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                             if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
                                 loadingMistake(activity as AppCompatActivity)
                             }else if (data.error.code == 401){
-                                initAuthorized()
+                                initTransition()
                             }
                             else{
                                 loadingMistake(activity as AppCompatActivity)
                             }
                         } else {
+                            this.dismiss()
                             AppPreferences.token = data.result.token
-                            initTransition()
+                            initAuthorized()
                         }
                     }
                     Status.ERROR ->{
@@ -106,12 +107,12 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
     }
 
     private fun initAuthorized(){
-        val intent = Intent(context, HomeActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
         startActivity(intent)
     }
 
     private fun initTransition() {
-        val intent = Intent(context, MainActivity::class.java)
+        val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }
 
