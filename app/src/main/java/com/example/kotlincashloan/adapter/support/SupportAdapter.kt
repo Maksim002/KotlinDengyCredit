@@ -17,33 +17,39 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
         holder.itemView.support_text.setMarkDownText(item.text)
         holder.itemView.support_text.getSettings().loadWithOverviewMode = true
 
-        holder.itemView.support_layout.setOnClickListener {
+        holder.itemView.setOnClickListener {
             if (item.clicked) {
-                upClear()
+                notifyItemChanged(upClear())
             } else {
-                upClear()
+                notifyItemChanged(upClear())
                 item.clicked = true
-                notifyItemChanged(date.size)
             }
-            notifyItemRangeChanged(date.size, items.size)
+            notifyDataSetChanged()
+            notifyItemChanged(holder.adapterPosition, item)
         }
 
         if (item.clicked) {
             holder.itemView.support_text.visibility = View.VISIBLE
             holder.itemView.support_image_anim.animate().rotation(90F).start()
-        }else{
+        } else {
             holder.itemView.support_text.visibility = View.GONE
             holder.itemView.support_image_anim.animate().rotation(0F).start()
         }
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_support)
     }
 
-    private fun upClear() {
-        for (i in items) {
-            i.clicked = false
+    private fun upClear(): Int {
+        items.forEachIndexed { pos, it ->
+            if (it.clicked) {
+                it.clicked = false
+                return pos
+            }
         }
+        return -1
     }
 }
