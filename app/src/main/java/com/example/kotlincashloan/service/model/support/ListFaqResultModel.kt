@@ -3,7 +3,7 @@ package com.example.kotlincashloan.service.model.support
 
 import com.google.gson.annotations.SerializedName
 
-class ListFaqResultModel (
+class ListFaqResultModel(
     @SerializedName("id")
     var id: String? = null,
 
@@ -13,5 +13,5 @@ class ListFaqResultModel (
     @SerializedName("text")
     var text: String? = null,
 
-   var isOpen: Boolean = false
+    var clicked: Boolean = false
 )
