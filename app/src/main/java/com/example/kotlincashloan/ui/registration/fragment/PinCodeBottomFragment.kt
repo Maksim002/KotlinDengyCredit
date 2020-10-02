@@ -6,17 +6,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.registration.login.MainActivity
+import com.example.kotlincashloan.extension.loadingConnection
+import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
-import com.example.kotlinscreenscanner.ui.Top
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import kotlinx.android.synthetic.main.activity_main.*
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
 import java.util.HashMap
 
@@ -33,6 +35,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         iniClick()
     }
 
@@ -49,7 +52,7 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
                 val secondNumber = bottom_sheet_repeat_code.text.toString()
                 if (AppPreferences.savePin!!.isNotEmpty()) {
                     if (numberOne == AppPreferences.savePin && secondNumber == AppPreferences.savePin) {
-                        initTransition()
+                        initRequest(numberOne, secondNumber)
                     }
                 } else {
                     initRequest(numberOne, secondNumber)
@@ -64,30 +67,52 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
             val map = HashMap<String, String>()
             map.put("password", AppPreferences.password.toString())
             map.put("login", AppPreferences.login.toString())
-            MainActivity.alert.show()
+            HomeActivity.alert.show()
             viewModel.auth(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
+                            if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
+                                loadingMistake(activity as AppCompatActivity)
+                            }else if (data.error.code == 401){
+                                initTransition()
+                            }
+                            else{
+                                loadingMistake(activity as AppCompatActivity)
+                            }
                         } else {
+                            this.dismiss()
                             AppPreferences.token = data.result.token
-                            initTransition()
+                            initAuthorized()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
-                        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                    Status.ERROR ->{
+                        if (msg == "400" || msg == "500" || msg == "409"){
+                            loadingMistake(activity as AppCompatActivity)
+                        }else if (msg == "401"){
+                            initTransition()
+                        }else{
+                            loadingMistake(activity as AppCompatActivity)
+                        }
+                    }
+                    Status.NETWORK -> {
+                        loadingConnection(activity as AppCompatActivity)
                     }
                 }
-                MainActivity.alert.hide()
+                HomeActivity.alert.hide()
             })
         }
     }
 
+    private fun initAuthorized(){
+        val intent = Intent(context, MainActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun initTransition() {
-        val intent = Intent(context, Top::class.java)
+        val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }
 

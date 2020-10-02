@@ -7,6 +7,12 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <LinearLayout
+        android:id="@+id/layout_existing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -203,5 +209,6 @@
                 android:src="@drawable/ic_baseline_backspace_24"
                 android:textStyle="bold" />
         </LinearLayout>
+    </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -6,19 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.adapter.ExistingBottomListener
+import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.ui.registration.login.MainActivity
-import com.example.kotlinscreenscanner.ui.Top
-import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 import java.util.HashMap
 
@@ -26,7 +26,6 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
     private var viewModel = LoginViewModel()
     var currentPinInput = ""
     var initpin = ""
-    lateinit var activity: AppCompatActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +37,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        HomeActivity.alert = LoadingAlert(requireActivity())
         initClick()
     }
 
@@ -110,26 +110,43 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                 val map = HashMap<String, String>()
                 map.put("password", AppPreferences.password.toString())
                 map.put("login", AppPreferences.login.toString())
-                MainActivity.alert.show()
+                HomeActivity.alert.show()
                 viewModel.auth(map).observe(this, Observer { result ->
                     val msg = result.msg
                     val data = result.data
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result == null) {
-                                loadingMistake(activity)
-                                Toast.makeText(context, data.error.message, Toast.LENGTH_LONG).show()
-                            } else {
+                                if (data.error.code == 401){
+                                    initAuthorized()
+                                }else{
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as  AppCompatActivity)
+                                }
+                            }else {
+                                this.dismiss()
                                 AppPreferences.token = data.result.token
-                                val intent = Intent(context, Top::class.java)
+                                val intent = Intent(context, MainActivity::class.java)
                                 startActivity(intent)
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
-                            Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+                        Status.ERROR ->{
+                            if (msg == "401"){
+                                initAuthorized()
+                            }else{
+                                pin_verification_code.setText(initpin)
+                                currentPinInput = ""
+                                loadingMistake(activity as  AppCompatActivity)
+                            }
+                        }
+                        Status.NETWORK -> {
+                            pin_verification_code.setText(initpin)
+                            currentPinInput = ""
+                            loadingConnection(activity as  AppCompatActivity)
                         }
                     }
-                    MainActivity.alert.hide()
+                    HomeActivity.alert.hide()
                 })
             } else {
                 currentPinInput = ""
@@ -137,5 +154,9 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                 existing_liner_anim.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake))
             }
         }
+    }
+
+    private fun initAuthorized(){
+        this.dismiss()
     }
 }

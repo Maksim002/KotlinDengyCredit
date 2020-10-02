@@ -5,143 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".ui.registration.login.MainActivity">
+    tools:context="com.example.kotlinscreenscanner.ui.MainActivity">
 
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:theme="@style/ToolBarStyle"
         android:gravity="center"
-        android:text="Вход"
-        android:textColor="#001"
-        android:textSize="30sp" />
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        android:background="@color/whiteColor"
+        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
-    <androidx.cardview.widget.CardView
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="8dp">
+        android:layout_weight="1" />
 
-        <AutoCompleteTextView
-            android:id="@+id/main_text_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#E8E8E8"
-            android:hint="Логин"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:padding="16dp"
-            android:textSize="16dp" />
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="8dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#E8E8E8"
-            android:orientation="horizontal">
-
-            <AutoCompleteTextView
-                android:id="@+id/main_text_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:background="@null"
-                android:hint="Пароль"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                android:padding="16dp"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/main_show"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Показать"
-                android:textColor="#FF9900" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/main_incorrect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-        android:drawablePadding="10dp"
-        android:visibility="gone"
-        android:layout_marginTop="8dp"
-        android:text="Неверный логин или пароль"
-        android:textColor="@color/colorRed"/>
-
-    <CheckBox
-        android:id="@+id/main_remember_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Запомнить логин"
-        android:textSize="11sp"
-        tools:layout_editor_absoluteX="114dp"
-        tools:layout_editor_absoluteY="105dp" />
-
-    <CheckBox
-        android:id="@+id/main_login_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Вход по коду"
-        android:textSize="11sp"
-        tools:layout_editor_absoluteX="114dp"
-        tools:layout_editor_absoluteY="105dp" />
-
-    <CheckBox
-        android:id="@+id/main_touch_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Вход по Touch ID"
-        android:textSize="11sp"
-        tools:layout_editor_absoluteX="114dp"
-        tools:layout_editor_absoluteY="105dp" />
-
-    <Button
-        android:id="@+id/main_enter"
-        style="@style/RoundedOrangeBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Войти"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/whiteColor"
+        app:itemIconTint="@drawable/bottom_navigation_item_colors"
+        app:labelVisibilityMode="labeled"
+        app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+        app:itemTextAppearanceInactive="@style/BottomNavigationView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="Забыли пароль?"
-        android:textColor="#FF9900"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/main_registration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center"
-        android:text="Регистрация"
-        android:textColor="#FF9900"
-        android:textSize="18sp" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>

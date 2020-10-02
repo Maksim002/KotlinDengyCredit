@@ -1,14 +1,14 @@
 package com.example.kotlincashloan.extension
 
 
-import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import com.example.kotlinscreenscanner.ui.login.fragment.ConnectionBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 
 val bottomSheetDialogFragment = MistakeBottomSheetFragment()
+val connectionSheetDialogFragment = ConnectionBottomSheetFragment()
 
-fun Activity.loadingMistake(activity: AppCompatActivity){
+fun loadingMistake(activity: AppCompatActivity){
     try {
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(activity.supportFragmentManager, bottomSheetDialogFragment.tag)
@@ -17,10 +17,10 @@ fun Activity.loadingMistake(activity: AppCompatActivity){
     }
 }
 
-fun Fragment.loadingMistake(activity: AppCompatActivity){
+fun loadingConnection(activity: AppCompatActivity){
     try {
-        bottomSheetDialogFragment.isCancelable = false;
-        bottomSheetDialogFragment.show(activity.supportFragmentManager, bottomSheetDialogFragment.tag)
+        connectionSheetDialogFragment.isCancelable = false;
+        connectionSheetDialogFragment.show(activity.supportFragmentManager, connectionSheetDialogFragment.tag)
     } catch (e: Exception) {
         println()
     }

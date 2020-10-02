@@ -27,9 +27,5 @@ class MistakeBottomSheetFragment() : BottomSheetDialogFragment() {
         mistake_ok.setOnClickListener {
             this.dismiss()
         }
-
-        mistake_esc.setOnClickListener {
-            this.dismiss()
-        }
     }
 }

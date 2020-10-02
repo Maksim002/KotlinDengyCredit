@@ -1,5 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -10,6 +11,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
@@ -17,10 +19,14 @@ import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomShee
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 
 
@@ -34,6 +40,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actyviti_questionnaire)
+        HomeActivity.alert = LoadingAlert(this)
         initToolBar()
         iniData()
         getListNationality()
@@ -44,52 +51,134 @@ class QuestionnaireActivity : AppCompatActivity() {
         initCheck()
     }
 
-
-
     private fun initCheck() {
         questionnaire_enter.setOnClickListener {
             if (validate()) {
-                val map = mutableMapOf<String, String>()
-                map["last_name"] = questionnaire_text_surnames.text.toString()
-                map["first_name"] = questionnaire_text_name.text.toString()
-                map["second_name"] = questionnaire_text_patronymics.text.toString()
-                map["u_date"] = data
-                map["gender"] = idSex.toString()
-                map["nationality"] = listNationalityId.toString()
-                map["first_phone"] =
-                    MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
-                map["second_phone"] =
-                    MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
-                map["question"] = listSecretQuestionId.toString()
-                map["response"] = questionnaire_secret_response.text.toString()
-                map["sms_code"] = AppPreferences.receivedSms.toString()
-
-                viewModel.questionnaire(map)
-                    .observe(this, Observer { result ->
-                        val msg = result.msg
-                        val data = result.data
-                        when (result.status) {
-                            Status.SUCCESS -> {
-                                if (data!!.result == null) {
-                                    if (data.error.code != 409) {
-                                        loadingMistake(this)
-                                    } else {
-                                        initBusyBottomSheet()
-                                    }
-                                } else {
-                                    initBottomSheet()
-                                }
-                            }
-                            Status.ERROR -> {
-                                loadingMistake(this)
-                            }
-                            Status.NETWORK -> {
-                                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-                            }
-                        }
-                    })
+                questionnaire_enter.isEnabled = false
+                initResult()
             }
         }
+
+        no_connection_repeat.setOnClickListener {
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
+        }
+
+        access_restricted.setOnClickListener {
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
+        }
+
+        not_found.setOnClickListener {
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
+        }
+
+        technical_work.setOnClickListener {
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+                initResult()
+            }else{
+                getIdSxs()
+                getAutoOperation()
+                getListNationality()
+            }
+        }
+    }
+
+    private fun initResult() {
+        val map = mutableMapOf<String, String>()
+        map["last_name"] = questionnaire_text_surnames.text.toString()
+        map["first_name"] = questionnaire_text_name.text.toString()
+        map["second_name"] = questionnaire_text_patronymics.text.toString()
+        map["u_date"] = data
+        map["gender"] = idSex.toString()
+        map["nationality"] = listNationalityId.toString()
+        map["first_phone"] =
+            MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
+        map["second_phone"] = try {
+            MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+        }catch (e: Exception){
+            ""
+        }
+        map["question"] = listSecretQuestionId.toString()
+        map["response"] = questionnaire_secret_response.text.toString()
+        map["sms_code"] = AppPreferences.receivedSms.toString()
+        HomeActivity.alert.show()
+        viewModel.questionnaire(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            if (data.error.code != 409) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            }else if (data.error.code == 401){
+                                initAuthorized()
+                            }else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403){
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            }
+                            else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_layout.visibility = View.VISIBLE
+                                initBusyBottomSheet()
+                                initVisibilities()
+                            }
+                        } else {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
+                            initBottomSheet()
+                            initVisibilities()
+                        }
+                    }
+                    Status.ERROR -> {
+                        if (msg == "401") {
+                            initAuthorized()
+                        } else if (msg == "409") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        } else {
+                            questionnaire_layout.visibility = View.VISIBLE
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            loadingMistake(this)
+                        }
+                    }
+
+                    Status.NETWORK -> {
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
+                    }
+                }
+            questionnaire_enter.isEnabled = true
+            HomeActivity.alert.hide()
+            })
+    }
+
+    fun initVisibilities(){
+        questionnaire_no_questionnaire.visibility = View.GONE
+        questionnaire_layout.visibility = View.VISIBLE
     }
 
     private fun iniClock() {
@@ -100,8 +189,14 @@ class QuestionnaireActivity : AppCompatActivity() {
             }else{
                 questionnaire_enter.isClickable = false
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
+
             }
         }
+    }
+
+    private fun initAuthorized(){
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 
     private fun initBottomSheet() {
@@ -131,6 +226,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         questionnaire_enter.isClickable = false
+        questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
         questionnaire_phone_number.setText(AppPreferences.number.toString())
         questionnaire_phone_additional.mask = AppPreferences.isFormatMask
     }
@@ -150,6 +246,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListGenderResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        HomeActivity.alert.show()
         viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -160,16 +257,53 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_id_sxs.setAdapter(adapterIdSxs)
                         list = data.result
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "403"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    questionnaire_no_questionnaire.visibility = View.VISIBLE
+                    questionnaire_layout.visibility = View.GONE
+                    questionnaire_technical_work.visibility = View.GONE
+                    questionnaire_not_found.visibility = View.GONE
+                    questionnaire_access_restricted.visibility = View.GONE
                 }
             }
+            HomeActivity.alert.hide()
         })
         questionnaire_id_sxs.keyListener = null
         questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
@@ -196,6 +330,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        HomeActivity.alert.show()
         viewModel.listNationality(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -206,16 +341,58 @@ class QuestionnaireActivity : AppCompatActivity() {
                         questionnaire_id_nationality.setAdapter(adapterListNationality)
                         list = data.result
                     } else {
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "403") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    if (msg == "600"){
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
+                    }
                 }
             }
+            HomeActivity.alert.hide()
         })
         questionnaire_id_nationality.keyListener = null
         questionnaire_id_nationality.setOnItemClickListener { adapterView, view, position, l ->
@@ -243,6 +420,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         var list: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
+        HomeActivity.alert.show()
         viewModel.listSecretQuestion(map).observe(this, Observer { result ->
             val msg = result.msg
             val data = result.data
@@ -252,21 +430,55 @@ class QuestionnaireActivity : AppCompatActivity() {
                         val adapterListSecretQuestion = ArrayAdapter(
                             this,
                             android.R.layout.simple_dropdown_item_1line,
-                            data!!.result
+                            data.result
                         )
                         questionnaire_id_secret.setAdapter(adapterListSecretQuestion)
                         list = data.result
                     }else{
-                        loadingMistake(this)
+                        if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        }
                     }
                 }
                 Status.ERROR -> {
-                    loadingMistake(this)
+                    if (msg == "404") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "403") {
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    } else if (msg == "401") {
+                        initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
                 }
                 Status.NETWORK -> {
-                    Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                    questionnaire_no_questionnaire.visibility = View.VISIBLE
+                    questionnaire_layout.visibility = View.GONE
                 }
             }
+            HomeActivity.alert.hide()
         })
 
         questionnaire_id_secret.setKeyListener(null)
@@ -332,22 +544,6 @@ class QuestionnaireActivity : AppCompatActivity() {
             questionnaire_id_nationality.error = null
         }
 
-        if (AppPreferences.numberCharacters != 11) {
-            if (questionnaire_phone_additional.text!!.toString().length != 19) {
-                questionnaire_phone_additional.error = "Ввидите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
-        } else {
-            if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
-                questionnaire_phone_additional.error = "Ввидите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
-        }
-
         if (questionnaire_id_secret.text.toString().isEmpty()) {
             questionnaire_id_secret.error = "Выберите секретный вопрос"
             valid = false
@@ -358,6 +554,9 @@ class QuestionnaireActivity : AppCompatActivity() {
         if (questionnaire_secret_response.text.toString().isEmpty()) {
             questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
+        }
+        if (!valid){
+            Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
     }

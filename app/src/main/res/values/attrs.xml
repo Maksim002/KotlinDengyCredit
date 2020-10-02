@@ -16,4 +16,22 @@
         <attr name="pinBackgroundDrawable" format="reference" />
         <attr name="pinBackgroundIsSquare" format="boolean" />
     </declare-styleable>
+
+    <attr name="title_text"/>
+    <attr name="content_text"/>
+    <attr format="reference" name="bg_drawable_regular"/>
+    <attr format="reference" name="bg_drawable_expanded"/>
+    <attr format="reference" name="arrow_drawable"/>
+    <attr name="title_text_color"/>
+    <attr name="title_text_color_expanded"/>
+    <attr format="dimension" name="title_text_size"/>
+    <attr format="reference" name="title_font"/>
+    <attr format="dimension" name="content_text_size"/>
+    <attr name="content_text_color"/>
+    <attr name="link_text_color"/>
+    <attr format="boolean" name="underline_link"/>
+    <attr format="reference" name="content_font"/>
+    <attr format="integer" name="expand_duration"/>
+    <attr format="dimension" name="panel_padding"/>
+    <attr format="dimension" name="content_padding"/>
 </resources>

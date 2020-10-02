@@ -1,10 +1,17 @@
 package com.timelysoft.tsjdomcom.service
 
+
+import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
+import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
+import com.example.kotlincashloan.service.model.support.ListFaqResultModel
+import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
+import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
+import com.example.kotlincashloan.service.model.recovery.SupportTicketResultModel
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.myapplication.model.ResultModel
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 interface ApiService {
@@ -47,5 +54,35 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listAvailableCountry?token=oYyxhIFgJjAb")
     suspend fun listAvailableCountry(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<CounterResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("recoveryAccess?token=oYyxhIFgJjAb")
+    suspend fun recoveryAccess(@FieldMap params: Map<String, String>): Response<CommonResponse<RecoveryAccessResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listSupportType?token=oYyxhIFgJjAb")
+    suspend fun listSupportType(@FieldMap params: Map<String, Int>): Response<CommonResponse<ArrayList<ListSupportTypeResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("supportTicket?token=oYyxhIFgJjAb")
+    suspend fun supportTicket(@FieldMap params: Map<String, String>): Response<CommonResponse<SupportTicketResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFaq?token=oYyxhIFgJjAb")
+    fun listFaq(@FieldMap params: Map<String, String>): Call<CommonResponse<ArrayList<ListFaqResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listNews?token=oYyxhIFgJjAb")
+    fun listNews(@FieldMap params: Map<String, String>): Call<CommonResponse<ArrayList<ListNewsResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("getNews?token=oYyxhIFgJjAb")
+    fun getNews(@FieldMap params: Map<String, String>):Call<CommonResponse<GetNewsResultModel>>
 }
 

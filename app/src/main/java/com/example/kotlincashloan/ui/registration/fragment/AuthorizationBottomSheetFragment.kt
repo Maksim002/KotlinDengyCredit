@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.registration.login.MainActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_authorization_bottom_sheet.*
 
@@ -26,7 +26,7 @@ class AuthorizationBottomSheetFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         authorization.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, HomeActivity::class.java)
             startActivity(intent)
         }
     }

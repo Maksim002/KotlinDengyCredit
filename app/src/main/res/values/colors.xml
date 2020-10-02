@@ -5,6 +5,8 @@
     <color name="colorAccent">#03DAC5</color>
 
     <color name="orangeColor">#FF9116</color>
+    <color name="blackColor">#000000</color>
+    <color name="orangeGray">#6A6868</color>
     <color name="blueColor">#B67123</color>
     <color name="whiteColor">#FFF</color>
     <color name="colorDrawer">#FF9116</color>

@@ -92,4 +92,10 @@ dependencies {
 
     //DatePickerDialog(
     implementation 'com.ycuwq.widgets:datepicker:1.2.0'
+
+    //READING HTML
+    implementation 'com.github.mukeshsolanki:MarkdownView-Android:1.1.1'
+
+    //закругление углов картинки
+    implementation 'com.mikhaellopez:circularimageview:4.2.0'
 }
