@@ -1,12 +1,15 @@
 package com.example.kotlincashloan.ui.support
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -49,6 +52,14 @@ class SupportFragment : Fragment() {
                 viewModel.listFaq(map)
                 initRecycler()
             }, 500)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
         }
     }
 

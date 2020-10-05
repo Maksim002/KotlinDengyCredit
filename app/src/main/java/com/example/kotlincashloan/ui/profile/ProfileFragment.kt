@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
@@ -35,6 +36,13 @@ class ProfileFragment : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
         initPager()
+        initClick()
+    }
+
+    private fun initClick() {
+        profile_your.setOnClickListener {
+            findNavController().navigate(R.id.profile_setting_navigation)
+        }
     }
 
     private fun initPager() {
@@ -88,6 +96,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onResume() {
+        super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
@@ -97,18 +106,6 @@ class ProfileFragment : Fragment() {
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
             toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
-        }
-        super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
         }
     }
 }

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/notification_settings"
-        android:icon="@drawable/ic_baseline_settings_oreng_24"
+        android:icon="@drawable/ic_baseline_settings_24"
         app:showAsAction="always"
         android:title="TODO" />
 </menu>

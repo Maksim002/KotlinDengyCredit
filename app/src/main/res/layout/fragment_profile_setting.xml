@@ -37,56 +37,14 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Имя Фамилия"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="@color/blackColor"
-        android:textSize="30sp"/>
-
-    <TextView
         android:id="@+id/profile_your"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Просмотреть профиль"
+        android:text="Изменить фото профиля"
         android:gravity="center"
+        android:layout_marginTop="4dp"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/orangeColor"/>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
-        android:clipToPadding="false">
-
-        <View
-            android:id="@+id/profile_indicator"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:background="@drawable/gradient_bg"/>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profile_tab"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/tab_bg"
-            app:tabGravity="fill"
-            app:tabMode="fixed"
-            app:tabSelectedTextColor="#ffffff"
-            app:tabIndicatorColor="@null"
-            app:tabRippleColor="@null"/>
-    </FrameLayout>
-
-    <androidx.viewpager.widget.ViewPager
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:id="@+id/profile_pager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </LinearLayout>

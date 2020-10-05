@@ -1,16 +1,13 @@
 package com.example.kotlincashloan.ui.Loans
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
-import com.example.kotlincashloan.service.model.Loans.ListNewsModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
-import com.example.kotlincashloan.service.model.support.ListFaqResultModel
+import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
-import com.timelysoft.tsjdomcom.service.ResultStatus
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,6 +51,26 @@ class LoansViewModel: ViewModel() {
                     listGetDta.postValue(response.body())
                 }else{
                     errorGet.postValue(response.code().toString())
+                }
+                HomeActivity.alert.hide()
+            }
+        })
+    }
+
+    val errorLoanInfo = MutableLiveData<String>()
+    var listLoanInfo = MutableLiveData<CommonResponse<LoanInfoResultModel>>()
+
+    fun getLoanInfo(map: Map<String, String>){
+        HomeActivity.alert.show()
+        RetrofitService.apiService().loanInfo(map).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<LoanInfoResultModel>>, t: Throwable) {
+                errorLoanInfo.postValue( "600")
+            }
+            override fun onResponse(call: Call<CommonResponse<LoanInfoResultModel>>, response: Response<CommonResponse<LoanInfoResultModel>>) {
+                if (response.isSuccessful) {
+                    listLoanInfo.postValue(response.body())
+                }else{
+                    errorLoanInfo.postValue(response.code().toString())
                 }
                 HomeActivity.alert.hide()
             }

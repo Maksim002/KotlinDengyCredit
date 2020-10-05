@@ -24,8 +24,7 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
                 notifyItemChanged(upClear())
                 item.clicked = true
             }
-            notifyDataSetChanged()
-            notifyItemChanged(holder.adapterPosition, item)
+            notifyItemRangeRemoved(holder.adapterPosition, items.size)
         }
 
         if (item.clicked) {
