@@ -53,6 +53,7 @@ class LoansFragment : Fragment(), LoansListener {
         initRecycler()
         initClick()
         initRefresh()
+        initResult()
     }
 
     fun initCode(){
@@ -230,7 +231,7 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRepeat(){
         if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
-            initRestart()
+            initRecycler()
             initResult()
             viewModel.errorLoanInfo.value = null
             viewModel.errorNews.value = null
