@@ -50,10 +50,10 @@ class LoansFragment : Fragment(), LoansListener {
         map.put("v", "4")
 
         initLogicSeekBar()
+        initResult()
         initRecycler()
         initClick()
         initRefresh()
-        initResult()
     }
 
     fun initCode(){
@@ -231,6 +231,11 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRepeat(){
         if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
+            initRecycler()
+            initResult()
+            viewModel.errorLoanInfo.value = null
+            viewModel.errorNews.value = null
+        }else{
             initRecycler()
             initResult()
             viewModel.errorLoanInfo.value = null
