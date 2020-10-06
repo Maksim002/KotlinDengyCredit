@@ -212,25 +212,28 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
-            initRestart()
-            initResult()
-
+            initRepeat()
         }
 
         access_restricted.setOnClickListener {
-            initRestart()
-            initResult()
+            initRepeat()
         }
 
         not_found.setOnClickListener {
-            initRestart()
-            initResult()
-
+            initRepeat()
         }
 
         technical_work.setOnClickListener {
+            initRepeat()
+        }
+    }
+
+    private fun initRepeat(){
+        if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
             initRestart()
             initResult()
+            viewModel.errorLoanInfo.value = null
+            viewModel.errorNews.value = null
         }
     }
 
