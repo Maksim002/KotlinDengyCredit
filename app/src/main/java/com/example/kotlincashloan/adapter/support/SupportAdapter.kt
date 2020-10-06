@@ -14,7 +14,7 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
 
     override fun bind(item: ListFaqResultModel, holder: ViewHolder) {
         holder.itemView.support_name.text = item.name
-        holder.itemView.support_text.setMarkDownText(item.text)
+        holder.itemView.support_text.loadMarkdown(item.text)
         holder.itemView.support_text.getSettings().loadWithOverviewMode = true
 
         holder.itemView.setOnClickListener {
@@ -23,8 +23,8 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
             } else {
                 notifyItemChanged(upClear())
                 item.clicked = true
+                notifyItemChanged(holder.adapterPosition)
             }
-            notifyItemRangeRemoved(holder.adapterPosition, items.size)
         }
 
         if (item.clicked) {

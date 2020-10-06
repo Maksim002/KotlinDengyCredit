@@ -15,6 +15,8 @@ import retrofit2.Response
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
+    var listNewsId: String = ""
+    var listLoanId: String = ""
 
     val errorNews = MutableLiveData<String>()
     var listNewsDta = MutableLiveData<CommonResponse<ArrayList<ListNewsResultModel>>>()
@@ -29,6 +31,7 @@ class LoansViewModel: ViewModel() {
             override fun onResponse(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, response: Response<CommonResponse<ArrayList<ListNewsResultModel>>>) {
                 if (response.isSuccessful) {
                     listNewsDta.postValue(response.body())
+                    listNewsId = response.code().toString()
                 }else{
                     errorNews.postValue(response.code().toString())
                 }
@@ -69,6 +72,7 @@ class LoansViewModel: ViewModel() {
             override fun onResponse(call: Call<CommonResponse<LoanInfoResultModel>>, response: Response<CommonResponse<LoanInfoResultModel>>) {
                 if (response.isSuccessful) {
                     listLoanInfo.postValue(response.body())
+                    listLoanId = response.code().toString()
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }
