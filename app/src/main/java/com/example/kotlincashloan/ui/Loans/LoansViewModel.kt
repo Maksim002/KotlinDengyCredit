@@ -15,11 +15,10 @@ import retrofit2.Response
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
-    var listNewsId: String = ""
-    var listLoanId: String = ""
 
     val errorNews = MutableLiveData<String>()
     var listNewsDta = MutableLiveData<CommonResponse<ArrayList<ListNewsResultModel>>>()
+    var listNewsId: String = ""
 
     fun listNews(map: Map<String, String>){
         HomeActivity.alert.show()
@@ -62,6 +61,7 @@ class LoansViewModel: ViewModel() {
 
     val errorLoanInfo = MutableLiveData<String>()
     var listLoanInfo = MutableLiveData<CommonResponse<LoanInfoResultModel>>()
+    var listLoanId: String = ""
 
     fun getLoanInfo(map: Map<String, String>){
         HomeActivity.alert.show()

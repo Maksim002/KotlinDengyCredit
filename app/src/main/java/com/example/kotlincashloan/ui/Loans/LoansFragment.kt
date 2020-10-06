@@ -47,13 +47,12 @@ class LoansFragment : Fragment(), LoansListener {
         (activity as AppCompatActivity).supportActionBar?.show()
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("v", "3")
+        map.put("v", "4")
 
         initLogicSeekBar()
         initRecycler()
         initClick()
         initRefresh()
-        initResult()
     }
 
     fun initCode(){
@@ -66,11 +65,12 @@ class LoansFragment : Fragment(), LoansListener {
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listLoanId = result.error.code.toString()
+                initErrorResult(result.error.code!!)
             }else{
                 initCode()
                 if (result.result != null) {
                     if (listLoanId == "200" && listNewsId == "200") {
-                        if (result.result.getParallelLoan == false) {
+                        if (result.result.parallelLoan!!.status == false) {
                             loan_layout.visibility = View.GONE
                         } else {
                             loan_layout.visibility = View.VISIBLE
@@ -78,7 +78,20 @@ class LoansFragment : Fragment(), LoansListener {
                         if (result.result.activeLoan!!.status == false) {
                             loan_status.visibility = View.GONE
                         } else {
-                            loan_layout.visibility = View.VISIBLE
+                            loan_status.visibility = View.VISIBLE
+                        }
+                        if (result.result.getActiveLoan == true){
+                            loan_text_active.visibility = View.VISIBLE
+                            text_center.visibility = View.GONE
+                            loan_payment_sum.visibility = View.GONE
+                            loan_payment_date.visibility = View.GONE
+                            loan_trait.visibility = View.GONE
+                        }else{
+                            loan_text_active.visibility = View.GONE
+                            text_center.visibility = View.VISIBLE
+                            loan_payment_sum.visibility = View.VISIBLE
+                            loan_payment_date.visibility = View.VISIBLE
+                            loan_trait.visibility = View.VISIBLE
                         }
                         if (result.result.getActiveLoan == false) {
                             loan_get_active.visibility = View.GONE
@@ -87,7 +100,7 @@ class LoansFragment : Fragment(), LoansListener {
                         }
                         if (result.result.getParallelLoan == false) {
                             loan_get_parallel.visibility = View.GONE
-                        } else {
+                        }else {
                             loan_get_parallel.visibility = View.VISIBLE
                         }
 
@@ -151,11 +164,10 @@ class LoansFragment : Fragment(), LoansListener {
                                 }
                             }
                         }
+                        initRecycler()
                         loans_layout.visibility = View.VISIBLE
                         loans_no_connection.visibility = View.GONE
                     }
-                } else {
-                    initErrorResult(result.error.code!!)
                 }
             }
             HomeActivity.alert.hide()
@@ -183,7 +195,7 @@ class LoansFragment : Fragment(), LoansListener {
         if (viewModel.listLoanInfo.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.getLoanInfo(map)
-                initRecycler()
+                initResult()
             }, 500)
         }
 
@@ -250,17 +262,18 @@ class LoansFragment : Fragment(), LoansListener {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listNewsId = result.error.toString()
+                initErrorResult(result.error.code!!)
             }else{
-                initCode()
                 if (result.result != null) {
+                    initCode()
                     if (listLoanId == "200" && listNewsId == "200") {
                         myAdapter.update(result.result)
                         loans_recycler.adapter = myAdapter
                         loans_layout.visibility = View.VISIBLE
                         loans_no_connection.visibility = View.GONE
+                    }else{
+                        initResult()
                     }
-                } else {
-                    initErrorResult(result.error.code!!)
                 }
             }
             HomeActivity.alert.hide()
