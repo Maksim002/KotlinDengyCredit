@@ -1,14 +1,12 @@
 package com.example.kotlincashloan.ui.profile
 
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.widget.FrameLayout
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -16,8 +14,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.extension.banPressed
 import kotlinx.android.synthetic.main.fragment_profile.*
-
 
 class ProfileFragment : Fragment() {
     private var indicatorWidth = 0
@@ -35,6 +33,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         initPager()
         initClick()
     }
@@ -71,28 +70,6 @@ class ProfileFragment : Fragment() {
             override fun onPageSelected(i: Int) {}
             override fun onPageScrollStateChanged(i: Int) {}
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.profile_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        val settingsMenuItem = menu.findItem(R.id.profile_settings)
-        val s = SpannableString(settingsMenuItem.title)
-        s.setSpan(ForegroundColorSpan(Color.WHITE), 0, s.length, 0)
-        settingsMenuItem.title = s
-        super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.profile_settings->{
-
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {

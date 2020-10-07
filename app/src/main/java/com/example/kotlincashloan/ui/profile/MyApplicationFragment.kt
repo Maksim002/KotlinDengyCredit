@@ -7,10 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.MyApplicationAdapter
-import com.example.kotlincashloan.adapter.profile.MyOperationAdapter
 import com.example.kotlincashloan.adapter.profile.MyOperationModel
 import kotlinx.android.synthetic.main.fragment_my_application.*
-import kotlinx.android.synthetic.main.fragment_my_operation.*
 
 class MyApplicationFragment : Fragment() {
     private var myAdapter = MyApplicationAdapter()

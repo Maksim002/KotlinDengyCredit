@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
+import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans.*
@@ -33,6 +35,7 @@ class LoansFragment : Fragment(), LoansListener {
     val handler = Handler()
     private var listNewsId: String = ""
     private var listLoanId: String = ""
+    private var refresh = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +48,7 @@ class LoansFragment : Fragment(), LoansListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("v", "4")
@@ -62,7 +66,9 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initResult() {
-        HomeActivity.alert.show()
+        if (!refresh) {
+            HomeActivity.alert.show()
+        }
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listLoanId = result.error.code.toString()
@@ -247,6 +253,7 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setOnRefreshListener {
             handler.postDelayed(Runnable {
                 initRestart()
+                initResult()
                 loans_layout.isRefreshing = false
             }, 1000)
         }
@@ -267,7 +274,9 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initRecycler() {
-        HomeActivity.alert.show()
+        if (!refresh) {
+            HomeActivity.alert.show()
+        }
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listNewsId = result.error.toString()

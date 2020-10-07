@@ -18,7 +18,6 @@ class SupportViewModel : ViewModel(){
     var listFaqDta = MutableLiveData<CommonResponse<ArrayList<ListFaqResultModel>>>()
 
     fun listFaq(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listFaq(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListFaqResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFaqResultModel>>>, t: Throwable) {
@@ -30,7 +29,6 @@ class SupportViewModel : ViewModel(){
                 }else{
                     error.postValue(response.code().toString())
                 }
-                HomeActivity.alert.hide()
             }
         })
     }

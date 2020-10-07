@@ -21,7 +21,6 @@ class LoansViewModel: ViewModel() {
     var listNewsId: String = ""
 
     fun listNews(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listNews(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
@@ -34,7 +33,6 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorNews.postValue(response.code().toString())
                 }
-                HomeActivity.alert.hide()
             }
         })
     }
@@ -43,7 +41,6 @@ class LoansViewModel: ViewModel() {
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
                 errorGet.postValue( "600")
@@ -54,7 +51,6 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorGet.postValue(response.code().toString())
                 }
-                HomeActivity.alert.hide()
             }
         })
     }
@@ -64,7 +60,6 @@ class LoansViewModel: ViewModel() {
     var listLoanId: String = ""
 
     fun getLoanInfo(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().loanInfo(map).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInfoResultModel>>, t: Throwable) {
                 errorLoanInfo.postValue( "600")
@@ -76,7 +71,6 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }
-                HomeActivity.alert.hide()
             }
         })
     }

@@ -8,12 +8,14 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
+import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_support.*
@@ -28,6 +30,7 @@ class SupportFragment : Fragment() {
     private var viewModel = SupportViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
+    private var refresh = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,10 +43,11 @@ class SupportFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         initRecycler()
         iniClick()
         initRefresh()
-    }
+  }
 
     override fun onResume() {
         super.onResume()
@@ -55,8 +59,10 @@ class SupportFragment : Fragment() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+            requireActivity().getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
             toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
@@ -94,8 +100,9 @@ class SupportFragment : Fragment() {
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            initRestart()
-            support_swipe_layout.isRefreshing = false
+                refresh = true
+                initRestart()
+                support_swipe_layout.isRefreshing = false
             }, 1000)
         }
         support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -104,7 +111,9 @@ class SupportFragment : Fragment() {
     private fun initRecycler() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        HomeActivity.alert.show()
+        if (!refresh) {
+            HomeActivity.alert.show()
+        }
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 myAdapter.update(result.result)

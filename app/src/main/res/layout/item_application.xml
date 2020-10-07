@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
+                android:paddingBottom="2dp"
                 android:text="Статус"
                 android:textColor="@color/whiteColor"
                 android:textSize="11sp" />
