@@ -88,6 +88,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         val map = HashMap<String, String>()
         map.put("password", home_text_password.text.toString())
         map.put("login", home_text_login.text.toString())
+        map.put("uid","null")
+        map.put("system", "1")
         home_enter.isEnabled = false
         alert.show()
         viewModel.auth(map).observe(this, Observer { result ->

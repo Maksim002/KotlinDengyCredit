@@ -67,6 +67,8 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
             val map = HashMap<String, String>()
             map.put("password", AppPreferences.password.toString())
             map.put("login", AppPreferences.login.toString())
+            map.put("uid","null")
+            map.put("system", "1")
             HomeActivity.alert.show()
             viewModel.auth(map).observe(this, Observer { result ->
                 val msg = result.msg
