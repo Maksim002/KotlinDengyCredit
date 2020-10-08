@@ -10,8 +10,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.android.navigationadvancedsample.setupWithNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.serialization.protobuf.ProtoBuf.Companion.context
 
 class MainActivity : AppCompatActivity() {
 

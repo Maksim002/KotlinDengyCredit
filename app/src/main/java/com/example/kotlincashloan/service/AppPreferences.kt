@@ -79,6 +79,12 @@ object AppPreferences {
             it.putBoolean("isPinCode", value)
         }
 
+    var observedInternet: Boolean
+        get() = preferences.getBoolean("observedInternet", false)
+        set(value) = preferences.edit {
+            it.putBoolean("observedInternet", value)
+        }
+
     var isRemember: Boolean
         get() = preferences.getBoolean("isRemember", false)
         set(value) = preferences.edit {

@@ -1,15 +1,18 @@
 package com.example.myapplication
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlinscreenscanner.service.model.*
-import com.example.myapplication.model.AuthModel
 import com.example.myapplication.model.ResultModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.ResultStatus
-import java.util.*
-import kotlin.collections.ArrayList
+import retrofit2.Call
+import java.io.IOException
+import kotlin.coroutines.coroutineContext
+
 
 class LoginViewModel : ViewModel() {
 

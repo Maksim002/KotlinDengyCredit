@@ -12,6 +12,7 @@ import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
@@ -24,7 +25,11 @@ class LoansViewModel: ViewModel() {
         RetrofitService.apiService().listNews(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
-                errorNews.postValue( "600")
+                if (t is IOException) {
+                    println()
+                }else{
+                    errorNews.postValue( "600")
+                }
             }
             override fun onResponse(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, response: Response<CommonResponse<ArrayList<ListNewsResultModel>>>) {
                 if (response.isSuccessful) {
@@ -36,6 +41,9 @@ class LoansViewModel: ViewModel() {
             }
         })
     }
+
+
+
 
     val errorGet = MutableLiveData<String>()
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()

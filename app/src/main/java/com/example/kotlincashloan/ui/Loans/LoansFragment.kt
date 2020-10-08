@@ -60,7 +60,7 @@ class LoansFragment : Fragment(), LoansListener {
         initRefresh()
     }
 
-    fun initCode(){
+    fun initCode() {
         listLoanId = viewModel.listLoanId
         listNewsId = viewModel.listNewsId
     }
@@ -73,7 +73,7 @@ class LoansFragment : Fragment(), LoansListener {
             if (result.error != null) {
                 listLoanId = result.error.code.toString()
                 initErrorResult(result.error.code!!)
-            }else{
+            } else {
                 initCode()
                 if (result.result != null) {
                     if (listLoanId == "200" && listNewsId == "200") {
@@ -87,13 +87,13 @@ class LoansFragment : Fragment(), LoansListener {
                         } else {
                             loan_status.visibility = View.VISIBLE
                         }
-                        if (result.result.getActiveLoan == true){
+                        if (result.result.getActiveLoan == true) {
                             loan_text_active.visibility = View.VISIBLE
                             text_center.visibility = View.GONE
                             loan_payment_sum.visibility = View.GONE
                             loan_payment_date.visibility = View.GONE
                             loan_trait.visibility = View.GONE
-                        }else{
+                        } else {
                             loan_text_active.visibility = View.GONE
                             text_center.visibility = View.VISIBLE
                             loan_payment_sum.visibility = View.VISIBLE
@@ -107,7 +107,7 @@ class LoansFragment : Fragment(), LoansListener {
                         }
                         if (result.result.getParallelLoan == false) {
                             loan_get_parallel.visibility = View.GONE
-                        }else {
+                        } else {
                             loan_get_parallel.visibility = View.VISIBLE
                         }
 
@@ -128,7 +128,8 @@ class LoansFragment : Fragment(), LoansListener {
                                 loans_sum.text = result.result.activeLoan!!.balance.toString()
                                 loan_paid.text = result.result.activeLoan!!.paid.toString()
                                 loan_total.text = result.result.activeLoan!!.total.toString()
-                                loan_payment_sum.text = result.result.activeLoan!!.paymentSum.toString()
+                                loan_payment_sum.text =
+                                    result.result.activeLoan!!.paymentSum.toString()
                                 loan_payment_date.text = result.result.activeLoan!!.paymentDate
                             } else {
                                 loans_sum.text = result.result.parallelLoan!!.balance.toString()
@@ -153,7 +154,8 @@ class LoansFragment : Fragment(), LoansListener {
                                     loan_total.text = result.result.parallelLoan!!.total.toString()
                                     loan_payment_sum.text =
                                         result.result.parallelLoan!!.paymentSum.toString()
-                                    loan_payment_date.text = result.result.parallelLoan!!.paymentDate
+                                    loan_payment_date.text =
+                                        result.result.parallelLoan!!.paymentDate
 
                                     if (result.result.parallelLoan!!.balance == null
                                         || result.result.parallelLoan!!.paid == null
@@ -181,7 +183,7 @@ class LoansFragment : Fragment(), LoansListener {
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null){
+            if (error != null) {
                 initError(error)
                 listLoanId = error
             }
@@ -235,18 +237,21 @@ class LoansFragment : Fragment(), LoansListener {
         }
     }
 
-    private fun initRepeat(){
-        if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
-            initRecycler()
-            initResult()
-            viewModel.errorLoanInfo.value = null
-            viewModel.errorNews.value = null
-        }else{
-            initRecycler()
-            initResult()
-            viewModel.errorLoanInfo.value = null
-            viewModel.errorNews.value = null
-        }
+    private fun initRepeat() {
+        initRestart()
+        viewModel.errorLoanInfo.value = null
+        viewModel.errorNews.value = null
+//        if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
+//            initRecycler()
+//            initResult()
+//            viewModel.errorLoanInfo.value = null
+//            viewModel.errorNews.value = null
+//        }else{
+//            initRecycler()
+//            initResult()
+//            viewModel.errorLoanInfo.value = null
+//            viewModel.errorNews.value = null
+//        }
     }
 
     private fun initRefresh() {
@@ -265,7 +270,7 @@ class LoansFragment : Fragment(), LoansListener {
         if (viewModel.listNewsDta.value != null && viewModel.listLoanInfo.value != null) {
             viewModel.listNews(map)
             viewModel.getLoanInfo(map)
-        }else {
+        } else {
             viewModel.errorNews.value = null
             viewModel.listNews(map)
             viewModel.errorLoanInfo.value = null
@@ -281,7 +286,7 @@ class LoansFragment : Fragment(), LoansListener {
             if (result.error != null) {
                 listNewsId = result.error.toString()
                 initErrorResult(result.error.code!!)
-            }else{
+            } else {
                 if (result.result != null) {
                     initCode()
                     if (listLoanId == "200" && listNewsId == "200") {
@@ -289,7 +294,7 @@ class LoansFragment : Fragment(), LoansListener {
                         loans_recycler.adapter = myAdapter
                         loans_layout.visibility = View.VISIBLE
                         loans_no_connection.visibility = View.GONE
-                    }else{
+                    } else {
                         initResult()
                     }
                 }
@@ -298,7 +303,7 @@ class LoansFragment : Fragment(), LoansListener {
         })
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null){
+            if (error != null) {
                 initError(error)
                 listNewsId = error
             }
