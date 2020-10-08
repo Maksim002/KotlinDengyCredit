@@ -13,5 +13,5 @@ class ListFaqResultModel(
     @SerializedName("text")
     var text: String? = null,
 
-    var clicked: Boolean = false
+    var clicked: Boolean
 )

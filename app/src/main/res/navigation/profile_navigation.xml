@@ -10,4 +10,10 @@
         android:name="com.example.kotlincashloan.ui.profile.ProfileFragment"
         android:label="Профиль"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/profile_setting_navigation"
+        android:name="com.example.kotlincashloan.ui.profile.ProfileSettingFragment"
+        android:label="Профиль"
+        tools:layout="@layout/fragment_profile_setting" />
 </navigation>

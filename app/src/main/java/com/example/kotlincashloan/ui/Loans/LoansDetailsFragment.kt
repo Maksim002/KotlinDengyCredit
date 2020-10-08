@@ -1,12 +1,16 @@
 package com.example.kotlincashloan.ui.Loans
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.kotlincashloan.R
@@ -26,6 +30,7 @@ class LoansDetailsFragment : Fragment() {
     private var viewModel = LoansViewModel()
     private var isNews: Int = 0
     val map = HashMap<String, String>()
+    val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,15 +88,23 @@ class LoansDetailsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (viewModel.listGetDta.value == null){
+            handler.postDelayed(Runnable {
             initRequest()
             viewModel.getNews(map)
+            }, 800)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
         }
     }
 
     private fun initRestart() {
         initRequest()
-//        viewModel.listGetDta.removeObservers(this);
-//        viewModel.errorGet.value = null
         if (viewModel.listGetDta.value != null){
             viewModel.getNews(map)
         }else {
