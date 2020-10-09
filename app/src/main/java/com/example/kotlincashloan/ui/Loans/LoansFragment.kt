@@ -238,20 +238,12 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initRepeat() {
-        initRestart()
-        viewModel.errorLoanInfo.value = null
-        viewModel.errorNews.value = null
-//        if (viewModel.errorLoanInfo.value != null && viewModel.errorNews.value != null){
-//            initRecycler()
-//            initResult()
-//            viewModel.errorLoanInfo.value = null
-//            viewModel.errorNews.value = null
-//        }else{
-//            initRecycler()
-//            initResult()
-//            viewModel.errorLoanInfo.value = null
-//            viewModel.errorNews.value = null
-//        }
+        if (viewModel.listLoanInfo.value != null){
+            viewModel.listNews(map)
+        }
+        if (viewModel.listLoanInfo.value != null){
+            viewModel.getLoanInfo(map)
+        }
     }
 
     private fun initRefresh() {
@@ -266,15 +258,13 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initRestart() {
-        initRecycler()
         if (viewModel.listNewsDta.value != null && viewModel.listLoanInfo.value != null) {
-            viewModel.listNews(map)
-            viewModel.getLoanInfo(map)
-        } else {
             viewModel.errorNews.value = null
-            viewModel.listNews(map)
             viewModel.errorLoanInfo.value = null
+            viewModel.listNews(map)
             viewModel.getLoanInfo(map)
+            initResult()
+            initRecycler()
         }
     }
 
