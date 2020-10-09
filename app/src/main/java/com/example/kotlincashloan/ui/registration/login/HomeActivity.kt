@@ -110,13 +110,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
         } else {
+            alert.show()
             val map = HashMap<String, String>()
             map.put("password", home_text_password.text.toString())
             map.put("login", home_text_login.text.toString())
             map.put("uid", AppPreferences.pushNotificationsId.toString())
             map.put("system", "1")
             home_enter.isEnabled = false
-            alert.show()
             viewModel.auth(map).observe(this, Observer { result ->
                 val data = result.data
                 when (result.status) {

@@ -77,10 +77,10 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             recovery_no_questionnaire.visibility = View.VISIBLE
             password_layout.visibility = View.GONE
         } else {
-            HomeActivity.alert.show()
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
             map.put("response", password_recovery_word.text.toString())
+            HomeActivity.alert.show()
             myModel.recoveryAccess(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -162,7 +162,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     }
 
     private fun getListCountry() {
-        HomeActivity.alert.show()
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             recovery_no_questionnaire.visibility = View.VISIBLE
@@ -174,6 +173,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             var list: ArrayList<CounterResultModel> = arrayListOf()
             val map = HashMap<String, Int>()
             map.put("id", 0)
+            HomeActivity.alert.show()
             viewModel.listAvailableCountry(map)
                 .observe(this, androidx.lifecycle.Observer { result ->
                     val msg = result.msg

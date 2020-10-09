@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_password_recovery_error.*
 
 class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
@@ -22,6 +25,7 @@ class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        HomeActivity.alert = LoadingAlert(requireActivity())
         initClick()
     }
 
@@ -31,8 +35,10 @@ class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
         }
 
         password_sheer_service.setOnClickListener {
+            HomeActivity.alert.show()
             val intent = Intent(context, ContactingServiceActivity::class.java)
             startActivity(intent)
+            HomeActivity.alert.hide()
         }
     }
 }
