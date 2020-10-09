@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryErrorFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryFragment
@@ -19,6 +20,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -70,51 +72,52 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
 
     fun initResult(){
-        HomeActivity.alert.show()
-        val map = HashMap<String, String>()
-        map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
-        map.put("response", password_recovery_word.text.toString())
-        myModel.recoveryAccess(map).observe(this, Observer { result ->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result == null) {
-                        if (data.error.code == 404){
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            recovery_no_questionnaire.visibility = View.VISIBLE
+            password_layout.visibility = View.GONE
+        } else {
+            HomeActivity.alert.show()
+            val map = HashMap<String, String>()
+            map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
+            map.put("response", password_recovery_word.text.toString())
+            myModel.recoveryAccess(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            if (data.error.code == 404) {
+                                initBusyBottomSheetError()
+                                initVisibilities()
+                            } else if (data.error.code == 401) {
+                                initAuthorized()
+                            } else {
+                                loadingMistake(this)
+                                recovery_no_questionnaire.visibility = View.GONE
+                                password_layout.visibility = View.VISIBLE
+                            }
+                        } else {
+                            initBusyBottomSheet()
+                            initVisibilities()
+                        }
+                    }
+                    Status.ERROR, Status.NETWORK -> {
+                        if (msg == "404") {
                             initBusyBottomSheetError()
                             initVisibilities()
-                        }else if (data.error.code == 401){
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else{
-                            loadingMistake(this)
+                        } else {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
                         }
-                    } else {
-                        initBusyBottomSheet()
-                        initVisibilities()
                     }
                 }
-                Status.ERROR -> {
-                    if (msg == "404"){
-                        initBusyBottomSheetError()
-                        initVisibilities()
-                    }else if (msg == "401"){
-                        initAuthorized()
-                    }
-                    else{
-                        recovery_no_questionnaire.visibility = View.GONE
-                        password_layout.visibility = View.VISIBLE
-                        loadingMistake(this)
-                    }
-                }
-                Status.NETWORK -> {
-                    recovery_no_questionnaire.visibility = View.VISIBLE
-                    password_layout.visibility = View.GONE
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                HomeActivity.alert.hide()
+            })
+        }
     }
 
     fun initVisibilities(){
@@ -159,106 +162,110 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     }
 
     private fun getListCountry() {
-        var list: ArrayList<CounterResultModel> = arrayListOf()
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
         HomeActivity.alert.show()
-        viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
-            val msg = result.msg
-            val data = result.data
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            recovery_no_questionnaire.visibility = View.VISIBLE
+            password_layout.visibility = View.GONE
+            recovery_technical_work.visibility = View.GONE
+            recovery_not_found.visibility = View.GONE
+            recovery_access_restricted.visibility = View.GONE
+        } else {
+            var list: ArrayList<CounterResultModel> = arrayListOf()
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            viewModel.listAvailableCountry(map)
+                .observe(this, androidx.lifecycle.Observer { result ->
+                    val msg = result.msg
+                    val data = result.data
 
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        val adapterListCountry = ArrayAdapter(
-                            this,
-                            android.R.layout.simple_dropdown_item_1line,
-                            data.result
-                        )
-                        questionnaire_phone_list_country.setAdapter(adapterListCountry)
-                        list = data.result
-                        initVisibilities()
-                    }else{
-                        if (data.error.code == 403){
-                            recovery_no_questionnaire.visibility = View.GONE
-                            recovery_access_restricted.visibility = View.VISIBLE
-                            password_layout.visibility = View.GONE
+                    when (result.status) {
+                        Status.SUCCESS -> {
+                            if (data!!.result != null) {
+                                val adapterListCountry = ArrayAdapter(
+                                    this,
+                                    android.R.layout.simple_dropdown_item_1line,
+                                    data.result
+                                )
+                                questionnaire_phone_list_country.setAdapter(adapterListCountry)
+                                list = data.result
+                                initVisibilities()
+                            } else {
+                                if (data.error.code == 403) {
+                                    recovery_no_questionnaire.visibility = View.GONE
+                                    recovery_access_restricted.visibility = View.VISIBLE
+                                    password_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
-                            recovery_no_questionnaire.visibility = View.GONE
-                            recovery_not_found.visibility = View.VISIBLE
-                            password_layout.visibility = View.GONE
+                                } else if (data.error.code == 404) {
+                                    recovery_no_questionnaire.visibility = View.GONE
+                                    recovery_not_found.visibility = View.VISIBLE
+                                    password_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
-                            initAuthorized()
-                        }else{
-                            recovery_no_questionnaire.visibility = View.GONE
-                            recovery_technical_work.visibility = View.VISIBLE
-                            password_layout.visibility = View.GONE
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    recovery_no_questionnaire.visibility = View.GONE
+                                    recovery_technical_work.visibility = View.VISIBLE
+                                    password_layout.visibility = View.GONE
+                                }
+                            }
+                        }
+                        Status.ERROR, Status.NETWORK -> {
+                            if (msg == "404") {
+                                recovery_no_questionnaire.visibility = View.GONE
+                                recovery_not_found.visibility = View.VISIBLE
+                                password_layout.visibility = View.GONE
+
+                            } else if (msg == "403") {
+                                recovery_no_questionnaire.visibility = View.GONE
+                                recovery_access_restricted.visibility = View.VISIBLE
+                                password_layout.visibility = View.GONE
+
+                            } else if (msg == "401") {
+                                initAuthorized()
+                            } else {
+                                recovery_no_questionnaire.visibility = View.GONE
+                                recovery_technical_work.visibility = View.VISIBLE
+                                password_layout.visibility = View.GONE
+                            }
                         }
                     }
+                    HomeActivity.alert.hide()
+                })
+            questionnaire_phone_list_country.keyListener = null
+            questionnaire_phone_list_country.setOnItemClickListener { adapterView, view, position, l ->
+                questionnaire_phone_list_country.showDropDown()
+                AppPreferences.numberCharacters = list[position].phoneLength!!.toInt()
+                AppPreferences.isFormatMask = list[position].phoneMask
+                numberCharacters = list[position].phoneLength!!.toInt()
+                questionnaire_phone_additional.setText("")
+                questionnaire_phone_additional.mask = ""
+                if (position == 0) {
+                    questionnaire_phone_additional.mask = list[position].phoneMask
+                } else if (position == 1) {
+                    questionnaire_phone_additional.mask = list[position].phoneMask
+                } else if (position == 2) {
+                    questionnaire_phone_additional.mask = list[position].phoneMask
                 }
-                Status.ERROR -> {
-                    if (msg == "404"){
-                        recovery_no_questionnaire.visibility = View.GONE
-                        recovery_not_found.visibility = View.VISIBLE
-                        password_layout.visibility = View.GONE
+                if (questionnaire_phone_list_country.text.toString() != "") {
+                    layout_visible.visibility = View.VISIBLE
+                }
 
-                    }else if (msg == "403"){
-                        recovery_no_questionnaire.visibility = View.GONE
-                        recovery_access_restricted.visibility = View.VISIBLE
-                        password_layout.visibility = View.GONE
-
-                    }else if (msg == "401"){
-                        initAuthorized()
-                    }else{
-                        recovery_no_questionnaire.visibility = View.GONE
-                        recovery_technical_work.visibility = View.VISIBLE
-                        password_layout.visibility = View.GONE
+                questionnaire_phone_list_country.clearFocus()
+            }
+            questionnaire_phone_list_country.setOnClickListener {
+                questionnaire_phone_list_country.showDropDown()
+            }
+            questionnaire_phone_list_country.onFocusChangeListener =
+                View.OnFocusChangeListener { view, hasFocus ->
+                    try {
+                        if (hasFocus) {
+                            questionnaire_phone_list_country.showDropDown()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
-                Status.NETWORK -> {
-                    recovery_no_questionnaire.visibility = View.VISIBLE
-                    password_layout.visibility = View.GONE
-                    recovery_technical_work.visibility = View.GONE
-                    recovery_not_found.visibility = View.GONE
-                    recovery_access_restricted.visibility = View.GONE
-                }
-            }
-            HomeActivity.alert.hide()
-        })
-        questionnaire_phone_list_country.keyListener = null
-        questionnaire_phone_list_country.setOnItemClickListener { adapterView, view, position, l ->
-            questionnaire_phone_list_country.showDropDown()
-            AppPreferences.numberCharacters = list[position].phoneLength!!.toInt()
-            AppPreferences.isFormatMask = list[position].phoneMask
-            numberCharacters = list[position].phoneLength!!.toInt()
-            questionnaire_phone_additional.setText("")
-            questionnaire_phone_additional.mask = ""
-            if (position == 0) {
-                questionnaire_phone_additional.mask = list[position].phoneMask
-            } else if (position == 1) {
-                questionnaire_phone_additional.mask = list[position].phoneMask
-            } else if (position == 2) {
-                questionnaire_phone_additional.mask = list[position].phoneMask
-            }
-            if (questionnaire_phone_list_country.text.toString() != "") {
-                layout_visible.visibility = View.VISIBLE
-            }
-
-            questionnaire_phone_list_country.clearFocus()
-        }
-        questionnaire_phone_list_country.setOnClickListener {
-            questionnaire_phone_list_country.showDropDown()
-        }
-        questionnaire_phone_list_country.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-            try {
-                if (hasFocus) {
-                    questionnaire_phone_list_country.showDropDown()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 

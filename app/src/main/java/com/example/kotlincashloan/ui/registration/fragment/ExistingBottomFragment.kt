@@ -121,7 +121,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
                     val map = HashMap<String, String>()
                     map.put("password", AppPreferences.password.toString())
                     map.put("login", AppPreferences.login.toString())
-                    map.put("uid", "null")
+                    map.put("uid", AppPreferences.pushNotificationsId.toString())
                     map.put("system", "1")
                     HomeActivity.alert.show()
                     viewModel.auth(map).observe(this, Observer { result ->

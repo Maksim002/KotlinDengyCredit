@@ -12,14 +12,18 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ExistingBottomFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
 import com.example.myapplication.LoginViewModel
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.iid.FirebaseInstanceId
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
@@ -34,6 +38,23 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var tokenId = ""
     companion object {
         lateinit var alert: LoadingAlert
+    }
+
+    init {
+        try {
+            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    return@OnCompleteListener
+                }
+                val token = task.result?.token
+                if (token != null) {
+                    AppPreferences.pushNotificationsId = token
+                }
+            })
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,82 +104,83 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         }
     }
 
-
     private fun iniResult() {
-        val map = HashMap<String, String>()
-        map.put("password", home_text_password.text.toString())
-        map.put("login", home_text_login.text.toString())
-        map.put("uid","null")
-        map.put("system", "1")
-        home_enter.isEnabled = false
-        alert.show()
-        viewModel.auth(map).observe(this, Observer { result ->
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result == null) {
-                        if (data.error.code == 500 || data.error.code == 409){
-                            home_incorrect.visibility = View.VISIBLE
-                            home_no_connection.visibility = View.GONE
-                            home_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
-                        }else if (data.error.code == 400){
-                            home_incorrect.visibility = View.VISIBLE
-                            home_no_connection.visibility = View.GONE
-                            home_layout.visibility = View.VISIBLE
-                        }else {
-                            home_no_connection.visibility = View.GONE
-                            home_layout.visibility = View.VISIBLE
-                            home_incorrect.visibility = View.VISIBLE
-                            loadingMistake(this)
-                        }
-                    } else {
-                        home_no_connection.visibility = View.GONE
-                        home_layout.visibility = View.VISIBLE
-
-                        AppPreferences.isLogined = true
-                        tokenId = data.result.token
-                        if (home_login_code.isChecked) {
-                            home_incorrect.visibility = View.GONE
-                            initBottomSheet()
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            home_no_connection.visibility = View.VISIBLE
+            home_layout.visibility = View.GONE
+        } else {
+            val map = HashMap<String, String>()
+            map.put("password", home_text_password.text.toString())
+            map.put("login", home_text_login.text.toString())
+            map.put("uid", AppPreferences.pushNotificationsId.toString())
+            map.put("system", "1")
+            home_enter.isEnabled = false
+            alert.show()
+            viewModel.auth(map).observe(this, Observer { result ->
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result == null) {
+                            if (data.error.code == 500 || data.error.code == 409) {
+                                home_incorrect.visibility = View.VISIBLE
+                                home_no_connection.visibility = View.GONE
+                                home_layout.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            } else if (data.error.code == 400) {
+                                home_incorrect.visibility = View.VISIBLE
+                                home_no_connection.visibility = View.GONE
+                                home_layout.visibility = View.VISIBLE
+                            } else {
+                                home_no_connection.visibility = View.GONE
+                                home_layout.visibility = View.VISIBLE
+                                home_incorrect.visibility = View.VISIBLE
+                                loadingMistake(this)
+                            }
                         } else {
-                            AppPreferences.token = data.result.token
-                            AppPreferences.login = data.result.login
-                            AppPreferences.password = home_text_password.text.toString()
-                            if (AppPreferences.token != null){
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
+
+                            AppPreferences.isLogined = true
+                            tokenId = data.result.token
+                            if (home_login_code.isChecked) {
                                 home_incorrect.visibility = View.GONE
-                                startMainActivity()
+                                initBottomSheet()
+                            } else {
+                                AppPreferences.token = data.result.token
+                                AppPreferences.login = data.result.login
+                                AppPreferences.password = home_text_password.text.toString()
+                                if (AppPreferences.token != null) {
+                                    home_incorrect.visibility = View.GONE
+                                    startMainActivity()
+                                }
+                            }
+                            if (home_remember_username.isChecked) {
+                                AppPreferences.isRemember = home_remember_username.isChecked
+                                AppPreferences.isTouchId = home_touch_id.isChecked
+                                AppPreferences.isLoginCode = home_login_code.isChecked
+                                viewModel.save(
+                                    home_text_login.text.toString(),
+                                    data.result.token
+                                )
+                                AppPreferences.password = home_text_password.text.toString()
+                            } else {
+                                AppPreferences.isRemember = false
+                                AppPreferences.clearLogin()
                             }
                         }
-                        if (home_remember_username.isChecked) {
-                            AppPreferences.isRemember = home_remember_username.isChecked
-                            AppPreferences.isTouchId = home_touch_id.isChecked
-                            AppPreferences.isLoginCode = home_login_code.isChecked
-                            viewModel.save(
-                                home_text_login.text.toString(),
-                                data.result.token
-                            )
-                            AppPreferences.password = home_text_password.text.toString()
-                        } else {
-                            AppPreferences.isRemember = false
-                            AppPreferences.clearLogin()
-                        }
+                    }
+                    Status.ERROR, Status.NETWORK -> {
+                        home_no_connection.visibility = View.GONE
+                        home_layout.visibility = View.VISIBLE
+                        home_incorrect.visibility = View.VISIBLE
+                        loadingMistake(this)
                     }
                 }
-                Status.ERROR -> {
-                    home_no_connection.visibility = View.GONE
-                    home_layout.visibility = View.VISIBLE
-                    home_incorrect.visibility = View.VISIBLE
-                    loadingMistake(this)
-                }
-                Status.NETWORK -> {
-                    home_no_connection.visibility = View.VISIBLE
-                    home_layout.visibility = View.GONE
-                }
-            }
-            home_enter.isEnabled = true
-            alert.hide()
-        })
+                home_enter.isEnabled = true
+                alert.hide()
+            })
+        }
     }
 
     private fun initCheck() {

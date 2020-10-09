@@ -11,6 +11,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.login.QuestionnaireActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -43,48 +44,50 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         }
 
         number_next.setOnClickListener {
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                loadingConnection(activity as AppCompatActivity)
+            } else {
                 val map = HashMap<String, Int>()
                 map.put("id", idPhone)
-                if (number_text_sms.text.isNotEmpty()){
+                if (number_text_sms.text.isNotEmpty()) {
                     map.put("code", number_text_sms.text.toString().toInt())
                 }
-            if (validate()) {
-                HomeActivity.alert.show()
-                viewModel.smsConfirmation(map).observe(viewLifecycleOwner, Observer { result ->
-                    val msg = result.msg
-                    val data = result.data
-                    when (result.status) {
-                        Status.SUCCESS -> {
-                            if (data!!.result == null) {
-                                if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
+                if (validate()) {
+                    HomeActivity.alert.show()
+                    viewModel.smsConfirmation(map).observe(viewLifecycleOwner, Observer { result ->
+                        val msg = result.msg
+                        val data = result.data
+                        when (result.status) {
+                            Status.SUCCESS -> {
+                                if (data!!.result == null) {
+                                    if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
+                                        number_incorrect.visibility = View.VISIBLE
+                                    } else if (data.error.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    }
+                                } else {
+                                    number_incorrect.visibility = View.GONE
+                                    AppPreferences.receivedSms = number_text_sms.text.toString()
+                                    val intent = Intent(context, QuestionnaireActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                            Status.ERROR, Status.NETWORK -> {
+                                if (msg == "400" || msg == "500" || msg == "409") {
                                     number_incorrect.visibility = View.VISIBLE
-                                }else if (data.error.code == 401){
+                                } else if (msg == "401") {
                                     initAuthorized()
-                                }else {
+                                } else {
                                     loadingMistake(activity as AppCompatActivity)
                                 }
-                            } else {
-                                number_incorrect.visibility = View.GONE
-                                AppPreferences.receivedSms = number_text_sms.text.toString()
-                                val intent = Intent(context, QuestionnaireActivity::class.java)
-                                startActivity(intent)
                             }
                         }
-                        Status.ERROR -> {
-                            if (msg == "400" || msg == "500" || msg == "409"){
-                                number_incorrect.visibility = View.VISIBLE
-                            }else if (msg == "401"){
-                                initAuthorized()
-                            }else{
-                                loadingMistake(activity as AppCompatActivity)
-                            }
-                        }
-                        Status.NETWORK -> {
-                            loadingConnection(activity as AppCompatActivity)
-                        }
-                    }
-                    HomeActivity.alert.hide()
-                })
+                        HomeActivity.alert.hide()
+                    })
+                }
             }
         }
     }

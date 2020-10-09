@@ -67,6 +67,12 @@ object AppPreferences {
             it.putString("receivedSms", value)
         }
 
+    var pushNotificationsId: String?
+        get() = preferences.getString("pushNotificationsId", "")
+        set(value) = preferences.edit {
+            it.putString("pushNotificationsId", value)
+        }
+
     var isLogined: Boolean
         get() = preferences.getBoolean("isLogined", false)
         set(value) = preferences.edit {

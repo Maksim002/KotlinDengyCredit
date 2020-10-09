@@ -12,6 +12,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.myapplication.LoginViewModel
@@ -19,10 +20,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
 import java.util.HashMap
 
-class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : BottomSheetDialogFragment() {
+class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
+    BottomSheetDialogFragment() {
     private var viewModel = LoginViewModel()
 
     override fun onCreateView(
@@ -62,53 +65,55 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) : Bott
     }
 
     private fun initRequest(numberOne: String, secondNumber: String) {
-        if (numberOne.isNotEmpty() && secondNumber.isNotEmpty()) {
-            AppPreferences.savePin = numberOne
-            val map = HashMap<String, String>()
-            map.put("password", AppPreferences.password.toString())
-            map.put("login", AppPreferences.login.toString())
-            map.put("uid","null")
-            map.put("system", "1")
-            HomeActivity.alert.show()
-            viewModel.auth(map).observe(this, Observer { result ->
-                val msg = result.msg
-                val data = result.data
-                when (result.status) {
-                    Status.SUCCESS -> {
-                        if (data!!.result == null) {
-                            if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409){
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loadingConnection(activity as AppCompatActivity)
+        } else {
+            if (numberOne.isNotEmpty() && secondNumber.isNotEmpty()) {
+                ObservedInternet().observedInternet(requireContext())
+                AppPreferences.savePin = numberOne
+                val map = HashMap<String, String>()
+                map.put("password", AppPreferences.password.toString())
+                map.put("login", AppPreferences.login.toString())
+                map.put("uid", AppPreferences.pushNotificationsId.toString())
+                map.put("system", "1")
+                HomeActivity.alert.show()
+                viewModel.auth(map).observe(this, Observer { result ->
+                    val msg = result.msg
+                    val data = result.data
+                    when (result.status) {
+                        Status.SUCCESS -> {
+                            if (data!!.result == null) {
+                                if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
+                                    loadingMistake(activity as AppCompatActivity)
+                                } else if (data.error.code == 401) {
+                                    initTransition()
+                                } else {
+                                    loadingMistake(activity as AppCompatActivity)
+                                }
+                            } else {
+                                this.dismiss()
+                                AppPreferences.token = data.result.token
+                                initAuthorized()
+                            }
+                        }
+                        Status.ERROR, Status.NETWORK -> {
+                            if (msg == "400" || msg == "500" || msg == "409") {
                                 loadingMistake(activity as AppCompatActivity)
-                            }else if (data.error.code == 401){
+                            } else if (msg == "401") {
                                 initTransition()
-                            }
-                            else{
+                            } else {
                                 loadingMistake(activity as AppCompatActivity)
                             }
-                        } else {
-                            this.dismiss()
-                            AppPreferences.token = data.result.token
-                            initAuthorized()
                         }
                     }
-                    Status.ERROR ->{
-                        if (msg == "400" || msg == "500" || msg == "409"){
-                            loadingMistake(activity as AppCompatActivity)
-                        }else if (msg == "401"){
-                            initTransition()
-                        }else{
-                            loadingMistake(activity as AppCompatActivity)
-                        }
-                    }
-                    Status.NETWORK -> {
-                        loadingConnection(activity as AppCompatActivity)
-                    }
-                }
-                HomeActivity.alert.hide()
-            })
+                    HomeActivity.alert.hide()
+                })
+            }
         }
     }
 
-    private fun initAuthorized(){
+    private fun initAuthorized() {
         val intent = Intent(context, MainActivity::class.java)
         startActivity(intent)
     }

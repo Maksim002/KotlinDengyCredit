@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
@@ -22,6 +23,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -101,25 +103,35 @@ class QuestionnaireActivity : AppCompatActivity() {
     }
 
     private fun initResult() {
-        val map = mutableMapOf<String, String>()
-        map["last_name"] = questionnaire_text_surnames.text.toString()
-        map["first_name"] = questionnaire_text_name.text.toString()
-        map["second_name"] = questionnaire_text_patronymics.text.toString()
-        map["u_date"] = data
-        map["gender"] = idSex.toString()
-        map["nationality"] = listNationalityId.toString()
-        map["first_phone"] =
-            MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
-        map["second_phone"] = try {
-            MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
-        }catch (e: Exception){
-            ""
-        }
-        map["question"] = listSecretQuestionId.toString()
-        map["response"] = questionnaire_secret_response.text.toString()
-        map["sms_code"] = AppPreferences.receivedSms.toString()
-        HomeActivity.alert.show()
-        viewModel.questionnaire(map).observe(this, Observer { result ->
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            questionnaire_no_questionnaire.visibility = View.VISIBLE
+            questionnaire_layout.visibility = View.GONE
+            questionnaire_technical_work.visibility = View.GONE
+            questionnaire_not_found.visibility = View.GONE
+            questionnaire_access_restricted.visibility = View.GONE
+        } else {
+            val map = mutableMapOf<String, String>()
+            map["last_name"] = questionnaire_text_surnames.text.toString()
+            map["first_name"] = questionnaire_text_name.text.toString()
+            map["second_name"] = questionnaire_text_patronymics.text.toString()
+            map["u_date"] = data
+            map["gender"] = idSex.toString()
+            map["nationality"] = listNationalityId.toString()
+            map["first_phone"] =
+                MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
+            map["second_phone"] = try {
+                MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+            } catch (e: Exception) {
+                ""
+            }
+            map["question"] = listSecretQuestionId.toString()
+            map["response"] = questionnaire_secret_response.text.toString()
+            map["sms_code"] = AppPreferences.receivedSms.toString()
+            map.put("uid", AppPreferences.pushNotificationsId.toString())
+            map.put("system", "1")
+            HomeActivity.alert.show()
+            viewModel.questionnaire(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
                 when (result.status) {
@@ -129,14 +141,13 @@ class QuestionnaireActivity : AppCompatActivity() {
                                 questionnaire_no_questionnaire.visibility = View.GONE
                                 questionnaire_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
-                            }else if (data.error.code == 401){
+                            } else if (data.error.code == 401) {
                                 initAuthorized()
-                            }else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403){
+                            } else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403) {
                                 questionnaire_no_questionnaire.visibility = View.GONE
                                 questionnaire_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
-                            }
-                            else {
+                            } else {
                                 questionnaire_no_questionnaire.visibility = View.GONE
                                 questionnaire_layout.visibility = View.VISIBLE
                                 initBusyBottomSheet()
@@ -149,7 +160,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR -> {
+                    Status.ERROR, Status.NETWORK -> {
                         if (msg == "401") {
                             initAuthorized()
                         } else if (msg == "409") {
@@ -162,18 +173,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                             loadingMistake(this)
                         }
                     }
-
-                    Status.NETWORK -> {
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.GONE
-                    }
                 }
-            questionnaire_enter.isEnabled = true
-            HomeActivity.alert.hide()
+                questionnaire_enter.isEnabled = true
+                HomeActivity.alert.hide()
             })
+        }
     }
 
     fun initVisibilities(){

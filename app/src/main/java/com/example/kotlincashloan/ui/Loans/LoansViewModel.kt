@@ -26,8 +26,6 @@ class LoansViewModel: ViewModel() {
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
                 if (t is IOException) {
-                    println()
-                }else{
                     errorNews.postValue( "600")
                 }
             }

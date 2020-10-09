@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
@@ -19,6 +20,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -44,6 +46,11 @@ class NumberActivity : AppCompatActivity() {
     }
 
     private fun initResult() {
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            number_no_connection.visibility = View.VISIBLE
+            number_layout.visibility = View.GONE
+        } else {
             val map = HashMap<String, String>()
             map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
             HomeActivity.alert.show()
@@ -54,16 +61,16 @@ class NumberActivity : AppCompatActivity() {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404){
+                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404) {
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
-                            }else if (data.error.code == 401){
+                            } else if (data.error.code == 401) {
                                 initAuthorized()
-                            }else if (data.error.code == 409){
+                            } else if (data.error.code == 409) {
                                 initBusyBottomSheet()
                                 initVisibilities()
-                            } else{
+                            } else {
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.VISIBLE
                                 initVisibilities()
@@ -74,31 +81,28 @@ class NumberActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR -> {
-                        if (msg == "500" || msg == "400" || msg == "404"){
+                    Status.ERROR, Status.NETWORK -> {
+                        if (msg == "500" || msg == "400" || msg == "404") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
-                        }else if(msg == "401"){
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else if (msg == "409"){
+                        } else if (msg == "409") {
                             initBusyBottomSheet()
                             initVisibilities()
-                        } else{
+                        } else {
                             loadingMistake(this)
                             number_no_connection.visibility = View.GONE
                             number_layout.visibility = View.VISIBLE
                         }
-                    }
-                    Status.NETWORK ->{
-                        number_no_connection.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
                     }
                 }
                 number_next.isEnabled = true
                 HomeActivity.alert.hide()
                 no_connection_repeat.isEnabled = true
             })
+        }
     }
 
     private fun initBottomSheet(id: Int) {
