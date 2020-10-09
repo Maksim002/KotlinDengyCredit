@@ -17,7 +17,9 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -47,7 +49,7 @@ class SupportFragment : Fragment() {
         initRecycler()
         iniClick()
         initRefresh()
-  }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -70,12 +72,21 @@ class SupportFragment : Fragment() {
     }
 
     private fun initRestart() {
-        initRecycler()
-        if (viewModel.listFaqDta.value != null) {
-            viewModel.listFaq(map)
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            support_no_connection.visibility = View.VISIBLE
+            support_swipe_layout.visibility = View.GONE
+            support_not_found.visibility = View.GONE
+            support_technical_work.visibility = View.GONE
+            layout_access_restricted.visibility = View.GONE
         } else {
-            viewModel.error.value = null
-            viewModel.listFaq(map)
+            initRecycler()
+            if (viewModel.listFaqDta.value != null) {
+                viewModel.listFaq(map)
+            } else {
+                viewModel.error.value = null
+                viewModel.listFaq(map)
+            }
         }
     }
 
@@ -144,7 +155,7 @@ class SupportFragment : Fragment() {
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
 
-            } else if (error == "500" || error == "400") {
+            } else if (error == "500" || error == "400" || error == "600") {
                 support_technical_work.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
@@ -155,12 +166,6 @@ class SupportFragment : Fragment() {
                 support_no_connection.visibility = View.GONE
             } else if (error == "401") {
                 initAuthorized()
-            } else if (error == "600") {
-                support_no_connection.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_not_found.visibility = View.GONE
-                support_technical_work.visibility = View.GONE
-                layout_access_restricted.visibility = View.GONE
             }
             HomeActivity.alert.hide()
         })
