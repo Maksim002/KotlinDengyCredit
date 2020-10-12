@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -102,7 +103,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR -> {
                         if (msg == "404") {
                             initBusyBottomSheetError()
                             initVisibilities()
@@ -112,6 +113,17 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
+                        }
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            recovery_no_questionnaire.visibility = View.GONE
+                            password_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        }else{
+                            recovery_no_questionnaire.visibility = View.GONE
+                            password_layout.visibility = View.VISIBLE
+                            loadingConnection(this)
                         }
                     }
                 }
@@ -210,7 +222,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
+                        Status.ERROR -> {
                             if (msg == "404") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_not_found.visibility = View.VISIBLE
@@ -226,6 +238,17 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                             } else {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
+                                password_layout.visibility = View.GONE
+                            }
+                        }
+                        Status.NETWORK ->{
+                            if (msg == "600"){
+                                recovery_no_questionnaire.visibility = View.GONE
+                                recovery_technical_work.visibility = View.VISIBLE
+                                password_layout.visibility = View.GONE
+                            }else{
+                                recovery_technical_work.visibility = View.GONE
+                                recovery_no_questionnaire.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
                             }
                         }

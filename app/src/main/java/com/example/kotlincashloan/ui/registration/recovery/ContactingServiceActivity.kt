@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -123,7 +124,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR -> {
                         if (msg == "401") {
                             initAuthorized()
                         } else if (msg == "409") {
@@ -138,6 +139,17 @@ class ContactingServiceActivity : AppCompatActivity() {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingMistake(this)
+                        }
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        }else{
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
+                            loadingConnection(this)
                         }
                     }
                 }
@@ -220,7 +232,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
+                        Status.ERROR -> {
                             if (msg == "404") {
                                 password_no_questionnaire.visibility = View.GONE
                                 questionnaire_not_found.visibility = View.VISIBLE
@@ -239,7 +251,17 @@ class ContactingServiceActivity : AppCompatActivity() {
                                 contacting_layout.visibility = View.VISIBLE
                             }
                         }
-
+                        Status.NETWORK ->{
+                            if (msg == "600"){
+                                loadingMistake(this)
+                                password_no_questionnaire.visibility = View.GONE
+                                contacting_layout.visibility = View.VISIBLE
+                            }else{
+                                loadingConnection(this)
+                                password_no_questionnaire.visibility = View.GONE
+                                contacting_layout.visibility = View.VISIBLE
+                            }
+                        }
                     }
                     HomeActivity.alert.hide()
                 })
@@ -326,7 +348,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR -> {
                         if (msg == "404") {
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
@@ -339,6 +361,17 @@ class ContactingServiceActivity : AppCompatActivity() {
                             initAuthorized()
                         } else {
                             loadingMistake(this)
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
+                        }
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            loadingMistake(this)
+                            password_no_questionnaire.visibility = View.GONE
+                            contacting_layout.visibility = View.VISIBLE
+                        }else{
+                            loadingConnection(this)
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                         }

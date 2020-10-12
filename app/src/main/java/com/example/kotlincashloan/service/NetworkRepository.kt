@@ -15,13 +15,16 @@ class NetworkRepository {
                     } else {
                         emit(ResultStatus.error("Неверный логин или пароль"))
                     }
-                }
-                else -> {
+                }else -> {
                     emit(ResultStatus.error(response.code().toString()))
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -41,7 +44,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -61,7 +68,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -81,7 +92,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -101,7 +116,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -141,7 +160,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -161,7 +184,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("600", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -181,7 +208,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -201,7 +232,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -221,7 +256,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 

@@ -81,7 +81,7 @@ class NumberActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR ->{
                         if (msg == "500" || msg == "400" || msg == "404") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
@@ -95,6 +95,16 @@ class NumberActivity : AppCompatActivity() {
                             loadingMistake(this)
                             number_no_connection.visibility = View.GONE
                             number_layout.visibility = View.VISIBLE
+                        }
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            number_layout.visibility = View.GONE
+                            initVisibilities()
+                            loadingMistake(this)
+                        }else{
+                            number_no_connection.visibility = View.VISIBLE
+                            number_layout.visibility = View.GONE
                         }
                     }
                 }
@@ -224,7 +234,7 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 Status.NETWORK -> {
-                    if (msg == "600"){
+                    if (msg == "601"){
                         number_no_connection.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
                         number_access_restricted.visibility = View.GONE
@@ -233,6 +243,10 @@ class NumberActivity : AppCompatActivity() {
                         if (bottomSheetDialogFragment.isResumed == true){
                             bottomSheetDialogFragment.dismiss()
                         }
+                    }else{
+                        number_no_connection.visibility = View.GONE
+                        number_technical_work.visibility = View.VISIBLE
+                        number_layout.visibility = View.GONE
                     }
                 }
             }

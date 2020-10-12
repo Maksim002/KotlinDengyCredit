@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -160,7 +161,7 @@ class QuestionnaireActivity : AppCompatActivity() {
                             initVisibilities()
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR ->{
                         if (msg == "401") {
                             initAuthorized()
                         } else if (msg == "409") {
@@ -171,6 +172,17 @@ class QuestionnaireActivity : AppCompatActivity() {
                             questionnaire_layout.visibility = View.VISIBLE
                             questionnaire_no_questionnaire.visibility = View.GONE
                             loadingMistake(this)
+                        }
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_layout.visibility = View.VISIBLE
+                            loadingConnection(this)
                         }
                     }
                 }
@@ -300,11 +312,18 @@ class QuestionnaireActivity : AppCompatActivity() {
                     }
                 }
                 Status.NETWORK -> {
-                    questionnaire_no_questionnaire.visibility = View.VISIBLE
-                    questionnaire_layout.visibility = View.GONE
-                    questionnaire_technical_work.visibility = View.GONE
-                    questionnaire_not_found.visibility = View.GONE
-                    questionnaire_access_restricted.visibility = View.GONE
+                    if (msg == "600"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
+                    }
+
                 }
             }
             HomeActivity.alert.hide()
@@ -478,8 +497,14 @@ class QuestionnaireActivity : AppCompatActivity() {
                     }
                 }
                 Status.NETWORK -> {
-                    questionnaire_no_questionnaire.visibility = View.VISIBLE
-                    questionnaire_layout.visibility = View.GONE
+                    if (msg == "600"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
                 }
             }
             HomeActivity.alert.hide()

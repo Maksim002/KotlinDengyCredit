@@ -167,6 +167,9 @@ class SupportFragment : Fragment() {
             } else if (error == "401") {
                 initAuthorized()
             }
+//            else if (error == "600"){
+//
+//            }
             HomeActivity.alert.hide()
         })
     }

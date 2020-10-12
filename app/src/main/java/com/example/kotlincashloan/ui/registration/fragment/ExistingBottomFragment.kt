@@ -144,13 +144,24 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
                                     startActivity(intent)
                                 }
                             }
-                            Status.ERROR, Status.NETWORK -> {
+                            Status.ERROR -> {
                                 if (msg == "401") {
                                     initAuthorized()
                                 } else {
                                     pin_verification_code.setText(initpin)
                                     currentPinInput = ""
                                     loadingMistake(activity as AppCompatActivity)
+                                }
+                            }
+                            Status.NETWORK ->{
+                                if (msg == "600"){
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as AppCompatActivity)
+                                }else{
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingConnection(activity as AppCompatActivity)
                                 }
                             }
                         }
@@ -160,10 +171,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
                     currentPinInput = ""
                     pin_verification_code.setText(initpin)
                     existing_liner_anim.startAnimation(
-                        AnimationUtils.loadAnimation(
-                            getActivity(),
-                            R.anim.shake
-                        )
+                        AnimationUtils.loadAnimation(getActivity(), R.anim.shake)
                     )
                 }
             }

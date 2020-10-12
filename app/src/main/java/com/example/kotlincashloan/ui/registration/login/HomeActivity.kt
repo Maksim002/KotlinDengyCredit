@@ -118,6 +118,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             map.put("system", "1")
             home_enter.isEnabled = false
             viewModel.auth(map).observe(this, Observer { result ->
+                var msg  = result.msg
                 val data = result.data
                 when (result.status) {
                     Status.SUCCESS -> {
@@ -170,11 +171,22 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             }
                         }
                     }
-                    Status.ERROR, Status.NETWORK -> {
+                    Status.ERROR ->{
                         home_no_connection.visibility = View.GONE
                         home_layout.visibility = View.VISIBLE
                         home_incorrect.visibility = View.VISIBLE
                         loadingMistake(this)
+                    }
+                    Status.NETWORK ->{
+                        if (msg == "600"){
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
+                            home_incorrect.visibility = View.VISIBLE
+                            loadingMistake(this)
+                        }else{
+                            home_no_connection.visibility = View.VISIBLE
+                            home_layout.visibility = View.GONE
+                        }
                     }
                 }
                 home_enter.isEnabled = true

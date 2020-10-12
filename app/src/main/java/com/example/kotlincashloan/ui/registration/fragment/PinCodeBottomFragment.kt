@@ -97,13 +97,20 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
                                 initAuthorized()
                             }
                         }
-                        Status.ERROR, Status.NETWORK -> {
+                        Status.ERROR -> {
                             if (msg == "400" || msg == "500" || msg == "409") {
                                 loadingMistake(activity as AppCompatActivity)
                             } else if (msg == "401") {
                                 initTransition()
                             } else {
                                 loadingMistake(activity as AppCompatActivity)
+                            }
+                        }
+                        Status.NETWORK ->{
+                            if (msg == "600"){
+                                loadingMistake(activity as AppCompatActivity)
+                            }else{
+                                loadingConnection(activity as AppCompatActivity)
                             }
                         }
                     }
