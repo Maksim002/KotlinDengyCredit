@@ -8,6 +8,7 @@ import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
+import com.timelysoft.tsjdomcom.service.ResultStatus
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,7 +26,9 @@ class LoansViewModel: ViewModel() {
         RetrofitService.apiService().listNews(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
-                if (t is IOException) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorNews.postValue( "601")
+                }else{
                     errorNews.postValue( "600")
                 }
             }
@@ -40,16 +43,17 @@ class LoansViewModel: ViewModel() {
         })
     }
 
-
-
-
     val errorGet = MutableLiveData<String>()
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
         RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
-                errorGet.postValue( "600")
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGet.postValue( "601")
+                }else{
+                    errorGet.postValue( "600")
+                }
             }
             override fun onResponse(call: Call<CommonResponse<GetNewsResultModel>>, response: Response<CommonResponse<GetNewsResultModel>>) {
                 if (response.isSuccessful) {
@@ -68,7 +72,11 @@ class LoansViewModel: ViewModel() {
     fun getLoanInfo(map: Map<String, String>){
         RetrofitService.apiService().loanInfo(map).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInfoResultModel>>, t: Throwable) {
-                errorLoanInfo.postValue( "600")
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorLoanInfo.postValue( "601")
+                }else{
+                    errorLoanInfo.postValue( "600")
+                }
             }
             override fun onResponse(call: Call<CommonResponse<LoanInfoResultModel>>, response: Response<CommonResponse<LoanInfoResultModel>>) {
                 if (response.isSuccessful) {

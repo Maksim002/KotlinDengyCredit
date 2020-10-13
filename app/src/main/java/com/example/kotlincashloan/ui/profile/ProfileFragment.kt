@@ -1,10 +1,13 @@
 package com.example.kotlincashloan.ui.profile
 
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
-import com.example.kotlincashloan.extension.banPressed
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
@@ -44,6 +46,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    @SuppressLint("WrongConstant")
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
         adapter.addFragment(MyOperationFragment(), "Мои операции")

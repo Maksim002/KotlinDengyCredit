@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loans_details.*
@@ -47,15 +48,6 @@ class LoansDetailsFragment : Fragment() {
         initRequest()
         initClick()
     }
-
-//    private fun initRefresh() {
-//        loans_detail_layout.setOnRefreshListener {
-//            loans_details_text.setMarkDownText("")
-//            initRestart()
-//            loans_detail_layout.isRefreshing = false
-//        }
-//        loans_detail_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
-//    }
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
@@ -104,14 +96,22 @@ class LoansDetailsFragment : Fragment() {
     }
 
     private fun initRestart() {
-        initRequest()
-        if (viewModel.listGetDta.value != null){
-            viewModel.getNews(map)
-        }else {
-            viewModel.errorGet.value = null
-            viewModel.getNews(map)
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loans_detail_no_connection.visibility = View.VISIBLE
+            loans_detail_layout.visibility = View.GONE
+            loans_detail_access_restricted.visibility = View.GONE
+            loans_detail_not_found.visibility = View.GONE
+            loans_detail_technical_work.visibility = View.GONE
+        } else {
+            initRequest()
+            if (viewModel.listGetDta.value != null) {
+                viewModel.getNews(map)
+            } else {
+                viewModel.errorGet.value = null
+                viewModel.getNews(map)
+            }
         }
-
     }
 
     private fun initRequest() {
@@ -123,7 +123,7 @@ class LoansDetailsFragment : Fragment() {
                 if (result.code == 200 && result.result != null){
                     loans_details_name.setText(result.result.name)
                     loans_details_description.setText(result.result.description)
-                    loans_details_text.setMarkDownText(result.result.text)
+                    loans_details_text.loadMarkdown(result.result.text)
                     Glide
                         .with(loans_details_image)
                         .load(result.result.thumbnail)
@@ -168,9 +168,13 @@ class LoansDetailsFragment : Fragment() {
                 loans_detail_technical_work.visibility = View.VISIBLE
                 loans_detail_layout.visibility = View.GONE
             } else if (error == "600") {
-                loans_detail_no_connection.visibility = View.VISIBLE
+                loans_detail_no_connection.visibility = View.GONE
+                loans_detail_technical_work.visibility = View.VISIBLE
+                loans_detail_layout.visibility = View.GONE
+            }else if(error == "601"){
                 loans_detail_layout.visibility = View.GONE
                 loans_detail_access_restricted.visibility = View.GONE
+                loans_detail_no_connection.visibility = View.VISIBLE
                 loans_detail_not_found.visibility = View.GONE
                 loans_detail_technical_work.visibility = View.GONE
             }

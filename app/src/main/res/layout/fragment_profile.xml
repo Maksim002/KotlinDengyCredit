@@ -74,6 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/tab_bg"
+            app:tabMaxWidth="0dp"
             app:tabGravity="fill"
             app:tabMode="fixed"
             app:tabSelectedTextColor="#ffffff"

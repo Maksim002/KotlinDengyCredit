@@ -20,6 +20,7 @@ import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.fragment_support.*
@@ -179,6 +180,7 @@ class LoansFragment : Fragment(), LoansListener {
                     }
                 }
             }
+            loans_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
 
@@ -238,11 +240,24 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initRepeat() {
-        if (viewModel.listLoanInfo.value != null){
-            viewModel.listNews(map)
-        }
-        if (viewModel.listLoanInfo.value != null){
-            viewModel.getLoanInfo(map)
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loans_no_connection.visibility = View.VISIBLE
+            loans_layout.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
+            loans_not_found.visibility = View.GONE
+            loans_technical_work.visibility = View.GONE
+        } else {
+            if (viewModel.listNewsDta.value != null) {
+                viewModel.errorNews.value = null
+                viewModel.listNews(map)
+            }
+            if (viewModel.listLoanInfo.value != null) {
+                viewModel.errorLoanInfo.value = null
+                viewModel.getLoanInfo(map)
+            }
+//            initRecycler()
+//            initResult()
         }
     }
 
@@ -250,8 +265,6 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setOnRefreshListener {
             handler.postDelayed(Runnable {
                 initRestart()
-                initResult()
-                loans_layout.isRefreshing = false
             }, 1000)
         }
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -263,8 +276,6 @@ class LoansFragment : Fragment(), LoansListener {
             viewModel.errorLoanInfo.value = null
             viewModel.listNews(map)
             viewModel.getLoanInfo(map)
-            initResult()
-            initRecycler()
         }
     }
 
@@ -289,6 +300,7 @@ class LoansFragment : Fragment(), LoansListener {
                     }
                 }
             }
+            loans_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
 
@@ -335,10 +347,15 @@ class LoansFragment : Fragment(), LoansListener {
             loans_technical_work.visibility = View.VISIBLE
             loans_layout.visibility = View.GONE
         }
+        loans_layout.isRefreshing = false
     }
 
     private fun initError(error: String) {
         if (error == "600") {
+            loans_no_connection.visibility = View.GONE
+            loans_technical_work.visibility = View.VISIBLE
+            loans_layout.visibility = View.GONE
+        } else if (error == "601") {
             loans_no_connection.visibility = View.VISIBLE
             loans_layout.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
@@ -359,5 +376,6 @@ class LoansFragment : Fragment(), LoansListener {
             loans_technical_work.visibility = View.VISIBLE
             loans_layout.visibility = View.GONE
         }
+        loans_layout.isRefreshing = false
     }
 }
