@@ -52,7 +52,7 @@ class LoansFragment : Fragment(), LoansListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("v", "4")
+//        map.put("v", "4")
 
         initLogicSeekBar()
         initResult()
