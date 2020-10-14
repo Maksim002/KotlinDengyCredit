@@ -30,12 +30,7 @@ class PushNotification : FirebaseMessagingService() {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val c =
-                NotificationChannel(
-                    notChannelId,
-                    "kotlincashloan",
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+            val c = NotificationChannel(notChannelId, "kotlincashloan", NotificationManager.IMPORTANCE_DEFAULT)
             c.description = "kotlincashloan"
             c.enableLights(true)
             c.lightColor = Color.BLUE
@@ -52,7 +47,6 @@ class PushNotification : FirebaseMessagingService() {
 
         val manager = NotificationManagerCompat.from(this)
         manager.notify(1998, builder.build())
-
 
     }
 }

@@ -18,12 +18,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
-import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans.*
-import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -52,7 +50,7 @@ class LoansFragment : Fragment(), LoansListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-//        map.put("v", "4")
+        map.put("v", "4")
 
         initLogicSeekBar()
         initResult()
