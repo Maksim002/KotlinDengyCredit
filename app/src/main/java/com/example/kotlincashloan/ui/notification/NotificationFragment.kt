@@ -58,6 +58,7 @@ class NotificationFragment : Fragment() {
         notification_recycler.adapter = myAdapter
     }
 
+
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

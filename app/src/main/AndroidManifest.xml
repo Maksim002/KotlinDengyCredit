@@ -18,6 +18,16 @@
             </intent-filter>
         </service>
 
+        <receiver
+            android:name=".ui.notification.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.google.android.gcm.demo.app" />
+            </intent-filter>
+        </receiver>
+
         <activity android:name=".ui.registration.login.HomeActivity"
             android:launchMode="singleTop">
             <intent-filter>

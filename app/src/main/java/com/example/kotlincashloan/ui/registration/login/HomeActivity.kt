@@ -1,18 +1,21 @@
 package com.example.kotlincashloan.ui.registration.login
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Telephony
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
-import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -32,6 +35,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
+
 class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     ExistingBottomListener {
     private var viewModel = LoginViewModel()
@@ -39,6 +43,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     companion object {
         lateinit var alert: LoadingAlert
     }
+
+    private val NOTIFICATION_PERMISSION_CODE = 123
 
     init {
         try {
@@ -64,7 +70,9 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         iniClick()
         initCheck()
         alert = LoadingAlert(this)
+
     }
+
 
 
     private fun iniClick() {
