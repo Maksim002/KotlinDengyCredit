@@ -27,6 +27,7 @@ import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert

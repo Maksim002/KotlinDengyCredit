@@ -1,5 +1,7 @@
 package com.example.kotlinscreenscanner.ui
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -10,10 +12,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.android.navigationadvancedsample.setupWithNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
-import com.example.kotlincashloan.utils.ObservedInternet
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import kotlinx.serialization.protobuf.ProtoBuf.Companion.context
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +27,8 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
+        val notificationmanager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
