@@ -64,14 +64,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         iniClick()
         initCheck()
         alert = LoadingAlert(this)
-
-        try {
-            val data = intent.extras!!.getString("dataKey")
-
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
-
     }
 
 

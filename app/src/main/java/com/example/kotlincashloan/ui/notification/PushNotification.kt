@@ -15,6 +15,7 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.timelysoft.tsjdomcom.service.AppPreferences
 
 class PushNotification : FirebaseMessagingService() {
     override fun onMessageReceived(p0: RemoteMessage) {
@@ -54,7 +55,7 @@ class PushNotification : FirebaseMessagingService() {
 
         // Create an Intent for the activity you want to start
         val resultIntent = Intent(this, HomeActivity::class.java)
-        resultIntent.putExtra("dataKey", isData)
+        AppPreferences.dataKey = isData
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(resultIntent)
