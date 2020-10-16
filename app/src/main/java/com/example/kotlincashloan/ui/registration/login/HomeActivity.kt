@@ -40,8 +40,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         lateinit var alert: LoadingAlert
     }
 
-    private val NOTIFICATION_PERMISSION_CODE = 123
-
     init {
         try {
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener { task ->
@@ -66,6 +64,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         iniClick()
         initCheck()
         alert = LoadingAlert(this)
+
+        try {
+            val data = intent.extras!!.getString("dataKey")
+
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
 
     }
 
