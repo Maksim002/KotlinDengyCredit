@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
-import com.example.kotlinscreenscanner.ui.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_password_recovery_error.*

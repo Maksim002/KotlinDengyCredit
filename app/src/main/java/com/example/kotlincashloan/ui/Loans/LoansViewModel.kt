@@ -5,15 +5,12 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
-import com.timelysoft.tsjdomcom.service.ResultStatus
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
