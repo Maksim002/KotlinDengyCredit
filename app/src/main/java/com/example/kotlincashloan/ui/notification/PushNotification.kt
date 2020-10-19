@@ -19,13 +19,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.timelysoft.tsjdomcom.service.AppPreferences
 
 class PushNotification : FirebaseMessagingService() {
+
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
         val data: Map<String, String> = p0.data
         val questionTitle = data["action"].toString()
-
         showNotification(p0.notification?.title.toString(), p0.notification?.body.toString(), questionTitle)
-
     }
 
     private fun showNotification(

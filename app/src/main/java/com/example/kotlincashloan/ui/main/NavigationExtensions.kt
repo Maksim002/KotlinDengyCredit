@@ -1,16 +1,16 @@
 
 package com.example.android.navigationadvancedsample
 
-import android.app.Fragment
 import android.content.Intent
 import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.annotation.NonNull
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.util.forEach
 import androidx.core.util.set
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.replace
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
@@ -78,11 +78,6 @@ fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragment
      selectedItemTag = graphIdToTagMap[this.selectedItemId]
      firstFragmentTag = graphIdToTagMap[firstFragmentGraphId]
      isOnFirstFragment = selectedItemTag == firstFragmentTag
-
-if (AppPreferences.dataKey != "") {
-    ClickPushNotification()
-    AppPreferences.dataKey = null
-}
     // When a navigation item is selected
     setOnNavigationItemSelectedListener { item ->
         // Don't do anything if the state is state has already been saved.
@@ -155,13 +150,17 @@ if (AppPreferences.dataKey != "") {
 
 fun BottomNavigationView.ClickPushNotification(){
     var numberKey = ""
-
     numberKey = AppPreferences.dataKey.toString()
-
     val menu: Menu = MenuBuilder(context)
     MenuInflater(context).inflate(R.menu.bottom_nav_menu, menu)
-
     if (AppPreferences.dataKey != null){
+        this.selectedItemId = when(AppPreferences.dataKey){
+            "0"-> R.id.navigation_loans
+            "1"-> R.id.navigation_notification
+            "2"-> R.id.navigation_profile
+            "3"-> R.id.navigation_support
+            else -> R.id.navigation_still
+        }
         // Don't do anything if the state is state has already been saved.
         if (fragmentManagers!!.isStateSaved) {
             false
@@ -177,11 +176,7 @@ fun BottomNavigationView.ClickPushNotification(){
                 if (firstFragmentTag != newlySelectedItemTag) {
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
-                    fragmentManagers!!.beginTransaction().setCustomAnimations(
-                        R.anim.slide_in_from_right,
-                        R.anim.slide_out_to_left,
-                        R.anim.slide_in_from_left,
-                        R.anim.slide_out_to_right)
+                    fragmentManagers!!.beginTransaction()
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
@@ -205,6 +200,7 @@ fun BottomNavigationView.ClickPushNotification(){
             }
         }
     }
+    AppPreferences.dataKey = null
 }
 
 private fun BottomNavigationView.setupDeepLinks(
