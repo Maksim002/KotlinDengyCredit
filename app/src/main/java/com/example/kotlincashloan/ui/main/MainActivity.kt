@@ -19,6 +19,10 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 class MainActivity : AppCompatActivity() {
     private var currentNavController: LiveData<NavController>? = null
 
+    companion object{
+        var text = ""
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
         val notificationmanager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (savedInstanceState == null) {

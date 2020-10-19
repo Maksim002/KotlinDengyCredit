@@ -16,6 +16,7 @@ import android.content.Context
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.profile.MyOperationModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import kotlinx.android.synthetic.main.fragment_notification.*
 
 class NotificationFragment : Fragment() {
@@ -61,6 +62,7 @@ class NotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        HomeActivity.alert.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

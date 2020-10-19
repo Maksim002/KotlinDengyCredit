@@ -41,6 +41,7 @@ class StillFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        HomeActivity.alert.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
             requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

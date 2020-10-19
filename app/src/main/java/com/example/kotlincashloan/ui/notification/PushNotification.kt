@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -54,7 +55,7 @@ class PushNotification : FirebaseMessagingService() {
         }
 
         // Create an Intent for the activity you want to start
-        val resultIntent = Intent(this, HomeActivity::class.java)
+        val resultIntent = Intent(this, MainActivity::class.java)
         AppPreferences.dataKey = isData
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             // Add the intent, which inflates the back stack
