@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity() {
         HomeActivity.alert = LoadingAlert(this)
         initArgument()
 
-        Toast.makeText(this, AppPreferences.dataKey, Toast.LENGTH_LONG).show()
-
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
