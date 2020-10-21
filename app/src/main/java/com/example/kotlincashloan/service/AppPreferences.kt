@@ -115,6 +115,12 @@ object AppPreferences {
             it.putBoolean("isLoginCode", value)
         }
 
+    var isNumber: Boolean
+        get() = preferences.getBoolean("isNumber", false)
+        set(value) = preferences.edit {
+            it.putBoolean("isNumber", value)
+        }
+
     var isValid: Boolean
         get() = preferences.getBoolean("isValid", false)
         set(value) = preferences.edit {

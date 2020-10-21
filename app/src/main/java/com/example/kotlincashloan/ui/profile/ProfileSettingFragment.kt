@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
+import com.example.kotlinscreenscanner.ui.MainActivity
 
 class ProfileSettingFragment : Fragment() {
 
@@ -30,6 +31,7 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

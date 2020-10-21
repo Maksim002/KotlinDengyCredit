@@ -21,7 +21,9 @@ import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import io.reactivex.Completable.timer
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -59,6 +61,12 @@ class LoansFragment : Fragment(), LoansListener {
         initClick()
         initRefresh()
     }
+
+    override fun onStart() {
+        super.onStart()
+        MainActivity.timer.timeStop()
+    }
+
 
     fun initCode() {
         listLoanId = viewModel.listLoanId

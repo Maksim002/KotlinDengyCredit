@@ -17,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -51,6 +52,7 @@ class SupportFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         if (viewModel.listFaqDta.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listFaq(map)

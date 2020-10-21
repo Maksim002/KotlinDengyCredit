@@ -79,6 +79,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         HomeActivity.alert.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

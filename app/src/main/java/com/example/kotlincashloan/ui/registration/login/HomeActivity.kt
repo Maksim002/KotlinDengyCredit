@@ -15,6 +15,7 @@ import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
@@ -36,6 +37,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
+    private lateinit var timer: TimerListener
+
     companion object {
         lateinit var alert: LoadingAlert
     }
@@ -64,6 +67,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         iniClick()
         initCheck()
         alert = LoadingAlert(this)
+        timer = TimerListener(this)
     }
 
 
@@ -90,10 +94,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         }
 
         no_connection_repeat.setOnClickListener {
-            if (home_touch_id.isChecked == true){
+            if (home_touch_id.isChecked == true) {
                 iniTouchId()
                 home_incorrect.visibility = View.GONE
-            }else{
+            } else {
                 iniResult()
             }
         }
@@ -119,7 +123,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             map.put("system", "1")
             home_enter.isEnabled = false
             viewModel.auth(map).observe(this, Observer { result ->
-                var msg  = result.msg
+                var msg = result.msg
                 val data = result.data
                 when (result.status) {
                     Status.SUCCESS -> {
@@ -143,7 +147,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             tokenId = data.result.token
                             if (home_login_code.isChecked) {
                                 home_incorrect.visibility = View.GONE
-                                initBottomSheet()
+                                if (!AppPreferences.isNumber){
+                                    initBottomSheet()
+                                    AppPreferences.isNumber = true
+                                }
                             } else {
                                 AppPreferences.token = data.result.token
                                 AppPreferences.login = data.result.login
@@ -168,26 +175,26 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             }
                         }
                     }
-                    Status.ERROR ->{
-                        if (msg == "500" || msg == "409" || msg == "400"){
+                    Status.ERROR -> {
+                        if (msg == "500" || msg == "409" || msg == "400") {
                             home_incorrect.visibility = View.VISIBLE
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        } else {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "600"){
+                    Status.NETWORK -> {
+                        if (msg == "600") {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        } else {
                             home_no_connection.visibility = View.VISIBLE
                             home_layout.visibility = View.GONE
                         }
@@ -271,7 +278,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_incorrect.visibility = View.GONE
             valid = false
         }
-        if (!valid){
+        if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
 
@@ -286,6 +293,14 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
+        if (AppPreferences.token != ""){
+            startMainActivity()
+        }else{
+            if (AppPreferences.isNumber){
+                initBottomSheet()
+                AppPreferences.isNumber = false
+            }
+        }
         AppPreferences.isValid = false
         home_text_login.getPaint().clearShadowLayer();
     }
@@ -344,7 +359,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt =
+            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult
@@ -414,5 +430,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             })
 
         biometricPrompt.authenticate(promptInfo)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppPreferences.token = ""
     }
 }

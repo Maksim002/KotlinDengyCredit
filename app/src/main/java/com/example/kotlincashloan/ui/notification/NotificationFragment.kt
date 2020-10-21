@@ -17,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.profile.MyOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_notification.*
 
 class NotificationFragment : Fragment() {
@@ -62,6 +63,7 @@ class NotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         HomeActivity.alert.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -15,6 +14,7 @@ import com.example.android.navigationadvancedsample.ClickPushNotification
 import com.example.android.navigationadvancedsample.setupWithNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.TimerListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
@@ -23,11 +23,19 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 class MainActivity : AppCompatActivity() {
     private var currentNavController: LiveData<NavController>? = null
 
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+    companion object{
+        lateinit var timer: TimerListener
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         HomeActivity.alert = LoadingAlert(this)
-        initArgument()
+        timer = TimerListener(this)
+
+
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -52,7 +60,7 @@ class MainActivity : AppCompatActivity() {
      */
     @SuppressLint("ResourceType")
     private fun setupBottomNavigationBar() {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
 
         val navGraphIds = listOf(
             R.navigation.loans_navigation,
@@ -68,17 +76,27 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController)
         })
         currentNavController = controller
-
-        if (AppPreferences.dataKey != "") {
-            bottomNavigationView.ClickPushNotification()
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
-    private fun initArgument() {
+    override fun onStart() {
+        super.onStart()
+        if (AppPreferences.dataKey != "") {
+            bottomNavigationView.ClickPushNotification()
+        }
+    }
 
+    override fun onStop() {
+        super.onStop()
+        timer.timeStart()
+        AppPreferences.isNumber = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.timeStop()
     }
 }
