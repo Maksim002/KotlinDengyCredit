@@ -2,6 +2,8 @@ package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
@@ -297,7 +299,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             startMainActivity()
         }else{
             if (AppPreferences.isNumber){
-                initBottomSheet()
+                if (home_login_code.isChecked) {
+                    initBottomSheet()
+                }
+                if (home_touch_id.isChecked) {
+                    iniTouchId()
+                }
                 AppPreferences.isNumber = false
             }
         }
@@ -369,6 +376,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     val map = HashMap<String, String>()
                     map.put("password", AppPreferences.password.toString())
                     map.put("login", home_text_login.text.toString())
+                    map.put("uid", AppPreferences.pushNotificationsId.toString())
+                    map.put("system", "1")
                     alert.show()
                     viewModel.auth(map).observe(this@HomeActivity, Observer { result ->
                         val msg = result.msg
@@ -434,6 +443,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onDestroy() {
         super.onDestroy()
-        AppPreferences.token = ""
+
     }
 }
