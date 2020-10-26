@@ -4,6 +4,7 @@ package com.timelysoft.tsjdomcom.service
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -90,5 +91,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("loanInfo?token=oYyxhIFgJjAb")
     fun loanInfo(@FieldMap params: Map<String, String>):Call<CommonResponse<LoanInfoResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listNotice?token=oYyxhIFgJjAb")
+    fun listNotice(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ResultListNoticeModel>>>
 }
 
