@@ -16,8 +16,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
+import com.example.kotlincashloan.adapter.notification.NotificationListener
 import com.example.kotlincashloan.adapter.profile.MyOperationModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -32,8 +34,8 @@ import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.HashMap
 
-class NotificationFragment : Fragment() {
-    private var myAdapter = NotificationAdapter()
+class NotificationFragment : Fragment(), NotificationListener {
+    private var myAdapter = NotificationAdapter(this)
     private var viewModel = NotificationViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
@@ -178,6 +180,10 @@ class NotificationFragment : Fragment() {
         })
     }
 
+    override fun notificationClickListener(position: Int) {
+        findNavController().navigate(R.id.navigation_detail_notification)
+    }
+
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
@@ -195,12 +201,10 @@ class NotificationFragment : Fragment() {
             }, 500)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags =
-                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))

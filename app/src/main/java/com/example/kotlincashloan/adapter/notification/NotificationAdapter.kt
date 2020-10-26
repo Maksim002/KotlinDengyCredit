@@ -10,7 +10,7 @@ import com.timelysoft.tsjdomcom.common.GenericRecyclerAdapter
 import com.timelysoft.tsjdomcom.common.ViewHolder
 import kotlinx.android.synthetic.main.item_notification.view.*
 
-class NotificationAdapter(item: ArrayList<ResultListNoticeModel> = arrayListOf()): GenericRecyclerAdapter<ResultListNoticeModel>(item){
+class NotificationAdapter(var listener: NotificationListener, item: ArrayList<ResultListNoticeModel> = arrayListOf()): GenericRecyclerAdapter<ResultListNoticeModel>(item){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_notification)
@@ -29,6 +29,9 @@ class NotificationAdapter(item: ArrayList<ResultListNoticeModel> = arrayListOf()
 
         if (item.detail == true){
             holder.itemView.notification_detail.visibility = View.VISIBLE
+            holder.itemView.layout_item.setOnClickListener {
+                listener.notificationClickListener(holder.adapterPosition)
+            }
         }else{
             holder.itemView.notification_detail.visibility = View.GONE
         }

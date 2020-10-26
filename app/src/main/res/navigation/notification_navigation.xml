@@ -10,4 +10,10 @@
         android:name="com.example.kotlincashloan.ui.notification.NotificationFragment"
         android:label="Уведомления"
         tools:layout="@layout/fragment_notification" />
+
+    <fragment
+        android:id="@+id/navigation_detail_notification"
+        android:name="com.example.kotlincashloan.ui.notification.DetailNotificationFragment"
+        android:label="Уведомления"
+        tools:layout="@layout/fragment_detail_notification" />
 </navigation>
