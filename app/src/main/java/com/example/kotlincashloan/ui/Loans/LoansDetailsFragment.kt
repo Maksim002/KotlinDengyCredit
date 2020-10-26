@@ -184,6 +184,7 @@ class LoansDetailsFragment : Fragment() {
 
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
         startActivity(intent)
     }
 }

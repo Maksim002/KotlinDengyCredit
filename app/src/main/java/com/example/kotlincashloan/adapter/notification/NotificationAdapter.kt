@@ -30,7 +30,7 @@ class NotificationAdapter(var listener: NotificationListener, item: ArrayList<Re
         if (item.detail == true){
             holder.itemView.notification_detail.visibility = View.VISIBLE
             holder.itemView.layout_item.setOnClickListener {
-                listener.notificationClickListener(holder.adapterPosition)
+                listener.notificationClickListener(holder.adapterPosition, item)
             }
         }else{
             holder.itemView.notification_detail.visibility = View.GONE

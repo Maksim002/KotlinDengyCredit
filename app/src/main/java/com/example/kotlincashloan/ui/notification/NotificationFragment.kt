@@ -180,12 +180,15 @@ class NotificationFragment : Fragment(), NotificationListener {
         })
     }
 
-    override fun notificationClickListener(position: Int) {
-        findNavController().navigate(R.id.navigation_detail_notification)
+    override fun notificationClickListener(position: Int, item: ResultListNoticeModel) {
+        val bundle = Bundle()
+        bundle.putInt("noticeId", item.id!!)
+        findNavController().navigate(R.id.navigation_detail_notification, bundle)
     }
 
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
         startActivity(intent)
     }
 
@@ -195,9 +198,11 @@ class NotificationFragment : Fragment(), NotificationListener {
         MainActivity.timer.timeStop()
         HomeActivity.alert.hide()
         if (viewModel.listNoticeDta.value == null){
+            HomeActivity.alert.show()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNotice(map)
                 initRecycler()
+                HomeActivity.alert.hide()
             }, 500)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

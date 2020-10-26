@@ -322,6 +322,7 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
         startActivity(intent)
     }
 
