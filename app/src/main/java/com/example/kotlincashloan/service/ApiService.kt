@@ -6,6 +6,7 @@ import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
+import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -102,5 +103,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("getNotice?token=oYyxhIFgJjAb")
     fun getNotice(@FieldMap params: Map<String, String>):Call<CommonResponse<ResultDetailNoticeModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listOperation?token=oYyxhIFgJjAb")
+    fun listOperation(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ResultOperationModel>>>
 }
 

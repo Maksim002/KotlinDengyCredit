@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_notification.*
@@ -174,6 +175,8 @@ class DetailNotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
+        HomeActivity.alert.hide()
         if (viewModel.errorDetailNotice.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 if (p == 0) {
