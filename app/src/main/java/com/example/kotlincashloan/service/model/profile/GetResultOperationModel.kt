@@ -3,10 +3,10 @@ package com.example.kotlincashloan.service.model.profile
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class ResultOperationModel (
+class GetResultOperationModel (
     @SerializedName("id")
     @Expose
-    var id: Int? = null,
+    var id: String? = null,
 
     @SerializedName("date")
     @Expose
@@ -20,11 +20,7 @@ class ResultOperationModel (
     @Expose
     var description: String? = null,
 
-    @SerializedName("review")
+    @SerializedName("text")
     @Expose
-    var review: Boolean? = null,
-
-    @SerializedName("detail")
-    @Expose
-    var detail: Boolean? = null
+    var text: String? = null
 )

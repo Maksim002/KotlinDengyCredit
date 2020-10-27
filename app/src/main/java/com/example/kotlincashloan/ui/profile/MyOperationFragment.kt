@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.MyOperationAdapter
 import com.example.kotlincashloan.adapter.profile.OperationListener
@@ -34,7 +35,9 @@ class MyOperationFragment(var list: ArrayList<ResultOperationModel>) : Fragment(
     }
 
     override fun operationClickListener(int: Int, item: ResultOperationModel) {
-
+        val bundle = Bundle()
+        bundle.putInt("operationId", item.id!!)
+        findNavController().navigate(R.id.navigation_detail_profile, bundle)
     }
 
     override fun onResume() {

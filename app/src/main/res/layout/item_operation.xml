@@ -59,6 +59,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/operation_description"
                     android:layout_width="match_parent"
@@ -66,15 +72,29 @@
                     android:maxLines="2"
                     android:text="Сумма к погашению 3567 рублей. Перейти к погашению."
                     android:textColor="#001"
-                    android:layout_weight="1"
                     android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right|center"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/operation_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_point" />
 
                 <ImageView
                     android:id="@+id/operation_detail"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:src="@drawable/ic_arrow"/>
+                    android:layout_height="match_parent"
+                    android:paddingLeft="13dp"
+                    android:src="@drawable/ic_arrow" />
+            </LinearLayout>
             </LinearLayout>
 
             <View

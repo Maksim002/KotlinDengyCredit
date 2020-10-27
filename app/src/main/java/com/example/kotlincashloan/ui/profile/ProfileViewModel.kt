@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.profile
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -28,6 +29,28 @@ class ProfileViewModel : ViewModel(){
                     listListOperationDta.postValue(response.body())
                 }else{
                     errorListOperation.postValue(response.code().toString())
+                }
+            }
+        })
+    }
+
+    val errorGetOperation = MutableLiveData<String>()
+    var listGetOperationDta = MutableLiveData<CommonResponse<GetResultOperationModel>>()
+
+    fun getOperation(map: Map<String, String>){
+        RetrofitService.apiService().getOperation(map).enqueue(object : Callback<CommonResponse<GetResultOperationModel>> {
+            override fun onFailure(call: Call<CommonResponse<GetResultOperationModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetOperation.postValue( "601")
+                }else{
+                    errorGetOperation.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<GetResultOperationModel>>, response: Response<CommonResponse<GetResultOperationModel>>) {
+                if (response.isSuccessful) {
+                    listGetOperationDta.postValue(response.body())
+                }else{
+                    errorGetOperation.postValue(response.code().toString())
                 }
             }
         })

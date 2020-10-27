@@ -28,5 +28,11 @@ class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<Resul
         }else{
             holder.itemView.operation_detail.visibility = View.GONE
         }
+
+        if (item.review == true){
+            holder.itemView.operation_review.visibility = View.VISIBLE
+        }else{
+            holder.itemView.operation_review.visibility = View.GONE
+        }
     }
 }

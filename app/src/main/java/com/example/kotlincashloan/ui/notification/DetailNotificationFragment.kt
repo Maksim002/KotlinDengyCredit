@@ -201,7 +201,7 @@ class DetailNotificationFragment : Fragment() {
             toolbar.getNavigationIcon()!!.setColorFilter(
                 getResources().getColor(R.color.whiteColor),
                 PorterDuff.Mode.SRC_ATOP
-            );
+            )
         }
     }
 }
