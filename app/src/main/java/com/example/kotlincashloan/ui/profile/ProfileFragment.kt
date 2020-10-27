@@ -2,9 +2,11 @@ package com.example.kotlincashloan.ui.profile
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,16 +15,31 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_my_operation.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
+import java.util.HashMap
 
 class ProfileFragment : Fragment() {
     private var indicatorWidth = 0
+    private var viewModel = ProfileViewModel()
+    private val map = HashMap<String, String>()
+    val handler = Handler()
+    private var refresh = false
+    private var list: ArrayList<ResultOperationModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,20 +55,145 @@ class ProfileFragment : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
-        initPager()
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
         initClick()
+        initRefresh()
     }
 
     private fun initClick() {
         profile_your.setOnClickListener {
             findNavController().navigate(R.id.profile_setting_navigation)
         }
+
+        access_restricted.setOnClickListener {
+            initRestart()
+        }
+
+        no_connection_repeat.setOnClickListener {
+            initRestart()
+        }
+
+        technical_work.setOnClickListener {
+            initRestart()
+        }
+
+        not_found.setOnClickListener {
+            initRestart()
+        }
+    }
+
+    private fun initAuthorized() {
+        val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
+        startActivity(intent)
+    }
+
+    private fun initRecycler() {
+        if (!refresh){
+            HomeActivity.alert.show()
+        }
+        viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result->
+            if (result.result != null){
+                list = result.result
+                initPager()
+                profile_swipe.visibility = View.VISIBLE
+                profile_technical_work.visibility = View.GONE
+                profile_no_connection.visibility = View.GONE
+                profile_access_restricted.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+            }else{
+                if (result.error.code == 400 || result.error.code == 500){
+                    profile_technical_work.visibility = View.VISIBLE
+                    profile_no_connection.visibility = View.GONE
+                    profile_swipe.visibility = View.GONE
+                    profile_access_restricted.visibility = View.GONE
+                    profile_not_found.visibility = View.GONE
+                }else if (result.error.code == 403){
+                    profile_access_restricted.visibility = View.VISIBLE
+                    profile_technical_work.visibility = View.GONE
+                    profile_no_connection.visibility = View.GONE
+                    profile_swipe.visibility = View.GONE
+                    profile_not_found.visibility = View.GONE
+                }else if (result.error.code == 404){
+                    profile_not_found.visibility = View.VISIBLE
+                    profile_access_restricted.visibility = View.GONE
+                    profile_technical_work.visibility = View.GONE
+                    profile_no_connection.visibility = View.GONE
+                    profile_swipe.visibility = View.GONE
+                }else if (result.error.code == 401){
+                    initAuthorized()
+                }
+            }
+            profile_swipe.isRefreshing = false
+            HomeActivity.alert.hide()
+        })
+
+        viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error->
+            if (error == "400" || error == "500" || error == "600"){
+                profile_technical_work.visibility = View.VISIBLE
+                profile_no_connection.visibility = View.GONE
+                profile_swipe.visibility = View.GONE
+                profile_access_restricted.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+            }else if (error == "403"){
+                profile_access_restricted.visibility = View.VISIBLE
+                profile_technical_work.visibility = View.GONE
+                profile_no_connection.visibility = View.GONE
+                profile_swipe.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+            }else if (error == "404"){
+                profile_not_found.visibility = View.VISIBLE
+                profile_access_restricted.visibility = View.GONE
+                profile_technical_work.visibility = View.GONE
+                profile_no_connection.visibility = View.GONE
+                profile_swipe.visibility = View.GONE
+            }else if (error == "601"){
+                profile_no_connection.visibility = View.VISIBLE
+                profile_swipe.visibility = View.GONE
+                profile_technical_work.visibility = View.GONE
+                profile_access_restricted.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+            }else if (error == "401"){
+                initAuthorized()
+            }
+            profile_swipe.isRefreshing = false
+            HomeActivity.alert.hide()
+        })
+    }
+
+    private fun initRefresh() {
+        profile_swipe.setOnRefreshListener {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                refresh = true
+                initRestart()
+            }, 1000)
+        }
+    }
+
+    private fun initRestart() {
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            profile_no_connection.visibility = View.VISIBLE
+            profile_swipe.visibility = View.GONE
+            profile_technical_work.visibility = View.GONE
+            profile_access_restricted.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+            viewModel.errorListOperation .value = null
+        } else {
+            if (viewModel.listListOperationDta .value != null) {
+                viewModel.listOperation(map)
+            } else {
+                viewModel.errorListOperation .value = null
+                viewModel.listOperation(map)
+            }
+        }
     }
 
     @SuppressLint("WrongConstant")
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(), "Мои операции")
+        adapter.addFragment(MyOperationFragment(list), "Мои операции")
         adapter.addFragment(MyApplicationFragment(), "Мои заявки")
         profile_pager.setAdapter(adapter)
         profile_tab.setupWithViewPager(profile_pager)
@@ -81,6 +223,16 @@ class ProfileFragment : Fragment() {
         super.onResume()
         MainActivity.timer.timeStop()
         HomeActivity.alert.hide()
+        if (viewModel.listListOperationDta.value == null) {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.show()
+                viewModel.listOperation(map)
+                initRecycler()
+                HomeActivity.alert.hide()
+            }, 500)
+        }
+        initRecycler()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()

@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.adapter.profile
 
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
@@ -8,7 +9,7 @@ import com.timelysoft.tsjdomcom.common.GenericRecyclerAdapter
 import com.timelysoft.tsjdomcom.common.ViewHolder
 import kotlinx.android.synthetic.main.item_operation.view.*
 
-class MyOperationAdapter (item: ArrayList<ResultOperationModel> = arrayListOf()): GenericRecyclerAdapter<ResultOperationModel>(item){
+class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<ResultOperationModel> = arrayListOf()): GenericRecyclerAdapter<ResultOperationModel>(item){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return super.onCreateViewHolder(parent, R.layout.item_operation)
@@ -18,5 +19,14 @@ class MyOperationAdapter (item: ArrayList<ResultOperationModel> = arrayListOf())
         holder.itemView.operation_data.text = item.date
         holder.itemView.operation_title.text = item.title
         holder.itemView.operation_description.text = item.description
+
+        if (item.detail == true){
+            holder.itemView.operation_detail.visibility = View.VISIBLE
+            holder.itemView.operation_item.setOnClickListener {
+                listener.operationClickListener(holder.adapterPosition, item)
+            }
+        }else{
+            holder.itemView.operation_detail.visibility = View.GONE
+        }
     }
 }
