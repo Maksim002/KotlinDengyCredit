@@ -26,9 +26,13 @@ class ProfileViewModel : ViewModel(){
             }
             override fun onResponse(call: Call<CommonResponse<ArrayList<ResultOperationModel>>>, response: Response<CommonResponse<ArrayList<ResultOperationModel>>>) {
                 if (response.isSuccessful) {
-                    listListOperationDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listListOperationDta.postValue(response.body())
+                    }else{
+                        errorListOperation.postValue(response.body()!!.code.toString())
+                    }
                 }else{
-                    errorListOperation.postValue(response.code().toString())
+                    errorListOperation.postValue(response.raw().code.toString())
                 }
             }
         })
@@ -50,7 +54,7 @@ class ProfileViewModel : ViewModel(){
                 if (response.isSuccessful) {
                     listGetOperationDta.postValue(response.body())
                 }else{
-                    errorGetOperation.postValue(response.code().toString())
+                    errorGetOperation.postValue(response.raw().code.toString())
                 }
             }
         })

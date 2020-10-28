@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -76,7 +78,15 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController)
         })
         currentNavController = controller
+
+
     }
+
+//    private fun loadFragment(fragment: Fragment) {
+//        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+//        ft.replace(R.id.nav_host_container, fragment)
+//        ft.commit()
+//    }
 
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false

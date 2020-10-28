@@ -77,6 +77,7 @@ class LoansFragment : Fragment(), LoansListener {
         if (!refresh) {
             HomeActivity.alert.show()
         }
+
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listLoanId = result.error.code.toString()

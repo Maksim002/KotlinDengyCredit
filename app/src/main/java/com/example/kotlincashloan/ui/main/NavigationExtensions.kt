@@ -243,10 +243,7 @@ private fun BottomNavigationView.setupItemReselected(
     }
 }
 
-private fun detachNavHostFragment(
-    fragmentManager: FragmentManager,
-    navHostFragment: NavHostFragment
-) {
+private fun detachNavHostFragment(fragmentManager: FragmentManager, navHostFragment: NavHostFragment) {
     fragmentManager.beginTransaction()
         .detach(navHostFragment)
         .commitNow()
@@ -257,9 +254,7 @@ private fun attachNavHostFragment(
     navHostFragment: NavHostFragment,
     isPrimaryNavFragment: Boolean
 ) {
-    fragmentManager.beginTransaction()
-        .attach(navHostFragment)
-        .apply {
+    fragmentManager.beginTransaction().attach(navHostFragment).apply {
             if (isPrimaryNavFragment) {
                 setPrimaryNavigationFragment(navHostFragment)
             }
@@ -280,9 +275,7 @@ private fun obtainNavHostFragment(
 
     // Otherwise, create it and return it.
     val navHostFragment = NavHostFragment.create(navGraphId)
-    fragmentManager.beginTransaction()
-        .add(containerId, navHostFragment, fragmentTag)
-        .commitNow()
+    fragmentManager.beginTransaction().add(containerId, navHostFragment, fragmentTag).commitNow()
     return navHostFragment
 }
 

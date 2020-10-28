@@ -45,7 +45,8 @@ class SupportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
-        initRecycler()
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
         iniClick()
         initRefresh()
     }
@@ -53,11 +54,11 @@ class SupportFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        if (viewModel.listFaqDta.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.listFaq(map)
-                initRecycler()
-            }, 500)
+        initRestart()
+        if (viewModel.listFaqDta.value != null){
+            initRecycler()
+        }else{
+            initRestart()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -81,11 +82,19 @@ class SupportFragment : Fragment() {
             layout_access_restricted.visibility = View.GONE
             viewModel.error.value = null
         } else {
-            if (viewModel.listFaqDta.value != null) {
+            if (viewModel.listFaqDta.value == null) {
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listFaq(map)
+                initRecycler()
+                HomeActivity.alert.hide()
+                }, 500)
             } else {
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.error.value = null
                 viewModel.listFaq(map)
+                initRecycler()
+                }, 400)
             }
         }
     }
@@ -119,8 +128,6 @@ class SupportFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        map.put("login", AppPreferences.login.toString())
-        map.put("token", AppPreferences.token.toString())
         if (!refresh) {
             HomeActivity.alert.show()
         }
@@ -140,7 +147,7 @@ class SupportFragment : Fragment() {
                 support_no_connection.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 support_not_found.visibility = View.GONE
-            } else if (result.error.code == 500 || result.error.code == 400) {
+            } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
                 support_technical_work.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
@@ -166,7 +173,7 @@ class SupportFragment : Fragment() {
                 layout_access_restricted.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
 
-            } else if (error == "500" || error == "400") {
+            } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429") {
                 support_technical_work.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
@@ -181,13 +188,7 @@ class SupportFragment : Fragment() {
                 support_not_found.visibility = View.GONE
             } else if (error == "401") {
                 initAuthorized()
-            }
-            else if (error == "600"){
-                support_technical_work.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_no_connection.visibility = View.GONE
-                layout_access_restricted.visibility = View.GONE
-            }else if (error == "601"){
+            } else if (error == "601") {
                 layout_access_restricted.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 support_swipe_layout.visibility = View.GONE

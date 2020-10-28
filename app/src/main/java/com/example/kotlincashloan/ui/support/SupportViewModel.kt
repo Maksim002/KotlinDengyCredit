@@ -30,7 +30,7 @@ class SupportViewModel : ViewModel(){
                 if (response.isSuccessful) {
                     listFaqDta.postValue(response.body())
                 }else{
-                    error.postValue(response.code().toString())
+                    error.postValue(response.raw().code.toString())
                 }
             }
         })

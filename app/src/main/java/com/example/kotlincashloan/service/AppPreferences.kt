@@ -61,6 +61,13 @@ object AppPreferences {
             it.putString("number", value)
         }
 
+
+    var errorCode: String?
+        get() = preferences.getString("errorCode", "")
+        set(value) = preferences.edit {
+            it.putString("errorCode", value)
+        }
+
     var isFormatMask: String?
         get() = preferences.getString("isFormatMask", "")
         set(value) = preferences.edit {

@@ -44,8 +44,9 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
     private fun iniClick() {
         bottom_sheet_closed.setOnClickListener {
             listener.pinCodeClockListener()
-            this.dismiss()
             AppPreferences.savePin = null
+            AppPreferences.isNumber = false
+            this.dismiss()
         }
 
         bottom_sheet_resume.setOnClickListener {

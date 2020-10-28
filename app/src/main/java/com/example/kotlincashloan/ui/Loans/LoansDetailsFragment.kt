@@ -48,6 +48,10 @@ class LoansDetailsFragment : Fragment() {
         initClick()
     }
 
+//       fun newInstance(): LoansDetailsFragment? {
+//        return LoansDetailsFragment()
+//    }
+
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
             HomeActivity.alert.show()

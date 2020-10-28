@@ -57,7 +57,6 @@ class NotificationFragment : Fragment(), NotificationListener {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         initRefresh()
-        initRecycler()
         initClick()
     }
 
@@ -89,11 +88,19 @@ class NotificationFragment : Fragment(), NotificationListener {
             notification_not_found.visibility = View.GONE
             viewModel.errorNotice.value = null
         } else {
-            if (viewModel.listNoticeDta.value != null) {
-                viewModel.listNotice(map)
+            if (viewModel.listNoticeDta.value == null) {
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.listNotice(map)
+                    initRecycler()
+                    HomeActivity.alert.hide()
+                }, 500)
             } else {
-                viewModel.errorNotice.value = null
-                viewModel.listNotice(map)
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.errorNotice.value = null
+                    viewModel.listNotice(map)
+                    initRecycler()
+                }, 500)
             }
         }
     }
@@ -111,8 +118,8 @@ class NotificationFragment : Fragment(), NotificationListener {
         if (!refresh) {
             HomeActivity.alert.show()
         }
-        viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result->
-            if (result.result != null){
+        viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
                 myAdapter.update(result.result)
                 notification_recycler.adapter = myAdapter
                 notification_swipe.visibility = View.VISIBLE
@@ -120,26 +127,26 @@ class NotificationFragment : Fragment(), NotificationListener {
                 notification_access_restricted.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
                 notification_not_found.visibility = View.GONE
-            }else{
-                if (result.error.code == 500 || result.error.code == 400){
+            } else {
+                if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
                     notification_technical_work.visibility = View.VISIBLE
                     notification_access_restricted.visibility = View.GONE
                     notification_no_connection.visibility = View.GONE
                     notification_not_found.visibility = View.GONE
                     notification_swipe.visibility = View.GONE
-                }else if (result.error.code == 403){
+                } else if (result.error.code == 403) {
                     notification_access_restricted.visibility = View.VISIBLE
                     notification_technical_work.visibility = View.GONE
                     notification_no_connection.visibility = View.GONE
                     notification_not_found.visibility = View.GONE
                     notification_swipe.visibility = View.GONE
-                }else if (result.error.code == 404){
+                } else if (result.error.code == 404) {
                     notification_not_found.visibility = View.VISIBLE
                     notification_access_restricted.visibility = View.GONE
                     notification_technical_work.visibility = View.GONE
                     notification_no_connection.visibility = View.GONE
                     notification_swipe.visibility = View.GONE
-                }else if (result.error.code == 401){
+                } else if (result.error.code == 401) {
                     initAuthorized()
                 }
             }
@@ -147,28 +154,29 @@ class NotificationFragment : Fragment(), NotificationListener {
             HomeActivity.alert.hide()
         })
 
-        viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error->
-            if (error == "500" || error == "400" || error == "600"){
+        viewModel.errorNotice.observe(viewLifecycleOwner, Observer
+        { error ->
+            if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429") {
                 notification_technical_work.visibility = View.VISIBLE
                 notification_access_restricted.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
                 notification_not_found.visibility = View.GONE
                 notification_swipe.visibility = View.GONE
-            }else if (error == "403"){
+            } else if (error == "403") {
                 notification_access_restricted.visibility = View.VISIBLE
                 notification_technical_work.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
                 notification_not_found.visibility = View.GONE
                 notification_swipe.visibility = View.GONE
-            }else if (error == "404"){
+            } else if (error == "404") {
                 notification_not_found.visibility = View.VISIBLE
                 notification_access_restricted.visibility = View.GONE
                 notification_technical_work.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
                 notification_swipe.visibility = View.GONE
-            }else if (error == "401"){
+            } else if (error == "401") {
                 initAuthorized()
-            }else if (error == "601"){
+            } else if (error == "601") {
                 notification_no_connection.visibility = View.VISIBLE
                 notification_not_found.visibility = View.GONE
                 notification_access_restricted.visibility = View.GONE
@@ -196,20 +204,21 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        HomeActivity.alert.hide()
-        if (viewModel.listNoticeDta.value == null){
-            HomeActivity.alert.show()
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.listNotice(map)
-                initRecycler()
-                HomeActivity.alert.hide()
-            }, 500)
+        initRestart()
+
+        if (viewModel.listNoticeDta.value != null){
+            initRecycler()
+        }else{
+            initRestart()
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags =
+                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
