@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 import java.util.HashMap
 
 class ProfileFragment : Fragment() {
@@ -40,6 +41,7 @@ class ProfileFragment : Fragment() {
     val handler = Handler()
     private var refresh = false
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -95,16 +97,20 @@ class ProfileFragment : Fragment() {
         }
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-                AppPreferences.errorCode == ""
                 list = result.result
-                initPager()
                 profile_swipe.visibility = View.VISIBLE
                 profile_technical_work.visibility = View.GONE
                 profile_no_connection.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
                 profile_not_found.visibility = View.GONE
+                errorCode = result.code.toString()
+                initPager()
             } else {
-                AppPreferences.errorCode = result.error.code.toString()
+                if (result.error.code != null){
+                    errorCode = result.error.code.toString()
+                }else if (result.code != null){
+                    errorCode = result.code.toString()
+                }
                 if (result.code == 429) {
                     profile_technical_work.visibility = View.VISIBLE
                     profile_no_connection.visibility = View.GONE
@@ -138,7 +144,12 @@ class ProfileFragment : Fragment() {
         })
 
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
-            AppPreferences.errorCode = error
+            try {
+                errorCode = error
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+
             if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
                 profile_technical_work.visibility = View.VISIBLE
                 profile_no_connection.visibility = View.GONE
@@ -189,7 +200,7 @@ class ProfileFragment : Fragment() {
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
             viewModel.errorListOperation.value = null
-            AppPreferences.errorCode = "601"
+            errorCode = "601"
         } else {
             if (viewModel.listListOperationDta.value == null) {
                 HomeActivity.alert.show()
@@ -242,7 +253,7 @@ class ProfileFragment : Fragment() {
         super.onResume()
         MainActivity.timer.timeStop()
         if (viewModel.listListOperationDta.value != null){
-            if (AppPreferences.errorCode == ""){
+            if (errorCode == "200"){
                 initRecycler()
             }else{
                 initRestart()

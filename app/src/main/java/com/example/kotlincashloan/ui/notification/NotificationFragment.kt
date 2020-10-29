@@ -40,6 +40,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var refresh = false
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +87,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             notification_technical_work.visibility = View.GONE
             notification_access_restricted.visibility = View.GONE
             notification_not_found.visibility = View.GONE
+            errorCode = "601"
             viewModel.errorNotice.value = null
         } else {
             if (viewModel.listNoticeDta.value == null) {
@@ -127,7 +129,11 @@ class NotificationFragment : Fragment(), NotificationListener {
                 notification_access_restricted.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
                 notification_not_found.visibility = View.GONE
+                errorCode = result.code.toString()
             } else {
+                if (result.error.code != null){
+                    errorCode = ""
+                }
                 if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
                     notification_technical_work.visibility = View.VISIBLE
                     notification_access_restricted.visibility = View.GONE
@@ -154,8 +160,10 @@ class NotificationFragment : Fragment(), NotificationListener {
             HomeActivity.alert.hide()
         })
 
-        viewModel.errorNotice.observe(viewLifecycleOwner, Observer
-        { error ->
+        viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null){
+                errorCode = ""
+            }
             if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429") {
                 notification_technical_work.visibility = View.VISIBLE
                 notification_access_restricted.visibility = View.GONE
@@ -204,10 +212,12 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        initRestart()
-
         if (viewModel.listNoticeDta.value != null){
-            initRecycler()
+            if (errorCode == "200"){
+                initRecycler()
+            }else{
+                initRestart()
+            }
         }else{
             initRestart()
         }

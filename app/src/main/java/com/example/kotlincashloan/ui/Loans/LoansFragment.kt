@@ -56,8 +56,6 @@ class LoansFragment : Fragment(), LoansListener {
         map.put("v", "4")
 
         initLogicSeekBar()
-        initResult()
-        initRecycler()
         initClick()
         initRefresh()
     }
@@ -203,12 +201,21 @@ class LoansFragment : Fragment(), LoansListener {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         val handler = Handler()
         if (viewModel.listNewsDta.value == null) {
+            HomeActivity.alert.show()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
                 initRecycler()
+                HomeActivity.alert.hide()
             }, 500)
+        }else{
+            if (listNewsId == "200"){
+                initRecycler()
+            }else{
+                initRepeat()
+            }
         }
 
         if (viewModel.listLoanInfo.value == null) {
@@ -216,7 +223,14 @@ class LoansFragment : Fragment(), LoansListener {
                 viewModel.getLoanInfo(map)
                 initResult()
             }, 500)
+        }else{
+            if (listLoanId == "200"){
+                initResult()
+            }else{
+                initRepeat()
+            }
         }
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
@@ -255,36 +269,36 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
+            listNewsId = ""
+            listLoanId = ""
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
                 viewModel.listNews(map)
+                initRecycler()
+            }else if (viewModel.listNewsDta.value == null){
+                viewModel.errorNews.value = null
+                viewModel.listNews(map)
             }
+
             if (viewModel.listLoanInfo.value != null) {
                 viewModel.errorLoanInfo.value = null
                 viewModel.getLoanInfo(map)
+                initResult()
+            }else if (viewModel.listNewsDta.value == null){
+                viewModel.errorLoanInfo.value = null
+                viewModel.getLoanInfo(map)
             }
-//            initRecycler()
-//            initResult()
         }
     }
 
     private fun initRefresh() {
         loans_layout.setOnRefreshListener {
             handler.postDelayed(Runnable {
-                initRestart()
+                initRepeat()
             }, 1000)
         }
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
-    }
-
-    private fun initRestart() {
-        if (viewModel.listNewsDta.value != null && viewModel.listLoanInfo.value != null) {
-            viewModel.errorNews.value = null
-            viewModel.errorLoanInfo.value = null
-            viewModel.listNews(map)
-            viewModel.getLoanInfo(map)
-        }
     }
 
     private fun initRecycler() {

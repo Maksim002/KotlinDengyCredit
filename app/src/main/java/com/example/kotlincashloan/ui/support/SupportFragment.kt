@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 
 
 class SupportFragment : Fragment() {
@@ -32,6 +33,7 @@ class SupportFragment : Fragment() {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var refresh = false
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,9 +56,12 @@ class SupportFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        initRestart()
         if (viewModel.listFaqDta.value != null){
-            initRecycler()
+            if (errorCode == "200"){
+                initRecycler()
+            }else{
+                initRestart()
+            }
         }else{
             initRestart()
         }
@@ -80,6 +85,7 @@ class SupportFragment : Fragment() {
             support_not_found.visibility = View.GONE
             support_technical_work.visibility = View.GONE
             layout_access_restricted.visibility = View.GONE
+            errorCode = "601"
             viewModel.error.value = null
         } else {
             if (viewModel.listFaqDta.value == null) {
@@ -141,31 +147,40 @@ class SupportFragment : Fragment() {
                 support_not_found.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
-            } else if (result.error.code == 403) {
-                layout_access_restricted.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_no_connection.visibility = View.GONE
-                support_technical_work.visibility = View.GONE
-                support_not_found.visibility = View.GONE
-            } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                support_technical_work.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_no_connection.visibility = View.GONE
-                layout_access_restricted.visibility = View.GONE
-                support_not_found.visibility = View.GONE
-            } else if (result.error.code == 404) {
-                support_not_found.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_no_connection.visibility = View.GONE
-                layout_access_restricted.visibility = View.GONE
-                support_technical_work.visibility = View.GONE
-            } else if (result.error.code == 401) {
-                initAuthorized()
+                errorCode = result.code.toString()
+            } else {
+                if (result.error.code != null){
+                    errorCode = result.error.code.toString()
+                }
+                if (result.error.code == 403) {
+                    layout_access_restricted.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
+                    support_not_found.visibility = View.GONE
+                } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                    support_technical_work.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
+                    support_not_found.visibility = View.GONE
+                } else if (result.error.code == 404) {
+                    support_not_found.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
+                } else if (result.error.code == 401) {
+                    initAuthorized()
+                }
             }
             support_swipe_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null){
+                errorCode = error
+            }
             if (error == "404") {
                 support_not_found.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
