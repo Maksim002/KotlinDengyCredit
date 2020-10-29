@@ -10,6 +10,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,7 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -106,39 +108,34 @@ class ProfileFragment : Fragment() {
                 errorCode = result.code.toString()
                 initPager()
             } else {
-                if (result.error.code != null){
+                if (result.error.code != null) {
                     errorCode = result.error.code.toString()
-                }else if (result.code != null){
+                } else if (result.code != null) {
                     errorCode = result.code.toString()
                 }
-                if (result.code == 429) {
+                if (result.error.code == 400 || result.error.code == 500 || result.error.code == 409 || result.error.code == 429) {
                     profile_technical_work.visibility = View.VISIBLE
                     profile_no_connection.visibility = View.GONE
                     profile_swipe.visibility = View.GONE
                     profile_access_restricted.visibility = View.GONE
                     profile_not_found.visibility = View.GONE
-                } else if (result.error.code == 400 || result.error.code == 500 || result.error.code == 409 || result.error.code == 429) {
-                        profile_technical_work.visibility = View.VISIBLE
-                        profile_no_connection.visibility = View.GONE
-                        profile_swipe.visibility = View.GONE
-                        profile_access_restricted.visibility = View.GONE
-                        profile_not_found.visibility = View.GONE
-                    } else if (result.error.code == 403) {
-                        profile_access_restricted.visibility = View.VISIBLE
-                        profile_technical_work.visibility = View.GONE
-                        profile_no_connection.visibility = View.GONE
-                        profile_swipe.visibility = View.GONE
-                        profile_not_found.visibility = View.GONE
-                    } else if (result.error.code == 404) {
-                        profile_not_found.visibility = View.VISIBLE
-                        profile_access_restricted.visibility = View.GONE
-                        profile_technical_work.visibility = View.GONE
-                        profile_no_connection.visibility = View.GONE
-                        profile_swipe.visibility = View.GONE
-                    } else if (result.error.code == 401) {
-                        initAuthorized()
-                    }
+                } else if (result.error.code == 403) {
+                    profile_access_restricted.visibility = View.VISIBLE
+                    profile_technical_work.visibility = View.GONE
+                    profile_no_connection.visibility = View.GONE
+                    profile_swipe.visibility = View.GONE
+                    profile_not_found.visibility = View.GONE
+                } else if (result.error.code == 404) {
+                    profile_not_found.visibility = View.VISIBLE
+                    profile_access_restricted.visibility = View.GONE
+                    profile_technical_work.visibility = View.GONE
+                    profile_no_connection.visibility = View.GONE
+                    profile_swipe.visibility = View.GONE
+                } else if (result.error.code == 401) {
+                    initAuthorized()
                 }
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -146,7 +143,7 @@ class ProfileFragment : Fragment() {
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
             try {
                 errorCode = error
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
@@ -177,6 +174,7 @@ class ProfileFragment : Fragment() {
             } else if (error == "401") {
                 initAuthorized()
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -184,11 +182,13 @@ class ProfileFragment : Fragment() {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
             }, 1000)
         }
+        profile_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
     private fun initRestart() {
@@ -252,13 +252,13 @@ class ProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        if (viewModel.listListOperationDta.value != null){
-            if (errorCode == "200"){
+        if (viewModel.listListOperationDta.value != null) {
+            if (errorCode == "200") {
                 initRecycler()
-            }else{
+            } else {
                 initRestart()
             }
-        }else{
+        } else {
             initRestart()
         }
 
@@ -275,4 +275,6 @@ class ProfileFragment : Fragment() {
             toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
+
+
 }

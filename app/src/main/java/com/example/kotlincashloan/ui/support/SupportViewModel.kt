@@ -28,7 +28,11 @@ class SupportViewModel : ViewModel(){
             }
             override fun onResponse(call: Call<CommonResponse<ArrayList<ListFaqResultModel>>>, response: Response<CommonResponse<ArrayList<ListFaqResultModel>>>) {
                 if (response.isSuccessful) {
-                    listFaqDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listFaqDta.postValue(response.body())
+                    }else{
+                        error.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     error.postValue(response.raw().code.toString())
                 }

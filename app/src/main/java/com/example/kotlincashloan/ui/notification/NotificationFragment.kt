@@ -109,11 +109,13 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initRefresh() {
         notification_swipe.setOnRefreshListener {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
             }, 1000)
         }
+        notification_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
     private fun initRecycler() {
@@ -156,6 +158,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                     initAuthorized()
                 }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             notification_swipe.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -191,6 +194,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                 notification_technical_work.visibility = View.GONE
                 notification_swipe.visibility = View.GONE
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             notification_swipe.isRefreshing = false
             HomeActivity.alert.hide()
         })

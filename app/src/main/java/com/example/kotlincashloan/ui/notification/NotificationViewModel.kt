@@ -27,7 +27,11 @@ class NotificationViewModel : ViewModel(){
             }
             override fun onResponse(call: Call<CommonResponse<ArrayList<ResultListNoticeModel>>>, response: Response<CommonResponse<ArrayList<ResultListNoticeModel>>>) {
                 if (response.isSuccessful) {
-                    listNoticeDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listNoticeDta.postValue(response.body())
+                    }else{
+                        errorNotice.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorNotice.postValue(response.code().toString())
                 }
@@ -50,7 +54,11 @@ class NotificationViewModel : ViewModel(){
             }
             override fun onResponse(call: Call<CommonResponse<ResultDetailNoticeModel>>, response: Response<CommonResponse<ResultDetailNoticeModel>>) {
                 if (response.isSuccessful) {
-                    listNoticeDetailDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listNoticeDetailDta.postValue(response.body())
+                    }else{
+                        errorDetailNotice.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorDetailNotice.postValue(response.code().toString())
                 }

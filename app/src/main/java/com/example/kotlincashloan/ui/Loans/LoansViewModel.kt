@@ -31,8 +31,16 @@ class LoansViewModel: ViewModel() {
             }
             override fun onResponse(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, response: Response<CommonResponse<ArrayList<ListNewsResultModel>>>) {
                 if (response.isSuccessful) {
-                    listNewsDta.postValue(response.body())
-                    listNewsId = response.code().toString()
+                    if (response.body()!!.code == 200){
+                        listNewsDta.postValue(response.body())
+                        if (response.body()!!.error == null){
+                            listNewsId = response.code().toString()
+                        }else{
+                            listNewsId = response.body()!!.error.toString()
+                        }
+                    }else{
+                        errorNews.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorNews.postValue(response.code().toString())
                 }
@@ -54,7 +62,11 @@ class LoansViewModel: ViewModel() {
             }
             override fun onResponse(call: Call<CommonResponse<GetNewsResultModel>>, response: Response<CommonResponse<GetNewsResultModel>>) {
                 if (response.isSuccessful) {
-                    listGetDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listGetDta.postValue(response.body())
+                    }else{
+                        errorGet.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorGet.postValue(response.code().toString())
                 }
@@ -77,8 +89,16 @@ class LoansViewModel: ViewModel() {
             }
             override fun onResponse(call: Call<CommonResponse<LoanInfoResultModel>>, response: Response<CommonResponse<LoanInfoResultModel>>) {
                 if (response.isSuccessful) {
-                    listLoanInfo.postValue(response.body())
-                    listLoanId = response.code().toString()
+                    if (response.body()!!.code == 200){
+                        listLoanInfo.postValue(response.body())
+                        if (response.body()!!.error == null){
+                            listLoanId = response.code().toString()
+                        }else{
+                            listLoanId = response.body()!!.error.toString()
+                        }
+                    }else{
+                        errorLoanInfo.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }

@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_still.*
 
 class StillFragment : Fragment() {
@@ -36,6 +37,7 @@ class StillFragment : Fragment() {
     private fun initClick() {
         still_exit.setOnClickListener {
             val intent = Intent(context, HomeActivity::class.java)
+            AppPreferences.token = null
             startActivity(intent)
         }
     }

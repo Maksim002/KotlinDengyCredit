@@ -32,6 +32,7 @@ class DetailProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +48,6 @@ class DetailProfileFragment : Fragment() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", operationId.toString())
-        initResult()
         initClick()
     }
 
@@ -85,12 +85,16 @@ class DetailProfileFragment : Fragment() {
                 d_profile_date.text = result.result.date
                 d_profile_description.text = result.result.description
                 d_profile_text.loadMarkdown(result.result.text)
+                errorCode = result.code.toString()
                 d_profile_profile.visibility = View.VISIBLE
                 d_profile_access_restricted.visibility = View.GONE
                 d_profile_no_connection.visibility = View.GONE
                 d_profile_technical_work.visibility = View.GONE
                 d_profile_not_found.visibility = View.GONE
             }else{
+                if (result.error.code != null){
+                    errorCode = result.error.code.toString()
+                }
                if (result.error.code == 400 || result.error.code == 500){
                    d_profile_technical_work.visibility = View.VISIBLE
                    d_profile_profile.visibility = View.GONE
@@ -117,6 +121,9 @@ class DetailProfileFragment : Fragment() {
         })
 
         viewModel.errorGetOperation.observe(viewLifecycleOwner, Observer { error->
+            if (error != null){
+                errorCode = error
+            }
             if (error == "400" || error == "500" || error == "600"){
                 d_profile_technical_work.visibility = View.VISIBLE
                 d_profile_profile.visibility = View.GONE
@@ -157,12 +164,15 @@ class DetailProfileFragment : Fragment() {
             d_profile_access_restricted.visibility = View.GONE
             d_profile_not_found.visibility = View.GONE
             viewModel.errorGetOperation.value = null
+            errorCode = "601"
         } else {
-            if (viewModel.listGetOperationDta.value != null) {
-                viewModel.getOperation(map)
-            } else {
-                viewModel.errorGetOperation.value = null
-                viewModel.getOperation(map)
+            if (viewModel.listGetOperationDta.value == null) {
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.getOperation(map)
+                    initResult()
+                    HomeActivity.alert.hide()
+                }, 500)
             }
         }
     }
@@ -176,14 +186,12 @@ class DetailProfileFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        HomeActivity.alert.hide()
-        if (viewModel.listGetOperationDta.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.show()
-                viewModel.getOperation(map)
+        if (viewModel.listGetOperationDta.value != null) {
+            if (errorCode == "200") {
                 initResult()
-                HomeActivity.alert.hide()
-            }, 500)
+            }
+        } else {
+            initRestart()
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

@@ -52,7 +52,11 @@ class ProfileViewModel : ViewModel(){
             }
             override fun onResponse(call: Call<CommonResponse<GetResultOperationModel>>, response: Response<CommonResponse<GetResultOperationModel>>) {
                 if (response.isSuccessful) {
-                    listGetOperationDta.postValue(response.body())
+                    if (response.body()!!.code == 200){
+                        listGetOperationDta.postValue(response.body())
+                    }else{
+                        errorGetOperation.postValue(response.body()!!.code.toString())
+                    }
                 }else{
                     errorGetOperation.postValue(response.raw().code.toString())
                 }

@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -65,7 +66,6 @@ class SupportFragment : Fragment() {
         }else{
             initRestart()
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
@@ -91,16 +91,16 @@ class SupportFragment : Fragment() {
             if (viewModel.listFaqDta.value == null) {
                 HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.listFaq(map)
-                initRecycler()
-                HomeActivity.alert.hide()
+                    viewModel.listFaq(map)
+                    initRecycler()
+                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.error.value = null
-                viewModel.listFaq(map)
-                initRecycler()
-                }, 400)
+                    viewModel.error.value = null
+                    viewModel.listFaq(map)
+                    initRecycler()
+                }, 500)
             }
         }
     }
@@ -125,6 +125,7 @@ class SupportFragment : Fragment() {
 
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
@@ -174,6 +175,7 @@ class SupportFragment : Fragment() {
                     initAuthorized()
                 }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -209,6 +211,7 @@ class SupportFragment : Fragment() {
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.VISIBLE
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })

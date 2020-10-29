@@ -33,7 +33,7 @@ class DetailNotificationFragment : Fragment() {
     private var viewModel = NotificationViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-    private var p = 0
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +49,6 @@ class DetailNotificationFragment : Fragment() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", notificationId.toString())
-        initRequest()
         initClick()
     }
 
@@ -89,12 +88,15 @@ class DetailNotificationFragment : Fragment() {
             d_notification_technical_work.visibility = View.GONE
             layout_detail.visibility = View.GONE
             viewModel.errorDetailNotice.value = null
+            errorCode = "601"
         } else {
-            if (viewModel.listNoticeDetailDta.value != null) {
-                viewModel.getNotice(map)
-            } else {
-                viewModel.errorDetailNotice.value = null
-                viewModel.getNotice(map)
+            if (viewModel.listNoticeDetailDta.value == null) {
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.getNotice(map)
+                    initRequest()
+                    HomeActivity.alert.hide()
+                }, 500)
             }
         }
     }
@@ -112,55 +114,64 @@ class DetailNotificationFragment : Fragment() {
                 d_notification_no_connection.visibility = View.GONE
                 d_notification_technical_work.visibility = View.GONE
                 d_notification_not_found.visibility = View.GONE
-            }else if (result.error.code == 400 || result.error.code == 500){
-                d_notification_technical_work.visibility = View.VISIBLE
-                d_notification_access_restricted.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                d_notification_not_found.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            }else if (result.error.code == 403){
-                d_notification_access_restricted.visibility = View.VISIBLE
-                d_notification_technical_work.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                d_notification_not_found.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            }else if (result.error.code == 404){
-                d_notification_not_found.visibility = View.VISIBLE
-                d_notification_access_restricted.visibility = View.GONE
-                d_notification_technical_work.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            }else if (result.error.code == 401){
-                initAuthorized()
+                errorCode = result.code.toString()
+            } else {
+                if (result.error.code != null) {
+                    errorCode = result.error.code.toString()
+                }
+                if (result.error.code == 400 || result.error.code == 500) {
+                    d_notification_technical_work.visibility = View.VISIBLE
+                    d_notification_access_restricted.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    d_notification_not_found.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                } else if (result.error.code == 403) {
+                    d_notification_access_restricted.visibility = View.VISIBLE
+                    d_notification_technical_work.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    d_notification_not_found.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                } else if (result.error.code == 404) {
+                    d_notification_not_found.visibility = View.VISIBLE
+                    d_notification_access_restricted.visibility = View.GONE
+                    d_notification_technical_work.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                } else if (result.error.code == 401) {
+                    initAuthorized()
+                }
             }
             HomeActivity.alert.hide()
         })
-        viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error->
-            if (error == "400" || error == "500" || error == "600"){
+        viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
+                errorCode = error
+            }
+            if (error == "400" || error == "500" || error == "600") {
                 d_notification_technical_work.visibility = View.VISIBLE
                 d_notification_access_restricted.visibility = View.GONE
                 d_notification_no_connection.visibility = View.GONE
                 d_notification_not_found.visibility = View.GONE
                 layout_detail.visibility = View.GONE
-            }else if (error == "403"){
+            } else if (error == "403") {
                 d_notification_access_restricted.visibility = View.VISIBLE
                 d_notification_technical_work.visibility = View.GONE
                 d_notification_no_connection.visibility = View.GONE
                 d_notification_not_found.visibility = View.GONE
                 layout_detail.visibility = View.GONE
-            }else if (error == "404"){
+            } else if (error == "404") {
                 d_notification_not_found.visibility = View.VISIBLE
                 d_notification_access_restricted.visibility = View.GONE
                 d_notification_technical_work.visibility = View.GONE
                 d_notification_no_connection.visibility = View.GONE
                 layout_detail.visibility = View.GONE
-            }else if (error == "601"){
+            } else if (error == "601") {
                 d_notification_no_connection.visibility = View.VISIBLE
                 d_notification_not_found.visibility = View.GONE
                 d_notification_access_restricted.visibility = View.GONE
                 d_notification_technical_work.visibility = View.GONE
                 layout_detail.visibility = View.GONE
-            }else if (error == "401"){
+            } else if (error == "401") {
                 initAuthorized()
             }
             HomeActivity.alert.hide()
@@ -176,15 +187,13 @@ class DetailNotificationFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        HomeActivity.alert.hide()
         if (viewModel.errorDetailNotice.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                if (p == 0) {
-                    viewModel.getNotice(map)
-                    initRequest()
-                    p = 1
-                }
-            }, 500)
+            if (errorCode == "200") {
+                initRequest()
+            } else {
+                initRestart()
+            }
+
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {

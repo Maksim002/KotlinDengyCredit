@@ -9,6 +9,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -186,6 +187,7 @@ class LoansFragment : Fragment(), LoansListener {
                     }
                 }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -210,10 +212,10 @@ class LoansFragment : Fragment(), LoansListener {
                 initRecycler()
                 HomeActivity.alert.hide()
             }, 500)
-        }else{
-            if (listNewsId == "200"){
+        } else {
+            if (listNewsId == "200") {
                 initRecycler()
-            }else{
+            } else {
                 initRepeat()
             }
         }
@@ -223,10 +225,10 @@ class LoansFragment : Fragment(), LoansListener {
                 viewModel.getLoanInfo(map)
                 initResult()
             }, 500)
-        }else{
-            if (listLoanId == "200"){
+        } else {
+            if (listLoanId == "200") {
                 initResult()
-            }else{
+            } else {
                 initRepeat()
             }
         }
@@ -271,12 +273,13 @@ class LoansFragment : Fragment(), LoansListener {
             loans_technical_work.visibility = View.GONE
             listNewsId = ""
             listLoanId = ""
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
                 viewModel.listNews(map)
                 initRecycler()
-            }else if (viewModel.listNewsDta.value == null){
+            } else if (viewModel.listNewsDta.value == null) {
                 viewModel.errorNews.value = null
                 viewModel.listNews(map)
             }
@@ -285,7 +288,7 @@ class LoansFragment : Fragment(), LoansListener {
                 viewModel.errorLoanInfo.value = null
                 viewModel.getLoanInfo(map)
                 initResult()
-            }else if (viewModel.listNewsDta.value == null){
+            } else if (viewModel.listNewsDta.value == null) {
                 viewModel.errorLoanInfo.value = null
                 viewModel.getLoanInfo(map)
             }
@@ -294,9 +297,13 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRefresh() {
         loans_layout.setOnRefreshListener {
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable {
                 initRepeat()
-            }, 1000)
+            }, 500)
         }
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
@@ -322,6 +329,7 @@ class LoansFragment : Fragment(), LoansListener {
                     }
                 }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
@@ -356,48 +364,56 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initErrorResult(result: Int) {
         if (result == 403) {
+            loans_not_found.visibility = View.GONE
+            loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
+            loans_layout.visibility = View.GONE
             loans_access_restricted.visibility = View.VISIBLE
-            loans_layout.visibility = View.GONE
         } else if (result == 404) {
-            loans_no_connection.visibility = View.GONE
             loans_not_found.visibility = View.VISIBLE
+            loans_technical_work.visibility = View.GONE
+            loans_no_connection.visibility = View.GONE
             loans_layout.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
-        } else if (result == 500 || result == 400) {
-            loans_no_connection.visibility = View.GONE
+        } else if (result == 500 || result == 400 || result == 409 || result == 429) {
             loans_technical_work.visibility = View.VISIBLE
+            loans_no_connection.visibility = View.GONE
             loans_layout.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
+            loans_not_found.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }
 
     private fun initError(error: String) {
-        if (error == "600") {
-            loans_no_connection.visibility = View.GONE
-            loans_technical_work.visibility = View.VISIBLE
-            loans_layout.visibility = View.GONE
-        } else if (error == "601") {
+        if (error == "601") {
             loans_no_connection.visibility = View.VISIBLE
             loans_layout.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
         } else if (error == "403") {
-            loans_no_connection.visibility = View.GONE
             loans_access_restricted.visibility = View.VISIBLE
+            loans_not_found.visibility = View.GONE
+            loans_technical_work.visibility = View.GONE
+            loans_no_connection.visibility = View.GONE
             loans_layout.visibility = View.GONE
         } else if (error == "404") {
-            loans_no_connection.visibility = View.GONE
             loans_not_found.visibility = View.VISIBLE
+            loans_technical_work.visibility = View.GONE
+            loans_no_connection.visibility = View.GONE
             loans_layout.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
-        } else if (error == "500" || error == "400") {
-            loans_no_connection.visibility = View.GONE
+        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600") {
             loans_technical_work.visibility = View.VISIBLE
+            loans_no_connection.visibility = View.GONE
             loans_layout.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
+            loans_not_found.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }
