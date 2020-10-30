@@ -49,10 +49,23 @@ object AppPreferences {
             it.putString("password", value)
         }
 
+    var dataKey: String?
+        get() = preferences.getString("dataKey", "")
+        set(value) = preferences.edit {
+            it.putString("dataKey", value)
+        }
+
     var number: String?
         get() = preferences.getString("number", "")
         set(value) = preferences.edit {
             it.putString("number", value)
+        }
+
+
+    var errorCode: String?
+        get() = preferences.getString("errorCode", "")
+        set(value) = preferences.edit {
+            it.putString("errorCode", value)
         }
 
     var isFormatMask: String?
@@ -67,6 +80,12 @@ object AppPreferences {
             it.putString("receivedSms", value)
         }
 
+    var pushNotificationsId: String?
+        get() = preferences.getString("pushNotificationsId", "")
+        set(value) = preferences.edit {
+            it.putString("pushNotificationsId", value)
+        }
+
     var isLogined: Boolean
         get() = preferences.getBoolean("isLogined", false)
         set(value) = preferences.edit {
@@ -77,6 +96,12 @@ object AppPreferences {
         get() = preferences.getBoolean("isPinCode", false)
         set(value) = preferences.edit {
             it.putBoolean("isPinCode", value)
+        }
+
+    var observedInternet: Boolean
+        get() = preferences.getBoolean("observedInternet", false)
+        set(value) = preferences.edit {
+            it.putBoolean("observedInternet", value)
         }
 
     var isRemember: Boolean
@@ -95,6 +120,12 @@ object AppPreferences {
         get() = preferences.getBoolean("isLoginCode", false)
         set(value) = preferences.edit {
             it.putBoolean("isLoginCode", value)
+        }
+
+    var isNumber: Boolean
+        get() = preferences.getBoolean("isNumber", false)
+        set(value) = preferences.edit {
+            it.putBoolean("isNumber", value)
         }
 
     var isValid: Boolean

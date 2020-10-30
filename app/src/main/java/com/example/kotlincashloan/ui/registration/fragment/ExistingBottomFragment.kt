@@ -1,5 +1,6 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.myapplication.LoginViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,9 +22,11 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_existing_bottom.*
-import java.util.HashMap
+import java.util.*
 
-class ExistingBottomFragment(private val listener: ExistingBottomListener) : BottomSheetDialogFragment() {
+
+class ExistingBottomFragment(private val listener: ExistingBottomListener) :
+    BottomSheetDialogFragment() {
     private var viewModel = LoginViewModel()
     var currentPinInput = ""
     var initpin = ""
@@ -39,6 +43,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
         super.onViewCreated(view, savedInstanceState)
         HomeActivity.alert = LoadingAlert(requireActivity())
         initClick()
+
     }
 
     private fun initClick() {
@@ -106,57 +111,74 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
 
     fun check() {
         if (currentPinInput.length == 4) {
-            if (AppPreferences.savePin == currentPinInput) {
-                val map = HashMap<String, String>()
-                map.put("password", AppPreferences.password.toString())
-                map.put("login", AppPreferences.login.toString())
-                HomeActivity.alert.show()
-                viewModel.auth(map).observe(this, Observer { result ->
-                    val msg = result.msg
-                    val data = result.data
-                    when (result.status) {
-                        Status.SUCCESS -> {
-                            if (data!!.result == null) {
-                                if (data.error.code == 401){
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                pin_verification_code.setText(initpin)
+                currentPinInput = ""
+                loadingConnection(activity as AppCompatActivity)
+            } else {
+                if (AppPreferences.savePin == currentPinInput) {
+                    val map = HashMap<String, String>()
+                    map.put("password", AppPreferences.password.toString())
+                    map.put("login", AppPreferences.login.toString())
+                    map.put("uid", AppPreferences.pushNotificationsId.toString())
+                    map.put("system", "1")
+                    HomeActivity.alert.show()
+                    viewModel.auth(map).observe(this, Observer { result ->
+                        val msg = result.msg
+                        val data = result.data
+                        when (result.status) {
+                            Status.SUCCESS -> {
+                                if (data!!.result != null){
+                                    AppPreferences.token = data.result.token
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    startActivity(intent)
+                                    this.dismiss()
+                                }else{
+                                    if (data.error.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        pin_verification_code.setText(initpin)
+                                        currentPinInput = ""
+                                        loadingMistake(activity as AppCompatActivity)
+                                    }
+                                }
+                            }
+                            Status.ERROR -> {
+                                if (msg == "401") {
                                     initAuthorized()
+                                } else {
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as AppCompatActivity)
+                                }
+                            }
+                            Status.NETWORK ->{
+                                if (msg == "600"){
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as AppCompatActivity)
                                 }else{
                                     pin_verification_code.setText(initpin)
                                     currentPinInput = ""
-                                    loadingMistake(activity as  AppCompatActivity)
+                                    loadingConnection(activity as AppCompatActivity)
                                 }
-                            }else {
-                                this.dismiss()
-                                AppPreferences.token = data.result.token
-                                val intent = Intent(context, MainActivity::class.java)
-                                startActivity(intent)
                             }
                         }
-                        Status.ERROR ->{
-                            if (msg == "401"){
-                                initAuthorized()
-                            }else{
-                                pin_verification_code.setText(initpin)
-                                currentPinInput = ""
-                                loadingMistake(activity as  AppCompatActivity)
-                            }
-                        }
-                        Status.NETWORK -> {
-                            pin_verification_code.setText(initpin)
-                            currentPinInput = ""
-                            loadingConnection(activity as  AppCompatActivity)
-                        }
-                    }
-                    HomeActivity.alert.hide()
-                })
-            } else {
-                currentPinInput = ""
-                pin_verification_code.setText(initpin)
-                existing_liner_anim.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake))
+                        HomeActivity.alert.hide()
+                    })
+                } else {
+                    currentPinInput = ""
+                    pin_verification_code.setText(initpin)
+                    existing_liner_anim.startAnimation(
+                        AnimationUtils.loadAnimation(getActivity(), R.anim.shake)
+                    )
+                }
             }
         }
     }
 
-    private fun initAuthorized(){
+    private fun initAuthorized() {
         this.dismiss()
     }
 }

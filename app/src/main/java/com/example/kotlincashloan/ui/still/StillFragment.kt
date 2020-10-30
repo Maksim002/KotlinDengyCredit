@@ -12,8 +12,9 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_still.*
 
 class StillFragment : Fragment() {
@@ -36,12 +37,15 @@ class StillFragment : Fragment() {
     private fun initClick() {
         still_exit.setOnClickListener {
             val intent = Intent(context, HomeActivity::class.java)
+            AppPreferences.token = null
             startActivity(intent)
         }
     }
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
+        HomeActivity.alert.hide()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
             requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);

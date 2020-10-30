@@ -10,6 +10,7 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/loans_layout"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -369,10 +370,10 @@
             app:layout_constraintTop_toBottomOf="@+id/text_center">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
                 android:layout_gravity="center"
+                android:layout_marginLeft="26dp"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
@@ -380,42 +381,53 @@
                     android:id="@+id/loan_text_active"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="26dp"
                     android:gravity="center"
+                    android:padding="20dp"
                     android:text="@string/loan"
-                    android:visibility="gone"
                     android:textColor="#FEFEFE"
                     android:textSize="19sp"
-                    android:layout_marginRight="26dp"
-                    android:padding="20dp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/loan_payment_sum"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_currency_white"
-                    android:drawablePadding="5dp"
-                    android:text="5 000 "
-                    android:textColor="@color/whiteColor"
-                    android:textSize="24sp"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_currency_white" />
+
+                    <TextView
+                        android:id="@+id/loan_payment_sum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="10dp"
+                        android:text="5 000 "
+                        android:textColor="@color/whiteColor"
+                        android:textSize="24sp" />
+                </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageView
                 android:id="@+id/loan_trait"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.1"
                 android:src="@drawable/ic_trait" />
 
             <TextView
                 android:id="@+id/loan_payment_date"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"

@@ -5,13 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.MyOperationAdapter
-import com.example.kotlincashloan.adapter.profile.MyOperationModel
+import com.example.kotlincashloan.adapter.profile.OperationListener
+import com.example.kotlincashloan.service.model.profile.ResultOperationModel
+import com.example.kotlinscreenscanner.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 
-class MyOperationFragment : Fragment() {
-    private var myAdapter = MyOperationAdapter()
+class MyOperationFragment(var list: ArrayList<ResultOperationModel>) : Fragment(), OperationListener {
+    private var myAdapter = MyOperationAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,15 +26,22 @@ class MyOperationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRecycler()
+    }
 
-        var list: ArrayList<MyOperationModel> = arrayListOf()
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-
+    private fun initRecycler() {
         myAdapter.update(list)
         operation_recycler.adapter = myAdapter
+    }
+
+    override fun operationClickListener(int: Int, item: ResultOperationModel) {
+        val bundle = Bundle()
+        bundle.putInt("operationId", item.id!!)
+        findNavController().navigate(R.id.navigation_detail_profile, bundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
     }
 }

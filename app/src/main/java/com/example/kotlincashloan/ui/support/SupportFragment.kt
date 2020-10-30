@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -15,14 +16,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
-import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 
 
 class SupportFragment : Fragment() {
@@ -31,6 +34,7 @@ class SupportFragment : Fragment() {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var refresh = false
+    private var errorCode = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,20 +48,28 @@ class SupportFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
-        initRecycler()
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
         iniClick()
         initRefresh()
-  }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (viewModel.listFaqDta.value != null){
+            if (errorCode == "200"){
+                initRecycler()
+            }else{
+                initRestart()
+            }
+        }else{
+            initRestart()
+        }
+    }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.listFaqDta.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.listFaq(map)
-                initRecycler()
-            }, 500)
-        }
-
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
@@ -70,12 +82,30 @@ class SupportFragment : Fragment() {
     }
 
     private fun initRestart() {
-        initRecycler()
-        if (viewModel.listFaqDta.value != null) {
-            viewModel.listFaq(map)
-        } else {
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            support_no_connection.visibility = View.VISIBLE
+            support_swipe_layout.visibility = View.GONE
+            support_not_found.visibility = View.GONE
+            support_technical_work.visibility = View.GONE
+            layout_access_restricted.visibility = View.GONE
+            errorCode = "601"
             viewModel.error.value = null
-            viewModel.listFaq(map)
+        } else {
+            if (viewModel.listFaqDta.value == null) {
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.listFaq(map)
+                    initRecycler()
+                    HomeActivity.alert.hide()
+                }, 500)
+            } else {
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.error.value = null
+                    viewModel.listFaq(map)
+                    initRecycler()
+                }, 500)
+            }
         }
     }
 
@@ -99,18 +129,16 @@ class SupportFragment : Fragment() {
 
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
-                support_swipe_layout.isRefreshing = false
             }, 1000)
         }
         support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
     private fun initRecycler() {
-        map.put("login", AppPreferences.login.toString())
-        map.put("token", AppPreferences.token.toString())
         if (!refresh) {
             HomeActivity.alert.show()
         }
@@ -124,50 +152,78 @@ class SupportFragment : Fragment() {
                 support_not_found.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
-            } else if (result.error.code == 403) {
-                layout_access_restricted.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-            } else if (result.error.code == 500 || result.error.code == 400) {
-                support_technical_work.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-            } else if (result.error.code == 404) {
-                support_not_found.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-            } else if (result.error.code == 401) {
-                initAuthorized()
+                errorCode = result.code.toString()
+            } else {
+                if (result.error.code != null){
+                    errorCode = result.error.code.toString()
+                }
+                if (result.error.code == 403) {
+                    layout_access_restricted.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
+                    support_not_found.visibility = View.GONE
+                } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                    support_technical_work.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
+                    support_not_found.visibility = View.GONE
+                } else if (result.error.code == 404) {
+                    support_not_found.visibility = View.VISIBLE
+                    support_swipe_layout.visibility = View.GONE
+                    support_no_connection.visibility = View.GONE
+                    layout_access_restricted.visibility = View.GONE
+                    support_technical_work.visibility = View.GONE
+                } else if (result.error.code == 401) {
+                    initAuthorized()
+                }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            support_swipe_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null){
+                errorCode = error
+            }
             if (error == "404") {
                 support_not_found.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
+                layout_access_restricted.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
 
-            } else if (error == "500" || error == "400") {
+            } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429") {
                 support_technical_work.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
+                layout_access_restricted.visibility = View.GONE
+                support_not_found.visibility = View.GONE
 
             } else if (error == "403") {
                 layout_access_restricted.visibility = View.VISIBLE
                 support_swipe_layout.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
+                support_not_found.visibility = View.GONE
             } else if (error == "401") {
                 initAuthorized()
-            } else if (error == "600") {
-                support_no_connection.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
-                support_not_found.visibility = View.GONE
-                support_technical_work.visibility = View.GONE
+            } else if (error == "601") {
                 layout_access_restricted.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
+                support_swipe_layout.visibility = View.GONE
+                support_no_connection.visibility = View.VISIBLE
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            support_swipe_layout.isRefreshing = false
             HomeActivity.alert.hide()
         })
     }
 
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
         startActivity(intent)
     }
 

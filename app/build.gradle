@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
@@ -51,6 +52,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.2'
 
     //test
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -94,9 +96,8 @@ dependencies {
     implementation 'com.ycuwq.widgets:datepicker:1.2.0'
 
     //READING HTML
-    implementation 'com.github.mukeshsolanki:MarkdownView-Android:1.1.1'
+    implementation 'com.github.billthefarmer:MarkdownView:v1.04'
 
     //закругление углов картинки
     implementation 'com.mikhaellopez:circularimageview:4.2.0'
-    implementation 'com.github.billthefarmer:MarkdownView:v1.04'
 }

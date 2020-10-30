@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FDFDFD"
+    android:orientation="vertical"
+    tools:context=".ui.notification.DetailNotificationFragment">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/detail_notification_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="#000"
+                    android:textSize="16sp"
+                    tools:text="title" />
+
+                <TextView
+                    android:id="@+id/detail_notification_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textSize="14sp"
+                    tools:text="26.10.2020" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detail_notification_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:textColor="#000"
+                android:textSize="14sp"
+                tools:text="text" />
+
+        </LinearLayout>
+
+        <org.billthefarmer.markdown.MarkdownView
+            android:id="@+id/detail_notification_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <include layout="@layout/item_access_restricted"
+        android:id="@+id/d_notification_access_restricted"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_no_connection"
+        android:id="@+id/d_notification_no_connection"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_technical_work"
+        android:id="@+id/d_notification_technical_work"
+        android:visibility="gone"/>
+
+    <include layout="@layout/item_not_found"
+        android:id="@+id/d_notification_not_found"
+        android:visibility="gone"/>
+</LinearLayout>
