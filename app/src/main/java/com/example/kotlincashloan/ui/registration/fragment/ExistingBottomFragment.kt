@@ -129,7 +129,12 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
                         val data = result.data
                         when (result.status) {
                             Status.SUCCESS -> {
-                                if (data!!.result == null) {
+                                if (data!!.result != null){
+                                    AppPreferences.token = data.result.token
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    startActivity(intent)
+                                    this.dismiss()
+                                }else{
                                     if (data.error.code == 401) {
                                         initAuthorized()
                                     } else {
@@ -137,11 +142,6 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
                                         currentPinInput = ""
                                         loadingMistake(activity as AppCompatActivity)
                                     }
-                                } else {
-                                    this.dismiss()
-                                    AppPreferences.token = data.result.token
-                                    val intent = Intent(context, MainActivity::class.java)
-                                    startActivity(intent)
                                 }
                             }
                             Status.ERROR -> {

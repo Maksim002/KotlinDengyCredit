@@ -205,28 +205,18 @@ class LoansFragment : Fragment(), LoansListener {
         super.onResume()
         MainActivity.timer.timeStop()
         val handler = Handler()
-        if (viewModel.listNewsDta.value == null) {
+        if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             HomeActivity.alert.show()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
+                viewModel.getLoanInfo(map)
                 initRecycler()
+                initResult()
                 HomeActivity.alert.hide()
             }, 500)
         } else {
-            if (listNewsId == "200") {
+            if (listNewsId == "200" && listLoanId == "200") {
                 initRecycler()
-            } else {
-                initRepeat()
-            }
-        }
-
-        if (viewModel.listLoanInfo.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.getLoanInfo(map)
-                initResult()
-            }, 500)
-        } else {
-            if (listLoanId == "200") {
                 initResult()
             } else {
                 initRepeat()

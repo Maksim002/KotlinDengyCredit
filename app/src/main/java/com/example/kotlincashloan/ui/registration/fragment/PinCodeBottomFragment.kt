@@ -83,7 +83,11 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
                     val data = result.data
                     when (result.status) {
                         Status.SUCCESS -> {
-                            if (data!!.result == null) {
+                            if (data!!.result != null){
+                                AppPreferences.token = data.result.token
+                                initAuthorized()
+                                this.dismiss()
+                            }else{
                                 if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
                                     loadingMistake(activity as AppCompatActivity)
                                 } else if (data.error.code == 401) {
@@ -91,10 +95,6 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
                                 } else {
                                     loadingMistake(activity as AppCompatActivity)
                                 }
-                            } else {
-                                this.dismiss()
-                                AppPreferences.token = data.result.token
-                                initAuthorized()
                             }
                         }
                         Status.ERROR -> {

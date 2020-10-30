@@ -212,10 +212,8 @@ class NotificationFragment : Fragment(), NotificationListener {
         startActivity(intent)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
+    override fun onStart() {
+        super.onStart()
         if (viewModel.listNoticeDta.value != null){
             if (errorCode == "200"){
                 initRecycler()
@@ -225,7 +223,11 @@ class NotificationFragment : Fragment(), NotificationListener {
         }else{
             initRestart()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

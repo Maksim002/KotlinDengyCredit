@@ -249,9 +249,8 @@ class ProfileFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
+    override fun onStart() {
+        super.onStart()
         if (viewModel.listListOperationDta.value != null) {
             if (errorCode == "200") {
                 initRecycler()
@@ -261,7 +260,11 @@ class ProfileFragment : Fragment() {
         } else {
             initRestart()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

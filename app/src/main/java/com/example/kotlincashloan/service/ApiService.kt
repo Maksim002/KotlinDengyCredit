@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("error429?token=oYyxhIFgJjAb")
+    @POST("login?token=oYyxhIFgJjAb")
     suspend fun auth(@FieldMap params: Map<String, String>): Response<CommonResponse<ResultModel>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
