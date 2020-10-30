@@ -178,7 +178,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                         }
                     }
                     Status.ERROR -> {
-                        if (msg == "500" || msg == "409" || msg == "400") {
+                        if (msg == "500" || msg == "409" || msg == "400" || msg == "429") {
                             home_incorrect.visibility = View.VISIBLE
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE

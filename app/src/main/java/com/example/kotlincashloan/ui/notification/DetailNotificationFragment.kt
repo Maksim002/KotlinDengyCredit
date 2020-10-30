@@ -184,18 +184,20 @@ class DetailNotificationFragment : Fragment() {
         startActivity(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
+    override fun onStart() {
+        super.onStart()
         if (viewModel.errorDetailNotice.value == null) {
             if (errorCode == "200") {
                 initRequest()
             } else {
                 initRestart()
             }
-
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

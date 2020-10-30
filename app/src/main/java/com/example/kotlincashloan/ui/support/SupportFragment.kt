@@ -54,9 +54,8 @@ class SupportFragment : Fragment() {
         initRefresh()
     }
 
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
+    override fun onStart() {
+        super.onStart()
         if (viewModel.listFaqDta.value != null){
             if (errorCode == "200"){
                 initRecycler()
@@ -66,6 +65,11 @@ class SupportFragment : Fragment() {
         }else{
             initRestart()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))

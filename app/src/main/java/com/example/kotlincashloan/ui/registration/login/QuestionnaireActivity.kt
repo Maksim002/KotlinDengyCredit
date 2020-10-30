@@ -17,6 +17,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
@@ -206,6 +207,11 @@ class QuestionnaireActivity : AppCompatActivity() {
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
 
             }
+        }
+
+        questionnaire_registration.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
         }
     }
 

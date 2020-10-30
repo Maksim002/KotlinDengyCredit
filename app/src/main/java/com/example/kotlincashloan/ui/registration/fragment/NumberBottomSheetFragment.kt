@@ -34,7 +34,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        HomeActivity.alert = LoadingAlert(activity as  AppCompatActivity)
+        HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         initClick()
     }
 
@@ -61,9 +61,10 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
-                                    if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
-                                        number_incorrect.visibility = View.VISIBLE
+                                    if (data.error.code == 500 || data.error.code == 409) {
                                         loadingMistake(activity as AppCompatActivity)
+                                    } else if (data.error.code == 400) {
+                                        number_incorrect.visibility = View.VISIBLE
                                     } else if (data.error.code == 401) {
                                         initAuthorized()
                                     } else {
@@ -76,22 +77,23 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                                     startActivity(intent)
                                 }
                             }
-                            Status.ERROR ->{
-                                if (msg == "400" || msg == "500" || msg == "409") {
-                                    number_incorrect.visibility = View.VISIBLE
+                            Status.ERROR -> {
+                                if (msg == "500" || msg == "409" || msg == "429") {
                                     loadingMistake(activity as AppCompatActivity)
+                                } else if (msg == "400") {
+                                    number_incorrect.visibility = View.VISIBLE
                                 } else if (msg == "401") {
                                     initAuthorized()
                                 } else {
                                     loadingMistake(activity as AppCompatActivity)
                                 }
                             }
-                            Status.NETWORK ->{
-                                if (msg == "600"){
+                            Status.NETWORK -> {
+                                if (msg == "600") {
                                     loadingMistake(activity as AppCompatActivity)
                                     number_incorrect.visibility = View.VISIBLE
-                                }else{
-                                   loadingConnection(activity as AppCompatActivity)
+                                } else {
+                                    loadingConnection(activity as AppCompatActivity)
                                 }
                             }
                         }
@@ -102,7 +104,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         }
     }
 
-    private fun initAuthorized(){
+    private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
         startActivity(intent)
     }

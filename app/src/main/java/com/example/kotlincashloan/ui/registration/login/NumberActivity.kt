@@ -81,7 +81,7 @@ class NumberActivity : AppCompatActivity() {
                         }
                     }
                     Status.ERROR ->{
-                        if (msg == "500" || msg == "400" || msg == "404") {
+                        if (msg == "500" || msg == "400" || msg == "404" || msg == "429") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
@@ -173,8 +173,8 @@ class NumberActivity : AppCompatActivity() {
     }
 
     fun initVisibilities(){
-        number_no_connection.visibility = View.GONE
         number_layout.visibility = View.VISIBLE
+        number_no_connection.visibility = View.GONE
     }
 
     private fun getListCountry() {

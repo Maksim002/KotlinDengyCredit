@@ -183,17 +183,22 @@ class DetailProfileFragment : Fragment() {
         startActivity(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
+    override fun onStart() {
+        super.onStart()
         if (viewModel.listGetOperationDta.value != null) {
             if (errorCode == "200") {
                 initResult()
+            }else{
+                initRestart()
             }
         } else {
             initRestart()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
