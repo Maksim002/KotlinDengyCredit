@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/whiteColor"
     android:layout_height="match_parent"
-    tools:context=".ui.Loans.LoansDetailsFragment">
+    tools:context=".ui.loans.LoansDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/loans_detail_layout"

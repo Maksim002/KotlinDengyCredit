@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.Loans
+package com.example.kotlincashloan.ui.loans
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable

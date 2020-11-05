@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.Loans
+package com.example.kotlincashloan.ui.loans
 
 
 import android.content.Intent
@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,7 +23,6 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import io.reactivex.Completable.timer
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -54,7 +52,7 @@ class LoansFragment : Fragment(), LoansListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("v", "4")
+        map.put("v", "1")
 
         initLogicSeekBar()
         initClick()
@@ -98,12 +96,14 @@ class LoansFragment : Fragment(), LoansListener {
                         if (result.result.getActiveLoan == true) {
                             loan_text_active.visibility = View.VISIBLE
                             text_center.visibility = View.GONE
+                            loan_currency_icon.visibility = View.GONE
                             loan_payment_sum.visibility = View.GONE
                             loan_payment_date.visibility = View.GONE
                             loan_trait.visibility = View.GONE
                         } else {
                             loan_text_active.visibility = View.GONE
                             text_center.visibility = View.VISIBLE
+                            loan_currency_icon.visibility = View.VISIBLE
                             loan_payment_sum.visibility = View.VISIBLE
                             loan_payment_date.visibility = View.VISIBLE
                             loan_trait.visibility = View.VISIBLE
@@ -236,6 +236,11 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initClick() {
+        loan_get_active.setOnClickListener {
+            val intent = Intent(context, GetLoanActivity::class.java)
+            startActivity(intent)
+        }
+
         no_connection_repeat.setOnClickListener {
             initRepeat()
         }

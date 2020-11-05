@@ -100,4 +100,7 @@ dependencies {
 
     //закругление углов картинки
     implementation 'com.mikhaellopez:circularimageview:4.2.0'
+
+    //StepBar
+    implementation 'com.github.badoualy:stepper-indicator:1.0.7'
 }
