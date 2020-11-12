@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -94,7 +95,7 @@
             android:layout_marginLeft="9dp"
             android:layout_marginRight="9dp"
             android:progress="0"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:progressDrawable="@drawable/progress_drawable"
             android:thumb="@drawable/thumb" />
 
@@ -103,6 +104,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="20dp"
+            android:nestedScrollingEnabled="false"
             android:clipToPadding="false"
             android:overScrollMode="never" />
 
@@ -125,13 +128,13 @@
                 android:id="@+id/loan_layout_month"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="14dp"
                 android:layout_marginRight="16dp"
                 android:orientation="horizontal"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginLeft="28dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginRight="24dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -147,19 +150,23 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="6"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="14sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="12"
                     android:gravity="right"
                     android:layout_weight="1"
                     android:textSize="14sp"/>
             </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/loan_step_month_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:min="0"
+            android:max="11"
+            android:layout_marginTop="8dp"
+            android:progressDrawable="@drawable/progress_drawable"
+            android:thumb="@drawable/thumb" />
     </LinearLayout>
 
     <TextView
@@ -167,8 +174,29 @@
         android:layout_height="wrap_content"
         android:text="@string/_3_637"
         android:textSize="21sp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/orangeColor"
         android:textStyle="bold"
         android:gravity="center"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/shipped_sheet_enter"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="75dp"
+            android:paddingRight="75dp"
+            android:layout_marginBottom="16dp"
+            android:text="Начать"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
