@@ -63,7 +63,6 @@ class LoansFragment : Fragment(), LoansListener {
         MainActivity.timer.timeStop()
     }
 
-
     fun initCode() {
         listLoanId = viewModel.listLoanId
         listNewsId = viewModel.listNewsId
@@ -230,7 +229,7 @@ class LoansFragment : Fragment(), LoansListener {
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
+            toolbar.setTitleTextColor(requireActivity().getColor(R.color.blackColor))
         }
     }
 

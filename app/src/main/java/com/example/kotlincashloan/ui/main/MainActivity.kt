@@ -21,7 +21,6 @@ import com.example.kotlincashloan.utils.TimerListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -39,8 +38,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         HomeActivity.alert = LoadingAlert(this)
         timer = TimerListener(this)
-
-
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
