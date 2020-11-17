@@ -1,6 +1,7 @@
 package com.example.kotlinscreenscanner.ui
 
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
@@ -20,6 +21,7 @@ import com.example.kotlincashloan.utils.TimerListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         lateinit var timer: TimerListener
     }
 
+    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

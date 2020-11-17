@@ -22,8 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Выберите пин-код"
-        android:textSize="30sp"
-        android:padding="16dp"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:textStyle="bold"
         android:textColor="#001"/>
@@ -33,44 +33,46 @@
         android:layout_height="wrap_content"
         android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем"
         android:textColor="#373435"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textSize="16sp"/>
+        android:textSize="12sp"/>
 
         <AutoCompleteTextView
             android:id="@+id/bottom_sheet_pin_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Пин - код"
             android:maxLength="4"
             android:imeOptions="actionNext"
             android:inputType="number"
-            android:padding="16dp"
-            android:textSize="16dp" />
+            android:padding="13dp"
+            android:textSize="12dp" />
 
         <AutoCompleteTextView
             android:id="@+id/bottom_sheet_repeat_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Повторите пин-код"
             android:maxLength="4"
             android:imeOptions="actionNext"
             android:inputType="number"
-            android:padding="16dp"
-            android:textSize="16dp" />
+            android:padding="13dp"
+            android:textSize="12dp" />
 
     <Button
         android:id="@+id/bottom_sheet_resume"
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="4dp"
         android:text="Продолжить"
         android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

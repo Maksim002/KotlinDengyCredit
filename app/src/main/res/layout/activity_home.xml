@@ -4,15 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center|left"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".ui.registration.login.HomeActivity">
 
+    <ImageView
+        android:layout_width="137dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_many_credit"/>
+
     <LinearLayout
         android:id="@+id/home_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:gravity="center|left"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -33,7 +38,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/circle_orange_background_edit"
             android:inputType="number"
-            android:padding="16dp"
+            android:padding="13dp"
             android:textSize="16dp" />
 
 
@@ -52,7 +57,7 @@
                 android:hint="Пароль"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
-                android:padding="16dp"
+                android:padding="13dp"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:gravity="center"
+                android:textSize="12sp"
                 android:layout_gravity="center"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -91,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Запомнить логин"
-            android:textSize="11sp"
+            android:textSize="10sp"
             tools:layout_editor_absoluteX="114dp"
             tools:layout_editor_absoluteY="105dp" />
 
@@ -101,7 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Вход по пин-коду"
-            android:textSize="11sp"
+            android:textSize="10sp"
             tools:layout_editor_absoluteX="114dp"
             tools:layout_editor_absoluteY="105dp" />
 
@@ -111,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Вход с помощью отпечатка"
-            android:textSize="11sp"
+            android:textSize="10sp"
             tools:layout_editor_absoluteX="114dp"
             tools:layout_editor_absoluteY="105dp" />
 
@@ -120,10 +126,10 @@
             style="@style/RoundedOrangeBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="40dp"
             android:text="Войти"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
@@ -136,7 +142,7 @@
             android:gravity="center"
             android:text="Забыли пароль?"
             android:textColor="#FF9900"
-            android:textSize="18sp" />
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/home_registration"
@@ -146,7 +152,7 @@
             android:gravity="center"
             android:text="Регистрация"
             android:textColor="#FF9900"
-            android:textSize="18sp" />
+            android:textSize="15sp" />
     </LinearLayout>
 
     <include layout="@layout/item_no_connection"
