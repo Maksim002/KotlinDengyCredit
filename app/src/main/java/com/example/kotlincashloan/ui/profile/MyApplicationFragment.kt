@@ -30,6 +30,9 @@ class MyApplicationFragment : Fragment() {
         list.add(MyOperationModel(""))
         list.add(MyOperationModel(""))
         list.add(MyOperationModel(""))
+        list.add(MyOperationModel(""))
+        list.add(MyOperationModel(""))
+        list.add(MyOperationModel(""))
 
         myAdapter.update(list)
         application_recycler.adapter = myAdapter
