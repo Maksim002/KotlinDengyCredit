@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 
 
@@ -117,7 +119,9 @@ class LoanStepTwoFragment : Fragment() {
                 val seekbarValue = i.toString()
                 var resultSum = 0
                 resultSum = seekbarValue.toInt() * 1000 + 5000
-                progressBarr(resultSum.toString())
+
+
+                progressBarr(MyUtils.toServerDate(resultSum.toString()))
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -212,6 +216,6 @@ class LoanStepTwoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        loan_step_sum.text = "5000"
+        loan_step_sum.text = "5 000"
     }
 }

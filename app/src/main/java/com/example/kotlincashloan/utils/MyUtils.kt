@@ -33,9 +33,7 @@ object MyUtils {
     }
 
     fun toServerDate(date: String): String {
-        return date.substring(6,9) + "-" + date.substring(5, 6) + "-" + date.substring(
-            0, 4
-        ) + "T00:00:00+06:00"
+        return date.substring(0, 1) + " " + date.substring(1, 4)
     }
 
     fun toFormatMask(date: String): String {
