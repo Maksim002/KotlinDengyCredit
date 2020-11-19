@@ -79,15 +79,16 @@
                 <View
                     android:id="@+id/profile_indicator"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/gradient_bg" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/profile_tab"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/tab_bg"
                     app:tabGravity="fill"
+                    app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                     app:tabIndicatorColor="@null"
                     app:tabMaxWidth="0dp"
                     app:tabMode="fixed"
@@ -95,7 +96,7 @@
                     app:tabSelectedTextColor="#ffffff" />
             </FrameLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <com.example.kotlincashloan.utils.DeactivatableViewPager
                 android:id="@+id/profile_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

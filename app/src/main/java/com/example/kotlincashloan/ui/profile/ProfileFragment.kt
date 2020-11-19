@@ -26,15 +26,13 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_my_operation.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
+
 
 class ProfileFragment : Fragment() {
     private var indicatorWidth = 0
@@ -227,6 +225,8 @@ class ProfileFragment : Fragment() {
         profile_pager.setAdapter(adapter)
         profile_tab.setupWithViewPager(profile_pager)
         adapter.notifyDataSetChanged()
+
+        profile_pager.isEnabled = false
 
         profile_tab.post(Runnable {
             indicatorWidth = profile_tab.getWidth() / profile_tab.getTabCount()

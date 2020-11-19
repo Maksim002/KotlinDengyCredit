@@ -15,16 +15,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
+        android:layout_weight="0.2"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
+            android:layout_marginLeft="6dp"
             android:text="Выгодная сторона"
             android:textColor="@color/blackColor"
-            android:textSize="18dp" />
+            android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,22 +34,21 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/RoundedOrangeBackground"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
                 android:paddingRight="6dp"
+                android:textColor="@color/orangeColor"
                 android:paddingBottom="2dp"
                 android:text="Статус"
-                android:textColor="@color/whiteColor"
-                android:textSize="11sp" />
+                android:textSize="10sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="27.03.2019"
-                android:textSize="11sp" />
+                android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -62,20 +62,36 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_point" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:src="@drawable/ic_point" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="13dp"
-                android:src="@drawable/ic_arrow" />
+                android:layout_weight="1"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="13dp"
+                    android:src="@drawable/ic_arrow" />
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
     </LinearLayout>
@@ -83,6 +99,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:background="#CFCCCC" />
 </LinearLayout>
