@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.loans.GetLoanActivity">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.kotlincashloan.utils.DeactivatableViewPager
         android:id="@+id/get_loan_view_pagers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

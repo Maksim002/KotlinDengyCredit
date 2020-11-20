@@ -45,13 +45,16 @@ class StillFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        HomeActivity.alert.hide()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
+            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
 }
