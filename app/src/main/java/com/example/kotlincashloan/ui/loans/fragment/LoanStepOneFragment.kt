@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
 import com.example.kotlinscreenscanner.ui.MainActivity
+import kotlinx.android.synthetic.main.fragment_step_one_loan.*
 
 class LoanStepOneFragment : Fragment() {
 
@@ -20,6 +21,10 @@ class LoanStepOneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        shipped_sheet_enter.setOnClickListener {
+
+        }
     }
 
     override fun onResume() {

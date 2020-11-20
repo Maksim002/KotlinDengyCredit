@@ -10,6 +10,7 @@ import com.example.kotlincashloan.ui.loans.fragment.LoanStepTwoFragment
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
 import kotlinx.android.synthetic.main.activity_get_loan.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class GetLoanActivity : AppCompatActivity() {
     private var list = mutableListOf<LoansListModel>()
@@ -24,6 +25,8 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
         list.add(LoansListModel(LoanStepOneFragment()))
+
+        get_loan_view_pagers.isEnabled = true
 
         val adapters = PagerAdapters(supportFragmentManager)
 
@@ -49,5 +52,10 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MainActivity.timer.timeStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
     }
 }

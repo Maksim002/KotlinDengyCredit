@@ -22,7 +22,6 @@
         android:id="@+id/loan_step_sum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:fontFamily="@font/roboto_black"
         android:gravity="center"
         android:text="25 000"
@@ -176,7 +175,7 @@
         android:layout_height="wrap_content"
         android:text="@string/_3_637"
         android:textSize="15sp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:textColor="#001"
         android:gravity="center"/>
 
@@ -190,7 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="40sp"
+            android:textSize="30sp"
             android:textColor="@color/orangeColor"
             android:layout_weight="1"
             android:text="3 637"/>
@@ -209,16 +208,16 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/shipped_sheet_enter"
+            android:id="@+id/loan_step_enter"
             style="@style/RoundedOrangeBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="75dp"
             android:paddingRight="75dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:text="Начать"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
