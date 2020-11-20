@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+
 
 class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
@@ -56,6 +58,13 @@ class LoansFragment : Fragment(), LoansListener {
         initLogicSeekBar()
         initClick()
         initRefresh()
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
     }
 
     override fun onStart() {
@@ -221,6 +230,7 @@ class LoansFragment : Fragment(), LoansListener {
             }
         }
 
+        setTitle("Займ", resources.getColor(R.color.blackColor))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
