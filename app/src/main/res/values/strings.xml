@@ -20,7 +20,7 @@
     <string name="loan">У вас нет активного займа</string>
     <string name="To_get_a_loan">Для того, чтобы получить заём, выберите срок и сумму, заполните анкету и загрузите свои документы.</string>
     <string name="click">Нажмите “Начать”, чтобы получить кредит</string>
-    <string name="_3_637">Ежемесячная сумма платежа: \n 3 637 руб.</string>
+    <string name="_3_637">Ежемесячная сумма платежа:</string>
 
     <string-array name="stepLabels">
         <item>Шаг 1</item>

@@ -16,7 +16,7 @@ import com.example.kotlincashloan.R
 class HorizontalCarouselRecyclerView(context: Context, attrs: AttributeSet) : RecyclerView(context, attrs) {
 
     private val activeColor by lazy { ContextCompat.getColor(context, R.color.orangeColor) }
-    private val inactiveColor by lazy { ContextCompat.getColor(context, R.color.blackColor) }
+    private val inactiveColor by lazy { ContextCompat.getColor(context, R.color.colorGrey) }
     private var viewsToChangeColor: List<Int> = listOf()
 
     fun <T : ViewHolder> initialize(newAdapter: Adapter<T>) {

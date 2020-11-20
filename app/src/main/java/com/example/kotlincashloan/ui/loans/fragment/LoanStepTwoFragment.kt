@@ -118,10 +118,10 @@ class LoanStepTwoFragment : Fragment() {
                 seekBar.min = sumMin
                 val seekbarValue = i.toString()
                 var resultSum = 0
-                resultSum = seekbarValue.toInt() * 1000 + 5000
+                resultSum = seekbarValue.toInt() * 1 + 5
 
 
-                progressBarr(MyUtils.toServerDate(resultSum.toString()))
+                progressBarr(resultSum.toString() + " " + "000")
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
