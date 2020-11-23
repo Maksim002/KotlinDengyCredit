@@ -54,7 +54,6 @@ class LoansFragment : Fragment(), LoansListener {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("v", "1")
-
         initLogicSeekBar()
         initClick()
         initRefresh()
@@ -78,10 +77,6 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initResult() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
-
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listLoanId = result.error.code.toString()
@@ -212,15 +207,14 @@ class LoansFragment : Fragment(), LoansListener {
         super.onResume()
         MainActivity.timer.timeStop()
         val handler = Handler()
+        HomeActivity.alert.show()
         if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
-            HomeActivity.alert.show()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)
-                initRecycler()
                 initResult()
-                HomeActivity.alert.hide()
-            }, 500)
+                initRecycler()
+            }, 800)
         } else {
             if (listNewsId == "200" && listLoanId == "200") {
                 initRecycler()
@@ -311,9 +305,6 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listNewsId = result.error.toString()

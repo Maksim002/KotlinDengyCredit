@@ -99,7 +99,6 @@ class NotificationFragment : Fragment(), NotificationListener {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listNotice(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -123,9 +122,6 @@ class NotificationFragment : Fragment(), NotificationListener {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 myAdapter.update(result.result)
