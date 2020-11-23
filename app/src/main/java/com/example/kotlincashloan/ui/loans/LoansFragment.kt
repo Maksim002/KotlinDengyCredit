@@ -266,9 +266,10 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
-            listNewsId = ""
-            listLoanId = ""
+            listNewsId = "601"
+            listLoanId = "601"
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            HomeActivity.alert.hide()
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
