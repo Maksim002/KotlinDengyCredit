@@ -44,55 +44,55 @@
                 android:gravity="center"
                 android:text="Регистрация"
                 android:textColor="#001"
-                android:textSize="30sp" />
+                android:textSize="20sp" />
 
 
                 <EditText
                     android:id="@+id/questionnaire_text_surnames"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
                     android:inputType="textPersonName"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
 
                 <EditText
                     android:id="@+id/questionnaire_text_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
                     android:inputType="textPersonName"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
                 <EditText
                     android:id="@+id/questionnaire_text_patronymics"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
                     android:inputType="textPersonName"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
 
                 <EditText
                     android:id="@+id/questionnaire_date_birth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:focusable="false"
                     android:hint="Дата рождения"
                     android:inputType="number"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
             <com.ycuwq.datepicker.date.DatePicker
                 android:id="@+id/datePicker"
@@ -104,49 +104,49 @@
                     android:id="@+id/questionnaire_id_sxs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="ID поле"
                     android:inputType="number"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_nationality"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="ID гражданства"
                     android:inputType="number"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
 
                 <EditText
                     android:id="@+id/questionnaire_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:clickable="false"
                     android:focusable="false"
                     android:hint="Номер телефона"
                     android:inputType="number"
                     android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:textSize="14dp" />
 
                 <com.santalu.maskedittext.MaskEditText
                     android:id="@+id/questionnaire_phone_additional"
                     android:layout_width="match_parent"
-                    android:padding="14dp"
+                    android:padding="13dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
-                    android:textSize="15sp"
+                    android:textSize="14dp"
                     android:digits="0123456789"
                     android:ellipsize="end"
                     android:hint="Дополнительный номер телефона"
@@ -158,32 +158,32 @@
                     android:id="@+id/questionnaire_id_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="ID секретного вопроса"
                     android:inputType="text"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_secret_response"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Ответ на секретный вопрос"
                     android:inputType="text"
-                    android:padding="14dp"
-                    android:textSize="15dp" />
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
             <CheckBox
                 android:id="@+id/questionnaire_agreement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:text="Я согласен с условиями обработки персональных данных"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
             <LinearLayout
                 android:id="@+id/layout_check"
@@ -194,7 +194,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     app:cardCornerRadius="25dp">
 
                     <Button
@@ -203,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:text="Зарегистрироваться"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp" />
+                        android:textSize="16sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -211,7 +211,7 @@
                     android:id="@+id/questionnaire_registration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="21dp"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:text="Уже зарегистрированы?"
                     android:textColor="#FF9900"

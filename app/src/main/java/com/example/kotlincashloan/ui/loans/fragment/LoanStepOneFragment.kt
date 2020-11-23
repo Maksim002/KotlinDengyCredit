@@ -30,9 +30,7 @@ class LoanStepOneFragment : Fragment() {
     }
 
     private fun initClick() {
-        step_one_esc.setOnClickListener {
-            requireActivity().finish()
-        }
+
     }
 
     override fun onResume() {

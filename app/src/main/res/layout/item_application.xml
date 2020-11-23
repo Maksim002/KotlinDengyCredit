@@ -25,7 +25,7 @@
             android:layout_marginLeft="6dp"
             android:text="Выгодная сторона"
             android:textColor="@color/blackColor"
-            android:textSize="15dp" />
+            android:textSize="17dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,14 +41,14 @@
                 android:textColor="@color/orangeColor"
                 android:paddingBottom="2dp"
                 android:text="Статус"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="27.03.2019"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -74,8 +74,8 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="5dp"
-                    android:layout_height="5dp"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
                     android:src="@drawable/ic_point" />
             </LinearLayout>
 
@@ -86,8 +86,8 @@
                 android:layout_gravity="center">
 
                 <ImageView
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
                     android:layout_marginLeft="13dp"
                     android:src="@drawable/ic_arrow" />
             </LinearLayout>

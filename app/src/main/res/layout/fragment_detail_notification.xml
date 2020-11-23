@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FDFDFD"
+    android:background="@color/whiteColor"
     android:orientation="vertical"
     tools:context=".ui.notification.DetailNotificationFragment">
 
@@ -11,7 +11,7 @@
         android:id="@+id/layout_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
     <LinearLayout
@@ -22,8 +22,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="#000"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     tools:text="title" />
 
                 <TextView
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     tools:text="26.10.2020" />
             </LinearLayout>
 
@@ -54,10 +54,10 @@
                 android:id="@+id/detail_notification_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:textColor="#000"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 tools:text="text" />
 
         </LinearLayout>
@@ -65,6 +65,8 @@
         <org.billthefarmer.markdown.MarkdownView
             android:id="@+id/detail_notification_text"
             android:layout_width="match_parent"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
     </androidx.core.widget.NestedScrollView>

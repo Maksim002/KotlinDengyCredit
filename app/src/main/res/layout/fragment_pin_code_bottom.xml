@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@color/whiteColor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Выберите пин-код"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:textStyle="bold"
@@ -35,7 +36,7 @@
         android:textColor="#373435"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
 
         <AutoCompleteTextView
             android:id="@+id/bottom_sheet_pin_code"
@@ -48,7 +49,7 @@
             android:imeOptions="actionNext"
             android:inputType="number"
             android:padding="13dp"
-            android:textSize="12dp" />
+            android:textSize="14dp" />
 
         <AutoCompleteTextView
             android:id="@+id/bottom_sheet_repeat_code"
@@ -61,7 +62,7 @@
             android:imeOptions="actionNext"
             android:inputType="number"
             android:padding="13dp"
-            android:textSize="12dp" />
+            android:textSize="14dp" />
 
     <Button
         android:id="@+id/bottom_sheet_resume"
@@ -72,7 +73,7 @@
         android:layout_marginBottom="4dp"
         android:text="Продолжить"
         android:textColor="#FFFFFF"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

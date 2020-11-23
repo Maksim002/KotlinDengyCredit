@@ -64,12 +64,27 @@
                                         android:layout_weight="1"
                                         android:orientation="horizontal">
 
-                                        <ImageView
+                                        <LinearLayout
                                             android:layout_width="match_parent"
                                             android:layout_height="wrap_content"
-                                            android:layout_marginTop="7dp"
                                             android:layout_weight="1"
-                                            android:src="@drawable/ic_cuff" />
+                                            android:orientation="horizontal">
+
+                                            <ImageView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="50dp"
+                                                android:layout_marginTop="7dp"
+                                                android:layout_weight="0.3"
+                                                android:src="@drawable/ic_currencys" />
+
+                                            <ImageView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_weight="1"
+                                                android:paddingBottom="10dp"
+                                                android:layout_gravity="bottom"
+                                                android:src="@drawable/ic_currency" />
+                                        </LinearLayout>
 
                                         <LinearLayout
                                             android:layout_width="match_parent"
@@ -81,7 +96,7 @@
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
                                                 android:text="Остаток:"
-                                                android:textSize="10dp"
+                                                android:textSize="12dp"
                                                 android:textColor="#001"
                                                 android:layout_marginTop="7dp"/>
 
@@ -93,7 +108,7 @@
                                                 android:layout_marginLeft="3dp"
                                                 android:text="25 000"
                                                 android:textColor="#001"
-                                                android:textSize="24sp"
+                                                android:textSize="20sp"
                                                 android:textStyle="bold" />
                                         </LinearLayout>
                                     </LinearLayout>
@@ -150,7 +165,7 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:textSize="10dp"
+                                        android:textSize="12dp"
                                         android:text="Уже оплачено:"
                                         android:textColor="#001" />
 
@@ -161,7 +176,7 @@
 
                                         <ImageView
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
+                                            android:layout_height="18dp"
                                             android:layout_gravity="center"
                                             android:layout_weight="1"
                                             android:src="@drawable/ic_currency" />
@@ -174,7 +189,7 @@
                                             android:layout_weight="1"
                                             android:text="25 000"
                                             android:textColor="#001"
-                                            android:textSize="24sp"
+                                            android:textSize="20sp"
                                             android:textStyle="bold" />
                                     </LinearLayout>
                                 </LinearLayout>
@@ -190,7 +205,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="Общая сумма:"
-                                        android:textSize="10dp"
+                                        android:textSize="12dp"
                                         android:textColor="#001" />
 
                                     <LinearLayout
@@ -200,7 +215,7 @@
 
                                         <ImageView
                                             android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
+                                            android:layout_height="18dp"
                                             android:layout_gravity="center"
                                             android:layout_weight="1"
                                             android:src="@drawable/ic_currency" />
@@ -213,7 +228,7 @@
                                             android:layout_weight="1"
                                             android:text="50 000"
                                             android:textColor="#001"
-                                            android:textSize="24sp"
+                                            android:textSize="20sp"
                                             android:textStyle="bold" />
                                     </LinearLayout>
                                 </LinearLayout>
@@ -274,7 +289,7 @@
                             android:layout_marginBottom="8dp"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -292,7 +307,7 @@
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"
                             android:layout_marginBottom="8dp"
-                            android:textSize="15sp"
+                            android:textSize="16sp"
                             android:visibility="visible"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -347,7 +362,7 @@
                                 android:padding="20dp"
                                 android:text="@string/loan"
                                 android:textColor="#FEFEFE"
-                                android:textSize="15sp"
+                                android:textSize="17sp"
                                 android:textStyle="bold"
                                 android:visibility="gone"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -366,7 +381,7 @@
                                 <ImageView
                                     android:id="@+id/loan_currency_icon"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="18dp"
                                     android:layout_gravity="center"
                                     android:src="@drawable/ic_currency_white" />
 
@@ -378,7 +393,7 @@
                                     android:layout_weight="1"
                                     android:text="5 000 "
                                     android:textColor="@color/whiteColor"
-                                    android:textSize="24sp" />
+                                    android:textSize="20sp" />
                             </LinearLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -398,7 +413,7 @@
                             android:gravity="center"
                             android:text="01.08.20"
                             android:textColor="@color/whiteColor"
-                            android:textSize="24sp" />
+                            android:textSize="20sp" />
                     </LinearLayout>
 
                     <LinearLayout

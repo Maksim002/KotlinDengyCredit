@@ -16,6 +16,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/contacting_layout"
         android:layout_width="match_parent"
+        android:background="@color/whiteColor"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
@@ -38,52 +39,52 @@
         android:layout_marginTop="16dp"
         android:text="Обращение в службу поддержки"
         android:textColor="#001"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/questionnaire_phone_surnames"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Фамилия"
                 android:inputType="textPersonName"
-                android:padding="14dp"
-                android:textSize="15dp" />
+                android:padding="13dp"
+                android:textSize="14dp" />
 
 
             <EditText
                 android:id="@+id/questionnaire_phone_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Имя"
                 android:inputType="textPersonName"
-                android:padding="14dp"
-                android:textSize="15dp" />
+                android:padding="13dp"
+                android:textSize="14dp" />
 
             <EditText
                 android:id="@+id/questionnaire_phone_patronymics"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Отчество"
                 android:inputType="textPersonName"
-                android:padding="14dp"
-                android:textSize="15dp" />
+                android:padding="13dp"
+                android:textSize="14dp" />
 
             <AutoCompleteTextView
                 android:id="@+id/questionnaire_phone_list_country"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:drawableEnd="@drawable/ic_expend"
                 android:hint="Список доступных стран"
-                android:padding="14dp"
-                android:textSize="15dp" />
+                android:padding="13dp"
+                android:textSize="14dp" />
 
         <LinearLayout
             android:id="@+id/layout_visible"
@@ -112,12 +113,12 @@
             android:id="@+id/password_recovery_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/circle_orange_background_edit"
             android:drawableEnd="@drawable/ic_expend"
             android:hint="Выберите тему обращения"
-            android:padding="14dp"
-            android:textSize="15dp" />
+            android:padding="13dp"
+            android:textSize="14dp" />
 
         <EditText
            android:id="@+id/password_recovery_comments"
@@ -125,10 +126,10 @@
            android:lines="8"
            android:minLines="3"
            android:gravity="left|center"
-           android:padding="16dp"
-           android:textSize="16dp"
+           android:padding="13dp"
+           android:textSize="14dp"
            android:hint="Ваш комментарий(не обязательно)"
-           android:layout_marginTop="16dp"
+           android:layout_marginTop="10dp"
            android:background="@drawable/circle_orange_background_edit"
            android:maxLines="10"
            android:layout_height="wrap_content"
@@ -140,10 +141,10 @@
             style="@style/RoundedOrangeBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="Отправить"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
     </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

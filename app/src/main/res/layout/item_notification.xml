@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Заполните анкету для получения займа"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#001"/>
 
@@ -33,7 +33,7 @@
             android:layout_marginTop="5dp"
             android:maxLines="2"
             android:text="Сумма к погашению 3567 рублей. Перейти к погашению."
-            android:textSize="10sp"/>
+            android:textSize="12sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -52,8 +52,8 @@
 
             <ImageView
                 android:id="@+id/notification_review"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
                 android:src="@drawable/ic_point" />
 
             <ImageView
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="27.03.2019"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:layout_marginTop="5dp"
                 android:gravity="right"
                 android:textColor="#001"/>

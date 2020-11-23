@@ -17,7 +17,7 @@
         android:layout_marginTop="20dp"
         android:text="Ой!"
         android:gravity="center"
-        android:textSize="18sp"
+        android:textSize="17sp"
         android:textColor="#001"/>
 
     <TextView
@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:textColor="#001"
         android:gravity="center"
+        android:textSize="14dp"
         android:layout_marginTop="20dp"
         android:text="В данный проводятся технические работы на сервере. Не грустите ;)"/>
 
@@ -38,6 +39,6 @@
         android:paddingLeft="20dp"
         android:text="ПОВТОРИТЬ"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>

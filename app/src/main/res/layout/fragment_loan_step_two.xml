@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="17sp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -47,7 +47,7 @@
                 android:text="рублей"
                 android:gravity="center"
                 android:textColor="@color/orangeColor"
-                android:textSize="20sp"/>
+                android:textSize="17dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -84,7 +84,7 @@
                 android:textColor="#001"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="12sp"/>
+                android:textSize="14dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -93,7 +93,7 @@
                 android:textColor="#001"
                 android:gravity="right"
                 android:layout_weight="1"
-                android:textSize="12sp"/>
+                android:textSize="14dp"/>
         </LinearLayout>
 
         <com.example.kotlincashloan.common.HorizontalCarouselRecyclerView
@@ -119,7 +119,7 @@
                     android:text="месяцев"
                     android:textColor="@color/orangeColor"
                     android:gravity="center"
-                    android:textSize="20sp"/>
+                    android:textSize="17dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -157,7 +157,7 @@
                 android:textColor="#001"
                 android:layout_weight="1"
                 android:gravity="left"
-                android:textSize="12sp"/>
+                android:textSize="14dp"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -166,7 +166,7 @@
                 android:textColor="#001"
                 android:gravity="right"
                 android:layout_weight="1"
-                android:textSize="12sp"/>
+                android:textSize="14dp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -174,7 +174,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/_3_637"
-        android:textSize="15sp"
+        android:textSize="17dp"
         android:layout_marginTop="10dp"
         android:textColor="#001"
         android:gravity="center"/>
@@ -189,7 +189,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:textSize="30sp"
+            android:textSize="32dp"
             android:textColor="@color/orangeColor"
             android:layout_weight="1"
             android:text="3 637"/>
@@ -198,7 +198,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="30sp"
+            android:textSize="32dp"
             android:textColor="@color/orangeColor"
             android:text="руб."/>
     </LinearLayout>
@@ -217,7 +217,7 @@
             android:layout_marginBottom="10dp"
             android:text="Начать"
             android:textColor="#FFFFFF"
-            android:textSize="15sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
