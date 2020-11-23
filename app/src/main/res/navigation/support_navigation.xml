@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/loans_navigation"
         android:name="com.example.kotlincashloan.ui.support.SupportFragment"
-        android:label="FAQ"
+        android:label=""
         tools:layout="@layout/fragment_support" />
 </navigation>

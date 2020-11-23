@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.still
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -31,6 +32,9 @@ class StillFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
+
+        setTitle("Eще", resources.getColor(R.color.whiteColor))
+
         initClick()
     }
 
@@ -39,6 +43,13 @@ class StillFragment : Fragment() {
             val intent = Intent(context, HomeActivity::class.java)
             AppPreferences.token = null
             startActivity(intent)
+        }
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
         }
     }
 
@@ -54,7 +65,6 @@ class StillFragment : Fragment() {
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
 }

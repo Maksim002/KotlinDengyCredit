@@ -8,12 +8,12 @@
     <fragment
         android:id="@+id/notification_navigation"
         android:name="com.example.kotlincashloan.ui.notification.NotificationFragment"
-        android:label="Уведомления"
+        android:label=""
         tools:layout="@layout/fragment_notification" />
 
     <fragment
         android:id="@+id/navigation_detail_notification"
         android:name="com.example.kotlincashloan.ui.notification.DetailNotificationFragment"
-        android:label="Уведомления"
+        android:label=""
         tools:layout="@layout/fragment_detail_notification" />
 </navigation>

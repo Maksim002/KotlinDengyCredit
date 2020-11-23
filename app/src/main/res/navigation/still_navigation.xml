@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/still_navigation"
         android:name="com.example.kotlincashloan.ui.still.StillFragment"
-        android:label="Ещё"
+        android:label=""
         tools:layout="@layout/fragment_still" />
 </navigation>

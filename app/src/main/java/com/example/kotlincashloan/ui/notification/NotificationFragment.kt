@@ -1,6 +1,7 @@
 package com.example.kotlincashloan.ui.notification
 
 
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -57,6 +58,9 @@ class NotificationFragment : Fragment(), NotificationListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        setTitle("Уведомление", resources.getColor(R.color.whiteColor))
+
         initRefresh()
         initClick()
     }
@@ -225,6 +229,13 @@ class NotificationFragment : Fragment(), NotificationListener {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
@@ -238,7 +249,6 @@ class NotificationFragment : Fragment(), NotificationListener {
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
 }

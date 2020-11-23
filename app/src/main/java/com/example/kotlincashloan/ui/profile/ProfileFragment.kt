@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.profile
 
 
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -60,6 +61,9 @@ class ProfileFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        setTitle("Профиль", resources.getColor(R.color.whiteColor))
+
         initRefresh()
         initClick()
     }
@@ -270,6 +274,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         if (numberBar != 0){
@@ -291,7 +302,6 @@ class ProfileFragment : Fragment() {
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
 }

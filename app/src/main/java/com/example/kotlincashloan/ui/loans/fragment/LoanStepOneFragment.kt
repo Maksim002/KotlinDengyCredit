@@ -21,9 +21,17 @@ class LoanStepOneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initClick()
+
 
         shipped_sheet_enter.setOnClickListener {
 
+        }
+    }
+
+    private fun initClick() {
+        step_one_esc.setOnClickListener {
+            requireActivity().finish()
         }
     }
 
