@@ -37,7 +37,6 @@ class LoansFragment : Fragment(), LoansListener {
     val handler = Handler()
     private var listNewsId: String = ""
     private var listLoanId: String = ""
-    private var refresh = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -224,7 +223,7 @@ class LoansFragment : Fragment(), LoansListener {
             }
         }
 
-        setTitle("Займ", resources.getColor(R.color.blackColor))
+        setTitle("Займ", resources.getColor(R.color.orangeColor))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()

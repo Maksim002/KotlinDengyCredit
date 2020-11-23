@@ -95,14 +95,12 @@ class DetailNotificationFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNotice(map)
                     initRequest()
-                    HomeActivity.alert.hide()
                 }, 500)
             }
         }
     }
 
     private fun initRequest() {
-        HomeActivity.alert.show()
         viewModel.listNoticeDetailDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 detail_notification_title.text = result.result.title
@@ -208,11 +206,7 @@ class DetailNotificationFragment : Fragment() {
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
-            toolbar.getNavigationIcon()!!.setColorFilter(
-                getResources().getColor(R.color.whiteColor),
-                PorterDuff.Mode.SRC_ATOP
-            )
+            toolbar.getNavigationIcon()!!.setColorFilter(getResources().getColor(R.color.whiteColor), PorterDuff.Mode.SRC_ATOP)
         }
     }
 }

@@ -117,7 +117,6 @@ class LoansDetailsFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNews(map)
                     initRequest()
-                    HomeActivity.alert.hide()
                 }, 500)
             }
         }
@@ -127,7 +126,6 @@ class LoansDetailsFragment : Fragment() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", isNews.toString())
-        HomeActivity.alert.show()
         viewModel.listGetDta.observe(viewLifecycleOwner, Observer { result ->
                 if (result.code == 200 && result.result != null){
                     loans_details_name.setText(result.result.name)

@@ -97,9 +97,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 list = result.result
@@ -249,7 +246,6 @@ class ProfileFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listOperation(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms

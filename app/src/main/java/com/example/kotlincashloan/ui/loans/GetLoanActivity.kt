@@ -10,7 +10,6 @@ import com.example.kotlincashloan.ui.loans.fragment.LoanStepTwoFragment
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 
 class GetLoanActivity : AppCompatActivity() {
     private var list = mutableListOf<LoansListModel>()

@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
 
 
 class SupportFragment : Fragment() {
@@ -109,7 +108,6 @@ class SupportFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listFaq(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -151,9 +149,6 @@ class SupportFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 myAdapter.update(result.result)
