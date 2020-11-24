@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context=".ui.loans.fragment.LoanStepOneFragment">
 
-    <ImageView
-        android:layout_width="137dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:src="@drawable/ic_many_credit"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -21,10 +14,24 @@
         android:gravity="center"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:gravity="top"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="137dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_many_credit"/>
+        </LinearLayout>
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="78dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_user" />
 
@@ -48,7 +55,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:text="@string/To_get_a_loan"
-        android:textSize="14dp" />
+        android:textSize="17dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -58,7 +65,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:text="@string/click"
-        android:textSize="14dp" />
+        android:textSize="17dp" />
     </LinearLayout>
 
     <LinearLayout

@@ -9,17 +9,18 @@
     android:padding="16dp"
     tools:context=".ui.registration.login.HomeActivity">
 
-    <ImageView
-        android:layout_width="137dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_many_credit"/>
-
     <LinearLayout
         android:id="@+id/home_layout"
         android:layout_width="match_parent"
         android:gravity="center|left"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="137dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="118dp"
+            android:src="@drawable/ic_many_credit"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -39,7 +40,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/circle_orange_background_edit"
             android:inputType="number"
-            android:padding="13dp"
+            android:padding="16dp"
             android:textSize="14dp" />
 
 

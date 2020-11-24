@@ -56,15 +56,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="17dp"
             android:orientation="horizontal"/>
 
         <SeekBar
             android:id="@+id/loan_step_seek"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="9dp"
-            android:layout_marginRight="9dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="4dp"
             android:progress="0"
             android:layout_marginTop="8dp"
             android:progressDrawable="@drawable/progress_drawable"
@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="75dp"
             android:paddingRight="75dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="3dp"
             android:text="Начать"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

@@ -51,7 +51,7 @@
                     android:id="@+id/questionnaire_text_surnames"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="25dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
                     android:inputType="textPersonName"
@@ -181,7 +181,7 @@
                 android:id="@+id/questionnaire_agreement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:text="Я согласен с условиями обработки персональных данных"
                 android:textSize="12sp" />
 
@@ -211,11 +211,11 @@
                     android:id="@+id/questionnaire_registration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="15dp"
                     android:gravity="center"
                     android:text="Уже зарегистрированы?"
                     android:textColor="#FF9900"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <include
