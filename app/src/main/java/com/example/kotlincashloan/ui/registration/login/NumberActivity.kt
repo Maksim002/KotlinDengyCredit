@@ -40,6 +40,7 @@ class NumberActivity : AppCompatActivity() {
         HomeActivity.alert = LoadingAlert(this)
         initClick()
         initViews()
+        initToolBar()
     }
 
     private fun initResult() {
@@ -162,6 +163,13 @@ class NumberActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun initToolBar() {
+               setSupportActionBar(number_toolbar)
+               supportActionBar!!.setDisplayShowHomeEnabled(true)
+               supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+               supportActionBar!!.title = ""
+           }
 
     fun initVisibilities(){
         number_layout.visibility = View.VISIBLE

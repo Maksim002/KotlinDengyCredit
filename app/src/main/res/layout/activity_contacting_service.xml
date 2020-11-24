@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,138 +9,153 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/contacting_layout"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/whiteColor"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/password_recovery_toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_gravity="center"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Обращение в службу поддержки"
-        android:textColor="#001"
-        android:textSize="20sp" />
-
-            <EditText
-                android:id="@+id/questionnaire_phone_surnames"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:hint="Фамилия"
-                android:inputType="textPersonName"
-                android:padding="13dp"
-                android:textSize="14dp" />
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Обращение в службу поддержки"
+                    android:textColor="#001"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/questionnaire_phone_surnames"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Фамилия"
+                    android:inputType="textPersonName"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
 
-            <EditText
-                android:id="@+id/questionnaire_phone_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:hint="Имя"
-                android:inputType="textPersonName"
-                android:padding="13dp"
-                android:textSize="14dp" />
+                <EditText
+                    android:id="@+id/questionnaire_phone_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Имя"
+                    android:inputType="textPersonName"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
-            <EditText
-                android:id="@+id/questionnaire_phone_patronymics"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:hint="Отчество"
-                android:inputType="textPersonName"
-                android:padding="13dp"
-                android:textSize="14dp" />
+                <EditText
+                    android:id="@+id/questionnaire_phone_patronymics"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Отчество"
+                    android:inputType="textPersonName"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/questionnaire_phone_list_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:drawableEnd="@drawable/ic_expend"
-                android:hint="Список доступных стран"
-                android:padding="13dp"
-                android:textSize="14dp" />
+                <AutoCompleteTextView
+                    android:id="@+id/questionnaire_phone_list_country"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="Список доступных стран"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
-        <LinearLayout
-            android:id="@+id/layout_visible"
-            android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/layout_visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-            <com.santalu.maskedittext.MaskEditText
-            android:id="@+id/questionnaire_phone_additional"
-            android:layout_width="match_parent"
-            android:padding="14dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:textSize="15sp"
-            android:digits="0123456789"
-            android:ellipsize="end"
-            android:hint="Номер телефона"
-            android:imeOptions="actionDone"
-            android:inputType="phone"
-            android:scrollHorizontally="true"/>
-        </LinearLayout>
+                    <com.santalu.maskedittext.MaskEditText
+                        android:id="@+id/questionnaire_phone_additional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:digits="0123456789"
+                        android:ellipsize="end"
+                        android:hint="Номер телефона"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:padding="14dp"
+                        android:scrollHorizontally="true"
+                        android:textSize="15sp" />
+                </LinearLayout>
 
-        <AutoCompleteTextView
-            android:id="@+id/password_recovery_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Выберите тему обращения"
-            android:padding="13dp"
-            android:textSize="14dp" />
+                <AutoCompleteTextView
+                    android:id="@+id/password_recovery_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="Выберите тему обращения"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
 
-        <EditText
-           android:id="@+id/password_recovery_comments"
-           android:inputType="textMultiLine"
-           android:lines="8"
-           android:minLines="3"
-           android:gravity="left|center"
-           android:padding="13dp"
-           android:textSize="14dp"
-           android:hint="Ваш комментарий(не обязательно)"
-           android:layout_marginTop="10dp"
-           android:background="@drawable/circle_orange_background_edit"
-           android:maxLines="10"
-           android:layout_height="wrap_content"
-           android:layout_width="match_parent"
-           android:scrollbars="vertical" />
+                <EditText
+                    android:id="@+id/password_recovery_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:gravity="left|center"
+                    android:hint="Ваш комментарий(не обязательно)"
+                    android:inputType="textMultiLine"
+                    android:lines="8"
+                    android:maxLines="10"
+                    android:minLines="3"
+                    android:padding="13dp"
+                    android:scrollbars="vertical"
+                    android:textSize="14dp" />
 
-        <Button
-            android:id="@+id/password_recovery_send"
-            style="@style/RoundedOrangeBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Отправить"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/password_recovery_send"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Отправить"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/password_recovery_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteColor"
+        android:theme="@style/ToolBarStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <include
         android:id="@+id/password_no_questionnaire"
@@ -156,5 +173,5 @@
     <include layout="@layout/item_technical_work"
         android:id="@+id/password_technical_work"
         android:visibility="gone"/>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 

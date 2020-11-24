@@ -41,6 +41,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
         HomeActivity.alert = LoadingAlert(this)
+        initToolBar()
         getListCountry()
         getType()
         iniClick()
@@ -79,6 +80,13 @@ class ContactingServiceActivity : AppCompatActivity() {
                 initResult()
             }
         }
+    }
+
+    private fun initToolBar() {
+        setSupportActionBar(password_recovery_toolbar)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.title = ""
     }
 
     private fun initResult() {
@@ -139,12 +147,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                             loadingMistake(this)
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "600"){
+                    Status.NETWORK -> {
+                        if (msg == "600") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        } else {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingConnection(this)
@@ -242,12 +250,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                                 contacting_layout.visibility = View.VISIBLE
                             }
                         }
-                        Status.NETWORK ->{
-                            if (msg == "600"){
+                        Status.NETWORK -> {
+                            if (msg == "600") {
                                 loadingMistake(this)
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
-                            }else{
+                            } else {
                                 loadingConnection(this)
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
@@ -356,12 +364,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                             contacting_layout.visibility = View.VISIBLE
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "600"){
+                    Status.NETWORK -> {
+                        if (msg == "600") {
                             loadingMistake(this)
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                        }else{
+                        } else {
                             loadingConnection(this)
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
