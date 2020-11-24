@@ -9,13 +9,10 @@
     android:padding="16dp"
     tools:context=".ui.registration.login.HomeActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <ImageView
             android:layout_width="137dp"
             android:layout_height="40dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/ic_many_credit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -115,7 +112,6 @@
                 android:id="@+id/home_login_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="Вход по пин-коду"
                 android:textSize="12sp"
                 tools:layout_editor_absoluteX="114dp"
@@ -125,7 +121,6 @@
                 android:id="@+id/home_touch_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:text="Вход с помощью отпечатка"
                 android:textSize="12sp"
                 tools:layout_editor_absoluteX="114dp"
@@ -164,7 +159,6 @@
                 android:textColor="#FF9900"
                 android:textSize="15sp" />
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
