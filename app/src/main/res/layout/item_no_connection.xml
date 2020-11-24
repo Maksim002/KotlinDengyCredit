@@ -17,7 +17,7 @@
         android:layout_marginTop="20dp"
         android:textColor="#001"
         android:gravity="center"
-        android:textSize="17sp"
+        android:textSize="20sp"
         android:text="Ууупс!"/>
 
     <TextView
@@ -26,7 +26,7 @@
         android:textColor="#001"
         android:gravity="center"
         android:textSize="14sp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="Похоже, что Вы не подключены к Интернету."/>
 
     <TextView
@@ -35,7 +35,7 @@
         android:textColor="#001"
         android:textSize="14sp"
         android:gravity="center"
-        android:layout_marginTop="9dp"
+        android:layout_marginTop="10dp"
         android:text="Проверьте подключение к Интернету и повторите попытку."/>
 
     <Button
@@ -43,7 +43,7 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
         android:text="ПОВТОРИТЬ"

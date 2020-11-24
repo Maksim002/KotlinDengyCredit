@@ -38,7 +38,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_recovery)
         HomeActivity.alert = LoadingAlert(this)
-        initToolBar()
         iniClick()
     }
 
@@ -144,13 +143,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    private fun initToolBar() {
-        setSupportActionBar(password_recovery_toolbar)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = ""
     }
 
     override fun onStart() {

@@ -40,8 +40,6 @@ class NumberActivity : AppCompatActivity() {
         HomeActivity.alert = LoadingAlert(this)
         initClick()
         initViews()
-        initToolBar()
-
     }
 
     private fun initResult() {
@@ -123,13 +121,6 @@ class NumberActivity : AppCompatActivity() {
     private fun initBusyBottomSheet() {
             bottomSheetDialogFragment.isCancelable = false;
             bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
-    }
-
-    private fun initToolBar() {
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = ""
     }
 
     override fun onSupportNavigateUp(): Boolean {

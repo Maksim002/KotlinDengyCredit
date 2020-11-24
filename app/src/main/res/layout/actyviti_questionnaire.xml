@@ -7,15 +7,33 @@
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/questionnaire_toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/whiteColor"
-        android:theme="@style/ToolBarStyle"
-        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/questionnaire_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whiteColor"
+            android:theme="@style/ToolBarStyle"
+            app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Регистрация"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/orangeColor"
+            app:layout_constraintBottom_toBottomOf="@+id/questionnaire_toolbar"
+            app:layout_constraintTop_toTopOf="@+id/questionnaire_toolbar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/questionnaire_layout"
@@ -33,25 +51,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
             android:layout_marginBottom="16dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Регистрация"
-                android:textColor="#001"
-                android:textSize="20sp" />
-
-
                 <EditText
                     android:id="@+id/questionnaire_text_surnames"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="25dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
                     android:inputType="textPersonName"
@@ -86,7 +95,7 @@
                     android:id="@+id/questionnaire_date_birth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:focusable="false"
                     android:hint="Дата рождения"
@@ -107,7 +116,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:hint="ID поле"
+                    android:hint="Выберите пол"
                     android:inputType="number"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -120,7 +129,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:hint="ID гражданства"
+                    android:hint="Выберите гражданства"
                     android:inputType="number"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -130,7 +139,7 @@
                     android:id="@+id/questionnaire_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:clickable="false"
                     android:focusable="false"
@@ -144,7 +153,7 @@
                     android:layout_width="match_parent"
                     android:padding="13dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:textSize="14dp"
                     android:digits="0123456789"
@@ -158,10 +167,10 @@
                     android:id="@+id/questionnaire_id_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:hint="ID секретного вопроса"
+                    android:hint="Выберите секретный вопрос"
                     android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -194,7 +203,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="15dp"
                     app:cardCornerRadius="25dp">
 
                     <Button
@@ -212,10 +221,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
                     android:gravity="center"
                     android:text="Уже зарегистрированы?"
                     android:textColor="#FF9900"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <include

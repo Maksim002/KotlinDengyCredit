@@ -41,7 +41,6 @@ class ContactingServiceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
         HomeActivity.alert = LoadingAlert(this)
-        initToolBar()
         getListCountry()
         getType()
         iniClick()
@@ -177,13 +176,6 @@ class ContactingServiceActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    private fun initToolBar() {
-        setSupportActionBar(password_recovery_toolbar)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = ""
     }
 
     private fun getListCountry() {

@@ -26,7 +26,7 @@
         android:textColor="#001"
         android:gravity="center"
         android:textSize="14dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="В данный проводятся технические работы на сервере. Не грустите ;)"/>
 
     <Button
@@ -34,7 +34,7 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="20dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
         android:text="ПОВТОРИТЬ"
