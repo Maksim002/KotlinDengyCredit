@@ -279,6 +279,7 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        MainActivity.timer.timeStop()
         if (numberBar != 0){
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE
@@ -288,7 +289,6 @@ class ProfileFragment : Fragment() {
             profile_bar_one.visibility = View.GONE
         }
 
-        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

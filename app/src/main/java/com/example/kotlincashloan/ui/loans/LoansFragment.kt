@@ -56,13 +56,8 @@ class LoansFragment : Fragment(), LoansListener {
         initLogicSeekBar()
         initClick()
         initRefresh()
-    }
 
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
-        }
+        setTitle("", resources.getColor(R.color.blackColor))
     }
 
     override fun onStart() {
@@ -223,8 +218,6 @@ class LoansFragment : Fragment(), LoansListener {
             }
         }
 
-        setTitle("Займ", resources.getColor(R.color.orangeColor))
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
@@ -304,6 +297,13 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     private fun initRecycler() {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
@@ -349,9 +349,10 @@ class LoansFragment : Fragment(), LoansListener {
         loans_seekBar.progress = loans_sum.text.toString().toInt()
     }
 
-    override fun loansClickListener(position: Int, idNews: Int) {
+    override fun loansClickListener(position: Int, idNews: Int, title: String) {
         val build = Bundle()
         build.putInt("idNews", idNews)
+        build.putString("title", title)
         findNavController().navigate(R.id.loans_details_navigation, build)
     }
 

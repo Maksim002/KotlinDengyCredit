@@ -236,8 +236,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         super.onResume()
         MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
             systemUiVisibilityFlags =

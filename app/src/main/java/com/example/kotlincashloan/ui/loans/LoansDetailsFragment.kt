@@ -1,6 +1,8 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -73,16 +75,32 @@ class LoansDetailsFragment : Fragment() {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     private fun iniArgument() {
         isNews = try {
             requireArguments().getInt("idNews")
         } catch (e: Exception) {
             0
         }
+
+        var title = try {
+            requireArguments().getString("title")
+        } catch (e: Exception) {
+            ""
+        }
+
+        setTitle(title.toString(), resources.getColor(R.color.blackColor))
     }
 
     override fun onResume() {
         super.onResume()
+
         MainActivity.timer.timeStop()
         if (viewModel.listGetDta.value != null) {
             if (errorCode == "200") {
@@ -97,7 +115,7 @@ class LoansDetailsFragment : Fragment() {
             requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
+            toolbar.getNavigationIcon()!!.setColorFilter(getResources().getColor(R.color.blackColor), PorterDuff.Mode.SRC_ATOP)
         }
     }
 
