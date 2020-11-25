@@ -215,7 +215,6 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        MainActivity.timer.timeStop()
         loan_step_sum.text = "5 000"
     }
 }

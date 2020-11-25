@@ -32,9 +32,4 @@ class LoanStepOneFragment : Fragment() {
     private fun initClick() {
 
     }
-
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
-    }
 }

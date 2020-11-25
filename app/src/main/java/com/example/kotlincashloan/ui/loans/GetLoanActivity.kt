@@ -43,15 +43,11 @@ class GetLoanActivity : AppCompatActivity() {
         get_loan_stepper_indicator.setCurrentStep(0);
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         MainActivity.timer.timeStart()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        MainActivity.timer.timeStart()
-    }
 
     override fun onResume() {
         super.onResume()
