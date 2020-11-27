@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.support
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -25,7 +26,6 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
 
 
 class SupportFragment : Fragment() {
@@ -50,6 +50,9 @@ class SupportFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        setTitle("FAQ", resources.getColor(R.color.whiteColor))
+
         iniClick()
         initRefresh()
     }
@@ -67,17 +70,25 @@ class SupportFragment : Fragment() {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
         }
     }
 
@@ -97,7 +108,6 @@ class SupportFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listFaq(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -139,9 +149,6 @@ class SupportFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 myAdapter.update(result.result)

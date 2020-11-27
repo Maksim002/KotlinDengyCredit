@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="16dp"
-        android:layout_marginTop="16dp"
+        android:textSize="14dp"
         android:textColor="#001"
         android:text="@string/your_appeal"/>
 
@@ -19,8 +18,8 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="Вернуться на главный экран"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 </LinearLayout>

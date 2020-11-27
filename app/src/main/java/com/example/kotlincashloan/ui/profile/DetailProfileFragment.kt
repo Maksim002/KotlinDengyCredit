@@ -78,7 +78,6 @@ class DetailProfileFragment : Fragment() {
     }
 
     private fun initResult() {
-        HomeActivity.alert.show()
         viewModel.listGetOperationDta.observe(viewLifecycleOwner, Observer { result->
             if (result.result != null){
                 d_profile_title.text = result.result.title
@@ -171,7 +170,6 @@ class DetailProfileFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getOperation(map)
                     initResult()
-                    HomeActivity.alert.hide()
                 }, 500)
             }
         }

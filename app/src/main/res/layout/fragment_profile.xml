@@ -10,13 +10,13 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/profile_swipe"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +26,7 @@
                 <LinearLayout
                     android:id="@+id/profile_layout_orange"
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="70dp"
                     android:background="@color/orangeColor"
                     android:orientation="vertical"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -34,9 +34,9 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.mikhaellopez.circularimageview.CircularImageView
-                    android:layout_width="158dp"
-                    android:layout_height="158dp"
-                    android:src="@drawable/ic_sad"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_proo"
                     app:civ_border_color="#fefefe"
                     app:civ_border_width="4dp"
                     app:civ_shadow="true"
@@ -51,9 +51,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="Имя Фамилия"
                 android:textColor="@color/blackColor"
-                android:textSize="30sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -61,48 +62,160 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="10dp"
                 android:text="Просмотреть профиль"
                 android:textColor="@color/orangeColor"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <FrameLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="25dp"
                 android:layout_marginRight="16dp"
-                android:clipToPadding="false">
-
-                <View
-                    android:id="@+id/profile_indicator"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/gradient_bg" />
-
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/profile_tab"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/tab_bg"
-                    app:tabGravity="fill"
-                    app:tabIndicatorColor="@null"
-                    app:tabMaxWidth="0dp"
-                    app:tabMode="fixed"
-                    app:tabRippleColor="@null"
-                    app:tabSelectedTextColor="#ffffff" />
-            </FrameLayout>
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/profile_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp" />
+                android:background="@drawable/top_bar"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/lau"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/top_bar"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/v1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingTop="25dp"
+                            android:paddingBottom="25dp"
+                            android:textSize="16dp"
+                            android:text="Мои операции" />
+
+                        <TextView
+                            android:id="@+id/v2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="16dp"
+                            android:paddingTop="25dp"
+                            android:paddingBottom="25dp"
+                            android:gravity="center"
+                            android:text="Мои заявки" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginLeft="1dp"
+                        android:visibility="visible"
+                        android:layout_marginTop="1dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <LinearLayout
+                                    android:id="@+id/profile_bar_zero"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="82dp"
+                                    android:visibility="gone"
+                                    android:background="@drawable/top_bar_panel"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:textColor="#001"
+                                        android:textSize="16dp"
+                                        android:gravity="center"
+                                        android:background="@drawable/top_bar_panel"
+                                        android:paddingTop="25dp"
+                                        android:paddingBottom="25dp"
+                                        android:text="Мои операции" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1">
+
+                                <LinearLayout
+                                    android:id="@+id/profile_bar_one"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="82dp"
+                                    android:visibility="gone"
+                                    android:background="@drawable/top_bar_panel"
+                                    android:layout_weight="1">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:textSize="16dp"
+                                        android:textColor="#001"
+                                        android:paddingTop="25dp"
+                                        android:paddingBottom="25dp"
+                                        android:text="Мои заявки" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lau">
+
+                    <com.example.kotlincashloan.utils.DeactivatableViewPager
+                        android:id="@+id/profile_pager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="25dp"
+                        android:layout_marginLeft="1dp"
+                        android:layout_marginRight="1dp"
+                        android:layout_marginBottom="1dp"
+                        android:background="@drawable/top_bar_panel"/>
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include

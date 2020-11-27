@@ -17,6 +17,7 @@
             android:padding="16dp"
             android:textColor="#001"
             android:layout_weight="1"
+            android:textSize="17dp"
             android:layout_height="wrap_content"
             android:text="name"/>
 
@@ -37,8 +38,8 @@
         android:layout_marginLeft="8dp"
         android:layout_height="wrap_content" />
 
-    <ImageView
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_divider" />
+        android:background="@color/colorLightGrey"
+        android:layout_height="1dp"/>
 </LinearLayout>

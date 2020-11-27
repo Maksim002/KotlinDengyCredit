@@ -21,6 +21,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -38,8 +39,8 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password_recovery)
         HomeActivity.alert = LoadingAlert(this)
-        initToolBar()
         iniClick()
+        initToolBar()
     }
 
     private fun iniClick() {
@@ -70,6 +71,12 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
     }
 
+    private fun initToolBar() {
+        setSupportActionBar(password_toolbar)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.title = ""
+    }
 
     fun initResult(){
         ObservedInternet().observedInternet(this)
@@ -144,13 +151,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
-    }
-
-    private fun initToolBar() {
-        setSupportActionBar(password_recovery_toolbar)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = ""
     }
 
     override fun onStart() {

@@ -7,17 +7,40 @@
     android:orientation="vertical"
     tools:context="com.example.kotlinscreenscanner.ui.MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ToolBarStyle"
-        android:gravity="center"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
-        android:background="@color/whiteColor"
-        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/whiteColor"
+            android:gravity="center"
+            android:theme="@style/ToolBarStyle"
+            app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/main_toolBar"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="Start"
+            android:textColor="#001"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/toolbar" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_container"

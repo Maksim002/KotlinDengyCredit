@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/whiteColor"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/number_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ToolBarStyle"
         android:background="@color/whiteColor"
-        app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+        android:theme="@style/ToolBarStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
@@ -21,88 +22,89 @@
         android:id="@+id/number_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Регистрация"
-        android:textColor="#001"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:textSize="30sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Регистрация"
+            android:textColor="#001"
+            android:textSize="20sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:padding="16dp"
-        android:layout_marginTop="37dp"
-        android:gravity="center"
-        android:textSize="16dp"
-        android:textColor="#001"
-        android:layout_marginBottom="25dp"
-        android:layout_height="wrap_content"
-        android:text="Введите номер телефона и нажмите “Далее”"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:text="Введите номер телефона и нажмите “Далее”"
+            android:textColor="#001"
+            android:textSize="14sp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/number_list_country"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:drawableEnd="@drawable/ic_expend"
-                android:hint="Список доступных стран"
-                android:padding="14dp"
-                android:textSize="15dp" />
+        <AutoCompleteTextView
+            android:id="@+id/number_list_country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/circle_orange_background_edit"
+            android:drawableEnd="@drawable/ic_expend"
+            android:hint="Список доступных стран"
+            android:padding="14dp"
+            android:textSize="14dp" />
 
-            <com.santalu.maskedittext.MaskEditText
-                android:id="@+id/number_phone"
-                android:layout_width="match_parent"
-                android:padding="14dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:textSize="15sp"
-                android:digits="0123456789"
-                android:visibility="gone"
-                android:ellipsize="end"
-                android:hint="Номер телефона"
-                android:imeOptions="actionDone"
-                android:inputType="phone"
-                android:scrollHorizontally="true"/>
+        <com.santalu.maskedittext.MaskEditText
+            android:id="@+id/number_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/circle_orange_background_edit"
+            android:digits="0123456789"
+            android:ellipsize="end"
+            android:hint="Номер телефона"
+            android:imeOptions="actionDone"
+            android:inputType="phone"
+            android:padding="14dp"
+            android:scrollHorizontally="true"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/number_next"
-        style="@style/RoundedOrangeBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:text="Далее"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        <Button
+            android:id="@+id/number_next"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Далее"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
     </LinearLayout>
 
-    <include layout="@layout/item_no_connection"
+    <include
         android:id="@+id/number_no_connection"
-        android:visibility="gone"/>
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_access_restricted"
+    <include
         android:id="@+id/number_access_restricted"
-        android:visibility="gone"/>
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_not_found"
+    <include
         android:id="@+id/number_not_found"
-        android:visibility="gone"/>
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_technical_work"
+    <include
         android:id="@+id/number_technical_work"
-        android:visibility="gone"/>
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
 
     <include
         android:id="@+id/number_focus_text"
         layout="@layout/item_focus" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

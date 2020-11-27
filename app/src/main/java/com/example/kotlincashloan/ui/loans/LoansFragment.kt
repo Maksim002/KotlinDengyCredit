@@ -1,6 +1,6 @@
-package com.example.kotlincashloan.ui.Loans
+package com.example.kotlincashloan.ui.loans
 
-
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,12 +23,12 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import io.reactivex.Completable.timer
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+
 
 class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
@@ -38,7 +37,6 @@ class LoansFragment : Fragment(), LoansListener {
     val handler = Handler()
     private var listNewsId: String = ""
     private var listLoanId: String = ""
-    private var refresh = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,15 +48,16 @@ class LoansFragment : Fragment(), LoansListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.show()
+        (activity as AppCompatActivity).supportActionBar?.hide()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("v", "4")
-
+        map.put("v", "1")
         initLogicSeekBar()
         initClick()
         initRefresh()
+
+        setTitle("", resources.getColor(R.color.blackColor))
     }
 
     override fun onStart() {
@@ -66,17 +65,12 @@ class LoansFragment : Fragment(), LoansListener {
         MainActivity.timer.timeStop()
     }
 
-
     fun initCode() {
         listLoanId = viewModel.listLoanId
         listNewsId = viewModel.listNewsId
     }
 
     private fun initResult() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
-
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listLoanId = result.error.code.toString()
@@ -98,12 +92,14 @@ class LoansFragment : Fragment(), LoansListener {
                         if (result.result.getActiveLoan == true) {
                             loan_text_active.visibility = View.VISIBLE
                             text_center.visibility = View.GONE
+                            loan_currency_icon.visibility = View.GONE
                             loan_payment_sum.visibility = View.GONE
                             loan_payment_date.visibility = View.GONE
                             loan_trait.visibility = View.GONE
                         } else {
                             loan_text_active.visibility = View.GONE
                             text_center.visibility = View.VISIBLE
+                            loan_currency_icon.visibility = View.VISIBLE
                             loan_payment_sum.visibility = View.VISIBLE
                             loan_payment_date.visibility = View.VISIBLE
                             loan_trait.visibility = View.VISIBLE
@@ -205,15 +201,14 @@ class LoansFragment : Fragment(), LoansListener {
         super.onResume()
         MainActivity.timer.timeStop()
         val handler = Handler()
+        HomeActivity.alert.show()
         if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
-            HomeActivity.alert.show()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)
-                initRecycler()
                 initResult()
-                HomeActivity.alert.hide()
-            }, 500)
+                initRecycler()
+            }, 800)
         } else {
             if (listNewsId == "200" && listLoanId == "200") {
                 initRecycler()
@@ -223,7 +218,6 @@ class LoansFragment : Fragment(), LoansListener {
             }
         }
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
@@ -231,11 +225,15 @@ class LoansFragment : Fragment(), LoansListener {
                 .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
         }
     }
 
     private fun initClick() {
+        loan_get_active.setOnClickListener {
+            val intent = Intent(context, GetLoanActivity::class.java)
+            startActivity(intent)
+        }
+
         no_connection_repeat.setOnClickListener {
             initRepeat()
         }
@@ -261,9 +259,10 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
-            listNewsId = ""
-            listLoanId = ""
+            listNewsId = "601"
+            listLoanId = "601"
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            HomeActivity.alert.hide()
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
@@ -298,10 +297,14 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
 
-    private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
         }
+    }
+
+    private fun initRecycler() {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.error != null) {
                 listNewsId = result.error.toString()
@@ -346,9 +349,10 @@ class LoansFragment : Fragment(), LoansListener {
         loans_seekBar.progress = loans_sum.text.toString().toInt()
     }
 
-    override fun loansClickListener(position: Int, idNews: Int) {
+    override fun loansClickListener(position: Int, idNews: Int, title: String) {
         val build = Bundle()
         build.putInt("idNews", idNews)
+        build.putString("title", title)
         findNavController().navigate(R.id.loans_details_navigation, build)
     }
 

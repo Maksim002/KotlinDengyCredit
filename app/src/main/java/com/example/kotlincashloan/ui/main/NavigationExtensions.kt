@@ -40,6 +40,7 @@ var firstFragmentTag: String = ""
 var isOnFirstFragment: Boolean = false
 
 fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragmentManager: FragmentManager, containerId: Int, intent: Intent): LiveData<NavController> {
+
     // First create a NavHostFragment for each NavGraph ID
     navGraphIds.forEachIndexed { index, navGraphId ->
         val fragmentTag = getFragmentTag(index)

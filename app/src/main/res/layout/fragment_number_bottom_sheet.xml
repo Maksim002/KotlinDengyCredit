@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@color/whiteColor"
     android:padding="16dp"
     android:layout_height="wrap_content">
 
@@ -11,19 +12,19 @@
         android:layout_height="wrap_content"
         android:text="Вы успешно прошли регистрацию. Введите код из смс в поле ниже и нажмите “Продолжить”."
         android:gravity="center"
-        android:layout_marginTop="10dp"
         android:textColor="#001"
-        android:textSize="16sp"/>
+        android:textSize="14sp"/>
 
 
         <EditText
             android:id="@+id/number_text_sms"
             android:layout_width="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Код из смс-сообщения"
-            android:padding="16dp"
+            android:padding="13dp"
             android:maxLength="4"
+            android:textSize="14sp"
             android:inputType="number"
             android:layout_height="match_parent"/>
 
@@ -35,7 +36,7 @@
         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
         android:drawablePadding="10dp"
         android:visibility="visible"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="10dp"
         android:text="Неверный смс код"
         android:textColor="@color/colorRed"/>
 
@@ -44,24 +45,19 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="28dp"
         android:text="Продолжить"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/number_bottom_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="15dp"
         android:gravity="center"
-        android:textStyle="bold"
-        android:layout_marginBottom="14dp"
         android:text="Я не получил код"
         android:textColor="#FF9900"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>

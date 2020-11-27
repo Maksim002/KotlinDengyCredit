@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/profile_navigation"
         android:name="com.example.kotlincashloan.ui.profile.ProfileFragment"
-        android:label="Профиль"
+        android:label=""
         tools:layout="@layout/fragment_profile" />
 
     <fragment
         android:id="@+id/profile_setting_navigation"
         android:name="com.example.kotlincashloan.ui.profile.ProfileSettingFragment"
-        android:label="Профиль"
+        android:label=""
         tools:layout="@layout/fragment_profile_setting" />
 
     <fragment
         android:id="@+id/navigation_detail_profile"
         android:name="com.example.kotlincashloan.ui.profile.DetailProfileFragment"
-        android:label="Профиль"
+        android:label=""
         tools:layout="@layout/fragment_detail_profile" />
 </navigation>

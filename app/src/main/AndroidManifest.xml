@@ -52,6 +52,11 @@
         <activity android:name="com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".ui.loans.GetLoanActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

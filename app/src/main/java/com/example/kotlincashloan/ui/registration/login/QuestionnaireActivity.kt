@@ -236,7 +236,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         setSupportActionBar(questionnaire_toolbar)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Регистрация"
+        supportActionBar!!.title = ""
     }
 
     override fun onSupportNavigateUp(): Boolean {

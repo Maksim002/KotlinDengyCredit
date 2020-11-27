@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.annotation.NonNull
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -20,6 +20,7 @@ import com.example.kotlincashloan.utils.TimerListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -31,13 +32,12 @@ class MainActivity : AppCompatActivity() {
         lateinit var timer: TimerListener
     }
 
+    @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         HomeActivity.alert = LoadingAlert(this)
         timer = TimerListener(this)
-
-
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -69,10 +69,16 @@ class MainActivity : AppCompatActivity() {
             R.navigation.notification_navigation,
             R.navigation.profile_navigation,
             R.navigation.support_navigation,
-            R.navigation.still_navigation)
+            R.navigation.still_navigation
+        )
 
         // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(navGraphIds = navGraphIds, fragmentManager = supportFragmentManager, containerId = R.id.nav_host_container, intent = intent)
+        val controller = bottomNavigationView.setupWithNavController(
+            navGraphIds = navGraphIds,
+            fragmentManager = supportFragmentManager,
+            containerId = R.id.nav_host_container,
+            intent = intent
+        )
         // Whenever the selected controller changes, setup the action bar.
         controller.observe(this, Observer { navController ->
             setupActionBarWithNavController(navController)
@@ -96,6 +102,13 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         if (AppPreferences.dataKey != "") {
             bottomNavigationView.ClickPushNotification()
+        }
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        if (main_toolBar != null) {
+            main_toolBar.setText(title)
+            main_toolBar.setTextColor(color)
         }
     }
 

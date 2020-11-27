@@ -9,17 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="16dp"
         android:text="Ваша заявка принята"
         android:textColor="#001"
-        android:textSize="30sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="16dp"
-        android:layout_marginTop="16dp"
+        android:textSize="14dp"
+        android:layout_marginTop="10dp"
         android:textColor="#001"
         android:text="@string/our_specialist_will_contact"/>
 
@@ -28,9 +27,9 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="Вернуться на главный экран"
         android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.still
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -31,6 +32,9 @@ class StillFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
+
+        setTitle("Eще", resources.getColor(R.color.whiteColor))
+
         initClick()
     }
 
@@ -42,16 +46,25 @@ class StillFragment : Fragment() {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
-        HomeActivity.alert.hide()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.orangeColor))
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
         }
     }
 }

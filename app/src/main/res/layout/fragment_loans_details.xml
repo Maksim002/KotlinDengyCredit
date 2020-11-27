@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/whiteColor"
     android:layout_height="match_parent"
-    tools:context=".ui.Loans.LoansDetailsFragment">
+    tools:context=".ui.loans.LoansDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/loans_detail_layout"
@@ -40,8 +40,8 @@
             android:textColor="#001"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:text="Header"
-            android:textSize="18sp"/>
+            tools:text="Header"
+            android:textSize="17sp"/>
 
             <TextView
                 android:id="@+id/loans_details_description"
@@ -49,10 +49,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textColor="#001"
-                android:text="description"
-                android:layout_marginTop="3dp"/>
+                tools:text="description"
+                android:layout_marginTop="10dp"/>
 
             <org.billthefarmer.markdown.MarkdownView
                 android:id="@+id/loans_details_text"

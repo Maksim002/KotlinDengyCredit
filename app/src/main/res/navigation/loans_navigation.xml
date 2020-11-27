@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/loans_navigation"
-        android:name="com.example.kotlincashloan.ui.Loans.LoansFragment"
-        android:label="Займ"
+        android:name="com.example.kotlincashloan.ui.loans.LoansFragment"
+        android:label=""
         tools:layout="@layout/fragment_loans" />
 
     <fragment
         android:id="@+id/loans_details_navigation"
-        android:name="com.example.kotlincashloan.ui.Loans.LoansDetailsFragment"
+        android:name="com.example.kotlincashloan.ui.loans.LoansDetailsFragment"
         android:label=""
         tools:layout="@layout/fragment_loans_details" />
 </navigation>

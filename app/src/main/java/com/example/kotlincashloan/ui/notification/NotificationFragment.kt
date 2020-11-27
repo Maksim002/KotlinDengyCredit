@@ -1,6 +1,7 @@
 package com.example.kotlincashloan.ui.notification
 
 
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
@@ -57,6 +58,9 @@ class NotificationFragment : Fragment(), NotificationListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        setTitle("Уведомление", resources.getColor(R.color.whiteColor))
+
         initRefresh()
         initClick()
     }
@@ -95,7 +99,6 @@ class NotificationFragment : Fragment(), NotificationListener {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listNotice(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -119,9 +122,6 @@ class NotificationFragment : Fragment(), NotificationListener {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 myAdapter.update(result.result)
@@ -225,12 +225,18 @@ class NotificationFragment : Fragment(), NotificationListener {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
             systemUiVisibilityFlags =
@@ -238,7 +244,6 @@ class NotificationFragment : Fragment(), NotificationListener {
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
 }

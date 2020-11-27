@@ -25,7 +25,7 @@ class LoansAdapter (var listener: LoansListener, item: ArrayList<ListNewsResultM
             .into(holder.itemView.loans_image)
 
         holder.itemView.setOnClickListener {
-            listener.loansClickListener(holder.adapterPosition, item.id!!)
+            listener.loansClickListener(holder.adapterPosition, item.id!!, item.name.toString())
         }
     }
 }

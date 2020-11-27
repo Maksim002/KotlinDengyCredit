@@ -41,7 +41,6 @@ class NumberActivity : AppCompatActivity() {
         initClick()
         initViews()
         initToolBar()
-
     }
 
     private fun initResult() {
@@ -125,13 +124,6 @@ class NumberActivity : AppCompatActivity() {
             bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
-    private fun initToolBar() {
-        setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowHomeEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = ""
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -171,6 +163,13 @@ class NumberActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun initToolBar() {
+               setSupportActionBar(number_toolbar)
+               supportActionBar!!.setDisplayShowHomeEnabled(true)
+               supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+               supportActionBar!!.title = ""
+           }
 
     fun initVisibilities(){
         number_layout.visibility = View.VISIBLE

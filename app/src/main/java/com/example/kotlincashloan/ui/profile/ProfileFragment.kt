@@ -1,7 +1,8 @@
 package com.example.kotlincashloan.ui.profile
 
 
-import android.annotation.SuppressLint
+
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -11,10 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -26,15 +27,13 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_my_operation.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
+
 
 class ProfileFragment : Fragment() {
     private var indicatorWidth = 0
@@ -44,6 +43,7 @@ class ProfileFragment : Fragment() {
     private var refresh = false
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
     private var errorCode = ""
+    private var numberBar = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +61,9 @@ class ProfileFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        setTitle("Профиль", resources.getColor(R.color.whiteColor))
+
         initRefresh()
         initClick()
     }
@@ -94,9 +97,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        if (!refresh) {
-            HomeActivity.alert.show()
-        }
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 list = result.result
@@ -180,12 +180,51 @@ class ProfileFragment : Fragment() {
         })
     }
 
+    private fun initPager() {
+        val adapter = ProfilePagerAdapter(childFragmentManager)
+        adapter.addFragment(MyOperationFragment(list), "Мои операции")
+        adapter.addFragment(MyApplicationFragment(), "Мои заявки")
+        profile_pager.setAdapter(adapter)
+        adapter.notifyDataSetChanged()
+
+
+        profile_pager.isEnabled = false
+
+        v1.setOnClickListener {
+            profile_pager.setCurrentItem(0)
+        }
+
+        v2.setOnClickListener {
+            profile_pager.setCurrentItem(1)
+        }
+
+        profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                numberBar = position
+            }
+            override fun onPageSelected(position: Int) {
+                if (position != 1) {
+                    profile_bar_zero.visibility = View.VISIBLE
+                    profile_bar_one.visibility = View.GONE
+                } else {
+                    profile_bar_one.visibility = View.VISIBLE
+                    profile_bar_zero.visibility = View.GONE
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+    }
+
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
+                profile_pager.setCurrentItem(0)
+                profile_bar_zero.visibility = View.VISIBLE
+                profile_bar_one.visibility = View.GONE
             }, 1000)
         }
         profile_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -207,7 +246,6 @@ class ProfileFragment : Fragment() {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.listOperation(map)
                     initRecycler()
-                    HomeActivity.alert.hide()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -217,36 +255,6 @@ class ProfileFragment : Fragment() {
                 }, 400)
             }
         }
-    }
-
-    @SuppressLint("WrongConstant")
-    private fun initPager() {
-        val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(list), "Мои операции")
-        adapter.addFragment(MyApplicationFragment(), "Мои заявки")
-        profile_pager.setAdapter(adapter)
-        profile_tab.setupWithViewPager(profile_pager)
-        adapter.notifyDataSetChanged()
-
-        profile_tab.post(Runnable {
-            indicatorWidth = profile_tab.getWidth() / profile_tab.getTabCount()
-            //Assign new width
-            val indicatorParams = profile_indicator.getLayoutParams() as FrameLayout.LayoutParams
-            indicatorParams.width = indicatorWidth
-            profile_indicator.setLayoutParams(indicatorParams)
-        })
-        profile_pager.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(i: Int, positionOffset: Float, positionOffsetPx: Int) {
-                val params = profile_indicator.getLayoutParams() as FrameLayout.LayoutParams
-                //Multiply positionOffset with indicatorWidth to get translation
-                val translationOffset = (positionOffset + i) * indicatorWidth
-                params.leftMargin = translationOffset.toInt()
-                profile_indicator.setLayoutParams(params)
-            }
-
-            override fun onPageSelected(i: Int) {}
-            override fun onPageScrollStateChanged(i: Int) {}
-        })
     }
 
     override fun onStart() {
@@ -262,22 +270,34 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
+        if (numberBar != 0){
+            profile_pager.currentItem = numberBar
+            profile_bar_one.visibility = View.VISIBLE
+            profile_bar_zero.visibility = View.GONE
+        }else{
+            profile_bar_zero.visibility = View.VISIBLE
+            profile_bar_one.visibility = View.GONE
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags =
-                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
     }
-
-
 }

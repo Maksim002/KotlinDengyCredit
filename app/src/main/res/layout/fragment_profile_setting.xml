@@ -23,9 +23,9 @@
             android:orientation="vertical" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
-            android:layout_width="158dp"
-            android:layout_height="158dp"
-            android:src="@drawable/ic_sad"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_proo"
             app:civ_border_color="#fefefe"
             app:civ_border_width="4dp"
             app:layout_constraintTop_toBottomOf="@+id/profile_layout_orange"
@@ -43,7 +43,7 @@
         android:text="Изменить фото профиля"
         android:gravity="center"
         android:layout_marginTop="4dp"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:textColor="@color/orangeColor"/>
 
