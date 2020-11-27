@@ -12,5 +12,6 @@
     <color name="colorDrawer">#FFA800</color>
     <color name="colorRed">#F60621</color>
     <color name="colorGrey">#f3f3f3</color>
+    <color name="colorLightGrey">#FAFAFA</color>
 
 </resources>
