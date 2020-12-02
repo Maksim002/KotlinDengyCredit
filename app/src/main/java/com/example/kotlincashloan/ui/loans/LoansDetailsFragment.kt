@@ -98,31 +98,6 @@ class LoansDetailsFragment : Fragment() {
         setTitle(title.toString(), resources.getColor(R.color.blackColor))
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        MainActivity.timer.timeStop()
-        if (viewModel.listGetDta.value != null) {
-            if (errorCode == "200") {
-                initRequest()
-            }
-        } else {
-            initRestart()
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-            toolbar.getNavigationIcon()!!.setColorFilter(
-                getResources().getColor(R.color.orangeColor),
-                PorterDuff.Mode.SRC_ATOP
-            )
-        }
-    }
 
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
@@ -232,5 +207,29 @@ class LoansDetailsFragment : Fragment() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.listGetDta.value != null) {
+            if (errorCode == "200") {
+                initRequest()
+            }
+        } else {
+            initRestart()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+            requireActivity().getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+            toolbar.getNavigationIcon()!!.setColorFilter(
+                getResources().getColor(R.color.orangeColor),
+                PorterDuff.Mode.SRC_ATOP
+            )
+        }
     }
 }

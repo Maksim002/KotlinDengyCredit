@@ -40,6 +40,7 @@ class DetailNotificationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        (activity as AppCompatActivity).supportActionBar?.show()
         return inflater.inflate(R.layout.fragment_detail_notification, container, false)
     }
 
@@ -195,7 +196,6 @@ class DetailNotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

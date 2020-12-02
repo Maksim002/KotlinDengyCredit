@@ -244,6 +244,7 @@ class QuestionnaireActivity : AppCompatActivity() {
         return true
     }
 
+
     override fun onStart() {
         super.onStart()
         questionnaire_enter.isClickable = false

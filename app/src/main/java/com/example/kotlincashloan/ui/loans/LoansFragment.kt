@@ -60,11 +60,6 @@ class LoansFragment : Fragment(), LoansListener {
         setTitle("", resources.getColor(R.color.blackColor))
     }
 
-    override fun onStart() {
-        super.onStart()
-        MainActivity.timer.timeStop()
-    }
-
     fun initCode() {
         listLoanId = viewModel.listLoanId
         listNewsId = viewModel.listNewsId
@@ -195,37 +190,6 @@ class LoansFragment : Fragment(), LoansListener {
             }
             HomeActivity.alert.hide()
         })
-    }
-
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
-        val handler = Handler()
-        HomeActivity.alert.show()
-        if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.listNews(map)
-                viewModel.getLoanInfo(map)
-                initResult()
-                initRecycler()
-            }, 800)
-        } else {
-            if (listNewsId == "200" && listLoanId == "200") {
-                initRecycler()
-                initResult()
-            } else {
-                initRepeat()
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-        }
     }
 
     private fun initClick() {
@@ -410,5 +374,35 @@ class LoansFragment : Fragment(), LoansListener {
             loans_not_found.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val handler = Handler()
+        HomeActivity.alert.show()
+        if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                viewModel.listNews(map)
+                viewModel.getLoanInfo(map)
+                initResult()
+                initRecycler()
+            }, 800)
+        } else {
+            if (listNewsId == "200" && listLoanId == "200") {
+                initRecycler()
+                initResult()
+            } else {
+                initRepeat()
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+            requireActivity().getWindow().getDecorView()
+                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+        }
     }
 }

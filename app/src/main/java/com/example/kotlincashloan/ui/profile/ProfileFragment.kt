@@ -279,7 +279,6 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        MainActivity.timer.timeStop()
         if (numberBar != 0){
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE

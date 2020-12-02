@@ -55,7 +55,6 @@ class StillFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        MainActivity.timer.timeStop()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))

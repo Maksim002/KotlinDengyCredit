@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
-import android.text.InputFilter
-import android.text.InputFilter.LengthFilter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -112,14 +110,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        timer.timeStop()
+    }
+
     override fun onStop() {
         super.onStop()
         timer.timeStart()
         AppPreferences.isNumber = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.timeStop()
     }
 }

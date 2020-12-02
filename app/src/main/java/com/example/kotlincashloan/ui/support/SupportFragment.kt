@@ -77,21 +77,6 @@ class SupportFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        MainActivity.timer.timeStop()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
-            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
-            var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            decorView.systemUiVisibility = systemUiVisibilityFlags
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-        }
-    }
-
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -240,5 +225,19 @@ class SupportFragment : Fragment() {
         layout_access_restricted.visibility = View.GONE
         support_technical_work.visibility = View.GONE
         support_not_found.visibility == View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
+            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
+        }
     }
 }
