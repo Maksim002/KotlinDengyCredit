@@ -39,6 +39,7 @@ class QuestionnaireActivity : AppCompatActivity() {
     private var idSex: Int = 0
     private var listNationalityId: Int = 0
     private var listSecretQuestionId: Int = 0
+    private var included = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,10 +203,11 @@ class QuestionnaireActivity : AppCompatActivity() {
             if (b) {
                 questionnaire_enter.isClickable = true
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
+                included = true
             }else{
                 questionnaire_enter.isClickable = false
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
-
+                included = false
             }
         }
 
@@ -247,10 +249,15 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        questionnaire_enter.isClickable = false
-        questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
-        questionnaire_phone_number.setText(AppPreferences.number.toString())
-        questionnaire_phone_additional.mask = AppPreferences.isFormatMask
+        if (!included){
+            questionnaire_enter.isClickable = false
+            questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
+            questionnaire_phone_number.setText(AppPreferences.number.toString())
+            questionnaire_phone_additional.mask = AppPreferences.isFormatMask
+        }else{
+            questionnaire_enter.isClickable = true
+            questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
+        }
     }
 
     private fun iniData() {

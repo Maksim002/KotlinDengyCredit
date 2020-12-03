@@ -24,6 +24,8 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_list_country
+import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -191,8 +193,8 @@ class ContactingServiceActivity : AppCompatActivity() {
         if (!AppPreferences.observedInternet) {
             password_no_questionnaire.visibility = View.VISIBLE
             contacting_layout.visibility = View.GONE
-            questionnaire_access_restricted.visibility = View.GONE
-            questionnaire_not_found.visibility = View.GONE
+            password_access_restricted.visibility = View.GONE
+            password_not_found.visibility = View.GONE
         } else {
             var list: ArrayList<CounterResultModel> = arrayListOf()
             val map = HashMap<String, Int>()
@@ -214,13 +216,13 @@ class ContactingServiceActivity : AppCompatActivity() {
                             } else {
                                 if (data.error.code == 403) {
                                     password_no_questionnaire.visibility = View.GONE
-                                    questionnaire_access_restricted.visibility = View.VISIBLE
-                                    questionnaire_layout.visibility = View.GONE
+                                    password_access_restricted.visibility = View.VISIBLE
+                                    contacting_layout.visibility = View.GONE
 
                                 } else if (data.error.code == 404) {
                                     password_no_questionnaire.visibility = View.GONE
-                                    questionnaire_not_found.visibility = View.VISIBLE
-                                    questionnaire_layout.visibility = View.GONE
+                                    password_not_found.visibility = View.VISIBLE
+                                    contacting_layout.visibility = View.GONE
 
                                 } else if (data.error.code == 401) {
                                     initAuthorized()
@@ -234,13 +236,13 @@ class ContactingServiceActivity : AppCompatActivity() {
                         Status.ERROR -> {
                             if (msg == "404") {
                                 password_no_questionnaire.visibility = View.GONE
-                                questionnaire_not_found.visibility = View.VISIBLE
-                                questionnaire_layout.visibility = View.GONE
+                                password_not_found.visibility = View.VISIBLE
+                                contacting_layout.visibility = View.GONE
 
                             } else if (msg == "403") {
                                 password_no_questionnaire.visibility = View.GONE
-                                questionnaire_access_restricted.visibility = View.VISIBLE
-                                questionnaire_layout.visibility = View.GONE
+                                password_access_restricted.visibility = View.VISIBLE
+                                contacting_layout.visibility = View.GONE
 
                             } else if (msg == "401") {
                                 initAuthorized()
@@ -280,7 +282,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                     questionnaire_phone_additional.mask = list[position].phoneMask
                 }
                 if (questionnaire_phone_list_country.text.toString() != "") {
-                    layout_visible.visibility = View.VISIBLE
+                    questionnaire_phone_additional.visibility = View.VISIBLE
                 }
 
                 questionnaire_phone_list_country.clearFocus()
@@ -310,8 +312,8 @@ class ContactingServiceActivity : AppCompatActivity() {
         if (!AppPreferences.observedInternet) {
             password_no_questionnaire.visibility = View.VISIBLE
             contacting_layout.visibility = View.GONE
-            questionnaire_access_restricted.visibility = View.GONE
-            questionnaire_not_found.visibility = View.GONE
+            password_access_restricted.visibility = View.GONE
+            password_not_found.visibility = View.GONE
         } else {
             var list: ArrayList<ListSupportTypeResultModel> = arrayListOf()
             val map = HashMap<String, Int>()
@@ -331,12 +333,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                             initVisibilities()
                         } else {
                             if (data.error.code == 403) {
-                                questionnaire_access_restricted.visibility = View.VISIBLE
-                                questionnaire_layout.visibility = View.GONE
+                                password_access_restricted.visibility = View.VISIBLE
+                                contacting_layout.visibility = View.GONE
 
                             } else if (data.error.code == 404) {
-                                questionnaire_not_found.visibility = View.VISIBLE
-                                questionnaire_layout.visibility = View.GONE
+                                password_not_found.visibility = View.VISIBLE
+                                contacting_layout.visibility = View.GONE
 
                             } else if (data.error.code == 401) {
                                 initAuthorized()
@@ -349,12 +351,12 @@ class ContactingServiceActivity : AppCompatActivity() {
                     }
                     Status.ERROR -> {
                         if (msg == "404") {
-                            questionnaire_not_found.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+                            password_not_found.visibility = View.VISIBLE
+                            contacting_layout.visibility = View.GONE
 
                         } else if (msg == "403") {
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+                            password_access_restricted.visibility = View.VISIBLE
+                            contacting_layout.visibility = View.GONE
 
                         } else if (msg == "401") {
                             initAuthorized()

@@ -117,7 +117,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        timer.timeStart()
-        AppPreferences.isNumber = false
+        if (AppPreferences.token != ""){
+            timer.timeStart()
+            AppPreferences.isNumber = false
+        }
+
     }
 }

@@ -168,6 +168,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="Выберите секретный вопрос"

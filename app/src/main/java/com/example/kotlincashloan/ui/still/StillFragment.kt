@@ -41,7 +41,8 @@ class StillFragment : Fragment() {
     private fun initClick() {
         still_exit.setOnClickListener {
             val intent = Intent(context, HomeActivity::class.java)
-            AppPreferences.token = null
+            AppPreferences.token = ""
+            MainActivity.timer.timeStop()
             startActivity(intent)
         }
     }

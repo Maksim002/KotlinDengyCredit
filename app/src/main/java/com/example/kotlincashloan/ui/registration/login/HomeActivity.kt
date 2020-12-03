@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.registration.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -144,7 +145,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                         } else {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
-
                             AppPreferences.isLogined = true
                             tokenId = data.result.token
                             if (home_login_code.isChecked) {
@@ -415,9 +415,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 }
 
                 // 3
-                override fun onAuthenticationError(
-                    errorCode: Int, errString: CharSequence
-                ) {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
                     Toast.makeText(
                         applicationContext,
@@ -439,10 +437,5 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             })
 
         biometricPrompt.authenticate(promptInfo)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
     }
 }

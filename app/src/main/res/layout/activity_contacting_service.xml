@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="@color/whiteColor"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/password_recovery_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteColor"
+        android:theme="@style/ToolBarStyle" />
+
+    <LinearLayout
         android:id="@+id/contacting_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/whiteColor"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/password_recovery_toolbar">
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -40,8 +41,8 @@
 
                 <EditText
                     android:id="@+id/questionnaire_phone_surnames"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
@@ -52,8 +53,8 @@
 
                 <EditText
                     android:id="@+id/questionnaire_phone_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
@@ -63,8 +64,8 @@
 
                 <EditText
                     android:id="@+id/questionnaire_phone_patronymics"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
@@ -83,28 +84,21 @@
                     android:padding="13dp"
                     android:textSize="14dp" />
 
-                <LinearLayout
-                    android:id="@+id/layout_visible"
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/questionnaire_phone_additional"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <com.santalu.maskedittext.MaskEditText
-                        android:id="@+id/questionnaire_phone_additional"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:digits="0123456789"
-                        android:ellipsize="end"
-                        android:hint="Номер телефона"
-                        android:imeOptions="actionDone"
-                        android:inputType="phone"
-                        android:padding="14dp"
-                        android:scrollHorizontally="true"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:digits="0123456789"
+                    android:ellipsize="end"
+                    android:hint="Номер телефона"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:padding="14dp"
+                    android:textSize="15sp"
+                    android:visibility="gone" />
 
                 <AutoCompleteTextView
                     android:id="@+id/password_recovery_type"
@@ -130,7 +124,6 @@
                     android:maxLines="10"
                     android:minLines="3"
                     android:padding="13dp"
-                    android:scrollbars="vertical"
                     android:textSize="14dp" />
 
                 <Button
@@ -138,41 +131,35 @@
                     style="@style/RoundedOrangeBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="5dp"
                     android:text="Отправить"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/password_recovery_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/whiteColor"
-        android:theme="@style/ToolBarStyle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
     <include
         android:id="@+id/password_no_questionnaire"
         layout="@layout/item_no_connection"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-    <include layout="@layout/item_access_restricted"
+    <include
         android:id="@+id/password_access_restricted"
-        android:visibility="gone"/>
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_not_found"
+    <include
         android:id="@+id/password_not_found"
-        android:visibility="gone"/>
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_technical_work"
+    <include
         android:id="@+id/password_technical_work"
-        android:visibility="gone"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+</LinearLayout>
 

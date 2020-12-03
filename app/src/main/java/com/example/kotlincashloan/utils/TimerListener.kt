@@ -15,6 +15,7 @@ class TimerListener(var activity: Activity){
         try {
             timer = object : CountDownTimer(60000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
+                    Toast.makeText(activity.applicationContext, millisUntilFinished.toString() , Toast.LENGTH_LONG).show()
 //                    Toast.makeText(
 //                        activity.applicationContext,
 //                        "seconds remaining: " + millisUntilFinished / 1000,
@@ -23,7 +24,6 @@ class TimerListener(var activity: Activity){
                 }
 
                 override fun onFinish() {
-//                    Toast.makeText(activity.applicationContext, "done!", Toast.LENGTH_LONG).show()
                     AppPreferences.token = ""
                     activity.finish()
                     AppPreferences.isNumber = true
