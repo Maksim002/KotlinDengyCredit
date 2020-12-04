@@ -126,6 +126,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             if (result.result != null) {
                 myAdapter.update(result.result)
                 notification_recycler.adapter = myAdapter
+                myAdapter.notifyDataSetChanged()
                 notification_swipe.visibility = View.VISIBLE
                 notification_technical_work.visibility = View.GONE
                 notification_access_restricted.visibility = View.GONE
