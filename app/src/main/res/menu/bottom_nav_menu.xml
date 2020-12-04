@@ -11,7 +11,7 @@
     <item
         android:id="@+id/navigation_notification"
         android:icon="@drawable/ic_notification"
-        android:title="Уведомление"
+        android:title="Уведомления"
         tools:ignore="MenuTitle" />
 
     <item

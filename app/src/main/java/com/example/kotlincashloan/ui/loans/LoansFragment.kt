@@ -57,7 +57,7 @@ class LoansFragment : Fragment(), LoansListener {
         initClick()
         initRefresh()
 
-        setTitle("Займы", resources.getColor(R.color.blackColor))
+        setTitle("Займы", resources.getColor(R.color.whiteColor))
     }
 
     fun initCode() {
@@ -396,13 +396,24 @@ class LoansFragment : Fragment(), LoansListener {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            requireActivity().getWindow()
+//                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
+//            requireActivity().getWindow().getDecorView()
+//                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
+//            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-            requireActivity().getWindow().getDecorView()
-                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
+            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
         }
     }
 }

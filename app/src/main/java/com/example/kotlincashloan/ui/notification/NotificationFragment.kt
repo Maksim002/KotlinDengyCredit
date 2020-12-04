@@ -116,7 +116,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
-            }, 1000)
+            }, 500)
         }
         notification_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
     }

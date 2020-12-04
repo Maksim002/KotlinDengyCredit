@@ -227,7 +227,7 @@ class ProfileFragment : Fragment() {
                 profile_pager.setCurrentItem(0)
                 profile_bar_zero.visibility = View.VISIBLE
                 profile_bar_one.visibility = View.GONE
-            }, 1000)
+            }, 500)
         }
         profile_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
     }

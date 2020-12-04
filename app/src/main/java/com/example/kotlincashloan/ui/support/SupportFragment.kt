@@ -128,7 +128,7 @@ class SupportFragment : Fragment() {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
-            }, 1000)
+            }, 500)
         }
         support_swipe_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
@@ -175,7 +175,7 @@ class SupportFragment : Fragment() {
             support_swipe_layout.isRefreshing = false
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 HomeActivity.alert.hide()
-            },580)
+            },600)
         })
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             if (error != null){
