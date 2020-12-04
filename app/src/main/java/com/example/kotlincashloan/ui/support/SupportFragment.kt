@@ -173,7 +173,9 @@ class SupportFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },580)
         })
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             if (error != null){
@@ -209,7 +211,7 @@ class SupportFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+                HomeActivity.alert.hide()
         })
     }
 

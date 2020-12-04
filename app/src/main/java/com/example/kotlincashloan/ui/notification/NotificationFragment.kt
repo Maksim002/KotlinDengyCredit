@@ -160,7 +160,9 @@ class NotificationFragment : Fragment(), NotificationListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             notification_swipe.isRefreshing = false
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },180)
         })
 
         viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->

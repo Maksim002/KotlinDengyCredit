@@ -48,7 +48,7 @@ class LoansFragment : Fragment(), LoansListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.hide()
+        (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
@@ -57,7 +57,7 @@ class LoansFragment : Fragment(), LoansListener {
         initClick()
         initRefresh()
 
-        setTitle("", resources.getColor(R.color.blackColor))
+        setTitle("Займы", resources.getColor(R.color.blackColor))
     }
 
     fun initCode() {
@@ -180,7 +180,7 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+                HomeActivity.alert.hide()
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
@@ -288,7 +288,7 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+                HomeActivity.alert.hide()
         })
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->

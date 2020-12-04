@@ -140,7 +140,9 @@ class DetailNotificationFragment : Fragment() {
                     initAuthorized()
                 }
             }
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },450)
         })
         viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {

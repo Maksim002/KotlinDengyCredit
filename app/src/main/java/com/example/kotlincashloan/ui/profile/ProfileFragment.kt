@@ -137,7 +137,9 @@ class ProfileFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },170)
         })
 
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
