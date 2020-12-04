@@ -11,7 +11,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/loans_layout"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content">
 
         <androidx.core.widget.NestedScrollView
@@ -80,7 +80,7 @@
                                             <ImageView
                                                 android:layout_width="match_parent"
                                                 android:layout_height="wrap_content"
-                                                android:layout_weight="1"
+                                                android:layout_weight="0.3"
                                                 android:paddingBottom="10dp"
                                                 android:layout_gravity="bottom"
                                                 android:src="@drawable/ic_currency" />
@@ -261,6 +261,7 @@
                             app:layout_constraintRight_toRightOf="parent" />
 
                         <Button
+                            android:id="@+id/loan_status_parallel"
                             style="@style/RoundedOrangeBackground"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -290,7 +291,7 @@
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent" />
@@ -308,7 +309,7 @@
                             android:textStyle="bold"
                             android:layout_marginBottom="8dp"
                             android:textSize="16sp"
-                            android:visibility="visible"
+                            android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent" />
@@ -363,6 +364,8 @@
                                 android:text="@string/loan"
                                 android:textColor="#FEFEFE"
                                 android:textSize="17sp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="4dp"
                                 android:textStyle="bold"
                                 android:visibility="gone"
                                 app:layout_constraintEnd_toEndOf="parent"

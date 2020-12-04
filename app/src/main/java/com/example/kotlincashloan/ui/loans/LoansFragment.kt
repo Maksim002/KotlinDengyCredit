@@ -19,8 +19,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
+import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans.*
@@ -73,114 +75,63 @@ class LoansFragment : Fragment(), LoansListener {
             } else {
                 initCode()
                 if (result.result != null) {
-                    if (listLoanId == "200" && listNewsId == "200") {
-                        if (result.result.parallelLoan!!.status == false) {
-                            loan_layout.visibility = View.GONE
-                        } else {
-                            loan_layout.visibility = View.VISIBLE
-                        }
-                        if (result.result.activeLoan!!.status == false) {
-                            loan_status.visibility = View.GONE
-                        } else {
-                            loan_status.visibility = View.VISIBLE
-                        }
-                        if (result.result.getActiveLoan == true) {
-                            loan_text_active.visibility = View.VISIBLE
-                            text_center.visibility = View.GONE
-                            loan_currency_icon.visibility = View.GONE
-                            loan_payment_sum.visibility = View.GONE
-                            loan_payment_date.visibility = View.GONE
-                            loan_trait.visibility = View.GONE
-                        } else {
-                            loan_text_active.visibility = View.GONE
-                            text_center.visibility = View.VISIBLE
-                            loan_currency_icon.visibility = View.VISIBLE
-                            loan_payment_sum.visibility = View.VISIBLE
-                            loan_payment_date.visibility = View.VISIBLE
-                            loan_trait.visibility = View.VISIBLE
-                        }
-                        if (result.result.getActiveLoan == false) {
-                            loan_get_active.visibility = View.GONE
-                        } else {
-                            loan_get_active.visibility = View.VISIBLE
-                        }
-                        if (result.result.getParallelLoan == false) {
-                            loan_get_parallel.visibility = View.GONE
-                        } else {
-                            loan_get_parallel.visibility = View.VISIBLE
-                        }
-
-                        if (result.result.activeLoan!!.balance == null
-                            || result.result.activeLoan!!.paid == null
-                            || result.result.activeLoan!!.total == null
-                            || result.result.activeLoan!!.paymentSum == null
-                            || result.result.activeLoan!!.paymentDate == null
-                        ) {
-
-                            loans_sum.text = "0"
-                            loan_paid.text = "0"
-                            loan_total.text = "0"
-                            loan_payment_sum.text = "0"
-                            loan_payment_date.text = "0-0-0"
-                        } else {
-                            if (!loan_switch.isChecked) {
-                                loans_sum.text = result.result.activeLoan!!.balance.toString()
-                                loan_paid.text = result.result.activeLoan!!.paid.toString()
-                                loan_total.text = result.result.activeLoan!!.total.toString()
-                                loan_payment_sum.text =
-                                    result.result.activeLoan!!.paymentSum.toString()
-                                loan_payment_date.text = result.result.activeLoan!!.paymentDate
-                            } else {
-                                loans_sum.text = result.result.parallelLoan!!.balance.toString()
-                                loan_paid.text = result.result.parallelLoan!!.paid.toString()
-                                loan_total.text = result.result.parallelLoan!!.total.toString()
-                                loan_payment_sum.text =
-                                    result.result.parallelLoan!!.paymentSum.toString()
-                                loan_payment_date.text = result.result.parallelLoan!!.paymentDate
-                            }
-
-                            loan_switch.setOnClickListener {
-                                if (!loan_switch.isChecked) {
-                                    loans_sum.text = result.result.activeLoan!!.balance.toString()
-                                    loan_paid.text = result.result.activeLoan!!.paid.toString()
-                                    loan_total.text = result.result.activeLoan!!.total.toString()
-                                    loan_payment_sum.text =
-                                        result.result.activeLoan!!.paymentSum.toString()
-                                    loan_payment_date.text = result.result.activeLoan!!.paymentDate
-                                } else {
-                                    loans_sum.text = result.result.parallelLoan!!.balance.toString()
-                                    loan_paid.text = result.result.parallelLoan!!.paid.toString()
-                                    loan_total.text = result.result.parallelLoan!!.total.toString()
-                                    loan_payment_sum.text =
-                                        result.result.parallelLoan!!.paymentSum.toString()
-                                    loan_payment_date.text =
-                                        result.result.parallelLoan!!.paymentDate
-
-                                    if (result.result.parallelLoan!!.balance == null
-                                        || result.result.parallelLoan!!.paid == null
-                                        || result.result.parallelLoan!!.total == null
-                                        || result.result.parallelLoan!!.paymentSum == null
-                                        || result.result.parallelLoan!!.paymentDate == null
-                                    ) {
-
-                                        loans_sum.text = "0"
-                                        loan_paid.text = "0"
-                                        loan_total.text = "0"
-                                        loan_payment_sum.text = "0"
-                                        loan_payment_date.text = "0-0-0"
-                                    }
-                                }
-                            }
-                        }
-                        initRecycler()
-                        loans_layout.visibility = View.VISIBLE
-                        loans_no_connection.visibility = View.GONE
+                    if (result.result.parallelLoan!!.status != false) {
+                        loan_layout.visibility = View.VISIBLE
                     }
+                    if (result.result.activeLoan!!.status != false) {
+                        loan_status.visibility = View.VISIBLE
+                    }
+                    if (result.result.parallelLoan!!.status == true){
+                        loan_status_parallel.visibility = View.VISIBLE
+                    }
+                    if (result.result.getActiveLoan == true) {
+                        loan_text_active.visibility = View.VISIBLE
+                        text_center.visibility = View.GONE
+                        loan_currency_icon.visibility = View.GONE
+                        loan_payment_sum.visibility = View.GONE
+                        loan_payment_date.visibility = View.GONE
+                        loan_trait.visibility = View.GONE
+                    } else {
+                        loan_text_active.visibility = View.GONE
+                        text_center.visibility = View.VISIBLE
+                        loan_currency_icon.visibility = View.VISIBLE
+                        loan_payment_sum.visibility = View.VISIBLE
+                        loan_payment_date.visibility = View.VISIBLE
+                        loan_trait.visibility = View.VISIBLE
+                    }
+                    if (result.result.getActiveLoan != false) {
+                        loan_get_active.visibility = View.VISIBLE
+                    }
+                    if (result.result.getParallelLoan == false) {
+                        loan_get_parallel.visibility = View.GONE
+                    } else {
+                        loan_get_parallel.visibility = View.VISIBLE
+                    }
+
+                    if (!loan_switch.isChecked) {
+                        verificationArrayActive(result)
+                    } else {
+                        verificationArrayParallel(result)
+                    }
+
+                    loan_switch.setOnClickListener {
+                        if (!loan_switch.isChecked) {
+                            if (result.result.activeLoan != null) {
+                                verificationArrayActive(result)
+                            }
+                        } else {
+                            verificationArrayParallel(result)
+                        }
+                    }
+
+                    initRecycler()
+                    loans_layout.visibility = View.VISIBLE
+                    loans_no_connection.visibility = View.GONE
                 }
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-                HomeActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
@@ -190,6 +141,56 @@ class LoansFragment : Fragment(), LoansListener {
             }
             HomeActivity.alert.hide()
         })
+    }
+
+    private fun verificationArrayActive(result: CommonResponse<LoanInfoResultModel>){
+        if (result.result.activeLoan!!.balance == null
+            || result.result.activeLoan!!.paid == null
+            || result.result.activeLoan!!.total == null
+            || result.result.activeLoan!!.paymentSum == null
+            || result.result.activeLoan!!.paymentDate == null
+        ){
+            loans_sum.text = "0"
+            loan_paid.text = "0"
+            loan_total.text = "0"
+            loan_payment_sum.text = "0"
+            loan_payment_date.text = "0-0-0"
+        }else{
+            resActiveLoan(result)
+        }
+    }
+
+    private fun verificationArrayParallel(result: CommonResponse<LoanInfoResultModel>){
+        if (result.result.parallelLoan!!.balance == null
+            || result.result.parallelLoan!!.paid == null
+            || result.result.parallelLoan!!.total == null
+            || result.result.parallelLoan!!.paymentSum == null
+            || result.result.parallelLoan!!.paymentDate == null
+        ) {
+            loans_sum.text = "0"
+            loan_paid.text = "0"
+            loan_total.text = "0"
+            loan_payment_sum.text = "0"
+            loan_payment_date.text = "0-0-0"
+        }else{
+            resParallelLoan(result)
+        }
+    }
+
+    private fun resActiveLoan(result: CommonResponse<LoanInfoResultModel>){
+        loans_sum.text = result.result.activeLoan!!.balance.toString()
+        loan_paid.text = result.result.activeLoan!!.paid.toString()
+        loan_total.text = result.result.activeLoan!!.total.toString()
+        loan_payment_sum.text = result.result.activeLoan!!.paymentSum.toString()
+        loan_payment_date.text = result.result.activeLoan!!.paymentDate
+    }
+
+    private fun resParallelLoan(result: CommonResponse<LoanInfoResultModel>){
+        loans_sum.text = result.result.parallelLoan!!.balance.toString()
+        loan_paid.text = result.result.parallelLoan!!.paid.toString()
+        loan_total.text = result.result.parallelLoan!!.total.toString()
+        loan_payment_sum.text = result.result.parallelLoan!!.paymentSum.toString()
+        loan_payment_date.text = result.result.parallelLoan!!.paymentDate
     }
 
     private fun initClick() {
@@ -288,7 +289,7 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-                HomeActivity.alert.hide()
+            HomeActivity.alert.hide()
         })
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
@@ -410,7 +411,8 @@ class LoansFragment : Fragment(), LoansListener {
                 .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags =
+                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))

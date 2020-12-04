@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.notification
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -114,6 +115,7 @@ class DetailNotificationFragment : Fragment() {
                 d_notification_technical_work.visibility = View.GONE
                 d_notification_not_found.visibility = View.GONE
                 errorCode = result.code.toString()
+                setTitle(result.result.title, resources.getColor(R.color.whiteColor))
             } else {
                 if (result.error.code != null) {
                     errorCode = result.error.code.toString()
@@ -193,6 +195,13 @@ class DetailNotificationFragment : Fragment() {
             } else {
                 initRestart()
             }
+        }
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
         }
     }
 

@@ -116,6 +116,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 refresh = true
                 initRestart()
+                myAdapter.numberResult(0)
             }, 500)
         }
         notification_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -220,8 +221,10 @@ class NotificationFragment : Fragment(), NotificationListener {
         if (viewModel.listNoticeDta.value != null){
             if (errorCode == "200"){
                 initRecycler()
+                myAdapter.numberResult(1)
             }else{
                 initRestart()
+                myAdapter.numberResult(1)
             }
         }else{
             initRestart()

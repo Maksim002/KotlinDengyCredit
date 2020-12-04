@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.profile
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -90,6 +91,7 @@ class DetailProfileFragment : Fragment() {
                 d_profile_no_connection.visibility = View.GONE
                 d_profile_technical_work.visibility = View.GONE
                 d_profile_not_found.visibility = View.GONE
+                setTitle(result.result.title, resources.getColor(R.color.whiteColor))
             }else{
                 if (result.error.code != null){
                     errorCode = result.error.code.toString()
@@ -174,6 +176,13 @@ class DetailProfileFragment : Fragment() {
                     initResult()
                 }, 500)
             }
+        }
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
         }
     }
 
