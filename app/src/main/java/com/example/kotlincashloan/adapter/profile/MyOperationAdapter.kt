@@ -7,6 +7,8 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.timelysoft.tsjdomcom.common.GenericRecyclerAdapter
 import com.timelysoft.tsjdomcom.common.ViewHolder
+import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.item_notification.view.*
 import kotlinx.android.synthetic.main.item_operation.view.*
 
 class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<ResultOperationModel> = arrayListOf()): GenericRecyclerAdapter<ResultOperationModel>(item){
@@ -20,6 +22,16 @@ class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<Resul
         holder.itemView.operation_title.text = item.title
         holder.itemView.operation_description.text = item.description
 
+        if (AppPreferences.reviewCode == 0) {
+            if (item.review == true) {
+                holder.itemView.operation_review.visibility = View.VISIBLE
+            } else {
+                holder.itemView.operation_review.visibility = View.GONE
+            }
+        }else{
+            holder.itemView.operation_review.visibility = View.GONE
+        }
+
         if (item.detail == true){
             holder.itemView.operation_detail.visibility = View.VISIBLE
             holder.itemView.operation_item.setOnClickListener {
@@ -27,12 +39,6 @@ class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<Resul
             }
         }else{
             holder.itemView.operation_detail.visibility = View.GONE
-        }
-
-        if (item.review == true){
-            holder.itemView.operation_review.visibility = View.VISIBLE
-        }else{
-            holder.itemView.operation_review.visibility = View.GONE
         }
     }
 }

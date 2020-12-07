@@ -158,11 +158,11 @@ object AppPreferences {
         }
     }
 
-    var licNumber: Int?
-        get() = preferences.getInt("licNumber", 0)
+    var reviewCode: Int?
+        get() = preferences.getInt("reviewCode", 0)
         set(value) = preferences.edit {
             if (value != null) {
-                it.putInt("licNumber", value)
+                it.putInt("reviewCode", value)
             }
         }
 

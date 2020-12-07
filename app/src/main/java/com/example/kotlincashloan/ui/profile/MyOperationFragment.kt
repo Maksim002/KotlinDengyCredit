@@ -13,13 +13,10 @@ import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 
-class MyOperationFragment(var list: ArrayList<ResultOperationModel>) : Fragment(), OperationListener {
+class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf()) : Fragment(), OperationListener {
     private var myAdapter = MyOperationAdapter(this)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_operation, container, false)
     }

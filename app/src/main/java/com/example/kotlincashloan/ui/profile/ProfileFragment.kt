@@ -36,7 +36,6 @@ import java.util.*
 
 
 class ProfileFragment : Fragment() {
-    private var indicatorWidth = 0
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
@@ -139,7 +138,7 @@ class ProfileFragment : Fragment() {
             profile_swipe.isRefreshing = false
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 HomeActivity.alert.hide()
-            },170)
+            },550)
         })
 
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
@@ -227,6 +226,7 @@ class ProfileFragment : Fragment() {
                 profile_pager.setCurrentItem(0)
                 profile_bar_zero.visibility = View.VISIBLE
                 profile_bar_one.visibility = View.GONE
+                AppPreferences.reviewCode = 0
             }, 500)
         }
         profile_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
@@ -263,11 +263,14 @@ class ProfileFragment : Fragment() {
         super.onStart()
         if (viewModel.listListOperationDta.value != null) {
             if (errorCode == "200") {
+                AppPreferences.reviewCode = 1
                 initRecycler()
             } else {
+                AppPreferences.reviewCode = 1
                 initRestart()
             }
         } else {
+            AppPreferences.reviewCode = 0
             initRestart()
         }
     }

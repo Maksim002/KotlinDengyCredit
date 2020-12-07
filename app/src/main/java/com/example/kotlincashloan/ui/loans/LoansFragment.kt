@@ -131,7 +131,9 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },650)
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
@@ -257,7 +259,7 @@ class LoansFragment : Fragment(), LoansListener {
             )
             handler.postDelayed(Runnable {
                 initRepeat()
-            }, 500)
+            }, 700)
         }
         loans_layout.setColorSchemeResources(android.R.color.holo_orange_dark)
     }
@@ -289,7 +291,9 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            HomeActivity.alert.hide()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                HomeActivity.alert.hide()
+            },500)
         })
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
