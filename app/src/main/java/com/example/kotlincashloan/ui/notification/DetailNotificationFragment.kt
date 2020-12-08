@@ -142,9 +142,9 @@ class DetailNotificationFragment : Fragment() {
                     initAuthorized()
                 }
             }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },450)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },450)
         })
         viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
@@ -177,7 +177,7 @@ class DetailNotificationFragment : Fragment() {
             } else if (error == "401") {
                 initAuthorized()
             }
-            HomeActivity.alert.hide()
+//            HomeActivity.alert.hide()
         })
     }
 
@@ -193,6 +193,7 @@ class DetailNotificationFragment : Fragment() {
             if (errorCode == "200") {
                 initRequest()
             } else {
+                viewModel.refreshCode = false
                 initRestart()
             }
         }

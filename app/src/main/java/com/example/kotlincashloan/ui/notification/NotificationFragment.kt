@@ -40,7 +40,6 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var viewModel = NotificationViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-//    var refresh = false
     private var errorCode = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

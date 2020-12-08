@@ -54,6 +54,7 @@ class NotificationViewModel : ViewModel(){
     var listNoticeDetailDta = MutableLiveData<CommonResponse<ResultDetailNoticeModel>>()
 
     fun getNotice(map: Map<String, String>){
+        HomeActivity.alert.show()
         RetrofitService.apiService().getNotice(map).enqueue(object : Callback<CommonResponse<ResultDetailNoticeModel>> {
             override fun onFailure(call: Call<CommonResponse<ResultDetailNoticeModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -72,6 +73,9 @@ class NotificationViewModel : ViewModel(){
                 }else{
                     errorDetailNotice.postValue(response.code().toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
             }
         })
     }

@@ -136,9 +136,9 @@ class ProfileFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },550)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },550)
         })
 
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
@@ -177,7 +177,7 @@ class ProfileFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
-            HomeActivity.alert.hide()
+//            HomeActivity.alert.hide()
         })
     }
 
@@ -221,7 +221,7 @@ class ProfileFragment : Fragment() {
         profile_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                refresh = true
+                viewModel.refreshCode = true
                 initRestart()
                 profile_pager.setCurrentItem(0)
                 profile_bar_zero.visibility = View.VISIBLE
@@ -244,8 +244,9 @@ class ProfileFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listListOperationDta.value == null) {
-                HomeActivity.alert.show()
+//                HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.refreshCode = false
                     viewModel.listOperation(map)
                     initRecycler()
                 }, 500)
@@ -271,6 +272,7 @@ class ProfileFragment : Fragment() {
             }
         } else {
             AppPreferences.reviewCode = 0
+            viewModel.refreshCode = false
             initRestart()
         }
     }

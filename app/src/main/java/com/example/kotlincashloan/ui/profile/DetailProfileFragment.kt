@@ -118,9 +118,9 @@ class DetailProfileFragment : Fragment() {
                    initAuthorized()
                }
             }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },500)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },500)
         })
 
         viewModel.errorGetOperation.observe(viewLifecycleOwner, Observer { error->
@@ -154,7 +154,7 @@ class DetailProfileFragment : Fragment() {
                 d_profile_access_restricted.visibility = View.GONE
                 d_profile_not_found.visibility = View.GONE
             }
-            HomeActivity.alert.hide()
+//            HomeActivity.alert.hide()
         })
     }
 
@@ -170,7 +170,7 @@ class DetailProfileFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetOperationDta.value == null) {
-                HomeActivity.alert.show()
+//                HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getOperation(map)
                     initResult()
