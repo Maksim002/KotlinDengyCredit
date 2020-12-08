@@ -43,10 +43,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var refresh = false
     private var errorCode = ""
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_notification, container, false)
     }
@@ -164,7 +161,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             notification_swipe.isRefreshing = false
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 HomeActivity.alert.hide()
-            },180)
+            },200)
         })
 
         viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->

@@ -39,6 +39,7 @@ class LoansFragment : Fragment(), LoansListener {
     val handler = Handler()
     private var listNewsId: String = ""
     private var listLoanId: String = ""
+    private var alertValid = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -131,9 +132,15 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (alertValid == false){
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                    alertValid = true
+                },650)
+            }else{
                 HomeActivity.alert.hide()
-            },650)
+            }
+
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
@@ -291,9 +298,14 @@ class LoansFragment : Fragment(), LoansListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             loans_layout.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (alertValid == false){
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                    alertValid = true
+                },650)
+            }else{
                 HomeActivity.alert.hide()
-            },500)
+            }
         })
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
@@ -400,15 +412,6 @@ class LoansFragment : Fragment(), LoansListener {
                 initRepeat()
             }
         }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            requireActivity().getWindow()
-//                .setStatusBarColor(requireActivity().getColor(R.color.whiteColor))
-//            requireActivity().getWindow().getDecorView()
-//                .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-//            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-//            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.whiteColor)))
-//        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             requireActivity().getWindow()
