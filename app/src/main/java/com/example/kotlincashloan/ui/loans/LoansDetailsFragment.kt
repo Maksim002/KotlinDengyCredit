@@ -58,9 +58,7 @@ class LoansDetailsFragment : Fragment() {
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
-            HomeActivity.alert.show()
             initRestart()
-            HomeActivity.alert.hide()
         }
 
         access_restricted.setOnClickListener {
@@ -111,7 +109,12 @@ class LoansDetailsFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetDta.value == null) {
-                HomeActivity.alert.show()
+//                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.getNews(map)
+                    initRequest()
+                }, 500)
+            }else{
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNews(map)
                     initRequest()

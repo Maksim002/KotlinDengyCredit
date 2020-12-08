@@ -13,7 +13,8 @@
             android:layout_height="40dp"
             android:layout_marginTop="26dp"
             android:layout_marginLeft="16dp"
-            android:src="@drawable/ic_many_credit"
+            android:visibility="gone"
+            android:src="@drawable/ic_money_loan"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,9 +34,17 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
+                android:layout_width="300dp"
+                android:layout_height="90dp"
+                android:src="@drawable/ic_money_loan"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:visibility="gone"
                 android:layout_marginRight="16dp"
                 android:src="@drawable/ic_user" />
 
@@ -80,7 +89,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="75dp"
             android:paddingRight="75dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="5dp"
             android:text="Начать"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
