@@ -1,8 +1,10 @@
 package com.example.kotlincashloan.ui.support
 
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -12,11 +14,16 @@ import retrofit2.Response
 
 class SupportViewModel : ViewModel(){
     private val repository = NetworkRepository()
+    val handler = Handler()
+    var refreshCode = false
 
     val error = MutableLiveData<String>()
     var listFaqDta = MutableLiveData<CommonResponse<ArrayList<ListFaqResultModel>>>()
 
     fun listFaq(map: Map<String, String>){
+        if (refreshCode != true){
+            HomeActivity.alert.show()
+        }
         RetrofitService.apiService().listFaq(map).enqueue(object :
             Callback<CommonResponse<ArrayList<ListFaqResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFaqResultModel>>>, t: Throwable) {
@@ -36,6 +43,9 @@ class SupportViewModel : ViewModel(){
                 }else{
                     error.postValue(response.raw().code.toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },400)
             }
         })
     }

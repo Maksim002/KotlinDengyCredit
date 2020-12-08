@@ -33,7 +33,7 @@ class SupportFragment : Fragment() {
     private var viewModel = SupportViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-    private var refresh = false
+//    private var refresh = false
     private var errorCode = ""
 
     override fun onCreateView(
@@ -66,6 +66,7 @@ class SupportFragment : Fragment() {
                 initRestart()
             }
         }else{
+            viewModel.refreshCode = false
             initRestart()
         }
     }
@@ -89,8 +90,9 @@ class SupportFragment : Fragment() {
             viewModel.error.value = null
         } else {
             if (viewModel.listFaqDta.value == null) {
-                HomeActivity.alert.show()
+//                HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.refreshCode = false
                     viewModel.listFaq(map)
                     initRecycler()
                 }, 500)
@@ -126,7 +128,8 @@ class SupportFragment : Fragment() {
         support_swipe_layout.setOnRefreshListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                refresh = true
+                viewModel.refreshCode = true
+//                refresh = true
                 initRestart()
             }, 500)
         }
@@ -173,9 +176,9 @@ class SupportFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },600)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },600)
         })
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
             if (error != null){
@@ -211,7 +214,7 @@ class SupportFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             support_swipe_layout.isRefreshing = false
-                HomeActivity.alert.hide()
+//                HomeActivity.alert.hide()
         })
     }
 
@@ -232,8 +235,7 @@ class SupportFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
             systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
