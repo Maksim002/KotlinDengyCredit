@@ -165,9 +165,9 @@ class LoansDetailsFragment : Fragment() {
                     loans_detail_not_found.visibility = View.GONE
                 }
             }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },400)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },400)
         })
 
         viewModel.errorGet.observe(viewLifecycleOwner, Observer { error ->
@@ -201,7 +201,7 @@ class LoansDetailsFragment : Fragment() {
                 loans_detail_not_found.visibility = View.GONE
                 loans_detail_technical_work.visibility = View.GONE
             }
-            HomeActivity.alert.hide()
+//            HomeActivity.alert.hide()
         })
     }
 

@@ -1,10 +1,12 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -14,6 +16,8 @@ import retrofit2.Response
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
+    val handler = Handler()
+    var refreshCode = false
 
     val errorNews = MutableLiveData<String>()
     var listNewsDta = MutableLiveData<CommonResponse<ArrayList<ListNewsResultModel>>>()
@@ -52,6 +56,7 @@ class LoansViewModel: ViewModel() {
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
+        HomeActivity.alert.show()
         RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -70,6 +75,9 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorGet.postValue(response.code().toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },400)
             }
         })
     }
