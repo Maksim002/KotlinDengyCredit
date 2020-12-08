@@ -45,15 +45,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="3dp"
             android:layout_marginTop="3dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="Восстановить пароль"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/authorization_busy_support"
@@ -63,12 +64,13 @@
             android:layout_weight="1"
             android:layout_marginBottom="16dp"
             android:layout_marginTop="3dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="Служба поддержки"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
     </LinearLayout>
 </LinearLayout>

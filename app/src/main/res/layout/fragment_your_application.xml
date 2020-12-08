@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -28,6 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:text="Вернуться на главный экран"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />

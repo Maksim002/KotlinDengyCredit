@@ -2,7 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="6dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
     android:background="@color/whiteColor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -35,38 +38,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
+        android:layout_marginTop="20dp"
         android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/number_busy_password"
             style="@style/RoundedOrangeBackground"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="Восстановить пароль"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/number_busy_support"
             style="@style/RoundedOrangeBackground"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="Служба поддержки"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="15dp" />
     </LinearLayout>
 </LinearLayout>
