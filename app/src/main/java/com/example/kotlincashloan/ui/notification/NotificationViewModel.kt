@@ -1,10 +1,12 @@
 package com.example.kotlincashloan.ui.notification
 
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Notification.ListNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
@@ -12,11 +14,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class NotificationViewModel : ViewModel(){
+    val handler = Handler()
+    var refreshCode = false
 
     val errorNotice = MutableLiveData<String>()
     var listNoticeDta = MutableLiveData<CommonResponse<ArrayList<ResultListNoticeModel>>>()
 
     fun listNotice(map: Map<String, String>){
+        if (refreshCode != true){
+            HomeActivity.alert.show()
+        }
         RetrofitService.apiService().listNotice(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultListNoticeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultListNoticeModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -35,6 +42,9 @@ class NotificationViewModel : ViewModel(){
                 }else{
                     errorNotice.postValue(response.code().toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },400)
             }
         })
     }

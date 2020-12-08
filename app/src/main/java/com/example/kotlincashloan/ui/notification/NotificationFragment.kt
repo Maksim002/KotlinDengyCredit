@@ -40,7 +40,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var viewModel = NotificationViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-    private var refresh = false
+//    var refresh = false
     private var errorCode = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,8 +92,9 @@ class NotificationFragment : Fragment(), NotificationListener {
             viewModel.errorNotice.value = null
         } else {
             if (viewModel.listNoticeDta.value == null) {
-                HomeActivity.alert.show()
+//                HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.refreshCode = false
                     viewModel.listNotice(map)
                     initRecycler()
                 }, 500)
@@ -111,7 +112,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         notification_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                refresh = true
+                viewModel.refreshCode = true
                 initRestart()
                 myAdapter.numberResult(0)
             }, 500)
@@ -159,9 +160,9 @@ class NotificationFragment : Fragment(), NotificationListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             notification_swipe.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },200)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },200)
         })
 
         viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
@@ -197,9 +198,9 @@ class NotificationFragment : Fragment(), NotificationListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             notification_swipe.isRefreshing = false
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
-            },700)
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                HomeActivity.alert.hide()
+//            },200)
         })
     }
 
@@ -226,6 +227,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                 myAdapter.numberResult(1)
             }
         }else{
+            viewModel.refreshCode = false
             initRestart()
         }
     }
