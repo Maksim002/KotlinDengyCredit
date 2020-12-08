@@ -87,7 +87,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("errorCode400?token=oYyxhIFgJjAb")
+    @POST("getNews?token=oYyxhIFgJjAb")
     fun getNews(@FieldMap params: Map<String, String>):Call<CommonResponse<GetNewsResultModel>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
