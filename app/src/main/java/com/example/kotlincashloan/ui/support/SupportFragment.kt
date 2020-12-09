@@ -90,12 +90,14 @@ class SupportFragment : Fragment() {
             viewModel.error.value = null
         } else {
             if (viewModel.listFaqDta.value == null) {
-//                HomeActivity.alert.show()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.refreshCode = false
-                    viewModel.listFaq(map)
-                    initRecycler()
-                }, 500)
+                if (!viewModel.refreshCode) {
+                    HomeActivity.alert.show()
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        viewModel.refreshCode = false
+                        viewModel.listFaq(map)
+                        initRecycler()
+                    }, 500)
+                }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.error.value = null

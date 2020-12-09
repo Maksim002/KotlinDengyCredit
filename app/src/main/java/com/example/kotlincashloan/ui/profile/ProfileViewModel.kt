@@ -20,9 +20,6 @@ class ProfileViewModel : ViewModel(){
     var listListOperationDta = MutableLiveData<CommonResponse<ArrayList<ResultOperationModel>>>()
 
     fun listOperation(map: Map<String, String>){
-        if (refreshCode != true){
-            HomeActivity.alert.show()
-        }
         RetrofitService.apiService().listOperation(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultOperationModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultOperationModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -52,7 +49,6 @@ class ProfileViewModel : ViewModel(){
     var listGetOperationDta = MutableLiveData<CommonResponse<GetResultOperationModel>>()
 
     fun getOperation(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().getOperation(map).enqueue(object : Callback<CommonResponse<GetResultOperationModel>> {
             override fun onFailure(call: Call<CommonResponse<GetResultOperationModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){

@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="Имя Фамилия"
+                android:text="Имя Фамилия Отчество"
                 android:textColor="@color/blackColor"
                 android:textSize="24sp"
                 android:textStyle="bold" />

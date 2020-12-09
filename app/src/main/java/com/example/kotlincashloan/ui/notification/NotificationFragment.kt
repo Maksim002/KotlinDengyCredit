@@ -91,12 +91,14 @@ class NotificationFragment : Fragment(), NotificationListener {
             viewModel.errorNotice.value = null
         } else {
             if (viewModel.listNoticeDta.value == null) {
-//                HomeActivity.alert.show()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.refreshCode = false
-                    viewModel.listNotice(map)
-                    initRecycler()
-                }, 500)
+                if (!viewModel.refreshCode) {
+                    HomeActivity.alert.show()
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        viewModel.refreshCode = false
+                        viewModel.listNotice(map)
+                        initRecycler()
+                    }, 500)
+                }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.errorNotice.value = null

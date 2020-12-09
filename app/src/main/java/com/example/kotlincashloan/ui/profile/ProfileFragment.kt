@@ -244,12 +244,14 @@ class ProfileFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listListOperationDta.value == null) {
-//                HomeActivity.alert.show()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.refreshCode = false
-                    viewModel.listOperation(map)
-                    initRecycler()
-                }, 500)
+                if (!viewModel.refreshCode){
+                    HomeActivity.alert.show()
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        viewModel.refreshCode = false
+                        viewModel.listOperation(map)
+                        initRecycler()
+                    }, 500)
+                }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.errorListOperation.value = null

@@ -21,9 +21,6 @@ class NotificationViewModel : ViewModel(){
     var listNoticeDta = MutableLiveData<CommonResponse<ArrayList<ResultListNoticeModel>>>()
 
     fun listNotice(map: Map<String, String>){
-        if (refreshCode != true){
-            HomeActivity.alert.show()
-        }
         RetrofitService.apiService().listNotice(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultListNoticeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultListNoticeModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -54,7 +51,6 @@ class NotificationViewModel : ViewModel(){
     var listNoticeDetailDta = MutableLiveData<CommonResponse<ResultDetailNoticeModel>>()
 
     fun getNotice(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().getNotice(map).enqueue(object : Callback<CommonResponse<ResultDetailNoticeModel>> {
             override fun onFailure(call: Call<CommonResponse<ResultDetailNoticeModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
