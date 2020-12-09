@@ -1,6 +1,7 @@
 package com.example.kotlincashloan.ui.profile
 
 
+import android.app.Activity
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -27,6 +28,14 @@ class ProfileSettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setTitle("Профиль", resources.getColor(R.color.whiteColor))
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
     }
 
     override fun onResume() {
