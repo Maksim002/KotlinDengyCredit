@@ -11,12 +11,14 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
+import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
@@ -25,10 +27,12 @@ import com.example.spinnerdatepickerlib.DatePickerDialog.OnDateCancelListener
 import com.example.spinnerdatepickerlib.SpinnerDatePickerDialogBuilder
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
@@ -115,7 +119,24 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
 
     private fun initResult() {
         viewModel.listGenderDta.observe(this, androidx.lifecycle.Observer { result->
+            if (result.result != null){
+                val adapterListCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                profile_setting_gender.setAdapter(adapterListCountry)
 
+                profile_setting_gender.keyListener = null
+                profile_setting_gender.setOnItemClickListener { adapterView, view, position, l ->
+                    profile_setting_gender.showDropDown()
+                    profile_setting_gender.clearFocus()
+                }
+                profile_setting_click.setOnClickListener {
+                    profile_setting_gender.showDropDown()
+                }
+                profile_setting_click.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+                    profile_setting_gender.showDropDown()
+                }
+            }else{
+
+            }
         })
     }
 
