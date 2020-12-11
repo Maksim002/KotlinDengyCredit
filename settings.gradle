@@ -1,2 +1,3 @@
+include ':SpinnerDatePickerLib'
 include ':app'
 rootProject.name = "KotlinCashLoan"

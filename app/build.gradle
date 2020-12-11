@@ -103,4 +103,7 @@ dependencies {
 
     //StepBar
     implementation 'com.github.badoualy:stepper-indicator:1.0.7'
+
+    //the frame for the date selection
+    implementation project(path: ':SpinnerDatePickerLib')
 }

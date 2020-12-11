@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
+import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -96,6 +97,35 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorClientInfo.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorListGender = MutableLiveData<String>()
+    var listGenderDta = MutableLiveData<CommonResponse<ArrayList<listGenderResultModel>>>()
+
+    fun listGender(map: Map<String, String>){
+        RetrofitService.apiService().listGender(map).enqueue(object : Callback<CommonResponse<ArrayList<listGenderResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<listGenderResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListGender.postValue( "601")
+                }else{
+                    errorListGender.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<listGenderResultModel>>>, response: Response<CommonResponse<ArrayList<listGenderResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listGenderDta.postValue(response.body())
+                    }else{
+                        errorListGender.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListGender.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     HomeActivity.alert.hide()

@@ -278,17 +278,17 @@
                                 android:textSize="14sp"
                                 android:text="Дата рождения"/>
 
-                            <EditText
+                            <TextView
                                 android:id="@+id/profile_setting_data"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="11dp"
-                                android:textColor="#001"
                                 android:background="@null"
-                                android:windowSoftInputMode="adjustResize"
                                 android:inputType="textPersonName"
+                                android:text="05.07.1992"
+                                android:textColor="#001"
                                 android:textSize="17sp"
-                                android:text="05.07.1992"/>
+                                android:windowSoftInputMode="adjustResize" />
                         </LinearLayout>
 
                         <ImageView
@@ -497,4 +497,24 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/profile_s_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/profile_s_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/profile_s_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/profile_s_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 </LinearLayout>

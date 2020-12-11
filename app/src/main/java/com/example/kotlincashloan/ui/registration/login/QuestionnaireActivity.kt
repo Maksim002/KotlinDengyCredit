@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
@@ -21,30 +22,44 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
+import com.example.spinnerdatepickerlib.DatePicker
+import com.example.spinnerdatepickerlib.DatePickerDialog
+import com.example.spinnerdatepickerlib.SpinnerDatePickerDialogBuilder
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 
-class QuestionnaireActivity : AppCompatActivity() {
+class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener{
     private var viewModel = LoginViewModel()
     private var data: String = ""
     private var idSex: Int = 0
     private var listNationalityId: Int = 0
     private var listSecretQuestionId: Int = 0
     private var included = false
+    private val onCancel: DatePickerDialog.OnDateCancelListener? = null
+    private lateinit var simpleDateFormat: SimpleDateFormat
+    private var yearSelective = 0
+    private var monthSelective = 0
+    private var dayOfMonthSelective = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actyviti_questionnaire)
         HomeActivity.alert = LoadingAlert(this)
+
+        //формат даты
+        simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
+
         initToolBar()
         iniData()
         getListNationality()
@@ -262,13 +277,40 @@ class QuestionnaireActivity : AppCompatActivity() {
 
     private fun iniData() {
         questionnaire_date_birth.setOnClickListener(View.OnClickListener { v: View? ->
-            val datePickerDialogFragment = com.example.kotlincashloan.custom_view.DatePickerDialogFragment()
-            datePickerDialogFragment.setOnDateChooseListener { year, month, day ->
-                questionnaire_date_birth.setText("$day-$month-$year")
-                data = (MyUtils.convertDate(year, month, day))
+//            val datePickerDialogFragment = com.example.kotlincashloan.custom_view.DatePickerDialogFragment()
+//            datePickerDialogFragment.setOnDateChooseListener { year, month, day ->
+//                questionnaire_date_birth.setText("$day-$month-$year")
+//                data = (MyUtils.convertDate(year, month, day))
+//            }
+//            datePickerDialogFragment.show(fragmentManager, "DatePickerDialogFragment")
+
+            if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
+                showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
+            }else{
+                showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
             }
-            datePickerDialogFragment.show(fragmentManager, "DatePickerDialogFragment")
         })
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        val calendar: Calendar = GregorianCalendar(year, monthOfYear, dayOfMonth)
+        questionnaire_date_birth.setText(simpleDateFormat.format(calendar.getTime()))
+        data = (MyUtils.convertDate(year, monthOfYear, dayOfMonth))
+        yearSelective = year
+        monthSelective = monthOfYear
+        dayOfMonthSelective = dayOfMonth
+    }
+
+    @VisibleForTesting
+    fun showDate(year: Int, monthOfYear: Int, dayOfMonth: Int, spinnerTheme: Int) {
+        SpinnerDatePickerDialogBuilder()
+            .context(this)
+            .callback(this)
+            .onCancel(onCancel)
+            .spinnerTheme(spinnerTheme)
+            .defaultDate(year, monthOfYear, dayOfMonth)
+            .build()
+            .show()
     }
 
     private fun getIdSxs() {
@@ -620,4 +662,5 @@ class QuestionnaireActivity : AppCompatActivity() {
             questionnaire_id_secret.error = null
         }
     }
+
 }

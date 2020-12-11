@@ -9,6 +9,7 @@ import com.example.kotlincashloan.service.model.Notification.ResultListNoticeMod
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
+import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -120,5 +121,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("clientInfo?token=oYyxhIFgJjAb")
     fun clientInfo(@FieldMap params: Map<String, String>):Call<CommonResponse<ClientInfoResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listGender?token=oYyxhIFgJjAb")
+    fun listGender(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<listGenderResultModel>>>
 }
 

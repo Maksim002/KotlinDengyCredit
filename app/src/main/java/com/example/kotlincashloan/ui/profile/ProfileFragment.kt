@@ -142,6 +142,9 @@ class ProfileFragment : Fragment() {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
+            if (errorCode == "200" && errorCodeClient == "200") {
+                resultSuccessfully()
+            }
         })
 
         //если все успешно
@@ -158,7 +161,6 @@ class ProfileFragment : Fragment() {
                 }
                 listListResult(result.error.code!!)
             }
-
             if (errorCode == "200" && errorCodeClient == "200") {
                 resultSuccessfully()
             }

@@ -21,6 +21,18 @@ object MyUtils {
 
     }
 
+    fun toYear(date: String): String{
+        return date.substring(0, 4)
+    }
+
+    fun toMonth(date: String): String{
+        return date.substring(9, 10)
+    }
+
+    fun toDay(date: String): String{
+        return date.substring(5, 7)
+    }
+
     fun toMyDateTime(date: String): String {
         return try {
             date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(
