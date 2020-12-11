@@ -19,10 +19,10 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
 
-class ProfileSettingFragment : Fragment() {
+
+class ProfileSettingFragment : Fragment(){
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     private var errorCode = ""
@@ -82,9 +82,13 @@ class ProfileSettingFragment : Fragment() {
                 systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(
-                R.color.orangeColor
-            )))
+            toolbar.setBackgroundDrawable(
+                ColorDrawable(
+                    requireActivity().getColor(
+                        R.color.orangeColor
+                    )
+                )
+            )
             toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
         }
         val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)

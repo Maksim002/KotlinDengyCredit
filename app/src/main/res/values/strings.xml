@@ -21,6 +21,7 @@
     <string name="To_get_a_loan">Для того, чтобы получить заём, выберите срок и сумму, заполните анкету и загрузите свои документы.</string>
     <string name="click">Нажмите “Начать”, чтобы получить кредит</string>
     <string name="_3_637">Ежемесячная сумма платежа:</string>
+    <string name="cancelled">Cancelled!</string>
 
     <string-array name="stepLabels">
         <item>Шаг 1</item>
