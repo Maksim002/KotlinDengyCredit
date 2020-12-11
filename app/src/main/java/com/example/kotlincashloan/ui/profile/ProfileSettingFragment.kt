@@ -6,6 +6,7 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +14,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
+import java.lang.Exception
+import java.util.HashMap
 
 class ProfileSettingFragment : Fragment() {
+    private var viewModel = ProfileViewModel()
+    private val map = HashMap<String, String>()
+    private var errorCode = ""
+    val handler = Handler()
+    var clientResult = ClientInfoResultModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +39,29 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
 
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
+
+        initResultView()
+    }
+
+    private fun initResultView() {
+         clientResult = try {
+             requireArguments().getSerializable("client") as ClientInfoResultModel
+        }catch (e: Exception){
+             clientResult
+        }
+
+        profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
+        profile_setting_first.setText(clientResult.firstPhone)
+        profile_setting_second_name.setText(clientResult.secondName)
+        profile_setting_first_name.setText(clientResult.firstName)
+        profile_setting_last_name.setText(clientResult.lastName)
+        profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
+        profile_setting_phone.setText(clientResult.firstPhone)
+        profile_setting_second_phone.setText(clientResult.secondPhone)
     }
 
     fun setTitle(title: String?, color: Int) {

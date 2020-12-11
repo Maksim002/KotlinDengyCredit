@@ -1,7 +1,5 @@
 package com.example.kotlincashloan.ui.profile
 
-
-
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -22,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -33,7 +32,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
-
+import kotlin.collections.ArrayList
 
 class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
@@ -42,7 +41,9 @@ class ProfileFragment : Fragment() {
     private var refresh = false
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
     private var errorCode = ""
+    private var errorCodeClient = ""
     private var numberBar = 0
+    val bundle = Bundle()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +69,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initClick() {
+
         profile_your.setOnClickListener {
-            findNavController().navigate(R.id.profile_setting_navigation)
+            findNavController().navigate(R.id.profile_setting_navigation, bundle)
         }
 
         access_restricted.setOnClickListener {
@@ -96,89 +98,131 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                list = result.result
-                profile_swipe.visibility = View.VISIBLE
-                profile_technical_work.visibility = View.GONE
-                profile_no_connection.visibility = View.GONE
-                profile_access_restricted.visibility = View.GONE
-                profile_not_found.visibility = View.GONE
-                errorCode = result.code.toString()
-                initPager()
-            } else {
-                if (result.error.code != null) {
-                    errorCode = result.error.code.toString()
-                } else if (result.code != null) {
-                    errorCode = result.code.toString()
-                }
-                if (result.error.code == 400 || result.error.code == 500 || result.error.code == 409 || result.error.code == 429) {
-                    profile_technical_work.visibility = View.VISIBLE
-                    profile_no_connection.visibility = View.GONE
-                    profile_swipe.visibility = View.GONE
-                    profile_access_restricted.visibility = View.GONE
-                    profile_not_found.visibility = View.GONE
-                } else if (result.error.code == 403) {
-                    profile_access_restricted.visibility = View.VISIBLE
-                    profile_technical_work.visibility = View.GONE
-                    profile_no_connection.visibility = View.GONE
-                    profile_swipe.visibility = View.GONE
-                    profile_not_found.visibility = View.GONE
-                } else if (result.error.code == 404) {
-                    profile_not_found.visibility = View.VISIBLE
-                    profile_access_restricted.visibility = View.GONE
-                    profile_technical_work.visibility = View.GONE
-                    profile_no_connection.visibility = View.GONE
-                    profile_swipe.visibility = View.GONE
-                } else if (result.error.code == 401) {
-                    initAuthorized()
-                }
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            profile_swipe.isRefreshing = false
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                HomeActivity.alert.hide()
-//            },550)
-        })
-
+        //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
             try {
                 errorCode = error
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            if (error != null) {
+                errorList(error)
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        })
 
-            if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-                profile_technical_work.visibility = View.VISIBLE
-                profile_no_connection.visibility = View.GONE
-                profile_swipe.visibility = View.GONE
-                profile_access_restricted.visibility = View.GONE
-                profile_not_found.visibility = View.GONE
-            } else if (error == "403") {
-                profile_access_restricted.visibility = View.VISIBLE
-                profile_technical_work.visibility = View.GONE
-                profile_no_connection.visibility = View.GONE
-                profile_swipe.visibility = View.GONE
-                profile_not_found.visibility = View.GONE
-            } else if (error == "404") {
-                profile_not_found.visibility = View.VISIBLE
-                profile_access_restricted.visibility = View.GONE
-                profile_technical_work.visibility = View.GONE
-                profile_no_connection.visibility = View.GONE
-                profile_swipe.visibility = View.GONE
-            } else if (error == "601") {
-                profile_no_connection.visibility = View.VISIBLE
-                profile_swipe.visibility = View.GONE
-                profile_technical_work.visibility = View.GONE
-                profile_access_restricted.visibility = View.GONE
-                profile_not_found.visibility = View.GONE
-            } else if (error == "401") {
-                initAuthorized()
+        //listClientInfoDta Проверка на ошибки
+        viewModel.errorClientInfo.observe(viewLifecycleOwner, Observer { error ->
+            try {
+                errorCodeClient = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (error != null) {
+                errorList(error)
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
-//            HomeActivity.alert.hide()
         })
+
+        viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                list = result.result
+                initPager()
+                errorCode = result.code.toString()
+
+            } else {
+                if (result.error.code != null) {
+                    errorCode = result.error.code.toString()
+                } else if (result.code != null) {
+                    errorCode = result.code.toString()
+                }
+                listListResult(result.error.code!!)
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
+        })
+
+        viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                profile_fio.setText(result.result.firstName + " " + result.result.lastName + " " + result.result.secondName)
+                bundle.putSerializable("client", result.result)
+                errorCodeClient = result.code.toString()
+            } else {
+                if (result!!.error.code != null) {
+                    errorCodeClient = result.error.code.toString()
+                } else if (result.code != null) {
+                    errorCodeClient = result.code.toString()
+                }
+                listListResult(result.error.code!!)
+            }
+
+            if (errorCode == "200" && errorCodeClient == "200") {
+                resultSuccessfully()
+            }
+        })
+    }
+
+    private fun resultSuccessfully() {
+        profile_swipe.visibility = View.VISIBLE
+        profile_technical_work.visibility = View.GONE
+        profile_no_connection.visibility = View.GONE
+        profile_access_restricted.visibility = View.GONE
+        profile_not_found.visibility = View.GONE
+    }
+
+    private fun listListResult(result: Int) {
+        if (result == 400 || result == 500 || result == 409 || result == 429) {
+            profile_technical_work.visibility = View.VISIBLE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+            profile_access_restricted.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+        } else if (result == 403) {
+            profile_access_restricted.visibility = View.VISIBLE
+            profile_technical_work.visibility = View.GONE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+        } else if (result == 404) {
+            profile_not_found.visibility = View.VISIBLE
+            profile_access_restricted.visibility = View.GONE
+            profile_technical_work.visibility = View.GONE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+        } else if (result == 401) {
+            initAuthorized()
+        }
+    }
+
+    private fun errorList(error: String) {
+        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
+            profile_technical_work.visibility = View.VISIBLE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+            profile_access_restricted.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+        } else if (error == "403") {
+            profile_access_restricted.visibility = View.VISIBLE
+            profile_technical_work.visibility = View.GONE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+        } else if (error == "404") {
+            profile_not_found.visibility = View.VISIBLE
+            profile_access_restricted.visibility = View.GONE
+            profile_technical_work.visibility = View.GONE
+            profile_no_connection.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
+        } else if (error == "601") {
+            profile_no_connection.visibility = View.VISIBLE
+            profile_swipe.visibility = View.GONE
+            profile_technical_work.visibility = View.GONE
+            profile_access_restricted.visibility = View.GONE
+            profile_not_found.visibility = View.GONE
+        } else if (error == "401") {
+            initAuthorized()
+        }
     }
 
     private fun initPager() {
@@ -200,9 +244,14 @@ class ProfileFragment : Fragment() {
         }
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
                 numberBar = position
             }
+
             override fun onPageSelected(position: Int) {
                 if (position != 1) {
                     profile_bar_zero.visibility = View.VISIBLE
@@ -219,7 +268,10 @@ class ProfileFragment : Fragment() {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 initRestart()
@@ -241,31 +293,40 @@ class ProfileFragment : Fragment() {
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
             viewModel.errorListOperation.value = null
+            viewModel.errorClientInfo.value = null
             errorCode = "601"
+            errorCodeClient = "601"
         } else {
-            if (viewModel.listListOperationDta.value == null) {
-                if (!viewModel.refreshCode){
+            if (viewModel.listListOperationDta.value == null || viewModel.listClientInfoDta.value == null) {
+                if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listOperation(map)
+                        viewModel.clientInfo(map)
                         initRecycler()
                     }, 500)
                 }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.errorListOperation.value = null
+                    if (viewModel.errorListOperation.value != null) {
+                        viewModel.errorListOperation.value = null
+                    }
+                    if (viewModel.errorClientInfo.value != null) {
+                        viewModel.errorClientInfo.value = null
+                    }
                     viewModel.listOperation(map)
+                    viewModel.clientInfo(map)
                     initRecycler()
-                }, 400)
+                }, 500)
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        if (viewModel.listListOperationDta.value != null) {
-            if (errorCode == "200") {
+        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null) {
+            if (errorCode == "200" || errorCodeClient == "200") {
                 AppPreferences.reviewCode = 1
                 initRecycler()
             } else {
@@ -279,6 +340,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     fun setTitle(title: String?, color: Int) {
         val activity: Activity? = activity
         if (activity is MainActivity) {
@@ -288,20 +350,22 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (numberBar != 0){
+        if (numberBar != 0) {
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE
             profile_bar_zero.visibility = View.GONE
-        }else{
+        } else {
             profile_bar_zero.visibility = View.VISIBLE
             profile_bar_one.visibility = View.GONE
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags =
+                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))

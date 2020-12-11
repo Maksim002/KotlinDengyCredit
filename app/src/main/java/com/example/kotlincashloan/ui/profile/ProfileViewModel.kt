@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.profile
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -38,9 +39,9 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListOperation.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },550)
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    HomeActivity.alert.hide()
+//                },550)
             }
         })
     }
@@ -66,6 +67,35 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorGetOperation.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorClientInfo = MutableLiveData<String>()
+    var listClientInfoDta = MutableLiveData<CommonResponse<ClientInfoResultModel>>()
+
+    fun clientInfo(map: Map<String, String>){
+        RetrofitService.apiService().clientInfo(map).enqueue(object : Callback<CommonResponse<ClientInfoResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<ClientInfoResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorClientInfo.postValue( "601")
+                }else{
+                    errorClientInfo.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ClientInfoResultModel>>, response: Response<CommonResponse<ClientInfoResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listClientInfoDta.postValue(response.body())
+                    }else{
+                        errorClientInfo.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorClientInfo.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     HomeActivity.alert.hide()
