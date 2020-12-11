@@ -125,6 +125,7 @@ class ProfileFragment : Fragment() {
             profile_swipe.isRefreshing = false
         })
 
+        //если все успешно
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 list = result.result
@@ -143,6 +144,7 @@ class ProfileFragment : Fragment() {
             profile_swipe.isRefreshing = false
         })
 
+        //если все успешно
         viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 profile_fio.setText(result.result.firstName + " " + result.result.lastName + " " + result.result.secondName)
@@ -163,6 +165,7 @@ class ProfileFragment : Fragment() {
         })
     }
 
+    // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         profile_swipe.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
@@ -285,6 +288,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initRestart() {
+        //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
