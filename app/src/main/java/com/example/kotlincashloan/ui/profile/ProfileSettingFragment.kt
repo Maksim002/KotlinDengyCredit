@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.profile
 
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -11,41 +12,30 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
-import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
-import com.example.spinnerdatepickerlib.DatePickerDialog
-import com.example.spinnerdatepickerlib.DatePickerDialog.OnDateCancelListener
-import com.example.spinnerdatepickerlib.SpinnerDatePickerDialogBuilder
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.activity_number.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-
-class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
+class ProfileSettingFragment : Fragment(){
     private var viewModel = ProfileViewModel()
-    private val map = HashMap<String, String>()
-    private var errorCode = ""
+    private var errorCodeGender = ""
+    private var errorCodeNationality = ""
+    private var errorListAvailableCountry = ""
     val handler = Handler()
     var clientResult = ClientInfoResultModel()
-    private val onCancel: OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
-    private var yearSelective = 0
-    private var monthSelective = 0
-    private var dayOfMonthSelective = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,34 +48,42 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //формат даты
+        //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
 
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
 
-        initResultGetProfil()
+        initResultGetProfilе()
         initClick()
     }
 
     private fun initClick() {
-        //сохронение выброной даты
-        profile_setting_choice_data.setOnClickListener {
-            if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
-                showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
-            }else{
-                showDate(
-                    MyUtils.toYear(clientResult.uDate.toString()).toInt(),
-                    MyUtils.toMonth(clientResult.uDate.toString()).toInt(),
-                    MyUtils.toDay(clientResult.uDate.toString()).toInt(),
-                    R.style.DatePickerSpinner
-                )
-            }
+        initFocus()
+
+        click_s_second.setOnClickListener {
+            profile_setting_second_phone.isEnabled = true
+            profile_setting_second_phone.requestFocus()
+            profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
+            profile_setting_second_phone.isFocusableInTouchMode = true
+
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_setting_second_phone, 3)
         }
     }
 
+    private fun initFocus(){
+        profile_setting_second_phone.isEnabled = false
+    }
+
     private fun initRestart() {
-        val map = HashMap<String, String>()
-        map.put("login", clientResult.gender.toString())
+        val mapNationality = HashMap<String, String>()
+        mapNationality.put("login", clientResult.gender.toString())
+
+        val mapGender = HashMap<String, String>()
+        mapGender.put("login", clientResult.nationality.toString())
+
+        val mapAvailable = HashMap<String, String>()
+        mapAvailable.put("id", "")
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -94,14 +92,20 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
             viewModel.errorListGender.value = null
-            errorCode = "601"
+            viewModel.errorListNationality.value = null
+            viewModel.errorListAvailableCountry.value = null
+            errorCodeGender = "601"
+            errorCodeNationality = "601"
+            errorListAvailableCountry = "601"
         } else {
-            if (viewModel.errorListGender.value == null) {
+            if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null) {
                 if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
-                        viewModel.listGender(map)
+                        viewModel.listGender(mapGender)
+                        viewModel.getListNationality(mapNationality)
+                        viewModel.listAvailableCountry(mapAvailable)
                         initResult()
                     }, 500)
                 }
@@ -109,8 +113,14 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListGender.value != null) {
                         viewModel.errorListGender.value = null
+                    } else if (viewModel.errorListNationality.value != null) {
+                        viewModel.errorListNationality.value = null
+                    }else if (viewModel.errorListAvailableCountry.value != null){
+                        viewModel.errorListAvailableCountry.value = null
                     }
-                    viewModel.listGender(map)
+                    viewModel.listGender(mapGender)
+                    viewModel.getListNationality(mapNationality)
+                    viewModel.listAvailableCountry(mapAvailable)
                     initResult()
                 }, 500)
             }
@@ -118,24 +128,44 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
     }
 
     private fun initResult() {
-        viewModel.listGenderDta.observe(this, androidx.lifecycle.Observer { result->
-            if (result.result != null){
-                val adapterListCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                profile_setting_gender.setAdapter(adapterListCountry)
+        //получение полов
+        viewModel.listGenderDta.observe(this, androidx.lifecycle.Observer { result ->
+            if (result.result != null) {
+                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt()].name)
+                resultSuccessfully()
+            } else {
+                listListResult(result.error.code!!)
+            }
+        })
 
-                profile_setting_gender.keyListener = null
-                profile_setting_gender.setOnItemClickListener { adapterView, view, position, l ->
-                    profile_setting_gender.showDropDown()
-                    profile_setting_gender.clearFocus()
-                }
-                profile_setting_click.setOnClickListener {
-                    profile_setting_gender.showDropDown()
-                }
-                profile_setting_click.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-                    profile_setting_gender.showDropDown()
-                }
-            }else{
+        viewModel.errorListGender.observe(this, androidx.lifecycle.Observer { error ->
+            if (error != null) {
+                errorList(error)
+            }
+        })
 
+        //получение гражданства
+        viewModel.listNationalityDta.observe(this, androidx.lifecycle.Observer { result ->
+            if (result.result != null) {
+                profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt()].name)
+                resultSuccessfully()
+            } else {
+                listListResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorListNationality.observe(this, androidx.lifecycle.Observer { error ->
+            if (error != null) {
+                errorList(error)
+            }
+        })
+
+        viewModel.listAvailableCountryDta.observe(this, androidx.lifecycle.Observer { result->
+            if (result.result != null) {
+                val nationality = clientResult.nationality
+
+                profile_setting_second_phone.mask = result.result[1].phoneMaskSmall
+                profile_setting_second_phone.setText(MyUtils.toMask("79995552021"))
             }
         })
     }
@@ -187,13 +217,23 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         }
     }
 
+    // проверка если errorCode и errorCodeClient == 200
+    private fun resultSuccessfully() {
+        profile_setting_layout.visibility = View.VISIBLE
+        profile_s_technical_work.visibility = View.GONE
+        profile_s_no_connection.visibility = View.GONE
+        profile_s_access_restricted.visibility = View.GONE
+        profile_s_not_found.visibility = View.GONE
+    }
+
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
     }
 
-    private fun initResultGetProfil() {
+    // метод получает данные со страницы profile
+    private fun initResultGetProfilе() {
          clientResult = try {
              requireArguments().getSerializable("client") as ClientInfoResultModel
         }catch (e: Exception){
@@ -201,15 +241,13 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
         }
 
         profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
-        profile_setting_first.setText(clientResult.firstPhone)
+        profile_setting_phone.setText(clientResult.firstPhone)
         profile_setting_second_name.setText(clientResult.secondName)
         profile_setting_first_name.setText(clientResult.firstName)
         profile_setting_last_name.setText(clientResult.lastName)
         profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
-        profile_setting_phone.setText(clientResult.firstPhone)
-        profile_setting_second_phone.setText(clientResult.secondPhone)
-
-
+        profile_s_question.setText(clientResult.question)
+        profile_s_response.setText(clientResult.response)
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -222,7 +260,7 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
     override fun onResume() {
         super.onResume()
         if (viewModel.listGenderDta.value != null) {
-            if (errorCode == "200") {
+            if (errorCodeGender == "200") {
                 AppPreferences.reviewCode = 1
                 initResult()
             } else {
@@ -258,25 +296,5 @@ class ProfileSettingFragment : Fragment(), DatePickerDialog.OnDateSetListener{
             PorterDuff.Mode.SRC_ATOP
         )
         (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
-    }
-
-    override fun onDateSet(view: com.example.spinnerdatepickerlib.DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        val calendar: Calendar = GregorianCalendar(year, monthOfYear, dayOfMonth)
-        profile_setting_data.setText(simpleDateFormat.format(calendar.getTime()))
-        yearSelective = year
-        monthSelective = monthOfYear
-        dayOfMonthSelective = dayOfMonth
-    }
-
-    @VisibleForTesting
-    fun showDate(year: Int, monthOfYear: Int, dayOfMonth: Int, spinnerTheme: Int) {
-        SpinnerDatePickerDialogBuilder()
-            .context(requireContext())
-            .callback(this)
-            .onCancel(onCancel)
-            .spinnerTheme(spinnerTheme)
-            .defaultDate(year, monthOfYear, dayOfMonth)
-            .build()
-            .show()
     }
 }

@@ -9,7 +9,6 @@ import com.example.kotlincashloan.service.model.Notification.ResultListNoticeMod
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
-import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -125,6 +124,16 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("listGender?token=oYyxhIFgJjAb")
-    fun listGender(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<listGenderResultModel>>>
+    fun listGender(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListGenderResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listNationality?token=oYyxhIFgJjAb")
+    fun getListNationality(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListNationalityResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listAvailableCountry?token=oYyxhIFgJjAb")
+    fun listAvailableCountry(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<CounterResultModel>>>
 }
 

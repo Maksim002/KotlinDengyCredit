@@ -25,8 +25,6 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_list_country
-import kotlinx.android.synthetic.main.activity_password_recovery.*
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*

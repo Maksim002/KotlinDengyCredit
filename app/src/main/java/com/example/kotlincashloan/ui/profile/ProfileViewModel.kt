@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
-import com.example.kotlincashloan.service.model.profile.listGenderResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
+import com.example.kotlinscreenscanner.service.model.CounterResultModel
+import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
+import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -106,18 +108,18 @@ class ProfileViewModel : ViewModel(){
     }
 
     val errorListGender = MutableLiveData<String>()
-    var listGenderDta = MutableLiveData<CommonResponse<ArrayList<listGenderResultModel>>>()
+    var listGenderDta = MutableLiveData<CommonResponse<ArrayList<ListGenderResultModel>>>()
 
     fun listGender(map: Map<String, String>){
-        RetrofitService.apiService().listGender(map).enqueue(object : Callback<CommonResponse<ArrayList<listGenderResultModel>>> {
-            override fun onFailure(call: Call<CommonResponse<ArrayList<listGenderResultModel>>>, t: Throwable) {
+        RetrofitService.apiService().listGender(map).enqueue(object : Callback<CommonResponse<ArrayList<ListGenderResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ListGenderResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListGender.postValue( "601")
                 }else{
                     errorListGender.postValue( "600")
                 }
             }
-            override fun onResponse(call: Call<CommonResponse<ArrayList<listGenderResultModel>>>, response: Response<CommonResponse<ArrayList<listGenderResultModel>>>) {
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ListGenderResultModel>>>, response: Response<CommonResponse<ArrayList<ListGenderResultModel>>>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listGenderDta.postValue(response.body())
@@ -126,6 +128,64 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorListGender.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorListNationality = MutableLiveData<String>()
+    var listNationalityDta = MutableLiveData<CommonResponse<ArrayList<ListNationalityResultModel>>>()
+
+    fun getListNationality(map: Map<String, String>){
+        RetrofitService.apiService().getListNationality(map).enqueue(object : Callback<CommonResponse<ArrayList<ListNationalityResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ListNationalityResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListNationality.postValue( "601")
+                }else{
+                    errorListNationality.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ListNationalityResultModel>>>, response: Response<CommonResponse<ArrayList<ListNationalityResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listNationalityDta.postValue(response.body())
+                    }else{
+                        errorListNationality.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListNationality.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorListAvailableCountry = MutableLiveData<String>()
+    var listAvailableCountryDta = MutableLiveData<CommonResponse<ArrayList<CounterResultModel>>>()
+
+    fun listAvailableCountry(map: Map<String, String>){
+        RetrofitService.apiService().listAvailableCountry(map).enqueue(object : Callback<CommonResponse<ArrayList<CounterResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<CounterResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListAvailableCountry.postValue( "601")
+                }else{
+                    errorListAvailableCountry.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<CounterResultModel>>>, response: Response<CommonResponse<ArrayList<CounterResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listAvailableCountryDta.postValue(response.body())
+                    }else{
+                        errorListAvailableCountry.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListAvailableCountry.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     HomeActivity.alert.hide()

@@ -21,16 +21,13 @@ object MyUtils {
 
     }
 
-    fun toYear(date: String): String{
-        return date.substring(0, 4)
-    }
-
-    fun toMonth(date: String): String{
-        return date.substring(9, 10)
-    }
-
-    fun toDay(date: String): String{
-        return date.substring(5, 7)
+    fun toMask(date: String): String{
+        if (date == date.substring(10)){
+            date.substring(1, 10)
+        }else if (date == date.substring(11)) {
+            date.substring(2, 11)
+        }
+        return date
     }
 
     fun toMyDateTime(date: String): String {

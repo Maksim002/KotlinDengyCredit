@@ -68,7 +68,7 @@
             android:padding="14dp"
             android:scrollHorizontally="true"
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/number_next"

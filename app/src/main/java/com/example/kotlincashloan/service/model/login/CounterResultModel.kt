@@ -19,7 +19,10 @@ class CounterResultModel(
     var phoneLength: String? = null,
 
     @SerializedName("phone_mask")
-    var phoneMask: String? = null
+    var phoneMask: String? = null,
+
+    @SerializedName("phone_mask_small")
+    var phoneMaskSmall: String? = null
 ) {
     override fun toString(): String {
         return name.toString()
