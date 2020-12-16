@@ -150,7 +150,7 @@ class ProfileFragment : Fragment() {
         //если все успешно
         viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-                profile_fio.setText(result.result.firstName + " " + result.result.lastName + " " + result.result.secondName)
+                profile_fio.setText(result.result.firstName + " " + result.result.lastName)
                 bundle.putSerializable("client", result.result)
                 errorCodeClient = result.code.toString()
             } else {

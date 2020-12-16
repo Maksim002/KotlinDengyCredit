@@ -25,6 +25,6 @@ class CounterResultModel(
     var phoneMaskSmall: String? = null
 ) {
     override fun toString(): String {
-        return name.toString()
+        return "+" + phoneCode.toString()
     }
 }

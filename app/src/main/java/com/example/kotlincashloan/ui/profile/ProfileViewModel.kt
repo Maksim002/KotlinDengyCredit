@@ -7,10 +7,7 @@ import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
-import com.example.kotlinscreenscanner.service.model.CommonResponse
-import com.example.kotlinscreenscanner.service.model.CounterResultModel
-import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
-import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
+import com.example.kotlinscreenscanner.service.model.*
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -186,6 +183,35 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorListAvailableCountry.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorListSecretQuestion = MutableLiveData<String>()
+    var listSecretQuestionDta = MutableLiveData<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>()
+
+    fun listSecretQuestion(map: Map<String, String>){
+        RetrofitService.apiService().listSecretQuestion(map).enqueue(object : Callback<CommonResponse<ArrayList<ListSecretQuestionResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListSecretQuestion.postValue( "601")
+                }else{
+                    errorListSecretQuestion.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>, response: Response<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listSecretQuestionDta.postValue(response.body())
+                    }else{
+                        errorListSecretQuestion.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListSecretQuestion.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     HomeActivity.alert.hide()

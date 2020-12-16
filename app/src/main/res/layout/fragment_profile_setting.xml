@@ -11,7 +11,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/profile_setting_layout"
         android:layout_width="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -131,7 +131,7 @@
                                 android:id="@+id/profile_setting_second_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:enabled="false"
@@ -165,7 +165,7 @@
                                 android:id="@+id/profile_setting_first_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:enabled="false"
@@ -199,7 +199,7 @@
                                 android:id="@+id/profile_setting_last_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:enabled="false"
@@ -234,7 +234,7 @@
                                 android:id="@+id/profile_setting_data"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:background="@null"
                                 android:enabled="false"
                                 android:inputType="textPersonName"
@@ -270,7 +270,7 @@
                                 android:id="@+id/profile_setting_gender"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:enabled="false"
                                 android:background="@null"
@@ -305,7 +305,7 @@
                                 android:id="@+id/profile_s_nationality"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:enabled="false"
@@ -336,18 +336,18 @@
                                 android:textSize="14sp"
                                 android:text="Номер телефона"/>
 
-                            <EditText
+                            <com.santalu.maskedittext.MaskEditText
                                 android:id="@+id/profile_setting_phone"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:enabled="false"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="textPersonName"
                                 android:textSize="17sp"
-                                android:text="+996 700 700 540"/>
+                                android:text="+996700700540"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -360,7 +360,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:padding="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingLeft="16dp"
+                        android:paddingBottom="16dp"
+                        android:paddingRight="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
@@ -377,10 +381,11 @@
                                 android:textSize="14sp"
                                 android:text="код"/>
 
-                            <EditText
+                            <AutoCompleteTextView
+                                android:id="@+id/profile_s_mask"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"
@@ -395,12 +400,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:layout_weight="0.3"
+                        android:layout_weight="0.4"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
                         <LinearLayout
+                            android:id="@+id/profile_phone_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.1"
@@ -416,8 +422,9 @@
                                 android:id="@+id/profile_setting_second_phone"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
+                                android:editable="false"
                                 android:ellipsize="end"
                                 android:digits="012345678"
                                 android:imeOptions="actionDone"
@@ -460,12 +467,14 @@
                                 android:textSize="14sp"
                                 android:text="Вопрос"/>
 
-                            <EditText
+                            <AutoCompleteTextView
                                 android:id="@+id/profile_s_question"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
+                                android:ellipsize="end"
+                                android:maxLines="1"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="textPersonName"
@@ -506,7 +515,7 @@
                                 android:id="@+id/profile_s_response"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="11dp"
+                                android:layout_marginTop="3dp"
                                 android:textColor="#001"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"

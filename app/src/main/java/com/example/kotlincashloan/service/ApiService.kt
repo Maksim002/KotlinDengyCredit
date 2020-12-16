@@ -128,12 +128,17 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("listNationality?token=oYyxhIFgJjAb")
+    @POST("error404?token=oYyxhIFgJjAb")
     fun getListNationality(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListNationalityResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("listAvailableCountry?token=oYyxhIFgJjAb")
     fun listAvailableCountry(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<CounterResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listSecretQuestion?token=oYyxhIFgJjAb")
+    fun listSecretQuestion(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>
 }
 

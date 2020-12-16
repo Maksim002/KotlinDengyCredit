@@ -47,5 +47,13 @@ class ClientInfoResultModel (
 
     @SerializedName("response")
     @Expose
-    var response: String? = null
+    var response: String? = null,
+
+    @SerializedName("first_phone_country_id")
+    @Expose
+    var phoneFirst: String? = null,
+
+    @SerializedName("second_phone_country_id")
+    @Expose
+    var phoneSecond: String? = null
 ) : Serializable

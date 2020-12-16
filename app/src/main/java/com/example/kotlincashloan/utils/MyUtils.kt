@@ -21,13 +21,8 @@ object MyUtils {
 
     }
 
-    fun toMask(date: String): String{
-        if (date == date.substring(10)){
-            date.substring(1, 10)
-        }else if (date == date.substring(11)) {
-            date.substring(2, 11)
-        }
-        return date
+    fun toMask(date: String, phoneCode: Int, phoneLength: Int): String{
+        return date.substring(phoneCode, phoneLength)
     }
 
     fun toMyDateTime(date: String): String {
