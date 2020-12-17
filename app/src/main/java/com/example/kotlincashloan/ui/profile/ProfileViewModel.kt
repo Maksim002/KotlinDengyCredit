@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
+import com.example.kotlincashloan.service.model.profile.SaveProfileResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -212,6 +213,35 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorListSecretQuestion.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
+    val errorSaveProfile = MutableLiveData<String>()
+    var listSaveProfileDta = MutableLiveData<CommonResponse<ArrayList<SaveProfileResultModel>>>()
+
+    fun saveProfile(map: Map<String, String>){
+        RetrofitService.apiService().saveProfile(map).enqueue(object : Callback<CommonResponse<ArrayList<SaveProfileResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<SaveProfileResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorSaveProfile.postValue( "601")
+                }else{
+                    errorSaveProfile.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<SaveProfileResultModel>>>, response: Response<CommonResponse<ArrayList<SaveProfileResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listSaveProfileDta.postValue(response.body())
+                    }else{
+                        errorSaveProfile.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorSaveProfile.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     HomeActivity.alert.hide()

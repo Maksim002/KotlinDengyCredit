@@ -11,7 +11,7 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/profile_setting_layout"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -214,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
@@ -320,7 +320,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
@@ -416,7 +416,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14sp"
-                                android:text="Нномер телефона"/>
+                                android:text="Номер телефона"/>
 
                             <com.santalu.maskedittext.MaskEditText
                                 android:id="@+id/profile_setting_second_phone"
@@ -451,7 +451,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
@@ -532,6 +532,113 @@
                             android:layout_weight="1"
                             android:src="@drawable/ic_editing_text" />
                     </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="Введите новый пароль"/>
+
+                        <EditText
+                            android:id="@+id/profile_s_one_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="#001"
+                            android:background="@null"
+                            android:windowSoftInputMode="adjustResize"
+                            android:inputType="textPassword"
+                            android:textSize="17sp"
+                            android:hint="поле для вода"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_editing_text" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="Повторите пароль"/>
+
+                        <EditText
+                            android:id="@+id/profile_s_two_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:textColor="#001"
+                            android:background="@null"
+                            android:windowSoftInputMode="adjustResize"
+                            android:inputType="textPassword"
+                            android:textSize="17sp"
+                            android:hint="поле для вода"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_editing_text" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/profile_s_enter"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_marginLeft="3dp"
+                    android:text="Сохранить"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+                <TextView
+                    android:id="@+id/home_forget_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Обратиться в службу поддержки"
+                    android:textColor="#FF9900"
+                    android:textSize="15sp" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

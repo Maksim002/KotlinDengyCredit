@@ -9,5 +9,5 @@
         />
     <stroke
         android:width="1dip"
-        android:color="#B9BBBC" />
+        android:color="@color/colorLightGrey" />
 </shape>

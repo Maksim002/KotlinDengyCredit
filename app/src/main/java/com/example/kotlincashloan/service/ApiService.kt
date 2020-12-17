@@ -9,6 +9,7 @@ import com.example.kotlincashloan.service.model.Notification.ResultListNoticeMod
 import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
+import com.example.kotlincashloan.service.model.profile.SaveProfileResultModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -128,7 +129,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("error404?token=oYyxhIFgJjAb")
+    @POST("listNationality?token=oYyxhIFgJjAb")
     fun getListNationality(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListNationalityResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
@@ -140,5 +141,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listSecretQuestion?token=oYyxhIFgJjAb")
     fun listSecretQuestion(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("saveProfile?token=oYyxhIFgJjAb")
+    fun saveProfile(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SaveProfileResultModel>>>
 }
 
