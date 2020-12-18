@@ -145,6 +145,6 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("saveProfile?token=oYyxhIFgJjAb")
-    fun saveProfile(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SaveProfileResultModel>>>
+    fun saveProfile(@FieldMap params: Map<String, String>):Call<CommonResponse<SaveProfileResultModel>>
 }
 

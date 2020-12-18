@@ -187,39 +187,40 @@ class ProfileSettingFragment : Fragment(){
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
-                    val firstNationality = clientResult.phoneFirst!!.toInt() - 1
-                    val secondNationality = clientResult.phoneSecond!!.toInt() - 1
-                    codeNationality = clientResult.phoneFirst!!.toInt()
+                    if (clientResult.phoneFirst != ""  && clientResult.phoneSecond != "") {
+                        val firstNationality = clientResult.phoneFirst!!.toInt() - 1
+                        val secondNationality = clientResult.phoneSecond!!.toInt() - 1
 
-                    checkNumber = secondNationality
+                        codeNationality = clientResult.phoneFirst!!.toInt()
 
-                    numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
+                        checkNumber = secondNationality
 
-                    codeMack = result.result[secondNationality].phoneCode.toString()
+                        numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
 
-                    profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                    profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                    profile_setting_phone.setText(
-                        MyUtils.toMask(
-                            clientResult.firstPhone.toString(),
-                            result.result[firstNationality].phoneCode!!.length,
-                            result.result[firstNationality].phoneLength!!.toInt()
+                        codeMack = result.result[secondNationality].phoneCode.toString()
+
+                        profile_setting_phone.mask = result.result[firstNationality].phoneMask
+                        profile_setting_phone.mask = result.result[firstNationality].phoneMask
+                        profile_setting_phone.setText(
+                            MyUtils.toMask(
+                                clientResult.firstPhone.toString(),
+                                result.result[firstNationality].phoneCode!!.length,
+                                result.result[firstNationality].phoneLength!!.toInt()
+                            )
                         )
-                    )
 
-                    profile_setting_second_phone.mask =
-                        result.result[firstNationality].phoneMaskSmall
-                    profile_setting_second_phone.setText(
-                        MyUtils.toMask(
-                            clientResult.secondPhone.toString(),
-                            result.result[secondNationality].phoneCode!!.length,
-                            result.result[secondNationality].phoneLength!!.toInt()
+                        profile_setting_second_phone.mask =
+                            result.result[firstNationality].phoneMaskSmall
+                        profile_setting_second_phone.setText(
+                            MyUtils.toMask(
+                                clientResult.secondPhone.toString(),
+                                result.result[secondNationality].phoneCode!!.length,
+                                result.result[secondNationality].phoneLength!!.toInt()
+                            )
                         )
-                    )
-
                     profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
                     list = result.result
-
+                    }
                     val adapterListCountry = ArrayAdapter(
                         requireContext(),
                         android.R.layout.simple_dropdown_item_1line,
@@ -348,13 +349,24 @@ class ProfileSettingFragment : Fragment(){
         var textPasswordOne = ""
         var textPasswordTwo = ""
 
-        val mapProfile = HashMap<String, String>()
-        mapProfile.put("login", AppPreferences.login.toString())
-        mapProfile.put("token", AppPreferences.token.toString())
-        mapProfile.put("password", AppPreferences.password.toString())
-        mapProfile.put("second_phone", "")
-        mapProfile.put("question", "")
-        mapProfile.put("response", "")
+        profile_s_one_password.addTextChangedListener {
+            textPasswordOne = it.toString()
+        }
+
+        profile_s_two_password.addTextChangedListener {
+            textPasswordTwo = it.toString()
+        }
+
+        //метод удаляет все символы из строки
+        profile_setting_second_phone.addTextChangedListener {
+            if (profile_setting_second_phone.text.toString() != "") {
+                val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+                val result = StringBuilder()
+                for (matchedText in matchedResults) {
+                    reNum = result.append(matchedText.value).toString()
+                }
+            }
+        }
 
         access_restricted.setOnClickListener {
             initRestart()
@@ -374,31 +386,21 @@ class ProfileSettingFragment : Fragment(){
 
 
         profile_s_enter.setOnClickListener {
+            if (textPasswordOne == textPasswordTwo){
+                if (textPasswordOne != "") {
+                    AppPreferences.password = textPasswordOne
+                }
+            }
+
+            val mapProfile = HashMap<String, String>()
+            mapProfile.put("login", AppPreferences.login.toString())
+            mapProfile.put("token", AppPreferences.token.toString())
+            mapProfile.put("password", AppPreferences.password.toString())
+            mapProfile.put("second_phone", reNum)
+            mapProfile.put("question", profile_s_question.text.toString())
+            mapProfile.put("response", profile_s_response.text.toString())
             if (isValid()){
                 viewModel.saveProfile(mapProfile)
-            }
-        }
-
-        profile_s_one_password.addTextChangedListener {
-            textPasswordOne = it.toString()
-        }
-
-        profile_s_two_password.addTextChangedListener {
-            textPasswordTwo = it.toString()
-        }
-
-        if (textPasswordOne == textPasswordTwo){
-
-        }
-
-        //метод удаляет все символы из строки
-        profile_setting_second_phone.addTextChangedListener {
-            if (profile_setting_second_phone.text.toString() != "") {
-                val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
-                val result = StringBuilder()
-                for (matchedText in matchedResults) {
-                    reNum = result.append(matchedText.value).toString()
-                }
             }
         }
 

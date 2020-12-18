@@ -222,18 +222,18 @@ class ProfileViewModel : ViewModel(){
     }
 
     val errorSaveProfile = MutableLiveData<String>()
-    var listSaveProfileDta = MutableLiveData<CommonResponse<ArrayList<SaveProfileResultModel>>>()
+    var listSaveProfileDta = MutableLiveData<CommonResponse<SaveProfileResultModel>>()
 
     fun saveProfile(map: Map<String, String>){
-        RetrofitService.apiService().saveProfile(map).enqueue(object : Callback<CommonResponse<ArrayList<SaveProfileResultModel>>> {
-            override fun onFailure(call: Call<CommonResponse<ArrayList<SaveProfileResultModel>>>, t: Throwable) {
+        RetrofitService.apiService().saveProfile(map).enqueue(object : Callback<CommonResponse<SaveProfileResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<SaveProfileResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorSaveProfile.postValue( "601")
                 }else{
                     errorSaveProfile.postValue( "600")
                 }
             }
-            override fun onResponse(call: Call<CommonResponse<ArrayList<SaveProfileResultModel>>>, response: Response<CommonResponse<ArrayList<SaveProfileResultModel>>>) {
+            override fun onResponse(call: Call<CommonResponse<SaveProfileResultModel>>, response: Response<CommonResponse<SaveProfileResultModel>>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listSaveProfileDta.postValue(response.body())
