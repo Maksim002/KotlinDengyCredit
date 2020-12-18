@@ -51,6 +51,8 @@ class ProfileSettingFragment : Fragment(){
     private var codeNationality = 0
     private var numberAvailable = 0
     private var checkNumber = 0
+    private var codeMack = ""
+    private var reNum = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,14 +82,6 @@ class ProfileSettingFragment : Fragment(){
 
         val mapRegistration = HashMap<String, String>()
         mapRegistration.put("id", "")
-
-        val mapProfile = HashMap<String, String>()
-        mapProfile.put("login", "")
-        mapProfile.put("token", "")
-        mapProfile.put("password", "")
-        mapProfile.put("second_phone", "")
-        mapProfile.put("question", "")
-        mapProfile.put("response", "")
 
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
@@ -133,15 +127,11 @@ class ProfileSettingFragment : Fragment(){
                     } else if (viewModel.errorListSecretQuestion.value != null) {
                         viewModel.errorListSecretQuestion.value = null
                         viewModel.listSecretQuestion(mapRegistration)
-                    } else if (viewModel.errorSaveProfile.value != null) {
-                        viewModel.errorSaveProfile.value = null
-                        viewModel.saveProfile(mapProfile)
-                    } else {
+                    }else {
                         viewModel.listGender(mapGender)
                         viewModel.getListNationality(mapNationality)
                         viewModel.listAvailableCountry(mapRegistration)
                         viewModel.listSecretQuestion(mapRegistration)
-                        viewModel.saveProfile(mapProfile)
                         initResult()
                     }
                     initResult()
@@ -205,6 +195,8 @@ class ProfileSettingFragment : Fragment(){
 
                     numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
 
+                    codeMack = result.result[secondNationality].phoneCode.toString()
+
                     profile_setting_phone.mask = result.result[firstNationality].phoneMask
                     profile_setting_phone.mask = result.result[firstNationality].phoneMask
                     profile_setting_phone.setText(
@@ -224,8 +216,10 @@ class ProfileSettingFragment : Fragment(){
                             result.result[secondNationality].phoneLength!!.toInt()
                         )
                     )
+
                     profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
                     list = result.result
+
                     val adapterListCountry = ArrayAdapter(
                         requireContext(),
                         android.R.layout.simple_dropdown_item_1line,
@@ -236,6 +230,8 @@ class ProfileSettingFragment : Fragment(){
                     profile_s_mask.keyListener = null
                     profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
                         codeNationality = position
+                        codeMack = result.result[position].phoneCode.toString()
+                        numberAvailable = result.result[position].phoneLength!!.toInt()
                         profile_setting_second_phone.setText("")
                         profile_s_mask.showDropDown()
                         profile_s_mask.clearFocus()
@@ -319,9 +315,7 @@ class ProfileSettingFragment : Fragment(){
                 }
             })
 
-        viewModel.listSaveProfileDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        viewModel.listSaveProfileDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
 
                 }
@@ -351,6 +345,16 @@ class ProfileSettingFragment : Fragment(){
     }
 
     private fun initClick() {
+        var textPasswordOne = ""
+        var textPasswordTwo = ""
+
+        val mapProfile = HashMap<String, String>()
+        mapProfile.put("login", AppPreferences.login.toString())
+        mapProfile.put("token", AppPreferences.token.toString())
+        mapProfile.put("password", AppPreferences.password.toString())
+        mapProfile.put("second_phone", "")
+        mapProfile.put("question", "")
+        mapProfile.put("response", "")
 
         access_restricted.setOnClickListener {
             initRestart()
@@ -371,13 +375,31 @@ class ProfileSettingFragment : Fragment(){
 
         profile_s_enter.setOnClickListener {
             if (isValid()){
-
+                viewModel.saveProfile(mapProfile)
             }
         }
 
-        profile_setting_second_phone.addTextChangedListener {
-            var l = profile_setting_second_phone.text.toString()
+        profile_s_one_password.addTextChangedListener {
+            textPasswordOne = it.toString()
+        }
 
+        profile_s_two_password.addTextChangedListener {
+            textPasswordTwo = it.toString()
+        }
+
+        if (textPasswordOne == textPasswordTwo){
+
+        }
+
+        //метод удаляет все символы из строки
+        profile_setting_second_phone.addTextChangedListener {
+            if (profile_setting_second_phone.text.toString() != "") {
+                val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+                val result = StringBuilder()
+                for (matchedText in matchedResults) {
+                    reNum = result.append(matchedText.value).toString()
+                }
+            }
         }
 
         profile_setting_second_phone.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
@@ -482,8 +504,6 @@ class ProfileSettingFragment : Fragment(){
         profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
         profile_s_question.setText(clientResult.question)
         profile_s_response.setText(clientResult.response)
-
-
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -549,10 +569,11 @@ class ProfileSettingFragment : Fragment(){
             profile_setting_second_phone.error = "Поле не должно быть пустым"
             valid = false
         }
-//        else if (profile_setting_second_phone.text.toString().length != numberAvailable + 2 ){
-//            profile_setting_second_phone.error = "Номер введен неправильно"
-//            valid = false
-//        }
+        else if ( reNum.length != numberAvailable){
+            profile_setting_second_phone.error = "Номер введен неправильно"
+            profile_setting_second_phone.requestFocus()
+            valid = false
+        }
 
         if (profile_s_response.text!!.toString().isEmpty()) {
             profile_s_response.error = "Ответ не должно быть пустым"
