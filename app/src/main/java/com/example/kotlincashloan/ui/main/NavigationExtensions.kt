@@ -1,4 +1,3 @@
-
 package com.example.android.navigationadvancedsample
 
 import android.content.Intent
@@ -28,6 +27,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 
 // Map of tags
 val graphIdToTagMap = SparseArray<String>()
+
 // Result. Mutable live data with the selected controlled
 val selectedNavController = MutableLiveData<NavController>()
 
@@ -39,7 +39,12 @@ var selectedItemTag: String = ""
 var firstFragmentTag: String = ""
 var isOnFirstFragment: Boolean = false
 
-fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragmentManager: FragmentManager, containerId: Int, intent: Intent): LiveData<NavController> {
+fun BottomNavigationView.setupWithNavController(
+    navGraphIds: List<Int>,
+    fragmentManager: FragmentManager,
+    containerId: Int,
+    intent: Intent
+): LiveData<NavController> {
 
     // First create a NavHostFragment for each NavGraph ID
     navGraphIds.forEachIndexed { index, navGraphId ->
@@ -76,9 +81,9 @@ fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragment
     }
 
     // Now connect selecting an item with swapping Fragments
-     selectedItemTag = graphIdToTagMap[this.selectedItemId]
-     firstFragmentTag = graphIdToTagMap[firstFragmentGraphId]
-     isOnFirstFragment = selectedItemTag == firstFragmentTag
+    selectedItemTag = graphIdToTagMap[this.selectedItemId]
+    firstFragmentTag = graphIdToTagMap[firstFragmentGraphId]
+    isOnFirstFragment = selectedItemTag == firstFragmentTag
     // When a navigation item is selected
     setOnNavigationItemSelectedListener { item ->
         // Don't do anything if the state is state has already been saved.
@@ -88,8 +93,10 @@ fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragment
             val newlySelectedItemTag = graphIdToTagMap[item.itemId]
             if (selectedItemTag != newlySelectedItemTag) {
                 // Pop everything above the first fragment (the "fixed start destination")
-                fragmentManager.popBackStack(firstFragmentTag,
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                fragmentManager.popBackStack(
+                    firstFragmentTag,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
                 val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
                         as NavHostFragment
 
@@ -101,7 +108,8 @@ fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragment
                         R.anim.default_enter_anim,
                         R.anim.default_exit_anim,
                         R.anim.default_pop_enter_anim,
-                        R.anim.default_pop_exit_anim)
+                        R.anim.default_pop_exit_anim
+                    )
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
                         .apply {
@@ -149,17 +157,17 @@ fun BottomNavigationView.setupWithNavController(navGraphIds: List<Int>, fragment
     return selectedNavController
 }
 
-fun BottomNavigationView.ClickPushNotification(){
+fun BottomNavigationView.ClickPushNotification() {
     var numberKey = ""
     numberKey = AppPreferences.dataKey.toString()
     val menu: Menu = MenuBuilder(context)
     MenuInflater(context).inflate(R.menu.bottom_nav_menu, menu)
-    if (AppPreferences.dataKey != null){
-        this.selectedItemId = when(AppPreferences.dataKey){
-            "0"-> R.id.navigation_loans
-            "1"-> R.id.navigation_notification
-            "2"-> R.id.navigation_profile
-            "3"-> R.id.navigation_support
+    if (AppPreferences.dataKey != null) {
+        this.selectedItemId = when (AppPreferences.dataKey) {
+            "0" -> R.id.navigation_loans
+            "1" -> R.id.navigation_notification
+            "2" -> R.id.navigation_profile
+            "3" -> R.id.navigation_support
             else -> R.id.navigation_still
         }
         // Don't do anything if the state is state has already been saved.
@@ -169,9 +177,12 @@ fun BottomNavigationView.ClickPushNotification(){
             val newlySelectedItemTag = graphIdToTagMap[menu.getItem(numberKey.toInt()).itemId]
             if (selectedItemTag != newlySelectedItemTag) {
                 // Pop everything above the first fragment (the "fixed start destination")
-                fragmentManagers!!.popBackStack(firstFragmentTag,
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                val selectedFragment = fragmentManagers!!.findFragmentByTag(newlySelectedItemTag) as NavHostFragment
+                fragmentManagers!!.popBackStack(
+                    firstFragmentTag,
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+                val selectedFragment =
+                    fragmentManagers!!.findFragmentByTag(newlySelectedItemTag) as NavHostFragment
 
                 // Exclude the first fragment tag because it's always in the back stack.
                 if (firstFragmentTag != newlySelectedItemTag) {
@@ -222,7 +233,8 @@ private fun BottomNavigationView.setupDeepLinks(
         )
         // Handle Intent
         if (navHostFragment.navController.handleDeepLink(intent)
-                && selectedItemId != navHostFragment.navController.graph.id) {
+            && selectedItemId != navHostFragment.navController.graph.id
+        ) {
             this.selectedItemId = navHostFragment.navController.graph.id
         }
     }
@@ -235,7 +247,7 @@ private fun BottomNavigationView.setupItemReselected(
     setOnNavigationItemReselectedListener { item ->
         val newlySelectedItemTag = graphIdToTagMap[item.itemId]
         val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
-            as NavHostFragment
+                as NavHostFragment
         val navController = selectedFragment.navController
         // Pop the back stack to the start destination of the current navController graph
         navController.popBackStack(
@@ -244,7 +256,10 @@ private fun BottomNavigationView.setupItemReselected(
     }
 }
 
-private fun detachNavHostFragment(fragmentManager: FragmentManager, navHostFragment: NavHostFragment) {
+private fun detachNavHostFragment(
+    fragmentManager: FragmentManager,
+    navHostFragment: NavHostFragment
+) {
     fragmentManager.beginTransaction()
         .detach(navHostFragment)
         .commitNow()
@@ -256,10 +271,10 @@ private fun attachNavHostFragment(
     isPrimaryNavFragment: Boolean
 ) {
     fragmentManager.beginTransaction().attach(navHostFragment).apply {
-            if (isPrimaryNavFragment) {
-                setPrimaryNavigationFragment(navHostFragment)
-            }
+        if (isPrimaryNavFragment) {
+            setPrimaryNavigationFragment(navHostFragment)
         }
+    }
         .commitNow()
 
 }

@@ -8,6 +8,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:197530468794:android:503fdcb5184de62a291d83",
+        "android_client_info": {
+          "package_name": "com.credit.dengi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "197530468794-28sbpalhgebcujf0vosqkmdvhpg547lk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4U8t6CxSYQ43G_c00brBDjmQmy8LjX0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197530468794-28sbpalhgebcujf0vosqkmdvhpg547lk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:197530468794:android:cff464c8466ce99f291d83",
         "android_client_info": {
           "package_name": "com.example.kotlincashloan"

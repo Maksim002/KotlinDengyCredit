@@ -98,7 +98,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (AppPreferences.dataKey != "") {
+        // Я сменил "" на "null"
+        if (AppPreferences.dataKey != "null") {
             bottomNavigationView.ClickPushNotification()
         }
     }
