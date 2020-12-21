@@ -108,7 +108,40 @@
                 android:orientation="vertical">
 
 
-                <LinearLayout
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="14sp"
+                                android:text="Фамилия"/>
+
+                            <EditText
+                                android:id="@+id/profile_setting_second_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:textColor="#001"
+                                android:background="@null"
+                                android:enabled="false"
+                                android:inputType="textPersonName"
+                                android:textSize="17sp"
+                                android:text="Черепанов"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
@@ -261,39 +294,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.1"
                             android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/circle_orange_background_edit"
-                                android:orientation="horizontal"
-                                android:padding="16dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="Фамилия"
-                                        android:textSize="14sp" />
-
-                                    <EditText
-                                        android:id="@+id/profile_setting_second_name"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="3dp"
-                                        android:background="@null"
-                                        android:enabled="false"
-                                        android:inputType="textPersonName"
-                                        android:text="Черепанов"
-                                        android:textColor="#001"
-                                        android:textSize="17sp" />
-                                </LinearLayout>
-                            </LinearLayout>
 
                             <TextView
                                 android:layout_width="match_parent"

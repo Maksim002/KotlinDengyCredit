@@ -101,7 +101,6 @@ class ProfileSettingFragment : Fragment(){
             errorListSecretQuestion ="601"
         } else {
             if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null && viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null) {
-//                if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
@@ -111,7 +110,6 @@ class ProfileSettingFragment : Fragment(){
                         viewModel.listSecretQuestion(mapRegistration)
                         initResult()
                     }, 500)
-//                }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListGender.value != null) {

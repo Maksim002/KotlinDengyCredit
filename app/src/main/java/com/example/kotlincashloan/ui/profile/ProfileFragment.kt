@@ -126,42 +126,51 @@ class ProfileFragment : Fragment() {
 
         //если все успешно
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                list = result.result
-                initPager()
-                errorCode = result.code.toString()
-
-            } else {
-                if (result.error.code != null) {
-                    errorCode = result.error.code.toString()
-                } else if (result.code != null) {
+            try {
+                if (result.result != null) {
+                    list = result.result
+                    initPager()
                     errorCode = result.code.toString()
+
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = result.error.code.toString()
+                    } else if (result.code != null) {
+                        errorCode = result.code.toString()
+                    }
+                    listListResult(result.error.code!!)
                 }
-                listListResult(result.error.code!!)
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            profile_swipe.isRefreshing = false
-            if (errorCode == "200" && errorCodeClient == "200") {
-                resultSuccessfully()
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                profile_swipe.isRefreshing = false
+                if (errorCode == "200" && errorCodeClient == "200") {
+                    resultSuccessfully()
+                }
+            }catch (e: Exception){
+                e.printStackTrace()
             }
         })
 
+
         //если все успешно
         viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                profile_fio.setText(result.result.firstName + " " + result.result.lastName)
-                bundle.putSerializable("client", result.result)
-                errorCodeClient = result.code.toString()
-            } else {
-                if (result!!.error.code != null) {
-                    errorCodeClient = result.error.code.toString()
-                } else if (result.code != null) {
+            try {
+                if (result.result != null) {
+                    profile_fio.setText(result.result.firstName + " " + result.result.lastName)
+                    bundle.putSerializable("client", result.result)
                     errorCodeClient = result.code.toString()
+                } else {
+                    if (result!!.error.code != null) {
+                        errorCodeClient = result.error.code.toString()
+                    } else if (result.code != null) {
+                        errorCodeClient = result.code.toString()
+                    }
+                    listListResult(result.error.code!!)
                 }
-                listListResult(result.error.code!!)
-            }
-            if (errorCode == "200" && errorCodeClient == "200") {
-                resultSuccessfully()
+                if (errorCode == "200" && errorCodeClient == "200") {
+                    resultSuccessfully()
+                }
+            }catch (e: Exception){
+                e.printStackTrace()
             }
         })
     }
@@ -272,7 +281,10 @@ class ProfileFragment : Fragment() {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 initRestart()
@@ -299,7 +311,7 @@ class ProfileFragment : Fragment() {
             errorCode = "601"
             errorCodeClient = "601"
         } else {
-            if (viewModel.listListOperationDta.value == null || viewModel.listClientInfoDta.value == null) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null) {
                 if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -312,10 +324,13 @@ class ProfileFragment : Fragment() {
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListOperation.value != null) {
+                        viewModel.listListOperationDta.postValue(null)
                         viewModel.errorListOperation.value = null
-                    }
-                    if (viewModel.errorClientInfo.value != null) {
+                        viewModel.listOperation(map)
+                    } else if (viewModel.errorClientInfo.value != null) {
+                        viewModel.listClientInfoDta.postValue(null)
                         viewModel.errorClientInfo.value = null
+                        viewModel.clientInfo(map)
                     }
                     viewModel.listOperation(map)
                     viewModel.clientInfo(map)
@@ -362,10 +377,12 @@ class ProfileFragment : Fragment() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags =
+                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))

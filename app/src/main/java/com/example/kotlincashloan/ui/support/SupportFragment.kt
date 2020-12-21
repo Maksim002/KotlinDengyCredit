@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 
 
 class SupportFragment : Fragment() {
@@ -33,7 +34,8 @@ class SupportFragment : Fragment() {
     private var viewModel = SupportViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-//    private var refresh = false
+
+    //    private var refresh = false
     private var errorCode = ""
 
     override fun onCreateView(
@@ -59,13 +61,13 @@ class SupportFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (viewModel.listFaqDta.value != null){
-            if (errorCode == "200"){
+        if (viewModel.listFaqDta.value != null) {
+            if (errorCode == "200") {
                 initRecycler()
-            }else{
+            } else {
                 initRestart()
             }
-        }else{
+        } else {
             viewModel.refreshCode = false
             initRestart()
         }
@@ -100,7 +102,10 @@ class SupportFragment : Fragment() {
                 }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.error.value = null
+                    if (viewModel.error.value != null) {
+                        viewModel.listFaqDta.postValue(null)
+                        viewModel.error.value = null
+                    }
                     viewModel.listFaq(map)
                     initRecycler()
                 }, 500)
@@ -128,7 +133,10 @@ class SupportFragment : Fragment() {
 
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
 //                refresh = true
@@ -140,50 +148,55 @@ class SupportFragment : Fragment() {
 
     private fun initRecycler() {
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                myAdapter.update(result.result)
-                profile_recycler.adapter = myAdapter
-                initVisibilities()
-                support_swipe_layout.visibility = View.VISIBLE
-                support_no_connection.visibility = View.GONE
-                support_not_found.visibility = View.GONE
-                support_technical_work.visibility = View.GONE
-                layout_access_restricted.visibility = View.GONE
-                errorCode = result.code.toString()
-            } else {
-                if (result.error.code != null){
-                    errorCode = result.error.code.toString()
-                }
-                if (result.error.code == 403) {
-                    layout_access_restricted.visibility = View.VISIBLE
-                    support_swipe_layout.visibility = View.GONE
+            try {
+                if (result.result != null) {
+                    myAdapter.update(result.result)
+                    profile_recycler.adapter = myAdapter
+                    initVisibilities()
+                    support_swipe_layout.visibility = View.VISIBLE
                     support_no_connection.visibility = View.GONE
-                    support_technical_work.visibility = View.GONE
                     support_not_found.visibility = View.GONE
-                } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                    support_technical_work.visibility = View.VISIBLE
-                    support_swipe_layout.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
-                    support_not_found.visibility = View.GONE
-                } else if (result.error.code == 404) {
-                    support_not_found.visibility = View.VISIBLE
-                    support_swipe_layout.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
                     support_technical_work.visibility = View.GONE
-                } else if (result.error.code == 401) {
-                    initAuthorized()
+                    layout_access_restricted.visibility = View.GONE
+                    errorCode = result.code.toString()
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = result.error.code.toString()
+                    }
+                    if (result.error.code == 403) {
+                        layout_access_restricted.visibility = View.VISIBLE
+                        support_swipe_layout.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        support_technical_work.visibility = View.GONE
+                        support_not_found.visibility = View.GONE
+                    } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                        support_technical_work.visibility = View.VISIBLE
+                        support_swipe_layout.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        layout_access_restricted.visibility = View.GONE
+                        support_not_found.visibility = View.GONE
+                    } else if (result.error.code == 404) {
+                        support_not_found.visibility = View.VISIBLE
+                        support_swipe_layout.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        layout_access_restricted.visibility = View.GONE
+                        support_technical_work.visibility = View.GONE
+                    } else if (result.error.code == 401) {
+                        initAuthorized()
+                    }
                 }
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            support_swipe_layout.isRefreshing = false
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                support_swipe_layout.isRefreshing = false
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                HomeActivity.alert.hide()
 //            },600)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         })
+
         viewModel.error.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null){
+            if (error != null) {
                 errorCode = error
             }
             if (error == "404") {
@@ -237,10 +250,12 @@ class SupportFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            systemUiVisibilityFlags =
+                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
             decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))

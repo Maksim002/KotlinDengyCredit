@@ -16,6 +16,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
@@ -25,6 +26,7 @@ import com.example.kotlincashloan.adapter.profile.MyOperationModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_notification.*
@@ -33,6 +35,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 import java.util.HashMap
 
 class NotificationFragment : Fragment(), NotificationListener {
@@ -101,7 +104,10 @@ class NotificationFragment : Fragment(), NotificationListener {
                 }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.errorNotice.value = null
+                    if (viewModel.errorNotice.value != null){
+                        viewModel.errorNotice.value = null
+                        viewModel.listNoticeDta.postValue(null)
+                    }
                     viewModel.listNotice(map)
                     initRecycler()
                 }, 500)
@@ -123,47 +129,52 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initRecycler() {
         viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                myAdapter.update(result.result)
-                notification_recycler.adapter = myAdapter
-                myAdapter.notifyDataSetChanged()
-                notification_swipe.visibility = View.VISIBLE
-                notification_technical_work.visibility = View.GONE
-                notification_access_restricted.visibility = View.GONE
-                notification_no_connection.visibility = View.GONE
-                notification_not_found.visibility = View.GONE
-                errorCode = result.code.toString()
-            } else {
-                if (result.error.code != null){
-                    errorCode = ""
-                }
-                if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                    notification_technical_work.visibility = View.VISIBLE
+            try {
+                if (result.result != null) {
+                    myAdapter.update(result.result)
+                    notification_recycler.adapter = myAdapter
+                    myAdapter.notifyDataSetChanged()
+                    notification_swipe.visibility = View.VISIBLE
+                    notification_technical_work.visibility = View.GONE
                     notification_access_restricted.visibility = View.GONE
                     notification_no_connection.visibility = View.GONE
                     notification_not_found.visibility = View.GONE
-                    notification_swipe.visibility = View.GONE
-                } else if (result.error.code == 403) {
-                    notification_access_restricted.visibility = View.VISIBLE
-                    notification_technical_work.visibility = View.GONE
-                    notification_no_connection.visibility = View.GONE
-                    notification_not_found.visibility = View.GONE
-                    notification_swipe.visibility = View.GONE
-                } else if (result.error.code == 404) {
-                    notification_not_found.visibility = View.VISIBLE
-                    notification_access_restricted.visibility = View.GONE
-                    notification_technical_work.visibility = View.GONE
-                    notification_no_connection.visibility = View.GONE
-                    notification_swipe.visibility = View.GONE
-                } else if (result.error.code == 401) {
-                    initAuthorized()
+                    errorCode = result.code.toString()
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = ""
+                    }
+                    if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                        notification_technical_work.visibility = View.VISIBLE
+                        notification_access_restricted.visibility = View.GONE
+                        notification_no_connection.visibility = View.GONE
+                        notification_not_found.visibility = View.GONE
+                        notification_swipe.visibility = View.GONE
+                    } else if (result.error.code == 403) {
+                        notification_access_restricted.visibility = View.VISIBLE
+                        notification_technical_work.visibility = View.GONE
+                        notification_no_connection.visibility = View.GONE
+                        notification_not_found.visibility = View.GONE
+                        notification_swipe.visibility = View.GONE
+                    } else if (result.error.code == 404) {
+                        notification_not_found.visibility = View.VISIBLE
+                        notification_access_restricted.visibility = View.GONE
+                        notification_technical_work.visibility = View.GONE
+                        notification_no_connection.visibility = View.GONE
+                        notification_swipe.visibility = View.GONE
+                    } else if (result.error.code == 401) {
+                        initAuthorized()
+                    }
                 }
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            notification_swipe.isRefreshing = false
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                notification_swipe.isRefreshing = false
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                HomeActivity.alert.hide()
 //            },200)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+
         })
 
         viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
