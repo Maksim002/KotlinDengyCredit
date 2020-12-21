@@ -9,10 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +19,7 @@ import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
@@ -34,6 +32,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import org.aviran.cookiebar2.CookieBar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,6 +52,7 @@ class ProfileSettingFragment : Fragment(){
     private var checkNumber = 0
     private var codeMack = ""
     private var reNum = ""
+    private var reView = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,10 +99,9 @@ class ProfileSettingFragment : Fragment(){
             errorCodeNationality = "601"
             errorListAvailableCountry = "601"
             errorListSecretQuestion ="601"
-            errorSaveProfile = "601"
         } else {
             if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null && viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null) {
-                if (!viewModel.refreshCode) {
+//                if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
@@ -112,7 +111,7 @@ class ProfileSettingFragment : Fragment(){
                         viewModel.listSecretQuestion(mapRegistration)
                         initResult()
                     }, 500)
-                }
+//                }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListGender.value != null) {
@@ -145,7 +144,7 @@ class ProfileSettingFragment : Fragment(){
         //получение полов
         viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
             if (result.result != null) {
-                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt()].name)
+                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() -1].name)
                 errorCodeGender = result.code.toString()
                 resultSuccessfully()
             } else {
@@ -165,7 +164,7 @@ class ProfileSettingFragment : Fragment(){
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
-                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt()].name)
+                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt()-1].name)
                     errorCodeNationality = result.code.toString()
                     resultSuccessfully()
                 } else {
@@ -316,10 +315,17 @@ class ProfileSettingFragment : Fragment(){
                 }
             })
 
+        //результат о сохронение данных
         viewModel.listSaveProfileDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
-
+                    if (reView == true)
+                    CookieBar.build(requireActivity())
+                        .setCustomView(R.layout.item_custom_cookie)
+                        .setDuration(5000)
+                        .setCookiePosition(Gravity.TOP)
+                        .show()
                 }
+            reView = false
             })
 
         viewModel.errorSaveProfile.observe(
@@ -353,8 +359,22 @@ class ProfileSettingFragment : Fragment(){
             textPasswordOne = it.toString()
         }
 
+        click_s_one_password.setOnClickListener {
+            profile_s_one_password.requestFocus()
+            profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_one_password, 0)
+        }
+
         profile_s_two_password.addTextChangedListener {
             textPasswordTwo = it.toString()
+        }
+
+        click_s_two_password.setOnClickListener {
+            profile_s_two_password.requestFocus()
+            profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_two_password, 0)
         }
 
         //метод удаляет все символы из строки
@@ -384,8 +404,14 @@ class ProfileSettingFragment : Fragment(){
             initRestart()
         }
 
+        home_forget_password.setOnClickListener {
+            val intent = Intent(context, ContactingServiceActivity::class.java)
+            startActivity(intent)
+        }
+
 
         profile_s_enter.setOnClickListener {
+            reView = true
             if (textPasswordOne == textPasswordTwo){
                 if (textPasswordOne != "") {
                     AppPreferences.password = textPasswordOne
@@ -517,6 +543,7 @@ class ProfileSettingFragment : Fragment(){
 
     override fun onResume() {
         super.onResume()
+        profile_owner.requestFocus()
         if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null) {
             if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200") {
                 AppPreferences.reviewCode = 1

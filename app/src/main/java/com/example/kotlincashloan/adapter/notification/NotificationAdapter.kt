@@ -27,7 +27,7 @@ class NotificationAdapter(var listener: NotificationListener, item: ArrayList<Re
         holder.itemView.notification_date.text = item.date
 
         if (reviewCode == 0) {
-            if (item.review == true) {
+            if (item.review == false) {
                 holder.itemView.notification_review.visibility = View.VISIBLE
             } else {
                 holder.itemView.notification_review.visibility = View.GONE

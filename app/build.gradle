@@ -106,4 +106,7 @@ dependencies {
 
     //the frame for the date selection
     implementation project(path: ':SpinnerDatePickerLib')
+
+    //anim bottom bar
+    implementation 'org.aviran.cookiebar2:cookiebar2:1.1.4'
 }

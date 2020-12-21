@@ -108,40 +108,7 @@
                 android:orientation="vertical">
 
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textSize="14sp"
-                                android:text="Фамилия"/>
-
-                            <EditText
-                                android:id="@+id/profile_setting_second_name"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:textColor="#001"
-                                android:background="@null"
-                                android:enabled="false"
-                                android:inputType="textPersonName"
-                                android:textSize="17sp"
-                                android:text="Черепанов"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="16dp"
@@ -294,6 +261,39 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0.1"
                             android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/circle_orange_background_edit"
+                                android:orientation="horizontal"
+                                android:padding="16dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="0.1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Фамилия"
+                                        android:textSize="14sp" />
+
+                                    <EditText
+                                        android:id="@+id/profile_setting_second_name"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="3dp"
+                                        android:background="@null"
+                                        android:enabled="false"
+                                        android:inputType="textPersonName"
+                                        android:text="Черепанов"
+                                        android:textColor="#001"
+                                        android:textSize="17sp" />
+                                </LinearLayout>
+                            </LinearLayout>
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -561,12 +561,13 @@
                             android:textColor="#001"
                             android:background="@null"
                             android:windowSoftInputMode="adjustResize"
-                            android:inputType="textPassword"
+                            android:inputType="text"
                             android:textSize="17sp"
                             android:hint="поле для вода"/>
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/click_s_one_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -602,12 +603,13 @@
                             android:textColor="#001"
                             android:background="@null"
                             android:windowSoftInputMode="adjustResize"
-                            android:inputType="textPassword"
+                            android:inputType="text"
                             android:textSize="17sp"
                             android:hint="поле для вода"/>
                     </LinearLayout>
 
                     <ImageView
+                        android:id="@+id/click_s_two_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -640,6 +642,11 @@
                     android:textColor="#FF9900"
                     android:textSize="15sp" />
             </LinearLayout>
+
+            <include
+                android:id="@+id/profile_owner"
+                layout="@layout/item_focus" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

@@ -52,7 +52,9 @@
         <activity android:name="com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".ui.loans.GetLoanActivity" />
+        <activity android:name=".ui.loans.GetLoanActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
 
         <meta-data
             android:name="preloaded_fonts"

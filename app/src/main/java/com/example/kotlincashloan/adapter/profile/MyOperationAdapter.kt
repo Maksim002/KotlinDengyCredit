@@ -23,7 +23,7 @@ class MyOperationAdapter (var listener: OperationListener ,item: ArrayList<Resul
         holder.itemView.operation_description.text = item.description
 
         if (AppPreferences.reviewCode == 0) {
-            if (item.review == true) {
+            if (item.review == false) {
                 holder.itemView.operation_review.visibility = View.VISIBLE
             } else {
                 holder.itemView.operation_review.visibility = View.GONE

@@ -127,9 +127,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListGender.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
             }
         })
     }
@@ -156,9 +153,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListNationality.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
             }
         })
     }
@@ -185,9 +179,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListAvailableCountry.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
             }
         })
     }
@@ -243,9 +234,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorSaveProfile.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
             }
         })
     }

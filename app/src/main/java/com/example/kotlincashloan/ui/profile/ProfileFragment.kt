@@ -38,7 +38,6 @@ class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-    private var refresh = false
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
     private var errorCode = ""
     private var errorCodeClient = ""
