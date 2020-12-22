@@ -8,6 +8,12 @@
     android:orientation="vertical"
     tools:context=".ui.profile.ProfileFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/profile_s_swipe"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/profile_setting_layout"
         android:layout_width="match_parent"
@@ -85,12 +91,16 @@
                     android:layout_marginLeft="16dp"
                     android:src="@drawable/ic_a_tube" />
 
-                <TextView
+                <com.santalu.maskedittext.MaskEditText
                     android:id="@+id/profile_setting_first"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:paddingRight="34dp"
+                    android:enabled="false"
+                    android:background="@null"
+                    android:windowSoftInputMode="adjustResize"
+                    android:inputType="textPersonName"
                     android:drawableRight="@drawable/ic_editing_grey"
                     android:layout_marginLeft="11dp"
                     android:text="+996 700 700 540"
@@ -316,41 +326,6 @@
                         </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textSize="14sp"
-                                android:text="Номер телефона"/>
-
-                            <com.santalu.maskedittext.MaskEditText
-                                android:id="@+id/profile_setting_phone"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:textColor="#001"
-                                android:enabled="false"
-                                android:background="@null"
-                                android:windowSoftInputMode="adjustResize"
-                                android:inputType="textPersonName"
-                                android:textSize="17sp"
-                                android:text="+996700700540"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -365,7 +340,7 @@
                         android:paddingBottom="16dp"
                         android:paddingRight="5dp"
                         android:layout_marginRight="5dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
@@ -401,7 +376,7 @@
                         android:layout_height="wrap_content"
                         android:padding="16dp"
                         android:layout_weight="0.4"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="20dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
 
@@ -644,11 +619,12 @@
             </LinearLayout>
 
             <include
-                android:id="@+id/profile_owner"
+                android:id="@+id/profile_s_owner"
                 layout="@layout/item_focus" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/profile_s_access_restricted"

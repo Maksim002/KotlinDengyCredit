@@ -70,7 +70,7 @@ class ProfileFragment : Fragment() {
     private fun initClick() {
 
         profile_your.setOnClickListener {
-            findNavController().navigate(R.id.profile_setting_navigation, bundle)
+            findNavController().navigate(R.id.profile_setting_navigation)
         }
 
         access_restricted.setOnClickListener {

@@ -27,6 +27,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -43,6 +44,7 @@ class ProfileSettingFragment : Fragment() {
     private var errorListAvailableCountry = ""
     private var errorListSecretQuestion = ""
     private var errorSaveProfile = ""
+    private var errorClientInfo = ""
     val handler = Handler()
     var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
@@ -65,7 +67,6 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
@@ -83,6 +84,10 @@ class ProfileSettingFragment : Fragment() {
         val mapRegistration = HashMap<String, String>()
         mapRegistration.put("id", "")
 
+        val mapInfo = HashMap<String, String>()
+        mapInfo.put("login", AppPreferences.login.toString())
+        mapInfo.put("token", AppPreferences.token.toString())
+
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -90,41 +95,57 @@ class ProfileSettingFragment : Fragment() {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+            viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
             viewModel.errorListNationality.value = null
             viewModel.errorListAvailableCountry.value = null
             viewModel.errorListSecretQuestion.value = null
             viewModel.errorSaveProfile.value = null
+            errorClientInfo = "601"
             errorCodeGender = "601"
             errorCodeNationality = "601"
             errorListAvailableCountry = "601"
             errorListSecretQuestion = "601"
         } else {
-            if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null && viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null) {
-                HomeActivity.alert.show()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.refreshCode = false
-                    viewModel.listGender(mapGender)
-                    viewModel.getListNationality(mapNationality)
-                    viewModel.listAvailableCountry(mapRegistration)
-                    viewModel.listSecretQuestion(mapRegistration)
-                    initResult()
-                }, 500)
+            if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null &&
+                viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null && viewModel.errorClientInfo.value == null) {
+                if (!viewModel.refreshCode) {
+                    HomeActivity.alert.show()
+                }
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        viewModel.refreshCode = false
+                        viewModel.clientInfo(mapInfo)
+                        viewModel.listGender(mapGender)
+                        viewModel.getListNationality(mapNationality)
+                        viewModel.listAvailableCountry(mapRegistration)
+                        viewModel.listSecretQuestion(mapRegistration)
+                        initResult()
+                    }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListGender.value != null) {
                         viewModel.errorListGender.value = null
                         viewModel.listGenderDta.postValue(null)
+                        viewModel.listGender(mapGender)
                     } else if (viewModel.errorListNationality.value != null) {
                         viewModel.errorListNationality.value = null
                         viewModel.listNationalityDta.postValue(null)
+                        viewModel.getListNationality(mapNationality)
                     } else if (viewModel.errorListAvailableCountry.value != null) {
                         viewModel.errorListAvailableCountry.value = null
                         viewModel.listAvailableCountryDta.postValue(null)
+                        viewModel.listAvailableCountry(mapRegistration)
                     } else if (viewModel.errorListSecretQuestion.value != null) {
                         viewModel.errorListSecretQuestion.value = null
                         viewModel.listSecretQuestionDta.postValue(null)
+                        viewModel.listSecretQuestion(mapRegistration)
+                    } else if (viewModel.errorClientInfo.value != null) {
+                        viewModel.listClientInfoDta.postValue(null)
+                        viewModel.errorClientInfo.value = null
+                        viewModel.clientInfo(mapInfo)
                     } else {
+                        viewModel.clientInfo(mapInfo)
                         viewModel.listGender(mapGender)
                         viewModel.getListNationality(mapNationality)
                         viewModel.listAvailableCountry(mapRegistration)
@@ -139,189 +160,242 @@ class ProfileSettingFragment : Fragment() {
     }
 
     private fun initResult() {
-        //получение полов
-        viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
-            if (result.result != null) {
-                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() - 1].name)
-                errorCodeGender = result.code.toString()
-                resultSuccessfully()
-            } else {
-                listListResult(result.error.code!!)
-            }
-        })
 
-        viewModel.errorListGender.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
-            if (error != null) {
-                errorCodeGender = error
-                errorList(error)
-            }
-        })
-
-        //получение гражданства
-        viewModel.listNationalityDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        //если все успешно получает информацию о пользователе
+        viewModel.listClientInfoDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+            try {
                 if (result.result != null) {
-                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt() - 1].name)
-                    errorCodeNationality = result.code.toString()
+                    clientResult = result.result
+                    profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
+                    profile_setting_second_name.setText(clientResult.secondName)
+                    profile_setting_first_name.setText(clientResult.firstName)
+                    profile_setting_last_name.setText(clientResult.lastName)
+                    profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
+                    profile_s_question.setText(clientResult.question)
+                    profile_s_response.setText(clientResult.response)
+                    errorClientInfo = result.code.toString()
                     resultSuccessfully()
+
+                    //получение полов
+                    viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+                        if (result.result != null) {
+                            profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() - 1].name)
+                            errorCodeGender = result.code.toString()
+                            resultSuccessfully()
+                        } else {
+                            listListResult(result.error.code!!)
+                        }
+                    })
+
+                    viewModel.errorListGender.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
+                        if (error != null) {
+                            errorCodeGender = error
+                            errorList(error)
+                        }
+                    })
+
+                    //получение гражданства
+                    viewModel.listNationalityDta.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { result ->
+                            try {
+                                if (result.result != null) {
+                                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt() - 1].name)
+                                    errorCodeNationality = result.code.toString()
+                                    resultSuccessfully()
+                                } else {
+                                    listListResult(result.error.code!!)
+                                }
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
+                        })
+
+                    viewModel.errorListNationality.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { error ->
+                            try {
+                                if (error != null) {
+                                    errorCodeNationality = error
+                                    errorList(error)
+                                }
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
+                        })
+
+                    //Список доступных стран
+                    viewModel.listAvailableCountryDta.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { result ->
+                            try {
+                                if (result.result != null) {
+                                    if (clientResult.phoneFirst != "" && clientResult.phoneSecond != "") {
+                                        profile_setting_second_phone.mask = null
+                                        profile_setting_first.mask = null
+
+                                        val firstNationality = clientResult.phoneFirst!!.toInt() - 1
+                                        val secondNationality = clientResult.phoneSecond!!.toInt() - 1
+
+                                        codeNationality = secondNationality
+
+                                        checkNumber = secondNationality
+
+                                        numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
+
+                                        codeMack = result.result[secondNationality].phoneCode.toString()
+
+                                        profile_setting_first.mask = result.result[firstNationality].phoneMask
+                                        profile_setting_first.setText(
+                                            MyUtils.toMask(
+                                                clientResult.firstPhone.toString(),
+                                                result.result[firstNationality].phoneCode!!.length,
+                                                result.result[firstNationality].phoneLength!!.toInt()
+                                            )
+                                        )
+
+                                        profile_setting_second_phone.mask = result.result[secondNationality].phoneMaskSmall
+                                        profile_setting_second_phone.setText(
+                                            MyUtils.toMask(
+                                                clientResult.secondPhone.toString(),
+                                                result.result[secondNationality].phoneCode!!.length,
+                                                result.result[secondNationality].phoneLength!!.toInt()
+                                            )
+                                        )
+                                        profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
+                                        list = result.result
+                                    }
+                                    val adapterListCountry = ArrayAdapter(
+                                        requireContext(),
+                                        android.R.layout.simple_dropdown_item_1line,
+                                        result.result
+                                    )
+                                    profile_s_mask.setAdapter(adapterListCountry)
+
+                                    profile_s_mask.keyListener = null
+                                    profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
+                                        codeNationality = position
+                                        codeMack = result.result[position].phoneCode.toString()
+                                        numberAvailable = result.result[position].phoneLength!!.toInt()
+                                        profile_setting_second_phone.setText("")
+                                        profile_s_mask.showDropDown()
+                                        profile_s_mask.clearFocus()
+                                    }
+                                    profile_s_mask.setOnClickListener {
+                                        profile_s_mask.showDropDown()
+                                    }
+                                    profile_s_mask.onFocusChangeListener =
+                                        View.OnFocusChangeListener { view, hasFocus ->
+                                            try {
+                                                if (hasFocus) {
+                                                    closeKeyboard()
+                                                    profile_s_mask.showDropDown()
+                                                }
+                                            } catch (e: Exception) {
+                                            }
+                                        }
+                                    errorListAvailableCountry = result.code.toString()
+                                    resultSuccessfully()
+                                } else {
+                                    listListResult(result.error.code!!)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+
+                        })
+
+                    viewModel.errorListAvailableCountry.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { error ->
+                            if (error != null) {
+                                errorListAvailableCountry = error
+                                errorList(error)
+                            }
+                        })
+
+                    //Список секретных вопросов
+                    viewModel.listSecretQuestionDta.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { result ->
+                            try {
+                                if (result.result != null) {
+                                    profile_s_question.setEllipsize(TextUtils.TruncateAt.END)
+                                    profile_s_question.isSingleLine = true
+                                    profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
+
+                                    val adapterListCountry = ArrayAdapter(
+                                        requireContext(),
+                                        android.R.layout.simple_dropdown_item_1line,
+                                        result.result
+                                    )
+                                    profile_s_question.setAdapter(adapterListCountry)
+
+                                    profile_s_question.keyListener = null
+                                    profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
+                                        profile_s_question.showDropDown()
+                                        profile_s_question.clearFocus()
+                                    }
+                                    click_s_question.setOnClickListener {
+                                        profile_s_question.showDropDown()
+                                    }
+                                    profile_s_question.onFocusChangeListener =
+                                        View.OnFocusChangeListener { view, hasFocus ->
+                                            try {
+                                                if (hasFocus) {
+                                                    closeKeyboard()
+                                                    profile_s_question.showDropDown()
+                                                }
+                                            } catch (e: Exception) {
+                                            }
+                                        }
+                                    errorListSecretQuestion = result.code.toString()
+                                    resultSuccessfully()
+                                } else {
+                                    listListResult(result.error.code!!)
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            profile_s_swipe.isRefreshing = false
+                        })
+
+                    viewModel.errorListSecretQuestion.observe(
+                        viewLifecycleOwner,
+                        androidx.lifecycle.Observer { error ->
+                            if (error != null) {
+                                errorListSecretQuestion = error
+                                errorList(error)
+                            }
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            profile_s_swipe.isRefreshing = false
+                        })
+
                 } else {
                     listListResult(result.error.code!!)
                 }
-            })
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_s_swipe.isRefreshing = false
+        })
 
-        viewModel.errorListNationality.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { error ->
-                if (error != null) {
-                    errorCodeNationality = error
-                    errorList(error)
-                }
-            })
+        //listClientInfoDta Проверка на ошибки
+        viewModel.errorClientInfo.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
+            try {
+                errorClientInfo = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (error != null) {
+                errorList(error)
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_s_swipe.isRefreshing = false
+        })
 
-        //Список доступных стран
-        viewModel.listAvailableCountryDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
-                try {
-                    if (result.result != null) {
-                        if (clientResult.phoneFirst != "" && clientResult.phoneSecond != "") {
-                            val firstNationality = clientResult.phoneFirst!!.toInt() - 1
-                            val secondNationality = clientResult.phoneSecond!!.toInt() - 1
-
-                            codeNationality = clientResult.phoneFirst!!.toInt()
-
-                            checkNumber = secondNationality
-
-                            numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
-
-                            codeMack = result.result[secondNationality].phoneCode.toString()
-
-                            profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                            profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                            profile_setting_phone.setText(
-                                MyUtils.toMask(
-                                    clientResult.firstPhone.toString(),
-                                    result.result[firstNationality].phoneCode!!.length,
-                                    result.result[firstNationality].phoneLength!!.toInt()
-                                )
-                            )
-
-                            profile_setting_second_phone.mask =
-                                result.result[firstNationality].phoneMaskSmall
-                            profile_setting_second_phone.setText(
-                                MyUtils.toMask(
-                                    clientResult.secondPhone.toString(),
-                                    result.result[secondNationality].phoneCode!!.length,
-                                    result.result[secondNationality].phoneLength!!.toInt()
-                                )
-                            )
-                            profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
-                            list = result.result
-                        }
-                        val adapterListCountry = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            result.result
-                        )
-                        profile_s_mask.setAdapter(adapterListCountry)
-
-                        profile_s_mask.keyListener = null
-                        profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
-                            codeNationality = position
-                            codeMack = result.result[position].phoneCode.toString()
-                            numberAvailable = result.result[position].phoneLength!!.toInt()
-                            profile_setting_second_phone.setText("")
-                            profile_s_mask.showDropDown()
-                            profile_s_mask.clearFocus()
-                        }
-                        profile_s_mask.setOnClickListener {
-                            profile_s_mask.showDropDown()
-                        }
-                        profile_s_mask.onFocusChangeListener =
-                            View.OnFocusChangeListener { view, hasFocus ->
-                                try {
-                                    if (hasFocus) {
-                                        closeKeyboard()
-                                        profile_s_mask.showDropDown()
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
-                        errorListAvailableCountry = result.code.toString()
-                        resultSuccessfully()
-                    } else {
-                        listListResult(result.error.code!!)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            })
-
-        viewModel.errorListAvailableCountry.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { error ->
-                if (error != null) {
-                    errorListAvailableCountry = error
-                    errorList(error)
-                }
-            })
-
-        //Список секретных вопросов
-        viewModel.listSecretQuestionDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
-                try {
-                    if (result.result != null) {
-                        profile_s_question.setEllipsize(TextUtils.TruncateAt.END)
-                        profile_s_question.isSingleLine = true
-                        profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
-
-                        val adapterListCountry = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            result.result
-                        )
-                        profile_s_question.setAdapter(adapterListCountry)
-
-                        profile_s_question.keyListener = null
-                        profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
-                            profile_s_question.showDropDown()
-                            profile_s_question.clearFocus()
-                        }
-                        click_s_question.setOnClickListener {
-                            profile_s_question.showDropDown()
-                        }
-                        profile_s_question.onFocusChangeListener =
-                            View.OnFocusChangeListener { view, hasFocus ->
-                                try {
-                                    if (hasFocus) {
-                                        closeKeyboard()
-                                        profile_s_question.showDropDown()
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
-                        errorListSecretQuestion = result.code.toString()
-                        resultSuccessfully()
-                    } else {
-                        listListResult(result.error.code!!)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-            })
-
-        viewModel.errorListSecretQuestion.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { error ->
-                if (error != null) {
-                    errorListSecretQuestion = error
-                    errorList(error)
-                }
-            })
 
         //результат о сохронение данных
         viewModel.listSaveProfileDta.observe(
@@ -368,6 +442,20 @@ class ProfileSettingFragment : Fragment() {
     private fun initClick() {
         var textPasswordOne = ""
         var textPasswordTwo = ""
+
+
+        profile_s_swipe.setOnRefreshListener {
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                viewModel.refreshCode = true
+                initRestart()
+            }, 500)
+        }
+        profile_s_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
+
 
         profile_s_one_password.addTextChangedListener {
             textPasswordOne = it.toString()
@@ -476,16 +564,19 @@ class ProfileSettingFragment : Fragment() {
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (result == 403) {
             profile_s_access_restricted.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (result == 404) {
             profile_s_not_found.visibility = View.VISIBLE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
         }
@@ -497,21 +588,25 @@ class ProfileSettingFragment : Fragment() {
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (error == "403") {
             profile_s_access_restricted.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (error == "404") {
             profile_s_not_found.visibility = View.VISIBLE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (error == "601") {
             profile_s_no_connection.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
         }
@@ -519,8 +614,8 @@ class ProfileSettingFragment : Fragment() {
 
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
-        if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200") {
-            profile_setting_layout.visibility = View.VISIBLE
+        if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+            profile_s_swipe.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
@@ -536,19 +631,12 @@ class ProfileSettingFragment : Fragment() {
 
     // метод получает данные со страницы profile
     private fun initResultGetProfilе() {
-        clientResult = try {
-            requireArguments().getSerializable("client") as ClientInfoResultModel
-        } catch (e: Exception) {
-            clientResult
-        }
+//        clientResult = try {
+//            requireArguments().getSerializable("client") as ClientInfoResultModel
+//        } catch (e: Exception) {
+//            clientResult
+//        }
 
-        profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
-        profile_setting_second_name.setText(clientResult.secondName)
-        profile_setting_first_name.setText(clientResult.firstName)
-        profile_setting_last_name.setText(clientResult.lastName)
-        profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
-        profile_s_question.setText(clientResult.question)
-        profile_s_response.setText(clientResult.response)
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -560,9 +648,9 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        profile_owner.requestFocus()
-        if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null) {
-            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200") {
+        if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
+            && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null) {
+            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
                 AppPreferences.reviewCode = 1
                 initResult()
             } else {
@@ -599,6 +687,7 @@ class ProfileSettingFragment : Fragment() {
             PorterDuff.Mode.SRC_ATOP
         )
         (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
+        profile_s_owner.requestFocus()
     }
 
     private fun isValid(): Boolean {
