@@ -36,7 +36,7 @@ import org.aviran.cookiebar2.CookieBar
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ProfileSettingFragment : Fragment(){
+class ProfileSettingFragment : Fragment() {
     private var viewModel = ProfileViewModel()
     private var errorCodeGender = ""
     private var errorCodeNationality = ""
@@ -98,33 +98,33 @@ class ProfileSettingFragment : Fragment(){
             errorCodeGender = "601"
             errorCodeNationality = "601"
             errorListAvailableCountry = "601"
-            errorListSecretQuestion ="601"
+            errorListSecretQuestion = "601"
         } else {
             if (viewModel.errorListGender.value == null && viewModel.errorListNationality.value == null && viewModel.errorListAvailableCountry.value == null && viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null) {
-                    HomeActivity.alert.show()
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        viewModel.refreshCode = false
-                        viewModel.listGender(mapGender)
-                        viewModel.getListNationality(mapNationality)
-                        viewModel.listAvailableCountry(mapRegistration)
-                        viewModel.listSecretQuestion(mapRegistration)
-                        initResult()
-                    }, 500)
+                HomeActivity.alert.show()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    viewModel.refreshCode = false
+                    viewModel.listGender(mapGender)
+                    viewModel.getListNationality(mapNationality)
+                    viewModel.listAvailableCountry(mapRegistration)
+                    viewModel.listSecretQuestion(mapRegistration)
+                    initResult()
+                }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListGender.value != null) {
                         viewModel.errorListGender.value = null
-                        viewModel.listGender(mapGender)
+                        viewModel.listGenderDta.postValue(null)
                     } else if (viewModel.errorListNationality.value != null) {
                         viewModel.errorListNationality.value = null
-                        viewModel.getListNationality(mapNationality)
+                        viewModel.listNationalityDta.postValue(null)
                     } else if (viewModel.errorListAvailableCountry.value != null) {
                         viewModel.errorListAvailableCountry.value = null
-                        viewModel.listAvailableCountry(mapRegistration)
+                        viewModel.listAvailableCountryDta.postValue(null)
                     } else if (viewModel.errorListSecretQuestion.value != null) {
                         viewModel.errorListSecretQuestion.value = null
-                        viewModel.listSecretQuestion(mapRegistration)
-                    }else {
+                        viewModel.listSecretQuestionDta.postValue(null)
+                    } else {
                         viewModel.listGender(mapGender)
                         viewModel.getListNationality(mapNationality)
                         viewModel.listAvailableCountry(mapRegistration)
@@ -142,7 +142,7 @@ class ProfileSettingFragment : Fragment(){
         //получение полов
         viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
             if (result.result != null) {
-                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() -1].name)
+                profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() - 1].name)
                 errorCodeGender = result.code.toString()
                 resultSuccessfully()
             } else {
@@ -162,7 +162,7 @@ class ProfileSettingFragment : Fragment(){
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
-                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt()-1].name)
+                    profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt() - 1].name)
                     errorCodeNationality = result.code.toString()
                     resultSuccessfully()
                 } else {
@@ -183,75 +183,80 @@ class ProfileSettingFragment : Fragment(){
         viewModel.listAvailableCountryDta.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
-                if (result.result != null) {
-                    if (clientResult.phoneFirst != ""  && clientResult.phoneSecond != "") {
-                        val firstNationality = clientResult.phoneFirst!!.toInt() - 1
-                        val secondNationality = clientResult.phoneSecond!!.toInt() - 1
+                try {
+                    if (result.result != null) {
+                        if (clientResult.phoneFirst != "" && clientResult.phoneSecond != "") {
+                            val firstNationality = clientResult.phoneFirst!!.toInt() - 1
+                            val secondNationality = clientResult.phoneSecond!!.toInt() - 1
 
-                        codeNationality = clientResult.phoneFirst!!.toInt()
+                            codeNationality = clientResult.phoneFirst!!.toInt()
 
-                        checkNumber = secondNationality
+                            checkNumber = secondNationality
 
-                        numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
+                            numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
 
-                        codeMack = result.result[secondNationality].phoneCode.toString()
+                            codeMack = result.result[secondNationality].phoneCode.toString()
 
-                        profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                        profile_setting_phone.mask = result.result[firstNationality].phoneMask
-                        profile_setting_phone.setText(
-                            MyUtils.toMask(
-                                clientResult.firstPhone.toString(),
-                                result.result[firstNationality].phoneCode!!.length,
-                                result.result[firstNationality].phoneLength!!.toInt()
+                            profile_setting_phone.mask = result.result[firstNationality].phoneMask
+                            profile_setting_phone.mask = result.result[firstNationality].phoneMask
+                            profile_setting_phone.setText(
+                                MyUtils.toMask(
+                                    clientResult.firstPhone.toString(),
+                                    result.result[firstNationality].phoneCode!!.length,
+                                    result.result[firstNationality].phoneLength!!.toInt()
+                                )
                             )
-                        )
 
-                        profile_setting_second_phone.mask =
-                            result.result[firstNationality].phoneMaskSmall
-                        profile_setting_second_phone.setText(
-                            MyUtils.toMask(
-                                clientResult.secondPhone.toString(),
-                                result.result[secondNationality].phoneCode!!.length,
-                                result.result[secondNationality].phoneLength!!.toInt()
+                            profile_setting_second_phone.mask =
+                                result.result[firstNationality].phoneMaskSmall
+                            profile_setting_second_phone.setText(
+                                MyUtils.toMask(
+                                    clientResult.secondPhone.toString(),
+                                    result.result[secondNationality].phoneCode!!.length,
+                                    result.result[secondNationality].phoneLength!!.toInt()
+                                )
                             )
-                        )
-                    profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
-                    list = result.result
-                    }
-                    val adapterListCountry = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        result.result
-                    )
-                    profile_s_mask.setAdapter(adapterListCountry)
-
-                    profile_s_mask.keyListener = null
-                    profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
-                        codeNationality = position
-                        codeMack = result.result[position].phoneCode.toString()
-                        numberAvailable = result.result[position].phoneLength!!.toInt()
-                        profile_setting_second_phone.setText("")
-                        profile_s_mask.showDropDown()
-                        profile_s_mask.clearFocus()
-                    }
-                    profile_s_mask.setOnClickListener {
-                        profile_s_mask.showDropDown()
-                    }
-                    profile_s_mask.onFocusChangeListener =
-                        View.OnFocusChangeListener { view, hasFocus ->
-                            try {
-                                if (hasFocus) {
-                                    closeKeyboard()
-                                    profile_s_mask.showDropDown()
-                                }
-                            } catch (e: Exception) {
-                            }
+                            profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
+                            list = result.result
                         }
-                    errorListAvailableCountry = result.code.toString()
-                    resultSuccessfully()
-                } else {
-                    listListResult(result.error.code!!)
+                        val adapterListCountry = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            result.result
+                        )
+                        profile_s_mask.setAdapter(adapterListCountry)
+
+                        profile_s_mask.keyListener = null
+                        profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
+                            codeNationality = position
+                            codeMack = result.result[position].phoneCode.toString()
+                            numberAvailable = result.result[position].phoneLength!!.toInt()
+                            profile_setting_second_phone.setText("")
+                            profile_s_mask.showDropDown()
+                            profile_s_mask.clearFocus()
+                        }
+                        profile_s_mask.setOnClickListener {
+                            profile_s_mask.showDropDown()
+                        }
+                        profile_s_mask.onFocusChangeListener =
+                            View.OnFocusChangeListener { view, hasFocus ->
+                                try {
+                                    if (hasFocus) {
+                                        closeKeyboard()
+                                        profile_s_mask.showDropDown()
+                                    }
+                                } catch (e: Exception) {
+                                }
+                            }
+                        errorListAvailableCountry = result.code.toString()
+                        resultSuccessfully()
+                    } else {
+                        listListResult(result.error.code!!)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
             })
 
         viewModel.errorListAvailableCountry.observe(
@@ -267,41 +272,46 @@ class ProfileSettingFragment : Fragment(){
         viewModel.listSecretQuestionDta.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
-                if (result.result != null) {
-                    profile_s_question.setEllipsize(TextUtils.TruncateAt.END)
-                    profile_s_question.isSingleLine = true
-                    profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
+                try {
+                    if (result.result != null) {
+                        profile_s_question.setEllipsize(TextUtils.TruncateAt.END)
+                        profile_s_question.isSingleLine = true
+                        profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
 
-                    val adapterListCountry = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        result.result
-                    )
-                    profile_s_question.setAdapter(adapterListCountry)
+                        val adapterListCountry = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_dropdown_item_1line,
+                            result.result
+                        )
+                        profile_s_question.setAdapter(adapterListCountry)
 
-                    profile_s_question.keyListener = null
-                    profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
-                        profile_s_question.showDropDown()
-                        profile_s_question.clearFocus()
-                    }
-                    click_s_question.setOnClickListener {
-                        profile_s_question.showDropDown()
-                    }
-                    profile_s_question.onFocusChangeListener =
-                        View.OnFocusChangeListener { view, hasFocus ->
-                            try {
-                                if (hasFocus) {
-                                    closeKeyboard()
-                                    profile_s_question.showDropDown()
-                                }
-                            } catch (e: Exception) {
-                            }
+                        profile_s_question.keyListener = null
+                        profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
+                            profile_s_question.showDropDown()
+                            profile_s_question.clearFocus()
                         }
-                    errorListSecretQuestion = result.code.toString()
-                    resultSuccessfully()
-                } else {
-                    listListResult(result.error.code!!)
+                        click_s_question.setOnClickListener {
+                            profile_s_question.showDropDown()
+                        }
+                        profile_s_question.onFocusChangeListener =
+                            View.OnFocusChangeListener { view, hasFocus ->
+                                try {
+                                    if (hasFocus) {
+                                        closeKeyboard()
+                                        profile_s_question.showDropDown()
+                                    }
+                                } catch (e: Exception) {
+                                }
+                            }
+                        errorListSecretQuestion = result.code.toString()
+                        resultSuccessfully()
+                    } else {
+                        listListResult(result.error.code!!)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
             })
 
         viewModel.errorListSecretQuestion.observe(
@@ -314,16 +324,22 @@ class ProfileSettingFragment : Fragment(){
             })
 
         //результат о сохронение данных
-        viewModel.listSaveProfileDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
-                if (result.result != null) {
-                    if (reView == true)
-                    CookieBar.build(requireActivity())
-                        .setCustomView(R.layout.item_custom_cookie)
-                        .setDuration(5000)
-                        .setCookiePosition(Gravity.TOP)
-                        .show()
+        viewModel.listSaveProfileDta.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { result ->
+                try {
+                    if (result.result != null) {
+                        if (reView == true)
+                            CookieBar.build(requireActivity())
+                                .setCustomView(R.layout.item_custom_cookie)
+                                .setDuration(5000)
+                                .setCookiePosition(Gravity.TOP)
+                                .show()
+                    }
+                    reView = false
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-            reView = false
             })
 
         viewModel.errorSaveProfile.observe(
@@ -337,7 +353,7 @@ class ProfileSettingFragment : Fragment(){
     }
 
     //Метотд для скрытия клавиатуры
-    private fun closeKeyboard(){
+    private fun closeKeyboard() {
         val view: View = requireActivity().currentFocus!!
         if (view != null) {
             // now assign the system
@@ -360,7 +376,8 @@ class ProfileSettingFragment : Fragment(){
         click_s_one_password.setOnClickListener {
             profile_s_one_password.requestFocus()
             profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_s_one_password, 0)
         }
 
@@ -371,14 +388,16 @@ class ProfileSettingFragment : Fragment(){
         click_s_two_password.setOnClickListener {
             profile_s_two_password.requestFocus()
             profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_s_two_password, 0)
         }
 
         //метод удаляет все символы из строки
         profile_setting_second_phone.addTextChangedListener {
             if (profile_setting_second_phone.text.toString() != "") {
-                val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+                val matchedResults =
+                    Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
                 val result = StringBuilder()
                 for (matchedText in matchedResults) {
                     reNum = result.append(matchedText.value).toString()
@@ -410,7 +429,7 @@ class ProfileSettingFragment : Fragment(){
 
         profile_s_enter.setOnClickListener {
             reView = true
-            if (textPasswordOne == textPasswordTwo){
+            if (textPasswordOne == textPasswordTwo) {
                 if (textPasswordOne != "") {
                     AppPreferences.password = textPasswordOne
                 }
@@ -423,30 +442,33 @@ class ProfileSettingFragment : Fragment(){
             mapProfile.put("second_phone", reNum)
             mapProfile.put("question", profile_s_question.text.toString())
             mapProfile.put("response", profile_s_response.text.toString())
-            if (isValid()){
+            if (isValid()) {
                 viewModel.saveProfile(mapProfile)
             }
         }
 
-        profile_setting_second_phone.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (profile_setting_second_phone != null) {
-                profile_setting_second_phone.mask = null
-                profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
-                profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
-                profile_setting_second_phone.isFocusableInTouchMode = true
+        profile_setting_second_phone.onFocusChangeListener =
+            View.OnFocusChangeListener { v, hasFocus ->
+                if (profile_setting_second_phone != null) {
+                    profile_setting_second_phone.mask = null
+                    profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
+                    profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
+                    profile_setting_second_phone.isFocusableInTouchMode = true
+                }
             }
-        }
 
         click_s_response.setOnClickListener {
             profile_s_response.requestFocus()
             profile_s_response.setSelection(profile_s_response.text!!.length);
-            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_s_response, 0)
         }
 
         click_s_second.setOnClickListener {
             profile_setting_second_phone.requestFocus()
-            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_setting_second_phone, 0)
         }
     }
@@ -517,10 +539,10 @@ class ProfileSettingFragment : Fragment(){
 
     // метод получает данные со страницы profile
     private fun initResultGetProfilе() {
-         clientResult = try {
-             requireArguments().getSerializable("client") as ClientInfoResultModel
-        }catch (e: Exception){
-             clientResult
+        clientResult = try {
+            requireArguments().getSerializable("client") as ClientInfoResultModel
+        } catch (e: Exception) {
+            clientResult
         }
 
         profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
@@ -557,7 +579,8 @@ class ProfileSettingFragment : Fragment(){
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
+            requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
             val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
             var systemUiVisibilityFlags = decorView.systemUiVisibility
             systemUiVisibilityFlags =
@@ -587,7 +610,7 @@ class ProfileSettingFragment : Fragment(){
             profile_s_two_password.error = "Поля должны совпадать"
             profile_s_one_password.error = "Поля должны совпадать"
             valid = false
-        }else {
+        } else {
             profile_s_two_password.error = null
             profile_s_one_password.error = null
         }
@@ -595,8 +618,7 @@ class ProfileSettingFragment : Fragment(){
         if (profile_setting_second_phone.text!!.toString().isEmpty()) {
             profile_setting_second_phone.error = "Поле не должно быть пустым"
             valid = false
-        }
-        else if ( reNum.length != numberAvailable){
+        } else if (reNum.length != numberAvailable) {
             profile_setting_second_phone.error = "Номер введен неправильно"
             profile_setting_second_phone.requestFocus()
             valid = false

@@ -177,6 +177,10 @@ class DetailProfileFragment : Fragment() {
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    if (viewModel.errorGetOperation.value != null){
+                        viewModel.errorGetOperation.value = null
+                        viewModel.listGetOperationDta.postValue(null)
+                    }
                     viewModel.getOperation(map)
                     initResult()
                 }, 500)

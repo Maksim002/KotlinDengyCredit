@@ -116,6 +116,10 @@ class LoansDetailsFragment : Fragment() {
                 }, 500)
             }else{
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    if (viewModel.errorGet.value != null){
+                        viewModel.errorGet.value = null
+                        viewModel.listGetDta.postValue(null)
+                    }
                     viewModel.getNews(map)
                     initRequest()
                 }, 500)
@@ -128,45 +132,49 @@ class LoansDetailsFragment : Fragment() {
         map.put("token", AppPreferences.token.toString())
         map.put("id", isNews.toString())
         viewModel.listGetDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.code == 200 && result.result != null) {
-                loans_details_name.setText(result.result.name)
-                loans_details_description.setText(result.result.description)
-                loans_details_text.loadMarkdown(result.result.text)
-                Glide
-                    .with(loans_details_image)
-                    .load(result.result.thumbnail)
-                    .into(loans_details_image)
-                errorCode = result.code.toString()
-                loans_detail_layout.visibility = View.VISIBLE
-                loans_detail_no_connection.visibility = View.GONE
-                loans_detail_access_restricted.visibility = View.GONE
-                loans_detail_not_found.visibility = View.GONE
-                loans_detail_technical_work.visibility = View.GONE
-            } else {
-                if (result.error.code != null) {
-                    errorCode = result.error.code.toString()
-                }
-                if (result.error.code == 403) {
-                    loans_detail_access_restricted.visibility = View.VISIBLE
-                    loans_detail_not_found.visibility = View.GONE
+            try {
+                if (result.code == 200 && result.result != null) {
+                    loans_details_name.setText(result.result.name)
+                    loans_details_description.setText(result.result.description)
+                    loans_details_text.loadMarkdown(result.result.text)
+                    Glide
+                        .with(loans_details_image)
+                        .load(result.result.thumbnail)
+                        .into(loans_details_image)
+                    errorCode = result.code.toString()
+                    loans_detail_layout.visibility = View.VISIBLE
                     loans_detail_no_connection.visibility = View.GONE
-                    loans_detail_layout.visibility = View.GONE
-                    loans_detail_technical_work.visibility = View.GONE
-                } else if (result.error.code == 404) {
-                    loans_detail_not_found.visibility = View.VISIBLE
-                    loans_detail_no_connection.visibility = View.GONE
-                    loans_detail_layout.visibility = View.GONE
-                    loans_detail_access_restricted.visibility = View.GONE
-                    loans_detail_technical_work.visibility = View.GONE
-                } else if (result.error.code == 401) {
-                    initAuthorized()
-                } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                    loans_detail_technical_work.visibility = View.VISIBLE
-                    loans_detail_no_connection.visibility = View.GONE
-                    loans_detail_layout.visibility = View.GONE
                     loans_detail_access_restricted.visibility = View.GONE
                     loans_detail_not_found.visibility = View.GONE
+                    loans_detail_technical_work.visibility = View.GONE
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = result.error.code.toString()
+                    }
+                    if (result.error.code == 403) {
+                        loans_detail_access_restricted.visibility = View.VISIBLE
+                        loans_detail_not_found.visibility = View.GONE
+                        loans_detail_no_connection.visibility = View.GONE
+                        loans_detail_layout.visibility = View.GONE
+                        loans_detail_technical_work.visibility = View.GONE
+                    } else if (result.error.code == 404) {
+                        loans_detail_not_found.visibility = View.VISIBLE
+                        loans_detail_no_connection.visibility = View.GONE
+                        loans_detail_layout.visibility = View.GONE
+                        loans_detail_access_restricted.visibility = View.GONE
+                        loans_detail_technical_work.visibility = View.GONE
+                    } else if (result.error.code == 401) {
+                        initAuthorized()
+                    } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                        loans_detail_technical_work.visibility = View.VISIBLE
+                        loans_detail_no_connection.visibility = View.GONE
+                        loans_detail_layout.visibility = View.GONE
+                        loans_detail_access_restricted.visibility = View.GONE
+                        loans_detail_not_found.visibility = View.GONE
+                    }
                 }
+            }catch (e: Exception){
+                e.printStackTrace()
             }
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                HomeActivity.alert.hide()

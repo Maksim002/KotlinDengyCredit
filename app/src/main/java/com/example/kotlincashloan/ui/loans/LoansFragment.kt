@@ -30,6 +30,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.lang.Exception
 
 
 class LoansFragment : Fragment(), LoansListener {
@@ -70,77 +71,80 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initResult() {
         viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
-            if (result.error != null) {
-                listLoanId = result.error.code.toString()
-                initErrorResult(result.error.code!!)
-            } else {
-                initCode()
-                if (result.result != null) {
-                    if (result.result.parallelLoan!!.status != false) {
-                        loan_layout.visibility = View.VISIBLE
-                    }
-                    if (result.result.activeLoan!!.status != false) {
-                        loan_status.visibility = View.VISIBLE
-                    }
-                    if (result.result.parallelLoan!!.status == true){
-                        loan_status_parallel.visibility = View.VISIBLE
-                    }
-                    if (result.result.getActiveLoan == true) {
-                        loan_text_active.visibility = View.VISIBLE
-                        text_center.visibility = View.GONE
-                        loan_currency_icon.visibility = View.GONE
-                        loan_payment_sum.visibility = View.GONE
-                        loan_payment_date.visibility = View.GONE
-                        loan_trait.visibility = View.GONE
-                    } else {
-                        loan_text_active.visibility = View.GONE
-                        text_center.visibility = View.VISIBLE
-                        loan_currency_icon.visibility = View.VISIBLE
-                        loan_payment_sum.visibility = View.VISIBLE
-                        loan_payment_date.visibility = View.VISIBLE
-                        loan_trait.visibility = View.VISIBLE
-                    }
-                    if (result.result.getActiveLoan != false) {
-                        loan_get_active.visibility = View.VISIBLE
-                    }
-                    if (result.result.getParallelLoan == false) {
-                        loan_get_parallel.visibility = View.GONE
-                    } else {
-                        loan_get_parallel.visibility = View.VISIBLE
-                    }
+            try {
+                if (result.error != null) {
+                    listLoanId = result.error.code.toString()
+                    initErrorResult(result.error.code!!)
+                } else {
+                    initCode()
+                    if (result.result != null) {
+                        if (result.result.parallelLoan!!.status != false) {
+                            loan_layout.visibility = View.VISIBLE
+                        }
+                        if (result.result.activeLoan!!.status != false) {
+                            loan_status.visibility = View.VISIBLE
+                        }
+                        if (result.result.parallelLoan!!.status == true){
+                            loan_status_parallel.visibility = View.VISIBLE
+                        }
+                        if (result.result.getActiveLoan == true) {
+                            loan_text_active.visibility = View.VISIBLE
+                            text_center.visibility = View.GONE
+                            loan_currency_icon.visibility = View.GONE
+                            loan_payment_sum.visibility = View.GONE
+                            loan_payment_date.visibility = View.GONE
+                            loan_trait.visibility = View.GONE
+                        } else {
+                            loan_text_active.visibility = View.GONE
+                            text_center.visibility = View.VISIBLE
+                            loan_currency_icon.visibility = View.VISIBLE
+                            loan_payment_sum.visibility = View.VISIBLE
+                            loan_payment_date.visibility = View.VISIBLE
+                            loan_trait.visibility = View.VISIBLE
+                        }
+                        if (result.result.getActiveLoan != false) {
+                            loan_get_active.visibility = View.VISIBLE
+                        }
+                        if (result.result.getParallelLoan == false) {
+                            loan_get_parallel.visibility = View.GONE
+                        } else {
+                            loan_get_parallel.visibility = View.VISIBLE
+                        }
 
-                    if (!loan_switch.isChecked) {
-                        verificationArrayActive(result)
-                    } else {
-                        verificationArrayParallel(result)
-                    }
-
-                    loan_switch.setOnClickListener {
                         if (!loan_switch.isChecked) {
-                            if (result.result.activeLoan != null) {
-                                verificationArrayActive(result)
-                            }
+                            verificationArrayActive(result)
                         } else {
                             verificationArrayParallel(result)
                         }
+
+                        loan_switch.setOnClickListener {
+                            if (!loan_switch.isChecked) {
+                                if (result.result.activeLoan != null) {
+                                    verificationArrayActive(result)
+                                }
+                            } else {
+                                verificationArrayParallel(result)
+                            }
+                        }
+
+                        initRecycler()
+                        loans_layout.visibility = View.VISIBLE
+                        loans_no_connection.visibility = View.GONE
                     }
-
-                    initRecycler()
-                    loans_layout.visibility = View.VISIBLE
-                    loans_no_connection.visibility = View.GONE
                 }
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            loans_layout.isRefreshing = false
-            if (alertValid == false){
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                loans_layout.isRefreshing = false
+                if (alertValid == false){
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        HomeActivity.alert.hide()
+                        alertValid = true
+                    },650)
+                }else{
                     HomeActivity.alert.hide()
-                    alertValid = true
-                },650)
-            }else{
-                HomeActivity.alert.hide()
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
             }
-
         })
 
         viewModel.errorLoanInfo.observe(viewLifecycleOwner, Observer { error ->
@@ -240,19 +244,23 @@ class LoansFragment : Fragment(), LoansListener {
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
+                viewModel.listNewsDta.postValue(null)
                 viewModel.listNews(map)
                 initRecycler()
             } else if (viewModel.listNewsDta.value == null) {
                 viewModel.errorNews.value = null
+                viewModel.listNewsDta.postValue(null)
                 viewModel.listNews(map)
             }
 
             if (viewModel.listLoanInfo.value != null) {
                 viewModel.errorLoanInfo.value = null
+                viewModel.listLoanInfo.postValue(null)
                 viewModel.getLoanInfo(map)
                 initResult()
             } else if (viewModel.listNewsDta.value == null) {
                 viewModel.errorLoanInfo.value = null
+                viewModel.listLoanInfo.postValue(null)
                 viewModel.getLoanInfo(map)
             }
         }
@@ -280,31 +288,35 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRecycler() {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.error != null) {
-                listNewsId = result.error.toString()
-                initErrorResult(result.error.code!!)
-            } else {
-                if (result.result != null) {
-                    initCode()
-                    if (listLoanId == "200" && listNewsId == "200") {
-                        myAdapter.update(result.result)
-                        loans_recycler.adapter = myAdapter
-                        loans_layout.visibility = View.VISIBLE
-                        loans_no_connection.visibility = View.GONE
-                    } else {
-                        initResult()
+            try {
+                if (result.error != null) {
+                    listNewsId = result.error.toString()
+                    initErrorResult(result.error.code!!)
+                } else {
+                    if (result.result != null) {
+                        initCode()
+                        if (listLoanId == "200" && listNewsId == "200") {
+                            myAdapter.update(result.result)
+                            loans_recycler.adapter = myAdapter
+                            loans_layout.visibility = View.VISIBLE
+                            loans_no_connection.visibility = View.GONE
+                        } else {
+                            initResult()
+                        }
                     }
                 }
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            loans_layout.isRefreshing = false
-            if (alertValid == false){
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                loans_layout.isRefreshing = false
+                if (alertValid == false){
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        HomeActivity.alert.hide()
+                        alertValid = true
+                    },650)
+                }else{
                     HomeActivity.alert.hide()
-                    alertValid = true
-                },650)
-            }else{
-                HomeActivity.alert.hide()
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
             }
         })
 

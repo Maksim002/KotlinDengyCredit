@@ -98,53 +98,66 @@ class DetailNotificationFragment : Fragment() {
                     viewModel.getNotice(map)
                     initRequest()
                 }, 500)
+            }else{
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    if (viewModel.errorDetailNotice.value != null){
+                        viewModel.errorDetailNotice.value = null
+                        viewModel.listNoticeDetailDta.postValue(null)
+                    }
+                    viewModel.getNotice(map)
+                    initRequest()
+                }, 500)
             }
         }
     }
 
     private fun initRequest() {
         viewModel.listNoticeDetailDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                detail_notification_title.text = result.result.title
-                detail_notification_data.text = result.result.date
-                detail_notification_description.text = result.result.description
-                detail_notification_text.loadMarkdown(result.result.text)
-                layout_detail.visibility = View.VISIBLE
-                d_notification_access_restricted.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                d_notification_technical_work.visibility = View.GONE
-                d_notification_not_found.visibility = View.GONE
-                errorCode = result.code.toString()
-                setTitle(result.result.title, resources.getColor(R.color.whiteColor))
-            } else {
-                if (result.error.code != null) {
-                    errorCode = result.error.code.toString()
-                }
-                if (result.error.code == 400 || result.error.code == 500) {
-                    d_notification_technical_work.visibility = View.VISIBLE
+            try {
+                if (result.result != null) {
+                    detail_notification_title.text = result.result.title
+                    detail_notification_data.text = result.result.date
+                    detail_notification_description.text = result.result.description
+                    detail_notification_text.loadMarkdown(result.result.text)
+                    layout_detail.visibility = View.VISIBLE
                     d_notification_access_restricted.visibility = View.GONE
                     d_notification_no_connection.visibility = View.GONE
-                    d_notification_not_found.visibility = View.GONE
-                    layout_detail.visibility = View.GONE
-                } else if (result.error.code == 403) {
-                    d_notification_access_restricted.visibility = View.VISIBLE
                     d_notification_technical_work.visibility = View.GONE
-                    d_notification_no_connection.visibility = View.GONE
                     d_notification_not_found.visibility = View.GONE
-                    layout_detail.visibility = View.GONE
-                } else if (result.error.code == 404) {
-                    d_notification_not_found.visibility = View.VISIBLE
-                    d_notification_access_restricted.visibility = View.GONE
-                    d_notification_technical_work.visibility = View.GONE
-                    d_notification_no_connection.visibility = View.GONE
-                    layout_detail.visibility = View.GONE
-                } else if (result.error.code == 401) {
-                    initAuthorized()
+                    errorCode = result.code.toString()
+                    setTitle(result.result.title, resources.getColor(R.color.whiteColor))
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = result.error.code.toString()
+                    }
+                    if (result.error.code == 400 || result.error.code == 500) {
+                        d_notification_technical_work.visibility = View.VISIBLE
+                        d_notification_access_restricted.visibility = View.GONE
+                        d_notification_no_connection.visibility = View.GONE
+                        d_notification_not_found.visibility = View.GONE
+                        layout_detail.visibility = View.GONE
+                    } else if (result.error.code == 403) {
+                        d_notification_access_restricted.visibility = View.VISIBLE
+                        d_notification_technical_work.visibility = View.GONE
+                        d_notification_no_connection.visibility = View.GONE
+                        d_notification_not_found.visibility = View.GONE
+                        layout_detail.visibility = View.GONE
+                    } else if (result.error.code == 404) {
+                        d_notification_not_found.visibility = View.VISIBLE
+                        d_notification_access_restricted.visibility = View.GONE
+                        d_notification_technical_work.visibility = View.GONE
+                        d_notification_no_connection.visibility = View.GONE
+                        layout_detail.visibility = View.GONE
+                    } else if (result.error.code == 401) {
+                        initAuthorized()
+                    }
                 }
-            }
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                HomeActivity.alert.hide()
 //            },450)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
         })
         viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
