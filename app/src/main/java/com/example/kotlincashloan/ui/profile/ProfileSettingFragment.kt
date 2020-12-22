@@ -434,7 +434,6 @@ class ProfileSettingFragment : Fragment() {
                     AppPreferences.password = textPasswordOne
                 }
             }
-
             val mapProfile = HashMap<String, String>()
             mapProfile.put("login", AppPreferences.login.toString())
             mapProfile.put("token", AppPreferences.token.toString())
@@ -460,15 +459,13 @@ class ProfileSettingFragment : Fragment() {
         click_s_response.setOnClickListener {
             profile_s_response.requestFocus()
             profile_s_response.setSelection(profile_s_response.text!!.length);
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_s_response, 0)
         }
 
         click_s_second.setOnClickListener {
             profile_setting_second_phone.requestFocus()
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_setting_second_phone, 0)
         }
     }

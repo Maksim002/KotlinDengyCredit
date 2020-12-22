@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_notification.view.*
 import kotlinx.serialization.PrimitiveKind
 
 class NotificationAdapter(var listener: NotificationListener, item: ArrayList<ResultListNoticeModel> = arrayListOf()) : GenericRecyclerAdapter<ResultListNoticeModel>(item) {
-    var reviewCode  = 0
+    var reviewCode  = 1
     fun numberResult(v: Int){
         reviewCode = v
     }
@@ -26,7 +26,8 @@ class NotificationAdapter(var listener: NotificationListener, item: ArrayList<Re
         holder.itemView.notification_description.text = item.description
         holder.itemView.notification_date.text = item.date
 
-        if (reviewCode == 0) {
+
+        if (reviewCode == 1) {
             if (item.review == false) {
                 holder.itemView.notification_review.visibility = View.VISIBLE
             } else {

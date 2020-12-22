@@ -344,14 +344,14 @@ class ProfileFragment : Fragment() {
         super.onStart()
         if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null) {
             if (errorCode == "200" || errorCodeClient == "200") {
-                AppPreferences.reviewCode = 1
+                AppPreferences.reviewCode = 0
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 1
                 initRestart()
             }
         } else {
-            AppPreferences.reviewCode = 0
+            AppPreferences.reviewCode = 1
             viewModel.refreshCode = false
             initRestart()
         }

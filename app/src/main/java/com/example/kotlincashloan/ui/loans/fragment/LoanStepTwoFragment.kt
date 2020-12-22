@@ -1,9 +1,7 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
-import com.example.kotlinscreenscanner.ui.MainActivity
-import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 
 
@@ -198,7 +193,7 @@ class LoanStepTwoFragment : Fragment() {
                 nestedImage(l, pairs, params)
                 pairs[l]!!.setImageDrawable(resources.getDrawable(R.drawable.ic_coordinate_mini))
             }
-            loan_layout.addView(pairs[l])
+            loan_layout_parallel.addView(pairs[l])
         }
     }
 

@@ -51,7 +51,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/loan_layout"
+            android:id="@+id/loan_layout_parallel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="75dp"
             android:paddingRight="75dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="10dp"
             android:text="Начать"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

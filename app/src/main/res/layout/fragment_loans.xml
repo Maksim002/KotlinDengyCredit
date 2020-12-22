@@ -11,7 +11,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/loans_layout"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content">
 
         <androidx.core.widget.NestedScrollView
@@ -114,12 +114,12 @@
                                     </LinearLayout>
 
                                     <LinearLayout
-                                        android:id="@+id/loan_layout"
+                                        android:id="@+id/loan_layout_parallel"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="right"
                                         android:orientation="vertical"
-                                        android:visibility="gone">
+                                        android:visibility="visible">
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -243,7 +243,7 @@
                         android:orientation="vertical">
 
                         <Button
-                            android:id="@+id/loan_status"
+                            android:id="@+id/loan_active_status"
                             style="@style/RoundedOrangeBackground"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -279,7 +279,7 @@
                             app:layout_constraintRight_toRightOf="parent" />
 
                         <Button
-                            android:id="@+id/loan_get_active"
+                            android:id="@+id/loan_get_active_loan"
                             style="@style/RoundedOrangeBackground"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -290,14 +290,14 @@
                             android:layout_marginBottom="8dp"
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent" />
 
                         <Button
-                            android:id="@+id/loan_get_parallel"
+                            android:id="@+id/loan_get_parallel_loan"
                             style="@style/RoundedOrangeBackground"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -308,7 +308,7 @@
                             android:textColor="#FFFFFF"
                             android:textStyle="bold"
                             android:layout_marginBottom="8dp"
-                            android:textSize="16sp"
+                            android:textSize="15sp"
                             android:visibility="gone"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -365,7 +365,8 @@
                                 android:textColor="#FEFEFE"
                                 android:textSize="17sp"
                                 android:layout_marginLeft="5dp"
-                                android:layout_marginTop="4dp"
+                                android:layout_marginTop="9.2dp"
+                                android:layout_marginBottom="10dp"
                                 android:textStyle="bold"
                                 android:visibility="gone"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -373,6 +374,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <LinearLayout
+                                android:id="@+id/loan_active_sum"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal"
@@ -403,7 +405,9 @@
                         <ImageView
                             android:id="@+id/loan_trait"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_height="30dp"
                             android:src="@drawable/ic_trait" />
 
                         <TextView
