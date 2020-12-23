@@ -1,9 +1,11 @@
 package com.example.kotlincashloan.ui.registration.recovery
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
@@ -44,10 +47,11 @@ class ContactingServiceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
         HomeActivity.alert = LoadingAlert(this)
+        MainActivity.timer = TimerListener(this)
 
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
-        },1000)
+        }, 1000)
 
         initArgument()
         initToolBar()
@@ -92,6 +96,19 @@ class ContactingServiceActivity : AppCompatActivity() {
             if (validate()) {
                 initResult()
             }
+        }
+    }
+
+    //Метотд для скрытия клавиатуры
+    private fun closeKeyboard() {
+        val view: View = this.currentFocus!!
+        if (view != null) {
+            // now assign the system
+            // service to InputMethodManager
+            val manager = this.getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager?
+            manager!!.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -285,13 +302,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                 numberCharacters = list[position].phoneLength!!.toInt()
                 questionnaire_phone_additional.setText("")
                 questionnaire_phone_additional.mask = ""
-                if (position == 0) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                } else if (position == 1) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                } else if (position == 2) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                }
+                questionnaire_phone_additional.mask = list[position].phoneMask
                 if (questionnaire_phone_list_country.text.toString() != "") {
                     questionnaire_phone_additional.visibility = View.VISIBLE
                 }
@@ -305,6 +316,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                 View.OnFocusChangeListener { view, hasFocus ->
                     try {
                         if (hasFocus) {
+                            closeKeyboard()
                             questionnaire_phone_list_country.showDropDown()
                         }
                     } catch (e: Exception) {
@@ -404,6 +416,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                 View.OnFocusChangeListener { view, hasFocus ->
                     try {
                         if (hasFocus) {
+                            closeKeyboard()
                             password_recovery_type.showDropDown()
                         }
                     } catch (e: Exception) {

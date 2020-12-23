@@ -258,13 +258,7 @@ class NumberActivity : AppCompatActivity() {
             numberCharacters = list[position].phoneLength!!.toInt()
             number_phone.setText("")
             number_phone.mask = ""
-            if (position == 0) {
-                number_phone.mask = list[position].phoneMask
-            } else if (position == 1) {
-                number_phone.mask = list[position].phoneMask
-            } else if (position == 2) {
-                number_phone.mask = list[position].phoneMask
-            }
+            number_phone.mask = list[position].phoneMask
             if (number_list_country.text.toString() != "") {
                 number_phone.visibility = View.VISIBLE
             }

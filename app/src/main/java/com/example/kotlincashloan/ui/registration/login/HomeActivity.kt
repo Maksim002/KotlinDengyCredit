@@ -439,4 +439,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         biometricPrompt.authenticate(promptInfo)
     }
+
+    override fun onBackPressed() {}
 }

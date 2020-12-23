@@ -261,13 +261,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                 numberCharacters = list[position].phoneLength!!.toInt()
                 questionnaire_phone_additional.setText("")
                 questionnaire_phone_additional.mask = ""
-                if (position == 0) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                } else if (position == 1) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                } else if (position == 2) {
-                    questionnaire_phone_additional.mask = list[position].phoneMask
-                }
+                questionnaire_phone_additional.mask = list[position].phoneMask
                 if (questionnaire_phone_list_country.text.toString() != "") {
                     layout_visible.visibility = View.VISIBLE
                 }

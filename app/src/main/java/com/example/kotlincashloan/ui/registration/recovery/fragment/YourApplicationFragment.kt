@@ -29,7 +29,7 @@ class YourApplicationFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         your_application_enter.setOnClickListener {
-            if (AppPreferences.errorCode == null){
+            if (AppPreferences.token == ""){
                 val intent = Intent(context, HomeActivity::class.java)
                 startActivity(intent)
             }else{

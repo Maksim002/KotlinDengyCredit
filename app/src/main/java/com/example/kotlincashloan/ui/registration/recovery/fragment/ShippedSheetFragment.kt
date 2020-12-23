@@ -29,7 +29,7 @@ class ShippedSheetFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         shipped_sheet_enter.setOnClickListener {
-            if (AppPreferences.errorCode == null){
+            if (AppPreferences.token == ""){
                 val intent = Intent(context, HomeActivity::class.java)
                 startActivity(intent)
             }else{

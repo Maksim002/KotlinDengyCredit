@@ -455,6 +455,22 @@ class ProfileSettingFragment : Fragment() {
             textPasswordOne = it.toString()
         }
 
+        profile_s_one_password.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                if (profile_s_one_password.text.isNotEmpty()) {
+                    profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                }
+            }
+        }
+
+        profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus){
+                if (profile_s_two_password.text.isNotEmpty()) {
+                    profile_s_two_password.setSelection(profile_s_one_password.text!!.length);
+                }
+            }
+        }
+
         click_s_one_password.setOnClickListener {
             profile_s_one_password.requestFocus()
             profile_s_one_password.setSelection(profile_s_one_password.text!!.length);

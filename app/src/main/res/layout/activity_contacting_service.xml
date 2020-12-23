@@ -46,7 +46,7 @@
                     android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
-                    android:inputType="textPersonName"
+                    android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
@@ -58,7 +58,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
-                    android:inputType="textPersonName"
+                    android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
@@ -69,7 +69,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
-                    android:inputType="textPersonName"
+                    android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
@@ -95,7 +95,7 @@
                     android:ellipsize="end"
                     android:hint="Номер телефона"
                     android:imeOptions="actionDone"
-                    android:inputType="phone"
+                    android:inputType="number"
                     android:padding="14dp"
                     android:textSize="15sp"
                     android:visibility="gone" />
