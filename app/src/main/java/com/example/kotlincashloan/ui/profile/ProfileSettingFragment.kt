@@ -317,15 +317,9 @@ class ProfileSettingFragment : Fragment() {
                         androidx.lifecycle.Observer { result ->
                             try {
                                 if (result.result != null) {
-                                    profile_s_question.setEllipsize(TextUtils.TruncateAt.END)
-                                    profile_s_question.isSingleLine = true
                                     profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
 
-                                    val adapterListCountry = ArrayAdapter(
-                                        requireContext(),
-                                        android.R.layout.simple_dropdown_item_1line,
-                                        result.result
-                                    )
+                                    val adapterListCountry = ArrayAdapter(requireContext(), R.layout.item_dropdown_item_1line, result.result)
                                     profile_s_question.setAdapter(adapterListCountry)
 
                                     profile_s_question.keyListener = null

@@ -129,7 +129,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:hint="Выберите гражданства"
+                    android:hint="Укажите гражданство"
                     android:inputType="number"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -169,11 +169,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="3"
+                    android:inputType ="textMultiLine"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="Выберите секретный вопрос"
-                    android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
