@@ -27,7 +27,7 @@
         android:gravity="center"
         android:textSize="14dp"
         android:layout_marginTop="15dp"
-        android:text="В данный проводятся технические работы на сервере. Не грустите ;)"/>
+        android:text="В данный момент проводятся технические работы на сервере. Не грустите ;)"/>
 
     <Button
         android:id="@+id/technical_work"

@@ -129,11 +129,15 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 409 || data.error.code == 400) {
+                            if (data.error.code == 500 || data.error.code == 409) {
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
+                            }else if(data.error.code == 400){
+                                home_incorrect.visibility = View.VISIBLE
+                                home_no_connection.visibility = View.GONE
+                                home_layout.visibility = View.VISIBLE
                             } else {
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE

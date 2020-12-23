@@ -8,7 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils
+import android.text.method.PasswordTransformationMethod
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
@@ -25,7 +25,9 @@ import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.home_forget_password
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -319,7 +321,7 @@ class ProfileSettingFragment : Fragment() {
                                 if (result.result != null) {
                                     profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
 
-                                    val adapterListCountry = ArrayAdapter(requireContext(), R.layout.item_dropdown_item_1line, result.result)
+                                    val adapterListCountry = ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line, result.result)
                                     profile_s_question.setAdapter(adapterListCountry)
 
                                     profile_s_question.keyListener = null
@@ -328,6 +330,7 @@ class ProfileSettingFragment : Fragment() {
                                         profile_s_question.clearFocus()
                                     }
                                     click_s_question.setOnClickListener {
+                                        closeKeyboard()
                                         profile_s_question.showDropDown()
                                     }
                                     profile_s_question.onFocusChangeListener =
@@ -483,6 +486,33 @@ class ProfileSettingFragment : Fragment() {
                 }
             }
         }
+        // видем пороль или нет
+        var isValidOne = false
+        profile_s_one_password_show.setOnClickListener {
+            if (!isValidOne) {
+                profile_s_one_password.transformationMethod = null
+                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                isValidOne = true
+            }else{
+                profile_s_one_password.transformationMethod = PasswordTransformationMethod()
+                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                isValidOne = false
+            }
+        }
+        // видем пороль или нет
+        var isValidTwo = false
+        profile_s_two_password_show.setOnClickListener {
+            if (!isValidTwo) {
+                profile_s_two_password.transformationMethod = null
+                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                isValidTwo = true
+            }else{
+                profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                isValidTwo = false
+            }
+        }
+
 
         access_restricted.setOnClickListener {
             initRestart()
@@ -640,6 +670,8 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+        profile_s_one_password.transformationMethod = PasswordTransformationMethod()
         if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
             && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null) {
             if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {

@@ -287,7 +287,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
                 showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
             }else{
-                showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
+                showDate(1990, 0, 1, R.style.DatePickerSpinner)
             }
         })
     }
