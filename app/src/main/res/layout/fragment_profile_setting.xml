@@ -538,7 +538,7 @@
                             android:windowSoftInputMode="adjustResize"
                             android:inputType="text"
                             android:textSize="17sp"
-                            android:hint="поле для вода"/>
+                            tools:hint="поле для вода"/>
                     </LinearLayout>
 
                     <ImageView
@@ -580,7 +580,7 @@
                             android:windowSoftInputMode="adjustResize"
                             android:inputType="text"
                             android:textSize="17sp"
-                            android:hint="поле для вода"/>
+                            tools:hint="поле для вода"/>
                     </LinearLayout>
 
                     <ImageView

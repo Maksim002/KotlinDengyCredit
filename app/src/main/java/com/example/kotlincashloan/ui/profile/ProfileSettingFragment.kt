@@ -21,13 +21,10 @@ import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
 import com.example.kotlincashloan.utils.ObservedInternet
-import com.example.kotlinscreenscanner.service.model.CounterResultModel
+import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -48,7 +45,7 @@ class ProfileSettingFragment : Fragment() {
     val handler = Handler()
     var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
-    private var list: ArrayList<CounterResultModel> = arrayListOf()
+    private var list: ArrayList<CounterNumResultModel> = arrayListOf()
     private var codeNationality = 0
     private var numberAvailable = 0
     private var checkNumber = 0

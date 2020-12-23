@@ -3,10 +3,7 @@ package com.example.kotlincashloan.ui.profile
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
-import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
-import com.example.kotlincashloan.service.model.profile.ResultOperationModel
-import com.example.kotlincashloan.service.model.profile.SaveProfileResultModel
+import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -158,18 +155,18 @@ class ProfileViewModel : ViewModel(){
     }
 
     val errorListAvailableCountry = MutableLiveData<String>()
-    var listAvailableCountryDta = MutableLiveData<CommonResponse<ArrayList<CounterResultModel>>>()
+    var listAvailableCountryDta = MutableLiveData<CommonResponse<ArrayList<CounterNumResultModel>>>()
 
     fun listAvailableCountry(map: Map<String, String>){
-        RetrofitService.apiService().listAvailableCountry(map).enqueue(object : Callback<CommonResponse<ArrayList<CounterResultModel>>> {
-            override fun onFailure(call: Call<CommonResponse<ArrayList<CounterResultModel>>>, t: Throwable) {
+        RetrofitService.apiService().listAvailableCountry(map).enqueue(object : Callback<CommonResponse<ArrayList<CounterNumResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<CounterNumResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListAvailableCountry.postValue( "601")
                 }else{
                     errorListAvailableCountry.postValue( "600")
                 }
             }
-            override fun onResponse(call: Call<CommonResponse<ArrayList<CounterResultModel>>>, response: Response<CommonResponse<ArrayList<CounterResultModel>>>) {
+            override fun onResponse(call: Call<CommonResponse<ArrayList<CounterNumResultModel>>>, response: Response<CommonResponse<ArrayList<CounterNumResultModel>>>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listAvailableCountryDta.postValue(response.body())
