@@ -6,10 +6,7 @@ import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
-import com.example.kotlincashloan.service.model.profile.GetResultOperationModel
-import com.example.kotlincashloan.service.model.profile.ResultOperationModel
-import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
-import com.example.kotlincashloan.service.model.profile.SaveProfileResultModel
+import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.service.model.recovery.RecoveryAccessResultModel
@@ -135,7 +132,7 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("listAvailableCountry?token=oYyxhIFgJjAb")
-    fun listAvailableCountry(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<CounterResultModel>>>
+    fun listAvailableCountry(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<CounterNumResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded

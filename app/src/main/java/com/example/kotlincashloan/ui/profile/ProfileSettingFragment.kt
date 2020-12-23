@@ -508,6 +508,7 @@ class ProfileSettingFragment : Fragment() {
 
         home_forget_password.setOnClickListener {
             val intent = Intent(context, ContactingServiceActivity::class.java)
+            intent.putExtra("number" ,"1")
             startActivity(intent)
         }
 

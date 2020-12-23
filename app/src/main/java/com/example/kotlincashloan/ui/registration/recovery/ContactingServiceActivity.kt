@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.registration.recovery
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultMo
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.YourApplicationFragment
 import com.example.myapplication.LoginViewModel
@@ -23,28 +25,39 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
-import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
-import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_list_country
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.util.ArrayList
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
 class ContactingServiceActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
     private var myViewMode = PasswordViewMode()
     private var typeId: Int = 0
+    val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
         HomeActivity.alert = LoadingAlert(this)
+
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            MainActivity.timer.timeStop()
+        },1000)
+
+        initArgument()
         initToolBar()
         getListCountry()
         getType()
         iniClick()
+    }
+
+    private fun initArgument() {
+//        profNumber = intent.extras!!.getString("number").toString()
     }
 
     private fun iniClick() {

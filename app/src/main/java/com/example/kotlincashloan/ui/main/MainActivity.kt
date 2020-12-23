@@ -40,8 +40,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val notificationmanager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationmanager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState

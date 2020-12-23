@@ -1,10 +1,7 @@
 package com.example.kotlincashloan.ui.registration.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
@@ -72,8 +69,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         timer = TimerListener(this)
     }
 
-
-
     private fun iniClick() {
         home_show.setOnClickListener {
             if (AppPreferences.isValid) {
@@ -87,11 +82,15 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_forget_password.setOnClickListener {
             val intent = Intent(this, PasswordRecoveryActivity::class.java)
+            home_touch_id.isChecked = false
+            home_login_code.isChecked = false
             startActivity(intent)
         }
 
         home_registration.setOnClickListener {
             val intent = Intent(this, NumberActivity::class.java)
+            home_touch_id.isChecked = false
+            home_login_code.isChecked = false
             startActivity(intent)
         }
 
@@ -365,8 +364,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt =
-            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult

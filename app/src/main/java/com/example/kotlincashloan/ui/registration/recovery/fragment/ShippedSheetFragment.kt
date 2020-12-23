@@ -10,6 +10,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_shipped_sheet.*
 
 class ShippedSheetFragment() : BottomSheetDialogFragment() {
@@ -28,7 +29,7 @@ class ShippedSheetFragment() : BottomSheetDialogFragment() {
 
     private fun initClick() {
         shipped_sheet_enter.setOnClickListener {
-            if (!isInLayout){
+            if (AppPreferences.errorCode == null){
                 val intent = Intent(context, HomeActivity::class.java)
                 startActivity(intent)
             }else{

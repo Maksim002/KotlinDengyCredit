@@ -10,7 +10,7 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/profile_s_swipe"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="16dp"
-                    android:text="Данил Черепанов"
+                    tools:text="Данил Черепанов"
                     android:textColor="@color/whiteColor"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -103,7 +103,7 @@
                     android:inputType="textPersonName"
                     android:drawableRight="@drawable/ic_editing_grey"
                     android:layout_marginLeft="11dp"
-                    android:text="+996 700 700 540"
+                    tools:text="+996 700 700 540"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
@@ -147,7 +147,7 @@
                                 android:enabled="false"
                                 android:inputType="textPersonName"
                                 android:textSize="17sp"
-                                android:text="Черепанов"/>
+                                tools:text="Черепанов"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -181,7 +181,7 @@
                                 android:enabled="false"
                                 android:inputType="textPersonName"
                                 android:textSize="17sp"
-                                android:text="Данил"/>
+                                tools:text="Данил"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -216,7 +216,7 @@
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="textPersonName"
                                 android:textSize="17sp"
-                                android:text="Валерьевич"/>
+                                tools:text="Валерьевич"/>
                         </LinearLayout>
                     </LinearLayout>
 
@@ -248,7 +248,7 @@
                                 android:background="@null"
                                 android:enabled="false"
                                 android:inputType="textPersonName"
-                                android:text="05.07.1992"
+                                tools:text="05.07.1992"
                                 android:textColor="#001"
                                 android:textSize="17sp"
                                 android:windowSoftInputMode="adjustResize" />
@@ -366,7 +366,7 @@
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="number"
                                 android:textSize="17sp"
-                                android:text="+996"/>
+                                tools:text="+996"/>
                         </LinearLayout>
 
                     </LinearLayout>
@@ -407,7 +407,7 @@
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="number"
                                 android:textSize="17sp"
-                                android:text="700 700 540"/>
+                                tools:text="700 700 540"/>
                         </LinearLayout>
 
                         <ImageView
