@@ -23,6 +23,7 @@
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Код из смс-сообщения"
             android:padding="13dp"
+            android:textColor="@color/blackColor"
             android:maxLength="4"
             android:textSize="14sp"
             android:inputType="number"

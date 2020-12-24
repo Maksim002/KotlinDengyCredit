@@ -486,6 +486,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         super.onStop()
         if (AppPreferences.token != ""){
             MainActivity.timer.timeStart()
+            AppPreferences.isNumber = false
         }
     }
 }

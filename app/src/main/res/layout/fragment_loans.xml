@@ -106,7 +106,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center"
                                                 android:layout_marginLeft="3dp"
-                                                android:text="25 000"
+                                                tools:text="25 000"
                                                 android:textColor="@color/blackColor"
                                                 android:textSize="20sp"
                                                 android:textStyle="bold" />
@@ -188,7 +188,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginLeft="5dp"
                                             android:layout_weight="1"
-                                            android:text="25 000"
+                                            tools:text="25 000"
                                             android:textColor="@color/blackColor"
                                             android:textSize="20sp"
                                             android:textStyle="bold" />
@@ -227,7 +227,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_marginLeft="5dp"
                                             android:layout_weight="1"
-                                            android:text="50 000"
+                                            tools:text="50 000"
                                             android:textColor="@color/blackColor"
                                             android:textSize="20sp"
                                             android:textStyle="bold" />
@@ -397,7 +397,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="10dp"
                                     android:layout_weight="1"
-                                    android:text="5 000 "
+                                    tools:text="5 000 "
                                     android:textColor="@color/whiteColor"
                                     android:textSize="20sp" />
                             </LinearLayout>
@@ -419,7 +419,7 @@
                             android:layout_marginRight="26dp"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:text="01.08.20"
+                            tools:text="01.08.20"
                             android:textColor="@color/whiteColor"
                             android:textSize="20sp" />
                     </LinearLayout>

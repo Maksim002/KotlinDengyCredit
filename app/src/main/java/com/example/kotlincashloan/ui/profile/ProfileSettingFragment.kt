@@ -159,7 +159,6 @@ class ProfileSettingFragment : Fragment() {
     }
 
     private fun initResult() {
-
         //если все успешно получает информацию о пользователе
         viewModel.listClientInfoDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
             try {
@@ -756,5 +755,13 @@ class ProfileSettingFragment : Fragment() {
         }
 
         return valid
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // проверка если с timer приходит token null
+        if (AppPreferences.token == ""){
+            initAuthorized()
+        }
     }
 }

@@ -33,8 +33,7 @@ class ShippedSheetFragment() : BottomSheetDialogFragment() {
                 val intent = Intent(context, HomeActivity::class.java)
                 startActivity(intent)
             }else{
-                val intent = Intent(context, MainActivity::class.java)
-                startActivity(intent)
+                requireActivity().finish()
             }
         }
     }

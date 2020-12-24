@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -39,6 +40,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
+    private var repeatedClick = 0
 
     companion object {
         lateinit var alert: LoadingAlert
@@ -138,7 +140,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
-                            }else if(data.error.code == 400){
+                            } else if (data.error.code == 400) {
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
@@ -155,7 +157,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             tokenId = data.result.token
                             if (home_login_code.isChecked) {
                                 home_incorrect.visibility = View.GONE
-                                if (!AppPreferences.isNumber){
+                                if (!AppPreferences.isNumber) {
                                     initBottomSheet()
                                     AppPreferences.isNumber = true
                                 }
@@ -223,11 +225,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         if (AppPreferences.isTouchId) {
             home_touch_id.isChecked = AppPreferences.isTouchId
             iniTouchId()
+            repeatedClick = 0
         }
 
         if (AppPreferences.isLoginCode) {
             home_login_code.isChecked = AppPreferences.isLoginCode
             initBottomSheet()
+            repeatedClick = 0
         }
 
         home_login_code.setOnCheckedChangeListener { compoundButton, b ->
@@ -301,21 +305,31 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
+        repeatedClick = 1
         if (AppPreferences.token != ""){
             startMainActivity()
         }else{
             if (AppPreferences.isNumber){
-                if (home_login_code.isChecked) {
-                    initBottomSheet()
-                }
-                if (home_touch_id.isChecked) {
-                    iniTouchId()
+                if (repeatedClick != 1) {
+                    if (home_login_code.isChecked) {
+                        initBottomSheet()
+                    }
+                    if (home_touch_id.isChecked) {
+                        iniTouchId()
+                    }
                 }
                 AppPreferences.isNumber = false
             }
         }
         AppPreferences.isValid = false
         home_text_login.getPaint().clearShadowLayer();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (home_touch_id.isChecked) {
+            iniTouchId()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -372,7 +386,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt = BiometricPrompt(
+            this,
+            executor,
+            object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(
                     result: BiometricPrompt.AuthenticationResult
@@ -440,7 +457,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     ).show()
                 }
             })
-
         biometricPrompt.authenticate(promptInfo)
     }
 
