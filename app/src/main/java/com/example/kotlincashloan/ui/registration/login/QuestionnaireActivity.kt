@@ -1,8 +1,10 @@
 package com.example.kotlinscreenscanner.ui.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -18,7 +20,6 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
-import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.AuthorizationBusyBottomFragment
 import com.example.myapplication.LoginViewModel
@@ -30,7 +31,6 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -65,7 +65,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         getListNationality()
         getIdSxs()
         getAutoOperation()
-        iniClock()
+        initClock()
         initViews()
         initCheck()
     }
@@ -213,7 +213,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         questionnaire_layout.visibility = View.VISIBLE
     }
 
-    private fun iniClock() {
+    private fun initClock() {
         questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
                 questionnaire_enter.isClickable = true
@@ -229,6 +229,19 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         questionnaire_registration.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    //Метотд для скрытия клавиатуры
+    private fun closeKeyboard() {
+        val view: View = this.currentFocus!!
+        if (view != null) {
+            // now assign the system
+            // service to InputMethodManager
+            val manager = this.getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager?
+            manager!!.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -395,6 +408,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         questionnaire_id_sxs.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             try {
                 if (hasFocus) {
+                    closeKeyboard()
                     questionnaire_id_sxs.showDropDown()
                 }
             } catch (e: Exception) {
@@ -485,6 +499,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             View.OnFocusChangeListener { view, hasFocus ->
                 try {
                     if (hasFocus) {
+                        closeKeyboard()
                         questionnaire_id_nationality.showDropDown()
                     }
                 } catch (e: Exception) {
@@ -581,6 +596,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         questionnaire_id_secret.onFocusChangeListener =
             View.OnFocusChangeListener { view, hasFocus ->
                 try {
+                    closeKeyboard()
                     questionnaire_id_secret.showDropDown()
                 } catch (e: Exception) {
 

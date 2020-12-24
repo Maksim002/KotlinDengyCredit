@@ -63,8 +63,9 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
                     android:textColor="@color/blackColor"
-                    android:inputType="textPersonName"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
@@ -76,6 +77,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
+                    android:imeOptions="actionNext"
                     android:textColor="@color/blackColor"
                     android:inputType="textPersonName"
                     android:padding="13dp"
@@ -88,8 +90,9 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
+                    android:imeOptions="actionDone"
                     android:textColor="@color/blackColor"
-                    android:inputType="textPersonName"
+                    android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
@@ -149,6 +152,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:clickable="false"
                     android:focusable="false"
+                    android:imeOptions="actionDone"
                     android:textColor="@color/blackColor"
                     android:hint="Номер телефона"
                     android:inputType="number"
@@ -194,6 +198,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Ответ на секретный вопрос"
                     android:inputType="text"
+                    android:imeOptions="actionDone"
                     android:textColor="@color/blackColor"
                     android:padding="13dp"
                     android:textSize="14dp" />

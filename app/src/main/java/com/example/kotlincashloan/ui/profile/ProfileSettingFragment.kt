@@ -318,14 +318,18 @@ class ProfileSettingFragment : Fragment() {
                         androidx.lifecycle.Observer { result ->
                             try {
                                 if (result.result != null) {
-
                                     profile_s_question.setText(result.result[clientResult.question!!.toInt() -1].name)
-
+                                    var numberPosition = 0
+                                    if (question == ""){
+                                        numberPosition = clientResult.question!!.toInt()
+                                        question = numberPosition.toString()
+                                    }
                                     val adapterListCountry = ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line, result.result)
                                     profile_s_question.setAdapter(adapterListCountry)
 
                                     profile_s_question.keyListener = null
                                     profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
+
                                         question = result.result[position].id.toString()
                                         profile_s_question.showDropDown()
                                         profile_s_question.clearFocus()

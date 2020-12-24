@@ -45,6 +45,7 @@
                 android:textColor="@color/blackColor"
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Логин"
+                android:imeOptions="actionNext"
                 android:inputType="number"
                 android:padding="16dp"
                 android:textSize="14dp" />
@@ -63,8 +64,8 @@
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:hint="Пароль"
+                    android:imeOptions="actionDone"
                     android:textColor="@color/blackColor"
-                    android:imeOptions="actionNext"
                     android:inputType="textPassword"
                     android:padding="13dp"
                     android:textSize="14sp"

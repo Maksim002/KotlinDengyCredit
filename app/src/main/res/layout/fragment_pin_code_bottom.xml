@@ -64,8 +64,8 @@
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Повторите пин-код"
             android:maxLength="4"
+            android:imeOptions="actionDone"
             android:textColor="@color/blackColor"
-            android:imeOptions="actionNext"
             android:inputType="number"
             android:padding="13dp"
             android:textSize="14dp" />

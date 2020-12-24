@@ -362,6 +362,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
                                 android:editable="true"
+                                android:focusableInTouchMode="false"
                                 android:textColor="@color/blackColor"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"
