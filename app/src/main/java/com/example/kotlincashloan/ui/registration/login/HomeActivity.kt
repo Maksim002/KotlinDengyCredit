@@ -40,9 +40,9 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
-    private var repeatedClick = 0
 
     companion object {
+        var repeatedClick = 0
         lateinit var alert: LoadingAlert
     }
 
@@ -225,13 +225,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         if (AppPreferences.isTouchId) {
             home_touch_id.isChecked = AppPreferences.isTouchId
             iniTouchId()
-            repeatedClick = 0
         }
 
         if (AppPreferences.isLoginCode) {
             home_login_code.isChecked = AppPreferences.isLoginCode
             initBottomSheet()
-            repeatedClick = 0
+            repeatedClick = 1
         }
 
         home_login_code.setOnCheckedChangeListener { compoundButton, b ->
@@ -305,18 +304,17 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
-        repeatedClick = 1
         if (AppPreferences.token != ""){
             startMainActivity()
         }else{
             if (AppPreferences.isNumber){
-                if (repeatedClick != 1) {
+                if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
                         initBottomSheet()
                     }
-                    if (home_touch_id.isChecked) {
-                        iniTouchId()
-                    }
+//                    if (home_touch_id.isChecked) {
+//                        iniTouchId()
+//                    }
                 }
                 AppPreferences.isNumber = false
             }

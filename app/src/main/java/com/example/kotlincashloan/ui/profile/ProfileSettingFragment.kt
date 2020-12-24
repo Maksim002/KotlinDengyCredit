@@ -54,6 +54,7 @@ class ProfileSettingFragment : Fragment() {
     private var codeMack = ""
     private var reNum = ""
     private var reView = false
+    private var question = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -169,7 +170,6 @@ class ProfileSettingFragment : Fragment() {
                     profile_setting_first_name.setText(clientResult.firstName)
                     profile_setting_last_name.setText(clientResult.lastName)
                     profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
-                    profile_s_question.setText(clientResult.question)
                     profile_s_response.setText(clientResult.response)
                     errorClientInfo = result.code.toString()
                     resultSuccessfully()
@@ -318,13 +318,15 @@ class ProfileSettingFragment : Fragment() {
                         androidx.lifecycle.Observer { result ->
                             try {
                                 if (result.result != null) {
-                                    profile_s_question.setText(result.result[clientResult.question!!.toInt()].name)
+
+                                    profile_s_question.setText(result.result[clientResult.question!!.toInt() -1].name)
 
                                     val adapterListCountry = ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line, result.result)
                                     profile_s_question.setAdapter(adapterListCountry)
 
                                     profile_s_question.keyListener = null
                                     profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
+                                        question = result.result[position].id.toString()
                                         profile_s_question.showDropDown()
                                         profile_s_question.clearFocus()
                                     }
@@ -564,7 +566,7 @@ class ProfileSettingFragment : Fragment() {
             mapProfile.put("token", AppPreferences.token.toString())
             mapProfile.put("password", AppPreferences.password.toString())
             mapProfile.put("second_phone", reNum)
-            mapProfile.put("question", profile_s_question.text.toString())
+            mapProfile.put("question", question)
             mapProfile.put("response", profile_s_response.text.toString())
             if (isValid()) {
                 viewModel.saveProfile(mapProfile)

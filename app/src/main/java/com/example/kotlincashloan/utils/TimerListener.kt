@@ -2,6 +2,8 @@ package com.example.kotlincashloan.utils
 
 import android.app.Activity
 import android.os.CountDownTimer
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 
 
@@ -20,6 +22,7 @@ class TimerListener(var activity: Activity){
                 override fun onFinish() {
                     AppPreferences.token = ""
                     activity.finish()
+                    HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
                 }
             }

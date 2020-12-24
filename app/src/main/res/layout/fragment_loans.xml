@@ -11,6 +11,8 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/loans_layout"
         android:layout_width="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
         android:visibility="gone"
         android:layout_height="wrap_content">
 
