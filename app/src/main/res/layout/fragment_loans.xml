@@ -97,7 +97,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:text="Остаток:"
                                                 android:textSize="12dp"
-                                                android:textColor="#001"
+                                                android:textColor="@color/blackColor"
                                                 android:layout_marginTop="7dp"/>
 
                                             <TextView
@@ -107,7 +107,7 @@
                                                 android:layout_gravity="center"
                                                 android:layout_marginLeft="3dp"
                                                 android:text="25 000"
-                                                android:textColor="#001"
+                                                android:textColor="@color/blackColor"
                                                 android:textSize="20sp"
                                                 android:textStyle="bold" />
                                         </LinearLayout>
@@ -126,7 +126,7 @@
                                             android:layout_height="wrap_content"
                                             android:textSize="12dp"
                                             android:text="Параллельный заём"
-                                            android:textColor="#001" />
+                                            android:textColor="@color/blackColor" />
 
                                         <Switch
                                             android:id="@+id/loan_switch"
@@ -168,7 +168,7 @@
                                         android:layout_height="wrap_content"
                                         android:textSize="12dp"
                                         android:text="Уже оплачено:"
-                                        android:textColor="#001" />
+                                        android:textColor="@color/blackColor" />
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
@@ -189,7 +189,7 @@
                                             android:layout_marginLeft="5dp"
                                             android:layout_weight="1"
                                             android:text="25 000"
-                                            android:textColor="#001"
+                                            android:textColor="@color/blackColor"
                                             android:textSize="20sp"
                                             android:textStyle="bold" />
                                     </LinearLayout>
@@ -207,7 +207,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="Общая сумма:"
                                         android:textSize="12dp"
-                                        android:textColor="#001" />
+                                        android:textColor="@color/blackColor" />
 
                                     <LinearLayout
                                         android:layout_width="wrap_content"
@@ -228,7 +228,7 @@
                                             android:layout_marginLeft="5dp"
                                             android:layout_weight="1"
                                             android:text="50 000"
-                                            android:textColor="#001"
+                                            android:textColor="@color/blackColor"
                                             android:textSize="20sp"
                                             android:textStyle="bold" />
                                     </LinearLayout>

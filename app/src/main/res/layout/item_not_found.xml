@@ -18,12 +18,12 @@
         android:text="Не найдено"
         android:gravity="center"
         android:textSize="17sp"
-        android:textColor="#001"/>
+        android:textColor="@color/blackColor"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#001"
+        android:textColor="@color/blackColor"
         android:gravity="center"
         android:textSize="14sp"
         android:layout_marginTop="15dp"

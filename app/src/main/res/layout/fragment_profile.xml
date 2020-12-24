@@ -99,6 +99,7 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:paddingTop="25dp"
+                            android:textColor="@color/blackColor"
                             android:paddingBottom="25dp"
                             android:textSize="16dp"
                             android:text="Мои операции" />
@@ -110,6 +111,7 @@
                             android:layout_weight="1"
                             android:textSize="16dp"
                             android:paddingTop="25dp"
+                            android:textColor="@color/blackColor"
                             android:paddingBottom="25dp"
                             android:gravity="center"
                             android:text="Мои заявки" />
@@ -154,7 +156,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:textColor="#001"
+                                        android:textColor="@color/blackColor"
                                         android:textSize="16dp"
                                         android:gravity="center"
                                         android:background="@drawable/top_bar_panel"
@@ -183,7 +185,7 @@
                                         android:layout_weight="1"
                                         android:gravity="center"
                                         android:textSize="16dp"
-                                        android:textColor="#001"
+                                        android:textColor="@color/blackColor"
                                         android:paddingTop="25dp"
                                         android:paddingBottom="25dp"
                                         android:text="Мои заявки" />

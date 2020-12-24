@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="#001"
+        android:textColor="@color/blackColor"
         android:textSize="20sp"
         android:text="Номер занят!"/>
 
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textColor="#001"
+        android:textColor="@color/blackColor"
         android:textSize="14sp"
         android:gravity="center"
         android:text="@string/the_number_is_already_registered"/>

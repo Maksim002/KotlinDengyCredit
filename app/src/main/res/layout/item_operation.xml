@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="2"
                     android:text="Сумма к погашению 3567 рублей. Перейти к погашению."
-                    android:textColor="#001"
+                    android:textColor="@color/blackColor"
                     android:textSize="12sp" />
             </LinearLayout>
 

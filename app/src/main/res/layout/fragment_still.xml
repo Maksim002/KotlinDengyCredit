@@ -23,7 +23,7 @@
             android:drawableLeft="@drawable/ic_baseline_meeting_room_24"
             android:drawablePadding="5dp"
             android:text="Выход"
-            android:textColor="#001"/>
+            android:textColor="@color/blackColor"/>
 
         <View
             android:layout_width="match_parent"

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Заполните анкету для получения займа"
             android:textSize="16sp"
-            android:textColor="#001"/>
+            android:textColor="@color/blackColor"/>
 
         <TextView
             android:id="@+id/notification_description"
@@ -91,7 +91,7 @@
                 android:textSize="12sp"
                 android:layout_marginTop="5dp"
                 android:gravity="right"
-                android:textColor="#001"/>
+                android:textColor="@color/blackColor"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

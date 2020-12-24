@@ -63,6 +63,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
+                    android:textColor="@color/blackColor"
                     android:inputType="textPersonName"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -75,6 +76,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
+                    android:textColor="@color/blackColor"
                     android:inputType="textPersonName"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -86,6 +88,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
+                    android:textColor="@color/blackColor"
                     android:inputType="textPersonName"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -98,6 +101,7 @@
                     android:layout_marginTop="20dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:focusable="false"
+                    android:textColor="@color/blackColor"
                     android:hint="Дата рождения"
                     android:inputType="number"
                     android:padding="13dp"
@@ -117,6 +121,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="Выберите пол"
+                    android:textColor="@color/blackColor"
                     android:inputType="number"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -130,6 +135,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="Укажите гражданство"
+                    android:textColor="@color/blackColor"
                     android:inputType="number"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -143,6 +149,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:clickable="false"
                     android:focusable="false"
+                    android:textColor="@color/blackColor"
                     android:hint="Номер телефона"
                     android:inputType="number"
                     android:padding="14dp"
@@ -156,6 +163,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:textSize="14dp"
+                    android:textColor="@color/blackColor"
                     android:digits="0123456789"
                     android:ellipsize="end"
                     android:hint="Дополнительный номер телефона"
@@ -170,6 +178,7 @@
                     android:layout_marginTop="20dp"
                     android:ellipsize="end"
                     android:maxLines="3"
+                    android:textColor="@color/blackColor"
                     android:inputType ="textMultiLine"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
@@ -185,6 +194,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Ответ на секретный вопрос"
                     android:inputType="text"
+                    android:textColor="@color/blackColor"
                     android:padding="13dp"
                     android:textSize="14dp" />
 

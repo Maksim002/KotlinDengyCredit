@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textColor="#000"
+        android:textColor="@color/blackColor"
         android:text="Выберите сумму и срок:"/>
 
     <TextView
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="5000"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:textSize="14dp"/>
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="25 000"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 android:gravity="right"
                 android:layout_weight="1"
                 android:textSize="14dp"/>
@@ -154,7 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 android:layout_weight="1"
                 android:gravity="left"
                 android:textSize="14dp"/>
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="12"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 android:gravity="right"
                 android:layout_weight="1"
                 android:textSize="14dp"/>
@@ -176,7 +176,7 @@
         android:text="@string/_3_637"
         android:textSize="17dp"
         android:layout_marginTop="10dp"
-        android:textColor="#001"
+        android:textColor="@color/blackColor"
         android:gravity="center"/>
 
     <LinearLayout

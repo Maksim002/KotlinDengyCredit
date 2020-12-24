@@ -37,7 +37,7 @@
             android:id="@+id/loans_details_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#001"
+            android:textColor="@color/blackColor"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             tools:text="Header"
@@ -50,7 +50,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:textSize="14sp"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 tools:text="description"
                 android:layout_marginTop="10dp"/>
 

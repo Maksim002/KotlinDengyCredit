@@ -35,7 +35,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="#000"
+                    android:textColor="@color/blackColor"
                     android:textSize="17sp"
                     tools:text="title" />
 
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:textColor="#000"
+                android:textColor="@color/blackColor"
                 android:textSize="14sp"
                 tools:text="description" />
         </LinearLayout>

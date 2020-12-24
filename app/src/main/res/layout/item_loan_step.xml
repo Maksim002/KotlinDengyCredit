@@ -12,6 +12,7 @@
         tools:text="1"
         android:fontFamily="@font/roboto_black"
         android:textStyle="bold"
+        android:textColor="@color/blackColor"
         android:layout_marginLeft="18dp"
         android:layout_marginRight="18dp"
         android:padding="16dp"
