@@ -49,10 +49,6 @@ class ContactingServiceActivity : AppCompatActivity() {
         HomeActivity.alert = LoadingAlert(this)
         MainActivity.timer = TimerListener(this)
 
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            MainActivity.timer.timeStop()
-        }, 1000)
-
         initArgument()
         initToolBar()
         getListCountry()
@@ -477,6 +473,19 @@ class ContactingServiceActivity : AppCompatActivity() {
         }
 
         return valid
+    }
 
+    override fun onResume() {
+        super.onResume()
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            MainActivity.timer.timeStop()
+        }, 2000)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (AppPreferences.token != ""){
+            MainActivity.timer.timeStart()
+        }
     }
 }

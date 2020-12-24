@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Обращение в службу поддержки"
-                    android:textColor="#001"
+                    android:textColor="@color/blackColor"
                     android:textSize="20sp" />
 
                 <EditText
@@ -46,6 +46,7 @@
                     android:layout_marginTop="15dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
+                    android:textColor="@color/blackColor"
                     android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -58,6 +59,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
+                    android:textColor="@color/blackColor"
                     android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -69,6 +71,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
+                    android:textColor="@color/blackColor"
                     android:inputType="text"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -78,6 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:textColor="@color/blackColor"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:hint="Список доступных стран"
@@ -107,6 +111,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
+                    android:textColor="@color/blackColor"
                     android:hint="Выберите тему обращения"
                     android:padding="13dp"
                     android:textSize="14dp" />
@@ -121,6 +126,7 @@
                     android:hint="Ваш комментарий(не обязательно)"
                     android:inputType="textMultiLine"
                     android:lines="8"
+                    android:textColor="@color/blackColor"
                     android:maxLines="10"
                     android:minLines="3"
                     android:padding="13dp"

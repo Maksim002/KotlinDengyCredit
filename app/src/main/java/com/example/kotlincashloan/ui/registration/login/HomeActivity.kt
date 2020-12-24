@@ -28,6 +28,8 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_home.home_forget_password
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
@@ -74,9 +76,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             if (AppPreferences.isValid) {
                 AppPreferences.isValid = false
                 home_text_password.transformationMethod = PasswordTransformationMethod()
+                home_text_password.setSelection(home_text_password.text!!.length);
             } else {
                 AppPreferences.isValid = true
                 home_text_password.transformationMethod = null
+                home_text_password.setSelection(home_text_password.text!!.length);
             }
         }
 

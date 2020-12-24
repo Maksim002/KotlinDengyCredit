@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val handler = Handler()
     private var currentNavController: LiveData<NavController>? = null
 
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -112,7 +114,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        timer.timeStop()
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            timer.timeStop()
+        }, 2000)
     }
 
     override fun onStop() {

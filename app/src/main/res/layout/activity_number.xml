@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Регистрация"
-            android:textColor="#001"
+            android:textColor="@color/blackColor"
             android:textSize="20sp" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_marginTop="15dp"
             android:gravity="center"
             android:text="Введите номер телефона и нажмите “Далее”"
-            android:textColor="#001"
+            android:textColor="@color/blackColor"
             android:textSize="14sp" />
 
         <AutoCompleteTextView

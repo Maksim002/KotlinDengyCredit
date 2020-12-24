@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Вход"
-                android:textColor="#001"
+                android:textColor="@color/blackColor"
                 android:textSize="20sp" />
 
 
@@ -71,14 +71,14 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
+                <ImageView
                     android:id="@+id/home_show"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_marginRight="40dp"
                     android:gravity="center"
-                    android:text="Показать"
+                    android:src="@drawable/ic_baseline_remove_red_eye_24"
                     android:textColor="#FF9900"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -104,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="Запомнить логин"
+                android:textColor="@color/blackColor"
                 android:textSize="12sp"
                 tools:layout_editor_absoluteX="114dp"
                 tools:layout_editor_absoluteY="105dp" />
@@ -113,6 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Вход по пин-коду"
+                android:textColor="@color/blackColor"
                 android:textSize="12sp"
                 tools:layout_editor_absoluteX="114dp"
                 tools:layout_editor_absoluteY="105dp" />
@@ -122,6 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Вход с помощью отпечатка"
+                android:textColor="@color/blackColor"
                 android:textSize="12sp"
                 tools:layout_editor_absoluteX="114dp"
                 tools:layout_editor_absoluteY="105dp" />
