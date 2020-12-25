@@ -2,31 +2,28 @@ package com.example.kotlincashloan.ui.notification
 
 
 import android.app.Activity
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
-import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
-import android.os.Handler
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.notification.NotificationListener
-import com.example.kotlincashloan.adapter.profile.MyOperationModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
-import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_notification.*
@@ -35,8 +32,8 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
+
 
 class NotificationFragment : Fragment(), NotificationListener {
     private var myAdapter = NotificationAdapter(this)
@@ -45,7 +42,11 @@ class NotificationFragment : Fragment(), NotificationListener {
     val handler = Handler()
     private var errorCode = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_notification, container, false)
     }
@@ -104,7 +105,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                 }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorNotice.value != null){
+                    if (viewModel.errorNotice.value != null) {
                         viewModel.errorNotice.value = null
                         viewModel.listNoticeDta.postValue(null)
                     }
@@ -117,7 +118,10 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initRefresh() {
         notification_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 initRestart()
             }, 500)
@@ -171,14 +175,14 @@ class NotificationFragment : Fragment(), NotificationListener {
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                HomeActivity.alert.hide()
 //            },200)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
 
         })
 
         viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null){
+            if (error != null) {
                 errorCode = ""
             }
             if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429") {
@@ -253,14 +257,7 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow().setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
-            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
-            var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            decorView.systemUiVisibility = systemUiVisibilityFlags
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(ColorDrawable(requireActivity().getColor(R.color.orangeColor)))
-        }
+        //меняет цвета навигационной понели
+        ColorWindows(activity as AppCompatActivity).noRollback()
     }
 }

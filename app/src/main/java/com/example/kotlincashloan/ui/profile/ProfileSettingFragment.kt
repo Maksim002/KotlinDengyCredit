@@ -22,6 +22,7 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
@@ -397,17 +398,16 @@ class ProfileSettingFragment : Fragment() {
 
 
         //результат о сохронение данных
-        viewModel.listSaveProfileDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        viewModel.listSaveProfileDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
-                        if (reView == true)
+                        if (reView == true) {
                             CookieBar.build(requireActivity())
                                 .setCustomView(R.layout.item_custom_cookie)
                                 .setDuration(5000)
                                 .setCookiePosition(Gravity.TOP)
                                 .show()
+                        }
                     }
                     reView = false
                 } catch (e: Exception) {
@@ -708,24 +708,9 @@ class ProfileSettingFragment : Fragment() {
             initRestart()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            requireActivity().getWindow()
-                .setStatusBarColor(requireActivity().getColor(R.color.orangeColor))
-            val decorView: View = (activity as AppCompatActivity).getWindow().getDecorView()
-            var systemUiVisibilityFlags = decorView.systemUiVisibility
-            systemUiVisibilityFlags =
-                systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
-            decorView.systemUiVisibility = systemUiVisibilityFlags
-            val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar);
-            toolbar.setBackgroundDrawable(
-                ColorDrawable(
-                    requireActivity().getColor(
-                        R.color.orangeColor
-                    )
-                )
-            )
-            toolbar.setTitleTextColor(requireActivity().getColor(R.color.whiteColor))
-        }
+        //меняет цвета навигационной понели
+        ColorWindows(activity as AppCompatActivity).rollback()
+
         val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
         backArrow.setColorFilter(
             resources.getColor(android.R.color.white),

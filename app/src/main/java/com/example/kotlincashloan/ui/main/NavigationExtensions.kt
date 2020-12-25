@@ -105,10 +105,10 @@ fun BottomNavigationView.setupWithNavController(
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
                     fragmentManager.beginTransaction().setCustomAnimations(
-                        R.anim.default_enter_anim,
-                        R.anim.default_exit_anim,
-                        R.anim.default_pop_enter_anim,
-                        R.anim.default_pop_exit_anim
+                        R.anim.slide_in_from_right,
+                        R.anim.slide_out_to_left,
+                        R.anim.slide_in_from_left,
+                        R.anim.slide_out_to_right
                     )
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
