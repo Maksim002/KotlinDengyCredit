@@ -403,6 +403,12 @@ class ProfileSettingFragment : Fragment() {
                     if (result.result != null) {
                         if (reView == true) {
                             CookieBar.build(requireActivity())
+                                .setTitle("R.string.fancy_cookie_title")
+                                .setMessage("R.string.fancy_cookie_message")
+                                .setTitleColor(R.color.whiteColor)
+                                .setActionColor(R.color.orangeColor)
+                                .setMessageColor(R.color.whiteColor)
+                                .setBackgroundColor(R.color.whiteColor)
                                 .setCustomView(R.layout.item_custom_cookie)
                                 .setDuration(5000)
                                 .setCookiePosition(Gravity.TOP)
