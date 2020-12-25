@@ -128,11 +128,10 @@
                     android:gravity="left|center"
                     android:hint="Ваш комментарий(не обязательно)"
                     android:inputType="textMultiLine"
-                    android:lines="8"
-                    android:imeOptions="actionDone"
+                    android:minLines="1"
+                    android:maxLines="3"
+                    android:imeOptions="actionGo"
                     android:textColor="@color/blackColor"
-                    android:maxLines="10"
-                    android:minLines="3"
                     android:padding="13dp"
                     android:textSize="14dp" />
 
