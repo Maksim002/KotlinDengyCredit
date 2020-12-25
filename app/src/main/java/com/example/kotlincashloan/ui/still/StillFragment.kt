@@ -2,25 +2,19 @@ package com.example.kotlincashloan.ui.still
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.extension.banPressed
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_still.*
-import org.aviran.cookiebar2.CookieBar
 
 class StillFragment : Fragment() {
 

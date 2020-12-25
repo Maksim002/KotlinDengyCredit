@@ -11,6 +11,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/CookieBar" />
             <option value="$PROJECT_DIR$/SpinnerDatePickerLib" />
             <option value="$PROJECT_DIR$/app" />
           </set>

@@ -1,3 +1,4 @@
+include ':CookieBar'
 include ':SpinnerDatePickerLib'
 include ':app'
 rootProject.name = "KotlinCashLoan"
