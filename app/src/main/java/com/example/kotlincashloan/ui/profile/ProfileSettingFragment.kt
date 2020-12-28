@@ -299,7 +299,6 @@ class ProfileSettingFragment : Fragment() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
             })
 
         viewModel.errorListAvailableCountry.observe(
