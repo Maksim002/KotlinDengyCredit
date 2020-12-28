@@ -3,11 +3,13 @@ package com.example.kotlincashloan.utils
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.kotlincashloan.R
+
 
 class ColorWindows(var activity: AppCompatActivity) {
 
@@ -17,9 +19,14 @@ class ColorWindows(var activity: AppCompatActivity) {
             val window: Window = activity.getWindow()
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = activity.resources.getColor(R.color.orangeColor)
+            val decorView: View = (activity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = activity.findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(activity.resources.getColor(R.color.orangeColor)))
-            toolbar.getNavigationIcon()!!.setColorFilter(activity.getResources().getColor(R.color.whiteColor), PorterDuff.Mode.SRC_ATOP)
+            toolbar.getNavigationIcon()!!.setColorFilter(activity.getResources().getColor(R.color.whiteColor), PorterDuff.Mode.SRC_ATOP
+            )
         }
     }
 
@@ -29,6 +36,10 @@ class ColorWindows(var activity: AppCompatActivity) {
             val window: Window = activity.getWindow()
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = activity.resources.getColor(R.color.orangeColor)
+            val decorView: View = (activity).getWindow().getDecorView()
+            var systemUiVisibilityFlags = decorView.systemUiVisibility
+            systemUiVisibilityFlags = systemUiVisibilityFlags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            decorView.systemUiVisibility = systemUiVisibilityFlags
             val toolbar = activity.findViewById<Toolbar>(R.id.toolbar);
             toolbar.setBackgroundDrawable(ColorDrawable(activity.resources.getColor(R.color.orangeColor)))
         }
