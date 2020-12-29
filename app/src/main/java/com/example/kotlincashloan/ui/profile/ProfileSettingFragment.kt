@@ -490,6 +490,10 @@ class ProfileSettingFragment : Fragment() {
                 profile_s_two_password.text = null
                 initRestart()
             }, 500)
+            profile_s_two_password.error = null
+            profile_s_two_password.error = null
+            profile_s_one_password.error = null
+            profile_s_response.error = null
         }
         profile_s_swipe.setColorSchemeResources(android.R.color.holo_orange_dark)
 
@@ -823,8 +827,9 @@ class ProfileSettingFragment : Fragment() {
 
         //Блакирует фокус на обекте
         private fun clearFocus() {
-
             profile_s_two_password.clearFocus()
+            profile_s_one_password.clearFocus()
+            profile_s_response.clearFocus()
             focus_prof.requestFocus()
         }
 
