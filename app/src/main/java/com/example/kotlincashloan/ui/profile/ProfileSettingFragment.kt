@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.PasswordTransformationMethod
 import android.view.*
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -16,23 +18,23 @@ import androidx.fragment.app.Fragment
 import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
+import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
-import com.example.kotlincashloan.utils.ObservedInternet
-import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlincashloan.utils.ColorWindows
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.home_forget_password
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ProfileSettingFragment : Fragment() {
     private var viewModel = ProfileViewModel()
@@ -477,7 +479,6 @@ class ProfileSettingFragment : Fragment() {
         var textPasswordOne = ""
         var textPasswordTwo = ""
 
-
         profile_s_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -505,11 +506,63 @@ class ProfileSettingFragment : Fragment() {
 
         profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                if (profile_s_two_password.text.isNotEmpty()) {
-                    profile_s_two_password.setSelection(profile_s_one_password.text!!.length);
+                try {
+                    if (profile_s_two_password.text.isNotEmpty()) {
+                        profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
+
+        //Дополнительный номер
+        profile_setting_second_phone.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
+            val r = Rect()
+            profile_setting_second_phone.getWindowVisibleDisplayFrame(r)
+            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+            if (heightDiff > 100) {
+
+            } else {
+                profile_setting_second_phone.clearFocus()
+            }
+        })
+
+        //Ответ
+        profile_s_response.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
+            val r = Rect()
+            profile_s_response.getWindowVisibleDisplayFrame(r)
+            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+            if (heightDiff > 100) {
+
+            } else {
+                clearFocus()
+            }
+        })
+
+        //Введите новый пароль
+        profile_s_one_password.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
+            val r = Rect()
+            profile_s_one_password.getWindowVisibleDisplayFrame(r)
+            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+            if (heightDiff > 100) {
+
+            } else {
+                clearFocus()
+            }
+        })
+
+        //Повторите пароль
+        profile_s_two_password.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
+            val r = Rect()
+            profile_s_two_password.getWindowVisibleDisplayFrame(r)
+            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+            if (heightDiff > 100) {
+
+            } else {
+                clearFocus()
+            }
+        })
 
         click_s_one_password.setOnClickListener {
             profile_s_one_password.requestFocus()
@@ -748,29 +801,43 @@ class ProfileSettingFragment : Fragment() {
         profile_s_owner.requestFocus()
     }
 
+    //Блакирует фокус на обекте
+    private fun clearFocus(){
+
+        profile_s_two_password.clearFocus()
+        focus_prof.requestFocus()
+    }
+
     private fun isValid(): Boolean {
         var valid = true
-        if (profile_s_one_password.text.toString() != profile_s_two_password.text.toString()) {
-            profile_s_two_password.error = "Поля должны совпадать"
-            profile_s_one_password.error = "Поля должны совпадать"
-            valid = false
-        } else {
-            profile_s_two_password.error = null
-            profile_s_one_password.error = null
-        }
-
-        if (profile_setting_second_phone.text!!.toString().isEmpty()) {
-            profile_setting_second_phone.error = "Поле не должно быть пустым"
-            valid = false
-        } else if (reNum.length != numberAvailable) {
-            profile_setting_second_phone.error = "Номер введен неправильно"
-            profile_setting_second_phone.requestFocus()
-            valid = false
-        }
-
         if (profile_s_response.text!!.toString().isEmpty()) {
             profile_s_response.error = "Ответ не должно быть пустым"
             valid = false
+        } else {
+            profile_s_response.error = null
+        }
+
+        if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
+            if (profile_s_one_password.text.toString().toFullPhone() != profile_s_two_password.text.toString().toFullPhone()) {
+                profile_s_two_password.error = "Пароль должны совпадать"
+                valid = false
+            } else {
+                profile_s_two_password.error = null
+            }
+        } else {
+            if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isEmpty()) {
+                profile_s_two_password.error = "Поле не должно быть пустым"
+                valid = false
+            } else {
+                profile_s_two_password.error = null
+            }
+
+            if (profile_s_one_password.text.toString().isEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
+                profile_s_one_password.error = "Поле не должно быть пустым"
+                valid = false
+            } else {
+                profile_s_one_password.error = null
+            }
         }
 
         return valid

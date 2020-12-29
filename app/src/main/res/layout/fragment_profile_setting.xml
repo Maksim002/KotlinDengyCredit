@@ -510,11 +510,11 @@
                             <EditText
                                 android:id="@+id/profile_s_response"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:textColor="@color/blackColor"
                                 android:background="@null"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="1"
-                                android:windowSoftInputMode="adjustResize"
                                 android:inputType="textPersonName"
                                 android:textSize="17sp"
                                 tools:text="Ответ"/>
@@ -577,8 +577,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:src="@drawable/ic_baseline_remove_red_eye_24"
                                 android:textColor="#FF9900"
                                 android:textSize="14sp"
@@ -630,6 +630,7 @@
                                 android:inputType="text"
                                 android:layout_weight="1"
                                 android:textColor="@color/blackColor"
+                                android:imeOptions="actionDone"
                                 android:textSize="17sp"
                                 android:windowSoftInputMode="adjustResize"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -642,8 +643,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:gravity="center"
                                 android:src="@drawable/ic_baseline_remove_red_eye_24"
                                 android:text="Показать"
@@ -662,6 +663,11 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:id="@+id/focus_prof"
+                    android:layout_height="0dp"/>
 
                 <Button
                     android:id="@+id/profile_s_enter"
@@ -691,7 +697,8 @@
 
             <include
                 android:id="@+id/profile_s_owner"
-                layout="@layout/item_focus" />
+                layout="@layout/item_focus"
+                tools:ignore="NotSibling" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
