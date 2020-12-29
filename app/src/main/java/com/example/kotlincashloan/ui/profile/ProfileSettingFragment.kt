@@ -486,6 +486,8 @@ class ProfileSettingFragment : Fragment() {
             )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
+                profile_s_one_password.text = null
+                profile_s_two_password.text = null
                 initRestart()
             }, 500)
         }
@@ -503,351 +505,377 @@ class ProfileSettingFragment : Fragment() {
                 }
             }
         }
-
-        profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                try {
+            profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
                     if (profile_s_two_password.text.isNotEmpty()) {
                         profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
-        }
 
-        //Дополнительный номер
-        profile_setting_second_phone.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
-            val r = Rect()
-            profile_setting_second_phone.getWindowVisibleDisplayFrame(r)
-            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-            if (heightDiff > 100) {
+            //Дополнительный номер
+            profile_setting_second_phone.viewTreeObserver
+                .addOnGlobalLayoutListener {
+                    try {
+                        val r = Rect()
+                        profile_setting_second_phone.getWindowVisibleDisplayFrame(r)
+                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                        if (heightDiff > 100) {
 
-            } else {
-                profile_setting_second_phone.clearFocus()
-            }
-        })
+                        } else {
+                            profile_setting_second_phone.clearFocus()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 
         //Ответ
-        profile_s_response.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
-            val r = Rect()
-            profile_s_response.getWindowVisibleDisplayFrame(r)
-            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-            if (heightDiff > 100) {
+            profile_s_response.viewTreeObserver
+                .addOnGlobalLayoutListener {
+                    try {
+                        val r = Rect()
+                        profile_s_response.getWindowVisibleDisplayFrame(r)
+                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                        if (heightDiff > 100) {
 
-            } else {
-                clearFocus()
-            }
-        })
+                        } else {
+                            clearFocus()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 
         //Введите новый пароль
-        profile_s_one_password.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
-            val r = Rect()
-            profile_s_one_password.getWindowVisibleDisplayFrame(r)
-            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-            if (heightDiff > 100) {
+            profile_s_one_password.viewTreeObserver
+                .addOnGlobalLayoutListener {
+                    try {
+                        val r = Rect()
+                        profile_s_one_password.getWindowVisibleDisplayFrame(r)
+                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                        if (heightDiff > 100) {
 
-            } else {
-                clearFocus()
-            }
-        })
+                        } else {
+                            clearFocus()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 
         //Повторите пароль
-        profile_s_two_password.getViewTreeObserver().addOnGlobalLayoutListener(OnGlobalLayoutListener {
-            val r = Rect()
-            profile_s_two_password.getWindowVisibleDisplayFrame(r)
-            val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-            if (heightDiff > 100) {
+            profile_s_two_password.viewTreeObserver
+                .addOnGlobalLayoutListener {
+                    try {
+                        val r = Rect()
+                        profile_s_two_password.getWindowVisibleDisplayFrame(r)
+                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                        if (heightDiff > 100) {
 
-            } else {
-                clearFocus()
-            }
-        })
+                        } else {
+                            clearFocus()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
 
         click_s_one_password.setOnClickListener {
-            profile_s_one_password.requestFocus()
-            profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            img.showSoftInput(profile_s_one_password, 0)
-        }
+                profile_s_one_password.requestFocus()
+                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                val img =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                img.showSoftInput(profile_s_one_password, 0)
+            }
 
-        profile_s_two_password.addTextChangedListener {
-            textPasswordTwo = it.toString()
-        }
+            profile_s_two_password.addTextChangedListener {
+                textPasswordTwo = it.toString()
+            }
 
-        click_s_two_password.setOnClickListener {
-            profile_s_two_password.requestFocus()
-            profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            img.showSoftInput(profile_s_two_password, 0)
-        }
+            click_s_two_password.setOnClickListener {
+                profile_s_two_password.requestFocus()
+                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                val img =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                img.showSoftInput(profile_s_two_password, 0)
+            }
 
-        //метод удаляет все символы из строки
-        profile_setting_second_phone.addTextChangedListener {
-            if (profile_setting_second_phone.text.toString() != "") {
-                val matchedResults =
-                    Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
-                val result = StringBuilder()
-                for (matchedText in matchedResults) {
-                    reNum = result.append(matchedText.value).toString()
+            //метод удаляет все символы из строки
+            profile_setting_second_phone.addTextChangedListener {
+                if (profile_setting_second_phone.text.toString() != "") {
+                    val matchedResults =
+                        Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+                    val result = StringBuilder()
+                    for (matchedText in matchedResults) {
+                        reNum = result.append(matchedText.value).toString()
+                    }
                 }
             }
-        }
-        // видем пороль или нет
-        var isValidOne = false
-        profile_s_one_password_show.setOnClickListener {
-            if (!isValidOne) {
-                profile_s_one_password.transformationMethod = null
-                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-                isValidOne = true
-            } else {
-                profile_s_one_password.transformationMethod = PasswordTransformationMethod()
-                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-                isValidOne = false
+            // видем пороль или нет
+            var isValidOne = false
+            profile_s_one_password_show.setOnClickListener {
+                if (!isValidOne) {
+                    profile_s_one_password.transformationMethod = null
+                    profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                    isValidOne = true
+                } else {
+                    profile_s_one_password.transformationMethod = PasswordTransformationMethod()
+                    profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                    isValidOne = false
+                }
+            }
+            // видем пороль или нет
+            var isValidTwo = false
+            profile_s_two_password_show.setOnClickListener {
+                if (!isValidTwo) {
+                    profile_s_two_password.transformationMethod = null
+                    profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                    isValidTwo = true
+                } else {
+                    profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+                    profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                    isValidTwo = false
+                }
+            }
+
+
+            access_restricted.setOnClickListener {
+                initRestart()
+            }
+
+            no_connection_repeat.setOnClickListener {
+                initRestart()
+            }
+
+            technical_work.setOnClickListener {
+                initRestart()
+            }
+
+            not_found.setOnClickListener {
+                initRestart()
+            }
+
+            home_forget_password.setOnClickListener {
+                val intent = Intent(context, ContactingServiceActivity::class.java)
+                intent.putExtra("number", "1")
+                startActivity(intent)
+            }
+
+
+            profile_s_enter.setOnClickListener {
+                reView = true
+                if (textPasswordOne == textPasswordTwo) {
+                    if (textPasswordOne != "") {
+                        AppPreferences.password = textPasswordOne
+                    }
+                }
+                val mapProfile = HashMap<String, String>()
+                mapProfile.put("login", AppPreferences.login.toString())
+                mapProfile.put("token", AppPreferences.token.toString())
+                mapProfile.put("password", AppPreferences.password.toString())
+                mapProfile.put("second_phone", reNum)
+                mapProfile.put("question", question)
+                mapProfile.put("response", profile_s_response.text.toString())
+                if (isValid()) {
+                    viewModel.saveProfile(mapProfile)
+                }
+            }
+
+            profile_setting_second_phone.onFocusChangeListener =
+                View.OnFocusChangeListener { v, hasFocus ->
+                    if (profile_setting_second_phone != null) {
+                        profile_setting_second_phone.mask = null
+                        profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
+                        profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
+                        profile_setting_second_phone.isFocusableInTouchMode = true
+                    }
+                }
+
+            click_s_response.setOnClickListener {
+                profile_s_response.requestFocus()
+                profile_s_response.setSelection(profile_s_response.text!!.length);
+                val img =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                img.showSoftInput(profile_s_response, 0)
+            }
+
+            click_s_second.setOnClickListener {
+                profile_setting_second_phone.requestFocus()
+                val img =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                img.showSoftInput(profile_setting_second_phone, 0)
             }
         }
-        // видем пороль или нет
-        var isValidTwo = false
-        profile_s_two_password_show.setOnClickListener {
-            if (!isValidTwo) {
-                profile_s_two_password.transformationMethod = null
-                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                isValidTwo = true
-            } else {
-                profile_s_two_password.transformationMethod = PasswordTransformationMethod()
-                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                isValidTwo = false
+
+        private fun listListResult(result: Int) {
+            if (result == 400 || result == 500 || result == 409 || result == 429) {
+                profile_s_technical_work.visibility = View.VISIBLE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (result == 403) {
+                profile_s_access_restricted.visibility = View.VISIBLE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (result == 404) {
+                profile_s_not_found.visibility = View.VISIBLE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (result == 401) {
+                initAuthorized()
             }
         }
 
-
-        access_restricted.setOnClickListener {
-            initRestart()
+        private fun errorList(error: String) {
+            if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
+                profile_s_technical_work.visibility = View.VISIBLE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (error == "403") {
+                profile_s_access_restricted.visibility = View.VISIBLE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (error == "404") {
+                profile_s_not_found.visibility = View.VISIBLE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (error == "601") {
+                profile_s_no_connection.visibility = View.VISIBLE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+            } else if (error == "401") {
+                initAuthorized()
+            }
         }
 
-        no_connection_repeat.setOnClickListener {
-            initRestart()
+        // проверка если errorCode и errorCodeClient == 200
+        private fun resultSuccessfully() {
+            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+                profile_s_swipe.visibility = View.VISIBLE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_no_connection.visibility = View.GONE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+            }
         }
 
-        technical_work.setOnClickListener {
-            initRestart()
-        }
-
-        not_found.setOnClickListener {
-            initRestart()
-        }
-
-        home_forget_password.setOnClickListener {
-            val intent = Intent(context, ContactingServiceActivity::class.java)
-            intent.putExtra("number", "1")
+        private fun initAuthorized() {
+            val intent = Intent(context, HomeActivity::class.java)
+            AppPreferences.token = ""
             startActivity(intent)
         }
 
+        fun setTitle(title: String?, color: Int) {
+            val activity: Activity? = activity
+            if (activity is MainActivity) {
+                activity.setTitle(title, color)
+            }
+        }
 
-        profile_s_enter.setOnClickListener {
-            reView = true
-            if (textPasswordOne == textPasswordTwo) {
-                if (textPasswordOne != "") {
-                    AppPreferences.password = textPasswordOne
+        override fun onResume() {
+            super.onResume()
+            profile_s_one_password.text = null
+            profile_s_two_password.text = null
+            profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+            profile_s_one_password.transformationMethod = PasswordTransformationMethod()
+            if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
+                && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null
+            ) {
+                if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+                    AppPreferences.reviewCode = 1
+                    initResult()
+                } else {
+                    AppPreferences.reviewCode = 1
+                    initRestart()
                 }
-            }
-            val mapProfile = HashMap<String, String>()
-            mapProfile.put("login", AppPreferences.login.toString())
-            mapProfile.put("token", AppPreferences.token.toString())
-            mapProfile.put("password", AppPreferences.password.toString())
-            mapProfile.put("second_phone", reNum)
-            mapProfile.put("question", question)
-            mapProfile.put("response", profile_s_response.text.toString())
-            if (isValid()) {
-                viewModel.saveProfile(mapProfile)
-            }
-        }
-
-        profile_setting_second_phone.onFocusChangeListener =
-            View.OnFocusChangeListener { v, hasFocus ->
-                if (profile_setting_second_phone != null) {
-                    profile_setting_second_phone.mask = null
-                    profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
-                    profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
-                    profile_setting_second_phone.isFocusableInTouchMode = true
-                }
-            }
-
-        click_s_response.setOnClickListener {
-            profile_s_response.requestFocus()
-            profile_s_response.setSelection(profile_s_response.text!!.length);
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            img.showSoftInput(profile_s_response, 0)
-        }
-
-        click_s_second.setOnClickListener {
-            profile_setting_second_phone.requestFocus()
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            img.showSoftInput(profile_setting_second_phone, 0)
-        }
-    }
-
-    private fun listListResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            profile_s_technical_work.visibility = View.VISIBLE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (result == 403) {
-            profile_s_access_restricted.visibility = View.VISIBLE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (result == 404) {
-            profile_s_not_found.visibility = View.VISIBLE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
-    }
-
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            profile_s_technical_work.visibility = View.VISIBLE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (error == "403") {
-            profile_s_access_restricted.visibility = View.VISIBLE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (error == "404") {
-            profile_s_not_found.visibility = View.VISIBLE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (error == "601") {
-            profile_s_no_connection.visibility = View.VISIBLE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    // проверка если errorCode и errorCodeClient == 200
-    private fun resultSuccessfully() {
-        if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
-            profile_s_swipe.visibility = View.VISIBLE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_no_connection.visibility = View.GONE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
-    }
-
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        profile_s_two_password.transformationMethod = PasswordTransformationMethod()
-        profile_s_one_password.transformationMethod = PasswordTransformationMethod()
-        if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
-            && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null
-        ) {
-            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
-                AppPreferences.reviewCode = 1
-                initResult()
             } else {
-                AppPreferences.reviewCode = 1
+                AppPreferences.reviewCode = 0
+                viewModel.refreshCode = false
                 initRestart()
             }
-        } else {
-            AppPreferences.reviewCode = 0
-            viewModel.refreshCode = false
-            initRestart()
+
+            //меняет цвета навигационной понели
+            ColorWindows(activity as AppCompatActivity).rollback()
+
+            val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
+            backArrow.setColorFilter(
+                resources.getColor(android.R.color.white),
+                PorterDuff.Mode.SRC_ATOP
+            )
+            (activity as AppCompatActivity?)!!.getSupportActionBar()!!
+                .setHomeAsUpIndicator(backArrow)
+            profile_s_owner.requestFocus()
         }
 
-        //меняет цвета навигационной понели
-        ColorWindows(activity as AppCompatActivity).rollback()
+        //Блакирует фокус на обекте
+        private fun clearFocus() {
 
-        val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
-        backArrow.setColorFilter(
-            resources.getColor(android.R.color.white),
-            PorterDuff.Mode.SRC_ATOP
-        )
-        (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
-        profile_s_owner.requestFocus()
-    }
-
-    //Блакирует фокус на обекте
-    private fun clearFocus(){
-
-        profile_s_two_password.clearFocus()
-        focus_prof.requestFocus()
-    }
-
-    private fun isValid(): Boolean {
-        var valid = true
-        if (profile_s_response.text!!.toString().isEmpty()) {
-            profile_s_response.error = "Ответ не должно быть пустым"
-            valid = false
-        } else {
-            profile_s_response.error = null
+            profile_s_two_password.clearFocus()
+            focus_prof.requestFocus()
         }
 
-        if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
-            if (profile_s_one_password.text.toString().toFullPhone() != profile_s_two_password.text.toString().toFullPhone()) {
-                profile_s_two_password.error = "Пароль должны совпадать"
+        private fun isValid(): Boolean {
+            var valid = true
+            if (profile_s_response.text!!.toString().isEmpty()) {
+                profile_s_response.error = "Ответ не должно быть пустым"
                 valid = false
             } else {
-                profile_s_two_password.error = null
-            }
-        } else {
-            if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isEmpty()) {
-                profile_s_two_password.error = "Поле не должно быть пустым"
-                valid = false
-            } else {
-                profile_s_two_password.error = null
+                profile_s_response.error = null
             }
 
-            if (profile_s_one_password.text.toString().isEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
-                profile_s_one_password.error = "Поле не должно быть пустым"
-                valid = false
+            if (profile_s_one_password.text.toString()
+                    .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+            ) {
+                if (profile_s_one_password.text.toString()
+                        .toFullPhone() != profile_s_two_password.text.toString().toFullPhone()
+                ) {
+                    profile_s_two_password.error = "Пароль должны совпадать"
+                    valid = false
+                } else {
+                    profile_s_two_password.error = null
+                }
             } else {
-                profile_s_one_password.error = null
+                if (profile_s_one_password.text.toString()
+                        .isNotEmpty() && profile_s_two_password.text.toString().isEmpty()
+                ) {
+                    profile_s_two_password.error = "Поле не должно быть пустым"
+                    valid = false
+                } else {
+                    profile_s_two_password.error = null
+                }
+
+                if (profile_s_one_password.text.toString()
+                        .isEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+                ) {
+                    profile_s_one_password.error = "Поле не должно быть пустым"
+                    valid = false
+                } else {
+                    profile_s_one_password.error = null
+                }
             }
+
+            return valid
         }
 
-        return valid
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // проверка если с timer приходит token null
-        if (AppPreferences.token == "") {
-            initAuthorized()
+        override fun onStart() {
+            super.onStart()
+            // проверка если с timer приходит token null
+            if (AppPreferences.token == "") {
+                initAuthorized()
+            }
         }
     }
-}
