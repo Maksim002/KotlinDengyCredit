@@ -24,8 +24,10 @@ import com.example.kotlincashloan.service.model.Notification.ResultListNoticeMod
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -41,6 +43,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var errorCode = ""
+    private var notificationAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -223,6 +226,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun notificationClickListener(position: Int, item: ResultListNoticeModel) {
         val bundle = Bundle()
         bundle.putInt("noticeId", item.id!!)
+        notificationAnim = false
         findNavController().navigate(R.id.navigation_detail_notification, bundle)
     }
 
@@ -244,6 +248,7 @@ class NotificationFragment : Fragment(), NotificationListener {
             }
         }else{
             viewModel.refreshCode = false
+            notificationAnim = true
             initRestart()
         }
     }
@@ -257,6 +262,11 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onResume() {
         super.onResume()
+        if (!notificationAnim) {
+            //notificationAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
+            notificationAnim = true
+        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

@@ -23,10 +23,12 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -55,6 +57,7 @@ class ProfileSettingFragment : Fragment() {
     private var reView = false
     private var reNum = ""
     private var question = ""
+    private var profileSettingAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -394,6 +397,11 @@ class ProfileSettingFragment : Fragment() {
                         profile_s_response.setText(clientResult.response)
                         errorClientInfo = result.code.toString()
                         resultSuccessfully()
+                        if (!profileSettingAnim) {
+                            //profileAnim анимация для перехода с адного дествия в другое
+                            TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+                            profileSettingAnim = true
+                        }
 
                         //получение полов
                         gettingFloors()
@@ -406,7 +414,6 @@ class ProfileSettingFragment : Fragment() {
 
                         //Список секретных вопросов
                         listQuestions()
-
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -804,10 +811,12 @@ class ProfileSettingFragment : Fragment() {
                     initResult()
                 } else {
                     AppPreferences.reviewCode = 1
+                    profileSettingAnim = true
                     initRestart()
                 }
             } else {
                 AppPreferences.reviewCode = 0
+                profileSettingAnim = false
                 viewModel.refreshCode = false
                 initRestart()
             }

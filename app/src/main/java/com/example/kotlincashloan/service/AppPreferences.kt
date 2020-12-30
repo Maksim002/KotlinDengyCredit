@@ -128,6 +128,12 @@ object AppPreferences {
             it.putBoolean("isNumber", value)
         }
 
+    var inputsAnim: Int
+        get() = preferences.getInt("inputsAnim", 0)
+        set(value) = preferences.edit {
+            it.putInt("inputsAnim", value)
+        }
+
     var isValid: Boolean
         get() = preferences.getBoolean("isValid", false)
         set(value) = preferences.edit {

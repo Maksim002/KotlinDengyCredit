@@ -18,6 +18,7 @@ import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActiv
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
@@ -31,6 +32,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.home_forget_password
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
@@ -41,6 +43,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
+    private var inputsAnim = false
 
     companion object {
         var repeatedClick = 0
@@ -96,6 +99,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_registration.setOnClickListener {
             val intent = Intent(this, NumberActivity::class.java)
+            inputsAnim = true
             home_touch_id.isChecked = false
             home_login_code.isChecked = false
             startActivity(intent)
@@ -326,6 +330,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
+        if (inputsAnim){
+            TransitionAnimation(this).transitionLeft(home_layout_anim)
+            inputsAnim = true
+        }
+
         if (home_touch_id.isChecked) {
             iniTouchId()
         }

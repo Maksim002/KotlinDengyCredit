@@ -2,25 +2,20 @@ package com.example.kotlincashloan.ui.notification
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_detail_notification.*
-import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -34,6 +29,7 @@ class DetailNotificationFragment : Fragment() {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var errorCode = ""
+    private var notificationAnimDetail = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -125,6 +121,11 @@ class DetailNotificationFragment : Fragment() {
                     d_notification_not_found.visibility = View.GONE
                     errorCode = result.code.toString()
                     setTitle(result.result.title, resources.getColor(R.color.whiteColor))
+                    //notificationAnimDetail анимация для перехода с адного дествия в другое
+                    if (!notificationAnimDetail) {
+                            TransitionAnimation(activity as AppCompatActivity).transitionRight(notification_anim)
+                        notificationAnimDetail = true
+                    }
                 } else {
                     if (result.error.code != null) {
                         errorCode = result.error.code.toString()
@@ -206,6 +207,7 @@ class DetailNotificationFragment : Fragment() {
                 initRequest()
             } else {
                 viewModel.refreshCode = false
+                notificationAnimDetail = false
                 initRestart()
             }
         }

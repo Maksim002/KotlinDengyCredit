@@ -11,6 +11,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
@@ -311,6 +312,11 @@ class NumberActivity : AppCompatActivity() {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
+    }
+
+    override fun onResume() {
+        super.onResume()
+        TransitionAnimation(this).transitionRightActivity(number_layout_anim)
     }
 
     private fun initViews() {

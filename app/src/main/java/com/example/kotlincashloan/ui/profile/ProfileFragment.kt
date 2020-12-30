@@ -2,8 +2,6 @@ package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -12,19 +10,17 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
-import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -44,6 +40,8 @@ class ProfileFragment : Fragment() {
     private var errorCodeClient = ""
     private var numberBar = 0
     val bundle = Bundle()
+    private var profAnim = false
+    private var inputsAnim = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +69,7 @@ class ProfileFragment : Fragment() {
     private fun initClick() {
 
         profile_your.setOnClickListener {
+            inputsAnim = 1
             findNavController().navigate(R.id.profile_setting_navigation)
         }
 
@@ -246,7 +245,6 @@ class ProfileFragment : Fragment() {
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()
 
-
         profile_pager.isEnabled = false
 
         v1.setOnClickListener {
@@ -343,9 +341,15 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        if (AppPreferences.inputsAnim != 0){
+            inputsAnim = AppPreferences.inputsAnim
+        }
         if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null) {
             if (errorCode == "200" || errorCodeClient == "200") {
                 AppPreferences.reviewCode = 0
+                if (inputsAnim != 0){
+                    profAnim = true
+                }
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 1
@@ -368,6 +372,13 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (profAnim) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
+            inputsAnim = 0
+            AppPreferences.inputsAnim = 0
+            profAnim = false
+        }
         if (numberBar != 0) {
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE

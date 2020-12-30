@@ -2,9 +2,6 @@ package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
@@ -12,16 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_detail_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -35,6 +32,7 @@ class DetailProfileFragment : Fragment() {
     private val map = HashMap<String, String>()
     val handler = Handler()
     private var errorCode = ""
+    private var detailProfileAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,6 +91,11 @@ class DetailProfileFragment : Fragment() {
                 d_profile_technical_work.visibility = View.GONE
                 d_profile_not_found.visibility = View.GONE
                 setTitle(result.result.title, resources.getColor(R.color.whiteColor))
+                if (!detailProfileAnim) {
+                    //detailProfileAnim анимация для перехода с адного дествия в другое
+                    TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
+                    detailProfileAnim = true
+                }
             } else {
                 if (result.error.code != null) {
                     errorCode = result.error.code.toString()
@@ -211,6 +214,7 @@ class DetailProfileFragment : Fragment() {
                 initRestart()
             }
         } else {
+            detailProfileAnim = false
             initRestart()
         }
     }
