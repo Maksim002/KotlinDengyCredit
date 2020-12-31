@@ -44,6 +44,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var tokenId = ""
     private lateinit var timer: TimerListener
     private var inputsAnim = false
+    private var waiting = 0
 
     companion object {
         var repeatedClick = 0
@@ -310,17 +311,16 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
-        if (AppPreferences.token != ""){
+        if (AppPreferences.token != "") {
             startMainActivity()
-        }else{
-            if (AppPreferences.isNumber){
+        } else {
+            if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
-                        initBottomSheet()
+                        if (AppPreferences.isPinCode) {
+                            initBottomSheet()
+                        }
                     }
-//                    if (home_touch_id.isChecked) {
-//                        iniTouchId()
-//                    }
                 }
                 AppPreferences.isNumber = false
             }
@@ -331,7 +331,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
-        if (inputsAnim){
+        if (inputsAnim) {
             TransitionAnimation(this).transitionLeft(home_layout_anim)
             inputsAnim = true
         }
@@ -358,6 +358,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     getString(R.string.error_msg_no_biometric_hardware),
                     Toast.LENGTH_LONG
                 ).show()
+                AppPreferences.isTouchId = false
+                home_touch_id.isChecked = false
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
                 Toast.makeText(

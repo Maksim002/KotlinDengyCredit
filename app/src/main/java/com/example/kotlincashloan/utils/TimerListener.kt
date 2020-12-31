@@ -24,6 +24,7 @@ class TimerListener(var activity: Activity){
                     activity.finish()
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
+                    AppPreferences.isPinCode = true
                 }
             }
         }catch (e: Exception){
