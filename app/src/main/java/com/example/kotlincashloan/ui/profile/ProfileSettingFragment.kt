@@ -58,6 +58,7 @@ class ProfileSettingFragment : Fragment() {
     private var reNum = ""
     private var question = ""
     private var profileSettingAnim = false
+    private var profileSettingAnimR = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -669,6 +670,7 @@ class ProfileSettingFragment : Fragment() {
 
             home_forget_password.setOnClickListener {
                 val intent = Intent(context, ContactingServiceActivity::class.java)
+                profileSettingAnimR = true
                 intent.putExtra("number", "1")
                 startActivity(intent)
             }
@@ -799,6 +801,10 @@ class ProfileSettingFragment : Fragment() {
 
         override fun onResume() {
             super.onResume()
+            if (profileSettingAnimR){
+                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+                profileSettingAnimR = true
+            }
             profile_s_one_password.text = null
             profile_s_two_password.text = null
             profile_s_two_password.transformationMethod = PasswordTransformationMethod()
@@ -884,6 +890,7 @@ class ProfileSettingFragment : Fragment() {
 
             return valid
         }
+
 
         override fun onStart() {
             super.onStart()

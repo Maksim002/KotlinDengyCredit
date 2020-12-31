@@ -12,6 +12,7 @@ import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryErrorFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryFragment
@@ -21,6 +22,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -33,6 +35,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var myModel = PasswordViewMode()
     private var numberCharacters: Int = 0
+    private var inputsAnim = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,12 +164,14 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
     private fun initBusyBottomSheetError() {
         val bottomSheetDialogFragment = PasswordRecoveryErrorFragment()
+        inputsAnim = false
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     private fun initBusyBottomSheet() {
         val bottomSheetDialogFragment = PasswordRecoveryFragment()
+        inputsAnim  = false
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -281,6 +286,14 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                         e.printStackTrace()
                     }
                 }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (inputsAnim) {
+            TransitionAnimation(this).transitionRight(password_layout_anim)
+            inputsAnim = false
         }
     }
 

@@ -13,7 +13,7 @@
         android:id="@+id/notification_swipe"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView

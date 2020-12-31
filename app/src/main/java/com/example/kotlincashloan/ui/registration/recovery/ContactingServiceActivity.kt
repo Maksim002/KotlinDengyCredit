@@ -17,6 +17,7 @@ import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultMo
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
@@ -28,6 +29,8 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
+import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -154,6 +157,7 @@ class ContactingServiceActivity : AppCompatActivity() {
                             contacting_layout.visibility = View.VISIBLE
                             initBottomSheet()
                             initVisibilities()
+                            TransitionAnimation(this).transitionRight(contacts_layout_anim)
                         }
                     }
                     Status.ERROR -> {

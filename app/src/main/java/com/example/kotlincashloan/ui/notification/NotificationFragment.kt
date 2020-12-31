@@ -262,11 +262,11 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onResume() {
         super.onResume()
-        if (!notificationAnim) {
-            //notificationAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
-            notificationAnim = true
-        }
+//        if (!notificationAnim) {
+//            //notificationAnim анимация для перехода с адного дествия в другое
+//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
+//            notificationAnim = true
+//        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

@@ -92,6 +92,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_forget_password.setOnClickListener {
             val intent = Intent(this, PasswordRecoveryActivity::class.java)
+            inputsAnim = true
             home_touch_id.isChecked = false
             home_login_code.isChecked = false
             startActivity(intent)
@@ -334,7 +335,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             TransitionAnimation(this).transitionLeft(home_layout_anim)
             inputsAnim = true
         }
-
         if (home_touch_id.isChecked) {
             iniTouchId()
         }
