@@ -33,6 +33,12 @@
         </item>
     </style>
 
+    // стили для дилоговова окна
+    <style name="CustomDialogTheme" parent="Base.Theme.AppCompat.Dialog.MinWidth">
+        <item name="colorAccent">@color/orangeColor</item>
+        <item name="android:textColorPrimary">@color/blackColor</item>
+    </style>
+
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">18sp</item>
     </style>
