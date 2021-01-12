@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
@@ -46,6 +47,7 @@ class ProfileSettingFragment : Fragment() {
     private var errorListSecretQuestion = ""
     private var errorSaveProfile = ""
     private var errorClientInfo = ""
+    private var errorCheckPassword = ""
     val handler = Handler()
     var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
@@ -59,6 +61,9 @@ class ProfileSettingFragment : Fragment() {
     private var question = ""
     private var profileSettingAnim = false
     private var profileSettingAnimR = false
+
+    private var textPasswordOne = ""
+    private var textPasswordTwo = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -382,6 +387,52 @@ class ProfileSettingFragment : Fragment() {
             })
     }
 
+    private fun checkPassword() {
+        //проверка старого пороля
+        viewModel.listCheckPasswordDta.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { result ->
+                try {
+                    if (result.result != null) {
+                        initPassword()
+                    } else {
+                        listListResult(result.error.code!!)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            })
+
+        viewModel.errorCheckPassword.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { error ->
+                if (error != null) {
+                    errorCheckPassword = error
+                    errorList(error)
+                }
+            })
+    }
+
+    // данные для сохролнения
+    private fun initPassword() {
+        reView = true
+        if (textPasswordOne == textPasswordTwo) {
+            if (textPasswordOne != "") {
+                AppPreferences.password = textPasswordOne
+            }
+        }
+        val mapProfile = HashMap<String, String>()
+        mapProfile.put("login", AppPreferences.login.toString())
+        mapProfile.put("token", AppPreferences.token.toString())
+        mapProfile.put("password", AppPreferences.password.toString())
+        mapProfile.put("second_phone", reNum)
+        mapProfile.put("question", question)
+        mapProfile.put("response", profile_s_response.text.toString())
+        if (isValid()) {
+            viewModel.saveProfile(mapProfile)
+        }
+    }
+
     private fun initResult() {
         //если все успешно получает информацию о пользователе
         viewModel.listClientInfoDta.observe(
@@ -400,7 +451,9 @@ class ProfileSettingFragment : Fragment() {
                         resultSuccessfully()
                         if (!profileSettingAnim) {
                             //profileAnim анимация для перехода с адного дествия в другое
-                            TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+                            TransitionAnimation(activity as AppCompatActivity).transitionRight(
+                                profile_setting_anim
+                            )
                             profileSettingAnim = true
                         }
 
@@ -415,6 +468,7 @@ class ProfileSettingFragment : Fragment() {
 
                         //Список секретных вопросов
                         listQuestions()
+
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -452,6 +506,7 @@ class ProfileSettingFragment : Fragment() {
                                 .setDuration(5000)
                                 .setCookiePosition(Gravity.TOP)
                                 .show()
+                            findNavController().navigate(R.id.profile_navigation)
                         }
                         reView = false
                     }
@@ -484,8 +539,6 @@ class ProfileSettingFragment : Fragment() {
     }
 
     private fun initClick() {
-        var textPasswordOne = ""
-        var textPasswordTwo = ""
 
         profile_s_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(
@@ -517,386 +570,452 @@ class ProfileSettingFragment : Fragment() {
                 }
             }
         }
-            profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    if (profile_s_two_password.text.isNotEmpty()) {
-                        profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                    }
+        profile_s_two_password.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                if (profile_s_two_password.text.isNotEmpty()) {
+                    profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
                 }
             }
+        }
 
-            //Дополнительный номер
-            profile_setting_second_phone.viewTreeObserver
-                .addOnGlobalLayoutListener {
-                    try {
-                        val r = Rect()
-                        profile_setting_second_phone.getWindowVisibleDisplayFrame(r)
-                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-                        if (heightDiff > 100) {
+        //Дополнительный номер
+        profile_setting_second_phone.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                try {
+                    val r = Rect()
+                    profile_setting_second_phone.getWindowVisibleDisplayFrame(r)
+                    val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                    if (heightDiff > 100) {
 
-                        } else {
-                            profile_setting_second_phone.clearFocus()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        profile_setting_second_phone.clearFocus()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
 
         //Ответ
-            profile_s_response.viewTreeObserver
-                .addOnGlobalLayoutListener {
-                    try {
-                        val r = Rect()
-                        profile_s_response.getWindowVisibleDisplayFrame(r)
-                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-                        if (heightDiff > 100) {
+        profile_s_response.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                try {
+                    val r = Rect()
+                    profile_s_response.getWindowVisibleDisplayFrame(r)
+                    val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                    if (heightDiff > 100) {
 
-                        } else {
-                            clearFocus()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        clearFocus()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
+
+        //Введите старый пороль
+        profile_s_old_password.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                try {
+                    val r = Rect()
+                    profile_s_old_password.getWindowVisibleDisplayFrame(r)
+                    val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                    if (heightDiff > 100) {
+
+                    } else {
+                        clearFocus()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
 
         //Введите новый пароль
-            profile_s_one_password.viewTreeObserver
-                .addOnGlobalLayoutListener {
-                    try {
-                        val r = Rect()
-                        profile_s_one_password.getWindowVisibleDisplayFrame(r)
-                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-                        if (heightDiff > 100) {
+        profile_s_one_password.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                try {
+                    val r = Rect()
+                    profile_s_one_password.getWindowVisibleDisplayFrame(r)
+                    val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                    if (heightDiff > 100) {
 
-                        } else {
-                            clearFocus()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        clearFocus()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
 
         //Повторите пароль
-            profile_s_two_password.viewTreeObserver
-                .addOnGlobalLayoutListener {
-                    try {
-                        val r = Rect()
-                        profile_s_two_password.getWindowVisibleDisplayFrame(r)
-                        val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
-                        if (heightDiff > 100) {
+        profile_s_two_password.viewTreeObserver
+            .addOnGlobalLayoutListener {
+                try {
+                    val r = Rect()
+                    profile_s_two_password.getWindowVisibleDisplayFrame(r)
+                    val heightDiff: Int = requireView().rootView.height - (r.bottom - r.top)
+                    if (heightDiff > 100) {
 
-                        } else {
-                            clearFocus()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
+                    } else {
+                        clearFocus()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+            }
+
+        click_s_old_password_image.setOnClickListener {
+            profile_s_old_password.requestFocus()
+            profile_s_old_password.setSelection(profile_s_old_password.text!!.length);
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_old_password, 0)
+        }
 
         click_s_one_password.setOnClickListener {
-                profile_s_one_password.requestFocus()
+            profile_s_one_password.requestFocus()
+            profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_one_password, 0)
+        }
+
+        profile_s_two_password.addTextChangedListener {
+            textPasswordTwo = it.toString()
+        }
+
+        click_s_two_password.setOnClickListener {
+            profile_s_two_password.requestFocus()
+            profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_two_password, 0)
+        }
+
+        //метод удаляет все символы из строки
+        profile_setting_second_phone.addTextChangedListener {
+            if (profile_setting_second_phone.text.toString() != "") {
+                val matchedResults =
+                    Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+                val result = StringBuilder()
+                for (matchedText in matchedResults) {
+                    reNum = result.append(matchedText.value).toString()
+                }
+            }
+        }
+
+        // видем пороль или нет
+        var isValidPassword = false
+        profile_s_old_password_image.setOnClickListener {
+            if (!isValidPassword) {
+                profile_s_old_password.transformationMethod = null
+                profile_s_old_password.setSelection(profile_s_old_password.text!!.length);
+                isValidPassword = true
+            } else {
+                profile_s_old_password.transformationMethod = PasswordTransformationMethod()
+                profile_s_old_password.setSelection(profile_s_old_password.text!!.length);
+                isValidPassword = false
+            }
+        }
+
+        // видем пороль или нет
+        var isValidOne = false
+        profile_s_one_password_show.setOnClickListener {
+            if (!isValidOne) {
+                profile_s_one_password.transformationMethod = null
                 profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-                val img =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                img.showSoftInput(profile_s_one_password, 0)
+                isValidOne = true
+            } else {
+                profile_s_one_password.transformationMethod = PasswordTransformationMethod()
+                profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
+                isValidOne = false
             }
-
-            profile_s_two_password.addTextChangedListener {
-                textPasswordTwo = it.toString()
-            }
-
-            click_s_two_password.setOnClickListener {
-                profile_s_two_password.requestFocus()
+        }
+        // видем пороль или нет
+        var isValidTwo = false
+        profile_s_two_password_show.setOnClickListener {
+            if (!isValidTwo) {
+                profile_s_two_password.transformationMethod = null
                 profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                val img =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                img.showSoftInput(profile_s_two_password, 0)
-            }
-
-            //метод удаляет все символы из строки
-            profile_setting_second_phone.addTextChangedListener {
-                if (profile_setting_second_phone.text.toString() != "") {
-                    val matchedResults =
-                        Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
-                    val result = StringBuilder()
-                    for (matchedText in matchedResults) {
-                        reNum = result.append(matchedText.value).toString()
-                    }
-                }
-            }
-            // видем пороль или нет
-            var isValidOne = false
-            profile_s_one_password_show.setOnClickListener {
-                if (!isValidOne) {
-                    profile_s_one_password.transformationMethod = null
-                    profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-                    isValidOne = true
-                } else {
-                    profile_s_one_password.transformationMethod = PasswordTransformationMethod()
-                    profile_s_one_password.setSelection(profile_s_one_password.text!!.length);
-                    isValidOne = false
-                }
-            }
-            // видем пороль или нет
-            var isValidTwo = false
-            profile_s_two_password_show.setOnClickListener {
-                if (!isValidTwo) {
-                    profile_s_two_password.transformationMethod = null
-                    profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                    isValidTwo = true
-                } else {
-                    profile_s_two_password.transformationMethod = PasswordTransformationMethod()
-                    profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
-                    isValidTwo = false
-                }
-            }
-
-
-            access_restricted.setOnClickListener {
-                initRestart()
-            }
-
-            no_connection_repeat.setOnClickListener {
-                initRestart()
-            }
-
-            technical_work.setOnClickListener {
-                initRestart()
-            }
-
-            not_found.setOnClickListener {
-                initRestart()
-            }
-
-            home_forget_password.setOnClickListener {
-                val intent = Intent(context, ContactingServiceActivity::class.java)
-                profileSettingAnimR = true
-                intent.putExtra("number", "1")
-                startActivity(intent)
-            }
-
-
-            profile_s_enter.setOnClickListener {
-                reView = true
-                if (textPasswordOne == textPasswordTwo) {
-                    if (textPasswordOne != "") {
-                        AppPreferences.password = textPasswordOne
-                    }
-                }
-                val mapProfile = HashMap<String, String>()
-                mapProfile.put("login", AppPreferences.login.toString())
-                mapProfile.put("token", AppPreferences.token.toString())
-                mapProfile.put("password", AppPreferences.password.toString())
-                mapProfile.put("second_phone", reNum)
-                mapProfile.put("question", question)
-                mapProfile.put("response", profile_s_response.text.toString())
-                if (isValid()) {
-                    viewModel.saveProfile(mapProfile)
-                }
-            }
-
-            profile_setting_second_phone.onFocusChangeListener =
-                View.OnFocusChangeListener { v, hasFocus ->
-                    if (profile_setting_second_phone != null) {
-                        profile_setting_second_phone.mask = null
-                        profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
-                        profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
-                        profile_setting_second_phone.isFocusableInTouchMode = true
-                    }
-                }
-
-            click_s_response.setOnClickListener {
-                profile_s_response.requestFocus()
-                profile_s_response.setSelection(profile_s_response.text!!.length);
-                val img =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                img.showSoftInput(profile_s_response, 0)
-            }
-
-            click_s_second.setOnClickListener {
-                profile_setting_second_phone.requestFocus()
-                val img =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                img.showSoftInput(profile_setting_second_phone, 0)
+                isValidTwo = true
+            } else {
+                profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+                profile_s_two_password.setSelection(profile_s_two_password.text!!.length);
+                isValidTwo = false
             }
         }
 
-        private fun listListResult(result: Int) {
-            if (result == 400 || result == 500 || result == 409 || result == 429) {
-                profile_s_technical_work.visibility = View.VISIBLE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (result == 403) {
-                profile_s_access_restricted.visibility = View.VISIBLE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (result == 404) {
-                profile_s_not_found.visibility = View.VISIBLE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (result == 401) {
-                initAuthorized()
-            }
+
+        access_restricted.setOnClickListener {
+            initRestart()
         }
 
-        private fun errorList(error: String) {
-            if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-                profile_s_technical_work.visibility = View.VISIBLE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (error == "403") {
-                profile_s_access_restricted.visibility = View.VISIBLE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (error == "404") {
-                profile_s_not_found.visibility = View.VISIBLE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (error == "601") {
-                profile_s_no_connection.visibility = View.VISIBLE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-                profile_s_swipe.visibility = View.GONE
-            } else if (error == "401") {
-                initAuthorized()
-            }
+        no_connection_repeat.setOnClickListener {
+            initRestart()
         }
 
-        // проверка если errorCode и errorCodeClient == 200
-        private fun resultSuccessfully() {
-            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
-                profile_s_swipe.visibility = View.VISIBLE
-                profile_s_technical_work.visibility = View.GONE
-                profile_s_no_connection.visibility = View.GONE
-                profile_s_access_restricted.visibility = View.GONE
-                profile_s_not_found.visibility = View.GONE
-            }
+        technical_work.setOnClickListener {
+            initRestart()
         }
 
-        private fun initAuthorized() {
-            val intent = Intent(context, HomeActivity::class.java)
-            AppPreferences.token = ""
+        not_found.setOnClickListener {
+            initRestart()
+        }
+
+        home_forget_password.setOnClickListener {
+            val intent = Intent(context, ContactingServiceActivity::class.java)
+            profileSettingAnimR = true
+            intent.putExtra("number", "1")
             startActivity(intent)
         }
 
-        fun setTitle(title: String?, color: Int) {
-            val activity: Activity? = activity
-            if (activity is MainActivity) {
-                activity.setTitle(title, color)
-            }
-        }
 
-        override fun onResume() {
-            super.onResume()
-            if (profileSettingAnimR){
-                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
-                profileSettingAnimR = true
-            }
-            profile_s_one_password.text = null
-            profile_s_two_password.text = null
-            profile_s_two_password.transformationMethod = PasswordTransformationMethod()
-            profile_s_one_password.transformationMethod = PasswordTransformationMethod()
-            if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
-                && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null
-            ) {
-                if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
-                    AppPreferences.reviewCode = 1
-                    initResult()
+        profile_s_enter.setOnClickListener {
+            if (profile_s_one_password.text.toString() != "" && profile_s_two_password.text.toString() != "") {
+                if (AppPreferences.password == profile_s_old_password.text.toString()) {
+                    val mapProfilePassword = HashMap<String, String>()
+                    mapProfilePassword.put("login", AppPreferences.login.toString())
+                    if (profile_s_old_password.text.toString().isNotEmpty()){
+                        mapProfilePassword.put("password", profile_s_old_password.text.toString())
+                    }else{
+                        mapProfilePassword.put("password", AppPreferences.password.toString())
+                    }
+                    viewModel.checkPassword(mapProfilePassword)
+                    checkPassword()
                 } else {
-                    AppPreferences.reviewCode = 1
-                    profileSettingAnim = true
-                    initRestart()
+                    isValidPassword()
                 }
             } else {
-                AppPreferences.reviewCode = 0
-                profileSettingAnim = false
-                viewModel.refreshCode = false
-                initRestart()
+                if (profile_s_old_password.text.toString() == ""){
+                    initPassword()
+                }else{
+                    if (AppPreferences.password == profile_s_old_password.text.toString()){
+                        initPassword()
+                    }else{
+                        isValidPassword()
+                    }
+                }
+            }
+        }
+
+        profile_setting_second_phone.onFocusChangeListener =
+            View.OnFocusChangeListener { v, hasFocus ->
+                if (profile_setting_second_phone != null) {
+                    profile_setting_second_phone.mask = null
+                    profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
+                    profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
+                    profile_setting_second_phone.isFocusableInTouchMode = true
+                }
             }
 
-            //меняет цвета навигационной понели
-            ColorWindows(activity as AppCompatActivity).rollback()
-
-            val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
-            backArrow.setColorFilter(
-                resources.getColor(android.R.color.white),
-                PorterDuff.Mode.SRC_ATOP
-            )
-            (activity as AppCompatActivity?)!!.getSupportActionBar()!!
-                .setHomeAsUpIndicator(backArrow)
-            profile_s_owner.requestFocus()
+        click_s_response.setOnClickListener {
+            profile_s_response.requestFocus()
+            profile_s_response.setSelection(profile_s_response.text!!.length);
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_s_response, 0)
         }
 
-        //Блакирует фокус на обекте
-        private fun clearFocus() {
-            profile_s_two_password.clearFocus()
-            profile_s_one_password.clearFocus()
-            profile_s_response.clearFocus()
-            focus_prof.requestFocus()
+        click_s_second.setOnClickListener {
+            profile_setting_second_phone.requestFocus()
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            img.showSoftInput(profile_setting_second_phone, 0)
+        }
+    }
+
+    private fun listListResult(result: Int) {
+        if (result == 400 || result == 500 || result == 409 || result == 429) {
+            profile_s_technical_work.visibility = View.VISIBLE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (result == 403) {
+            profile_s_access_restricted.visibility = View.VISIBLE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (result == 404) {
+            profile_s_not_found.visibility = View.VISIBLE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (result == 401) {
+            initAuthorized()
+        }
+    }
+
+    private fun errorList(error: String) {
+        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
+            profile_s_technical_work.visibility = View.VISIBLE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (error == "403") {
+            profile_s_access_restricted.visibility = View.VISIBLE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (error == "404") {
+            profile_s_not_found.visibility = View.VISIBLE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (error == "601") {
+            profile_s_no_connection.visibility = View.VISIBLE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        } else if (error == "401") {
+            initAuthorized()
+        }
+    }
+
+    // проверка если errorCode и errorCodeClient == 200
+    private fun resultSuccessfully() {
+        if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+            profile_s_swipe.visibility = View.VISIBLE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_no_connection.visibility = View.GONE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+        }
+    }
+
+    private fun initAuthorized() {
+        val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
+        startActivity(intent)
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (profileSettingAnimR) {
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+            profileSettingAnimR = true
+        }
+        profile_s_one_password.text = null
+        profile_s_two_password.text = null
+        profile_s_two_password.transformationMethod = PasswordTransformationMethod()
+        profile_s_one_password.transformationMethod = PasswordTransformationMethod()
+        profile_s_old_password.text = null
+        profile_s_old_password.transformationMethod = PasswordTransformationMethod()
+        if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
+            && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null
+        ) {
+            if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+                AppPreferences.reviewCode = 1
+                initResult()
+            } else {
+                AppPreferences.reviewCode = 1
+                profileSettingAnim = true
+                initRestart()
+            }
+        } else {
+            AppPreferences.reviewCode = 0
+            profileSettingAnim = false
+            viewModel.refreshCode = false
+            initRestart()
         }
 
-        private fun isValid(): Boolean {
-            var valid = true
-            if (profile_s_response.text!!.toString().isEmpty()) {
-                profile_s_response.error = "Ответ не должно быть пустым"
+        //меняет цвета навигационной понели
+        ColorWindows(activity as AppCompatActivity).rollback()
+
+        val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
+        backArrow.setColorFilter(
+            resources.getColor(android.R.color.white),
+            PorterDuff.Mode.SRC_ATOP
+        )
+        (activity as AppCompatActivity?)!!.getSupportActionBar()!!
+            .setHomeAsUpIndicator(backArrow)
+        profile_s_owner.requestFocus()
+    }
+
+    //Блакирует фокус на обекте
+    private fun clearFocus() {
+        profile_s_old_password.clearFocus()
+        profile_s_two_password.clearFocus()
+        profile_s_one_password.clearFocus()
+        profile_s_response.clearFocus()
+        focus_prof.requestFocus()
+    }
+
+    private fun isValid(): Boolean {
+        var valid = true
+        if (profile_s_response.text!!.toString().isEmpty()) {
+            profile_s_response.error = "Ответ не должно быть пустым"
+            valid = false
+        } else {
+            profile_s_response.error = null
+        }
+
+        if (profile_s_one_password.text.toString()
+                .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+        ) {
+            if (profile_s_one_password.text.toString()
+                    .toFullPhone() != profile_s_two_password.text.toString().toFullPhone()
+            ) {
+                profile_s_two_password.error = "Пароль должны совпадать"
                 valid = false
             } else {
-                profile_s_response.error = null
+                profile_s_two_password.error = null
+            }
+        } else {
+            if (profile_s_one_password.text.toString()
+                    .isNotEmpty() && profile_s_two_password.text.toString().isEmpty()
+            ) {
+                profile_s_two_password.error = "Поле не должно быть пустым"
+                valid = false
+            } else {
+                profile_s_two_password.error = null
             }
 
             if (profile_s_one_password.text.toString()
-                    .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+                    .isEmpty() && profile_s_two_password.text.toString().isNotEmpty()
             ) {
-                if (profile_s_one_password.text.toString()
-                        .toFullPhone() != profile_s_two_password.text.toString().toFullPhone()
-                ) {
-                    profile_s_two_password.error = "Пароль должны совпадать"
-                    valid = false
-                } else {
-                    profile_s_two_password.error = null
-                }
+                profile_s_one_password.error = "Поле не должно быть пустым"
+                valid = false
             } else {
-                if (profile_s_one_password.text.toString()
-                        .isNotEmpty() && profile_s_two_password.text.toString().isEmpty()
-                ) {
-                    profile_s_two_password.error = "Поле не должно быть пустым"
-                    valid = false
-                } else {
-                    profile_s_two_password.error = null
-                }
-
-                if (profile_s_one_password.text.toString()
-                        .isEmpty() && profile_s_two_password.text.toString().isNotEmpty()
-                ) {
-                    profile_s_one_password.error = "Поле не должно быть пустым"
-                    valid = false
-                } else {
-                    profile_s_one_password.error = null
-                }
+                profile_s_one_password.error = null
             }
-
-            return valid
         }
 
+        return valid
+    }
 
-        override fun onStart() {
-            super.onStart()
-            // проверка если с timer приходит token null
-            if (AppPreferences.token == "") {
-                initAuthorized()
-            }
+    private fun isValidPassword(): Boolean {
+        var valid = true
+        if (profile_s_old_password.text.toString().isEmpty()){
+            profile_s_old_password.error = "Поле не должно быть пустым"
+            valid = false
+        }else if (profile_s_old_password.text.toString() != AppPreferences.password){
+            profile_s_old_password.error = "Пароль введен неверно!"
+            valid = false
+        }else{
+            profile_s_old_password.error = null
+        }
+        return valid
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        // проверка если с timer приходит token null
+        if (AppPreferences.token == "") {
+            initAuthorized()
         }
     }
+}
