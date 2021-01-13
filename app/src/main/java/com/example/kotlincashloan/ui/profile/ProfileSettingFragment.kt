@@ -29,6 +29,7 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -37,7 +38,6 @@ import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class ProfileSettingFragment : Fragment() {
     private var viewModel = ProfileViewModel()
@@ -230,28 +230,14 @@ class ProfileSettingFragment : Fragment() {
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 try {
+                    // первый номер
                     if (result.result != null) {
-                        if (clientResult.phoneFirst != "" && clientResult.phoneSecond != "") {
-                            profile_setting_second_phone.mask = null
+                        if (clientResult.phoneFirst != "") {
                             profile_setting_first.mask = null
 
-                            val firstNationality =
-                                clientResult.phoneFirst!!.toInt() - 1
-                            val secondNationality =
-                                clientResult.phoneSecond!!.toInt() - 1
-
-                            codeNationality = secondNationality
-
-                            checkNumber = secondNationality
-
-                            numberAvailable =
-                                result.result[checkNumber].phoneLength!!.toInt()
-
-                            codeMack =
-                                result.result[secondNationality].phoneCode.toString()
-
-                            profile_setting_first.mask =
-                                result.result[firstNationality].phoneMask
+                            val firstNationality = clientResult.phoneFirst!!.toInt() - 1
+                            numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
+                            profile_setting_first.mask = result.result[firstNationality].phoneMask
                             profile_setting_first.setText(
                                 MyUtils.toMask(
                                     clientResult.firstPhone.toString(),
@@ -259,6 +245,21 @@ class ProfileSettingFragment : Fragment() {
                                     result.result[firstNationality].phoneLength!!.toInt()
                                 )
                             )
+
+                            list = result.result
+
+                        }
+                        // второй номер
+                        if (clientResult.secondPhone != "") {
+                            profile_setting_second_phone.mask = null
+
+                            val secondNationality = clientResult.phoneSecond!!.toInt() - 1
+
+                            codeNationality = secondNationality
+
+                            checkNumber = secondNationality
+
+                            codeMack = result.result[secondNationality].phoneCode.toString()
 
                             profile_setting_second_phone.mask =
                                 result.result[secondNationality].phoneMaskSmall
@@ -270,21 +271,25 @@ class ProfileSettingFragment : Fragment() {
                                 )
                             )
                             profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
-                            list = result.result
+                        } else {
+                            profile_setting_second_phone.text = null
+                            codeMack = result.result[codeNationality].phoneCode.toString()
+                            profile_s_mask.setText("+" + list[codeNationality].phoneCode)
                         }
+
                         val adapterListCountry = ArrayAdapter(
                             requireContext(),
                             android.R.layout.simple_dropdown_item_1line,
                             result.result
                         )
+
                         profile_s_mask.setAdapter(adapterListCountry)
 
                         profile_s_mask.keyListener = null
                         profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
                             codeNationality = position
                             codeMack = result.result[position].phoneCode.toString()
-                            numberAvailable =
-                                result.result[position].phoneLength!!.toInt()
+                            numberAvailable = result.result[position].phoneLength!!.toInt()
                             profile_setting_second_phone.setText("")
                             profile_s_mask.showDropDown()
                             profile_s_mask.clearFocus()
@@ -774,9 +779,9 @@ class ProfileSettingFragment : Fragment() {
                 if (AppPreferences.password == profile_s_old_password.text.toString()) {
                     val mapProfilePassword = HashMap<String, String>()
                     mapProfilePassword.put("login", AppPreferences.login.toString())
-                    if (profile_s_old_password.text.toString().isNotEmpty()){
+                    if (profile_s_old_password.text.toString().isNotEmpty()) {
                         mapProfilePassword.put("password", profile_s_old_password.text.toString())
-                    }else{
+                    } else {
                         mapProfilePassword.put("password", AppPreferences.password.toString())
                     }
                     viewModel.checkPassword(mapProfilePassword)
@@ -785,12 +790,12 @@ class ProfileSettingFragment : Fragment() {
                     isValidPassword()
                 }
             } else {
-                if (profile_s_old_password.text.toString() == ""){
+                if (profile_s_old_password.text.toString() == "") {
                     initPassword()
-                }else{
-                    if (AppPreferences.password == profile_s_old_password.text.toString()){
+                } else {
+                    if (AppPreferences.password == profile_s_old_password.text.toString()) {
                         initPassword()
-                    }else{
+                    } else {
                         isValidPassword()
                     }
                 }
@@ -817,8 +822,7 @@ class ProfileSettingFragment : Fragment() {
 
         click_s_second.setOnClickListener {
             profile_setting_second_phone.requestFocus()
-            val img =
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_setting_second_phone, 0)
         }
     }
@@ -880,11 +884,15 @@ class ProfileSettingFragment : Fragment() {
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
-            profile_s_swipe.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_s_swipe.visibility = View.VISIBLE
+            if (profileSettingAnimR) {
+                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+                profileSettingAnimR = true
+            }
         }
     }
 
@@ -903,10 +911,10 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (profileSettingAnimR) {
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
-            profileSettingAnimR = true
-        }
+//        if (profileSettingAnimR) {
+//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+//            profileSettingAnimR = true
+//        }
         profile_s_one_password.text = null
         profile_s_two_password.text = null
         profile_s_two_password.transformationMethod = PasswordTransformationMethod()
@@ -939,8 +947,7 @@ class ProfileSettingFragment : Fragment() {
             resources.getColor(android.R.color.white),
             PorterDuff.Mode.SRC_ATOP
         )
-        (activity as AppCompatActivity?)!!.getSupportActionBar()!!
-            .setHomeAsUpIndicator(backArrow)
+        (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
         profile_s_owner.requestFocus()
     }
 
@@ -961,6 +968,16 @@ class ProfileSettingFragment : Fragment() {
         } else {
             profile_s_response.error = null
         }
+
+        if (profile_setting_second_phone.text.toString() != "") {
+            if (reNum.length != list[codeNationality].phoneLength!!.toInt()) {
+                profile_setting_second_phone.error = "Введите валидный номер"
+                valid = false
+            } else {
+                profile_setting_second_phone.error = null
+            }
+        }
+
 
         if (profile_s_one_password.text.toString()
                 .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
@@ -998,13 +1015,13 @@ class ProfileSettingFragment : Fragment() {
 
     private fun isValidPassword(): Boolean {
         var valid = true
-        if (profile_s_old_password.text.toString().isEmpty()){
+        if (profile_s_old_password.text.toString().isEmpty()) {
             profile_s_old_password.error = "Поле не должно быть пустым"
             valid = false
-        }else if (profile_s_old_password.text.toString() != AppPreferences.password){
+        } else if (profile_s_old_password.text.toString() != AppPreferences.password) {
             profile_s_old_password.error = "Пароль введен неверно!"
             valid = false
-        }else{
+        } else {
             profile_s_old_password.error = null
         }
         return valid
