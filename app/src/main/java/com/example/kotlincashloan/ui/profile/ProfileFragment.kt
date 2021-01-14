@@ -66,6 +66,14 @@ class ProfileFragment : Fragment() {
         initClick()
     }
 
+    private fun initArgument() {
+        profAnim = try {
+            requireArguments().getBoolean("false")
+        }catch (e: Exception){
+            false
+        }
+    }
+
     private fun initClick() {
 
         profile_your.setOnClickListener {
@@ -182,6 +190,13 @@ class ProfileFragment : Fragment() {
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
         profile_not_found.visibility = View.GONE
+        if (profAnim) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
+            inputsAnim = 0
+            AppPreferences.inputsAnim = 0
+            profAnim = false
+        }
     }
 
     private fun listListResult(result: Int) {
@@ -370,15 +385,15 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        profAnim = false
+    }
+
     override fun onResume() {
         super.onResume()
-        if (profAnim) {
-            //profileAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
-            inputsAnim = 0
-            AppPreferences.inputsAnim = 0
-            profAnim = false
-        }
+        initArgument()
+
         if (numberBar != 0) {
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE

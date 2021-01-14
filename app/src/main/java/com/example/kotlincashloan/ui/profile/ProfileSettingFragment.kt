@@ -12,6 +12,7 @@ import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -76,6 +77,7 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
@@ -511,7 +513,9 @@ class ProfileSettingFragment : Fragment() {
                                 .setDuration(5000)
                                 .setCookiePosition(Gravity.TOP)
                                 .show()
-                            findNavController().navigate(R.id.profile_navigation)
+                            val bundle = Bundle()
+                            bundle.putBoolean("false", true)
+                            findNavController().navigate(R.id.profile_navigation, bundle)
                         }
                         reView = false
                     }
