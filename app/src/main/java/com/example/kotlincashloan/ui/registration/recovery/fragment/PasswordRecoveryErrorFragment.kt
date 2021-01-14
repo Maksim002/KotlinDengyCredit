@@ -28,6 +28,10 @@ class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         password_sheer_time.setOnClickListener {
             this.dismiss()
@@ -36,6 +40,7 @@ class PasswordRecoveryErrorFragment() : BottomSheetDialogFragment() {
         password_sheer_service.setOnClickListener {
             HomeActivity.alert.show()
             val intent = Intent(context, ContactingServiceActivity::class.java)
+            intent.putExtra("number", "0")
             startActivity(intent)
             HomeActivity.alert.hide()
         }

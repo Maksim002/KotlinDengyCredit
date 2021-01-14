@@ -23,6 +23,10 @@ class MistakeBottomSheetFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         mistake_ok.setOnClickListener {
             this.dismiss()

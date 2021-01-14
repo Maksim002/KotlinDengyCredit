@@ -25,6 +25,10 @@ class PasswordRecoveryFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         password_recovery_enter.setOnClickListener {
             val intent = Intent(context, HomeActivity::class.java)

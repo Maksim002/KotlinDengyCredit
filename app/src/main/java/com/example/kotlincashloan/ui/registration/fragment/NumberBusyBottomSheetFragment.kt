@@ -30,6 +30,10 @@ class NumberBusyBottomSheetFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         number_busy_esc.setOnClickListener {
             this.dismiss()

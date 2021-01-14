@@ -32,6 +32,7 @@ import kotlin.collections.HashMap
 class NumberActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
+    private var repeatAnim = false
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
 
@@ -316,7 +317,10 @@ class NumberActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        TransitionAnimation(this).transitionRightActivity(number_layout_anim)
+        if (!repeatAnim) {
+            TransitionAnimation(this).transitionRightActivity(number_layout_anim)
+            repeatAnim = true
+        }
     }
 
     private fun initViews() {

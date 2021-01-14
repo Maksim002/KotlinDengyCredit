@@ -6,7 +6,6 @@
     android:paddingBottom="6dp"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    android:background="@color/whiteColor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

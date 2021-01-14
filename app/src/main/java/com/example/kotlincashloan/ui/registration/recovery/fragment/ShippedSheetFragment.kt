@@ -27,6 +27,10 @@ class ShippedSheetFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         shipped_sheet_enter.setOnClickListener {
             if (AppPreferences.token == ""){

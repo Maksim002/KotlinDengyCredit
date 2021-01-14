@@ -44,7 +44,8 @@ class ContactingServiceActivity : AppCompatActivity() {
     private var numberCharacters: Int = 0
     private var myViewMode = PasswordViewMode()
     private var typeId: Int = 0
-    val handler = Handler()
+    private val handler = Handler()
+    private var profNumber = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +61,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun initArgument() {
-//        profNumber = intent.extras!!.getString("number").toString()
+            profNumber = intent.extras!!.getString("number").toString()
     }
 
     private fun iniClick() {
@@ -157,7 +158,6 @@ class ContactingServiceActivity : AppCompatActivity() {
                             contacting_layout.visibility = View.VISIBLE
                             initBottomSheet()
                             initVisibilities()
-                            TransitionAnimation(this).transitionRight(contacts_layout_anim)
                         }
                     }
                     Status.ERROR -> {
@@ -200,7 +200,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun initBottomSheet() {
-        val bottomSheetDialogFragment = YourApplicationFragment()
+        val bottomSheetDialogFragment = YourApplicationFragment(profNumber)
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -484,6 +484,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
         }, 2000)
+        TransitionAnimation(this).transitionRight(contacts_layout_anim)
     }
 
     override fun onStop() {
