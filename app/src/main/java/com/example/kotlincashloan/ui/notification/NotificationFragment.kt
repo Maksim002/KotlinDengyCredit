@@ -238,6 +238,18 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onStart() {
         super.onStart()
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         if (viewModel.listNoticeDta.value != null){
             if (errorCode == "200"){
                 initRecycler()
@@ -251,17 +263,6 @@ class NotificationFragment : Fragment(), NotificationListener {
             notificationAnim = true
             initRestart()
         }
-    }
-
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
 //        if (!notificationAnim) {
 //            //notificationAnim анимация для перехода с адного дествия в другое
 //            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)

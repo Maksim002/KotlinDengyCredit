@@ -3,11 +3,13 @@ package com.example.kotlincashloan.ui.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.text.method.PasswordTransformationMethod
+import android.util.Base64
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
@@ -77,11 +79,25 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initClick()
+        initArgument()
+    }
+
+    private fun initArgument() {
+        val sendPicture = try {
+            requireArguments().getString("sendPicture")
+        }catch (e: Exception){
+            ""
+        }
+
+        if (sendPicture != null) {
+            val imageBytes = Base64.decode(sendPicture, Base64.DEFAULT)
+            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            profile_setting_image.setImageBitmap(decodedImage)
+        }
     }
 
     private fun initRestart() {
@@ -166,7 +182,6 @@ class ProfileSettingFragment : Fragment() {
                     initResult()
                 }, 500)
             }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 
@@ -293,6 +308,7 @@ class ProfileSettingFragment : Fragment() {
                             codeMack = result.result[position].phoneCode.toString()
                             numberAvailable = result.result[position].phoneLength!!.toInt()
                             profile_setting_second_phone.setText("")
+                            initCleaningRoom()
                             profile_s_mask.showDropDown()
                             profile_s_mask.clearFocus()
                         }
@@ -379,7 +395,6 @@ class ProfileSettingFragment : Fragment() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_s_swipe.isRefreshing = false
             })
 
@@ -390,7 +405,6 @@ class ProfileSettingFragment : Fragment() {
                     errorListSecretQuestion = error
                     errorList(error)
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_s_swipe.isRefreshing = false
             })
     }
@@ -548,13 +562,23 @@ class ProfileSettingFragment : Fragment() {
         }
     }
 
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom(){
+        if (profile_setting_second_phone.text.toString() != "") {
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
+            }
+        }else{
+            reNum = ""
+        }
+    }
+
     private fun initClick() {
 
         profile_s_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 profile_s_one_password.text = null
@@ -703,14 +727,7 @@ class ProfileSettingFragment : Fragment() {
 
         //метод удаляет все символы из строки
         profile_setting_second_phone.addTextChangedListener {
-            if (profile_setting_second_phone.text.toString() != "") {
-                val matchedResults =
-                    Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
-                val result = StringBuilder()
-                for (matchedText in matchedResults) {
-                    reNum = result.append(matchedText.value).toString()
-                }
-            }
+            initCleaningRoom()
         }
 
         // видем пороль или нет
@@ -1027,7 +1044,6 @@ class ProfileSettingFragment : Fragment() {
         }
         return valid
     }
-
 
     override fun onStart() {
         super.onStart()

@@ -368,8 +368,7 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setOnRefreshListener {
             requireActivity().window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable {
                 initRepeat()
             }, 700)

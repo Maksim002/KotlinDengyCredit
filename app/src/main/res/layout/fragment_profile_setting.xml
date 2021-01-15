@@ -12,14 +12,13 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/profile_s_swipe"
         android:visibility="gone"
-        android:focusableInTouchMode="true"
+        android:focusableInTouchMode="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/profile_setting_layout"
         android:layout_width="match_parent"
-        android:visibility="visible"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -62,16 +62,7 @@ class SupportFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        if (viewModel.listFaqDta.value != null) {
-            if (errorCode == "200") {
-                initRecycler()
-            } else {
-                initRestart()
-            }
-        } else {
-            viewModel.refreshCode = false
-            initRestart()
-        }
+
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -250,6 +241,16 @@ class SupportFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (viewModel.listFaqDta.value != null) {
+            if (errorCode == "200") {
+                initRecycler()
+            } else {
+                initRestart()
+            }
+        } else {
+            viewModel.refreshCode = false
+            initRestart()
+        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

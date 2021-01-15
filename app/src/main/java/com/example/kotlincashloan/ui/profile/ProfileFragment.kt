@@ -43,9 +43,10 @@ class ProfileFragment : Fragment() {
     private var errorCodeClient = ""
     private var errorGetImg = ""
     private var numberBar = 0
-    val bundle = Bundle()
+    private val bundle = Bundle()
     private var profAnim = false
     private var inputsAnim = 0
+    private var sendPicture = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,8 +88,12 @@ class ProfileFragment : Fragment() {
     private fun initClick() {
 
         profile_your.setOnClickListener {
+            val bundle = Bundle()
+            if (sendPicture != ""){
+                bundle.putString("sendPicture", sendPicture)
+            }
             inputsAnim = 1
-            findNavController().navigate(R.id.profile_setting_navigation)
+            findNavController().navigate(R.id.profile_setting_navigation, bundle)
         }
 
         access_restricted.setOnClickListener {
@@ -199,7 +204,7 @@ class ProfileFragment : Fragment() {
                     var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                     image_profile.setImageBitmap(decodedImage)
-
+                    sendPicture = result.result.data.toString()
                     errorGetImg = result.code.toString()
                 }else{
                     //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
@@ -412,6 +417,26 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+    }
+
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        profAnim = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initArgument()
+
         if (AppPreferences.inputsAnim != 0){
             inputsAnim = AppPreferences.inputsAnim
         }
@@ -431,24 +456,6 @@ class ProfileFragment : Fragment() {
             viewModel.refreshCode = false
             initRestart()
         }
-    }
-
-
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        profAnim = false
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initArgument()
 
         if (numberBar != 0) {
             profile_pager.currentItem = numberBar
