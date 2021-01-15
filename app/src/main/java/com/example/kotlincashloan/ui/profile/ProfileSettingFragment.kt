@@ -297,13 +297,14 @@ class ProfileSettingFragment : Fragment() {
                             profile_s_mask.clearFocus()
                         }
                         profile_s_mask.setOnClickListener {
+                            profile_setting_second_phone.clearFocus()
+                            closeKeyboard()
                             profile_s_mask.showDropDown()
                         }
                         profile_s_mask.onFocusChangeListener =
                             View.OnFocusChangeListener { view, hasFocus ->
                                 try {
                                     if (hasFocus) {
-                                        closeKeyboard()
                                         profile_s_mask.showDropDown()
                                     }
                                 } catch (e: Exception) {
@@ -895,7 +896,7 @@ class ProfileSettingFragment : Fragment() {
             profile_s_swipe.visibility = View.VISIBLE
             if (profileSettingAnimR) {
                 TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
-                profileSettingAnimR = true
+                profileSettingAnimR = false
             }
         }
     }
@@ -915,10 +916,6 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-//        if (profileSettingAnimR) {
-//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
-//            profileSettingAnimR = true
-//        }
         profile_s_one_password.text = null
         profile_s_two_password.text = null
         profile_s_two_password.transformationMethod = PasswordTransformationMethod()
@@ -1023,7 +1020,7 @@ class ProfileSettingFragment : Fragment() {
             profile_s_old_password.error = "Поле не должно быть пустым"
             valid = false
         } else if (profile_s_old_password.text.toString() != AppPreferences.password) {
-            profile_s_old_password.error = "Пароль введен неверно!"
+            profile_s_old_password.error = "Пароли введен неверно!"
             valid = false
         } else {
             profile_s_old_password.error = null

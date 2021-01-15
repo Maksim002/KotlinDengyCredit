@@ -2,8 +2,10 @@ package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.os.Bundle
 import android.os.Handler
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,10 +36,12 @@ import kotlin.collections.ArrayList
 class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
+    private val mapImg = HashMap<String, String>()
     val handler = Handler()
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
     private var errorCode = ""
     private var errorCodeClient = ""
+    private var errorGetImg = ""
     private var numberBar = 0
     val bundle = Bundle()
     private var profAnim = false
@@ -59,6 +63,12 @@ class ProfileFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        mapImg.put("login", AppPreferences.login.toString())
+        mapImg.put("token", AppPreferences.token.toString())
+        mapImg.put("type", "profile")
+        mapImg.put("doc_id", "0")
+        mapImg.put("type_id", "0")
 
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
 
@@ -150,7 +160,7 @@ class ProfileFragment : Fragment() {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_swipe.isRefreshing = false
-                if (errorCode == "200" && errorCodeClient == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
                     resultSuccessfully()
                 }
             }catch (e: Exception){
@@ -174,12 +184,50 @@ class ProfileFragment : Fragment() {
                     }
                     listListResult(result.error.code!!)
                 }
-                if (errorCode == "200" && errorCodeClient == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
                     resultSuccessfully()
                 }
             }catch (e: Exception){
                 e.printStackTrace()
             }
+        })
+
+        // запрос для выгрузки изоброжение с сервира
+        viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
+            try {
+                if (result.result != null){
+                    var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
+                    val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    image_profile.setImageBitmap(decodedImage)
+
+                    errorGetImg = result.code.toString()
+                }else{
+                    //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
+                    if (result.error.code != 404){
+                        listListResult(result.error.code!!)
+                    }else{
+                        errorGetImg = "200"
+                    }
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                    resultSuccessfully()
+                }
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+        })
+
+        // запрос для выгрузки изоброжение с сервира если есть ошибка
+        viewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
+            try {
+                errorGetImg = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (error != null) {
+                errorList(error)
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         })
     }
 
@@ -322,16 +370,19 @@ class ProfileFragment : Fragment() {
             profile_not_found.visibility = View.GONE
             viewModel.errorListOperation.value = null
             viewModel.errorClientInfo.value = null
+            viewModel.errorGetImg.value = null
             errorCode = "601"
             errorCodeClient = "601"
+            errorGetImg = "601"
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null) {
                 if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listOperation(map)
                         viewModel.clientInfo(map)
+                        viewModel.getImg(mapImg)
                         initRecycler()
                     }, 500)
                 }
@@ -345,9 +396,14 @@ class ProfileFragment : Fragment() {
                         viewModel.listClientInfoDta.postValue(null)
                         viewModel.errorClientInfo.value = null
                         viewModel.clientInfo(map)
+                    }else if (viewModel.errorGetImg.value != null){
+                        viewModel.listGetImgDta.postValue(null)
+                        viewModel.errorGetImg.value = null
+                        viewModel.getImg(mapImg)
                     }
                     viewModel.listOperation(map)
                     viewModel.clientInfo(map)
+                    viewModel.getImg(mapImg)
                     initRecycler()
                 }, 500)
             }
@@ -359,8 +415,8 @@ class ProfileFragment : Fragment() {
         if (AppPreferences.inputsAnim != 0){
             inputsAnim = AppPreferences.inputsAnim
         }
-        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null) {
-            if (errorCode == "200" || errorCodeClient == "200") {
+        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null || viewModel.listGetImgDta.value != null) {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200") {
                 AppPreferences.reviewCode = 0
                 if (inputsAnim != 0){
                     profAnim = true

@@ -206,7 +206,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun initBottomSheetMistake() {
-        val bottomSheetDialogFragment = ShippedSheetFragment()
+        val bottomSheetDialogFragment = ShippedSheetFragment(profNumber)
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -301,6 +301,8 @@ class ContactingServiceActivity : AppCompatActivity() {
                 AppPreferences.isFormatMask = list[position].phoneMask
                 numberCharacters = list[position].phoneLength!!.toInt()
                 questionnaire_phone_additional.setText("")
+                questionnaire_phone_list_country.error = null
+                questionnaire_phone_additional.error = null
                 questionnaire_phone_additional.mask = ""
                 questionnaire_phone_additional.mask = list[position].phoneMask
                 if (questionnaire_phone_list_country.text.toString() != "") {
@@ -407,6 +409,7 @@ class ContactingServiceActivity : AppCompatActivity() {
             password_recovery_type.setOnItemClickListener { adapterView, view, position, l ->
                 password_recovery_type.showDropDown()
                 typeId = list[position].id!!
+                password_recovery_type.error = null
                 password_recovery_type.clearFocus()
             }
             password_recovery_type.setOnClickListener {

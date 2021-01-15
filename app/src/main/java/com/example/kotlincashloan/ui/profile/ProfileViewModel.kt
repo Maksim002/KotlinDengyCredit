@@ -260,4 +260,30 @@ class ProfileViewModel : ViewModel(){
             }
         })
     }
+
+    val errorGetImg = MutableLiveData<String>()
+    var listGetImgDta = MutableLiveData<CommonResponse<GetImgResultModel>>()
+
+    fun getImg(map: Map<String, String>){
+        RetrofitService.apiService().getImg(map).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<GetImgResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetImg.postValue( "601")
+                }else{
+                    errorGetImg.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<GetImgResultModel>>, response: Response<CommonResponse<GetImgResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listGetImgDta.postValue(response.body())
+                    }else{
+                        errorGetImg.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorGetImg.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
 }

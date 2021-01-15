@@ -331,6 +331,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
+        if (home_text_login.text.toString() == "" && home_text_password.text.toString() == ""){
+            home_remember_username.isChecked = true
+            home_login_code.isChecked = true
+        }
         if (inputsAnim) {
             TransitionAnimation(this).transitionLeft(home_layout_anim)
             inputsAnim = true
