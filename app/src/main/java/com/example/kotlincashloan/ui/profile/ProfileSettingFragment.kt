@@ -47,6 +47,7 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,6 +78,8 @@ class ProfileSettingFragment : Fragment() {
 
     private var textPasswordOne = ""
     private var textPasswordTwo = ""
+
+    private var imageString :String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -811,6 +814,9 @@ class ProfileSettingFragment : Fragment() {
 
 
         profile_s_enter.setOnClickListener {
+            if (imageString != ""){
+                gitImage()
+            }
             if (profile_s_one_password.text.toString() != "" && profile_s_two_password.text.toString() != "") {
                 if (AppPreferences.password == profile_s_old_password.text.toString()) {
                     val mapProfilePassword = HashMap<String, String>()
@@ -837,6 +843,7 @@ class ProfileSettingFragment : Fragment() {
                 }
             }
         }
+
 
         profile_setting_second_phone.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
@@ -917,6 +924,17 @@ class ProfileSettingFragment : Fragment() {
         }
     }
 
+    private fun gitImage(){
+        val mapUploadImg = HashMap<String, String>()
+        mapUploadImg.put("login", AppPreferences.login.toString())
+        mapUploadImg.put("token", AppPreferences.token.toString())
+        mapUploadImg.put("type", "profile")
+        mapUploadImg.put("doc_id", "0")
+        mapUploadImg.put("type_id", "0")
+        mapUploadImg.put("file", imageString)
+        viewModel.uploadImg(mapUploadImg)
+    }
+
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
@@ -969,12 +987,22 @@ class ProfileSettingFragment : Fragment() {
             if (data!!.action != null){
                 val b: Bundle = data.extras!!
                 val finalPhoto = b.get("data") as Bitmap
+                imageConverter(finalPhoto)
                 profile_setting_image.setImageBitmap(finalPhoto);
             }else{
                 val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+                imageConverter(bm)
                 profile_setting_image.setImageBitmap(bm);
             }
         }
+    }
+
+    //encode image to base64 string
+    private fun imageConverter(bitmap: Bitmap){
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val imageBytes: ByteArray = baos.toByteArray()
+        imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
     }
 
     private fun initAuthorized() {
