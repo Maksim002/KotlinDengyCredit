@@ -56,7 +56,6 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -414,12 +413,6 @@ class ProfileFragment : Fragment() {
             }
         }
     }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
 
     fun setTitle(title: String?, color: Int) {
         val activity: Activity? = activity

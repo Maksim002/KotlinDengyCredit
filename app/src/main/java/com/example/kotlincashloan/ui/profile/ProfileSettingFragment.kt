@@ -1,21 +1,29 @@
 package com.example.kotlincashloan.ui.profile
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.MediaStore
 import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.view.*
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -43,6 +51,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ProfileSettingFragment : Fragment() {
+    private val IMAGE_PICK_CODE = 10
+    val CAMERA_PERM_CODE = 101
     private var viewModel = ProfileViewModel()
     private var errorCodeGender = ""
     private var errorCodeNationality = ""
@@ -612,6 +622,10 @@ class ProfileSettingFragment : Fragment() {
             }
         }
 
+        profile_tube.setOnClickListener {
+            loadFiles()
+        }
+
         //Дополнительный номер
         profile_setting_second_phone.viewTreeObserver
             .addOnGlobalLayoutListener {
@@ -914,6 +928,51 @@ class ProfileSettingFragment : Fragment() {
             if (profileSettingAnimR) {
                 TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
                 profileSettingAnimR = false
+            }
+        }
+    }
+
+    //Метод выгружает картинку с памяти телефона
+    private fun loadFiles() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
+            } else {
+                getMyFile()
+            }
+        } else {
+            getMyFile()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            getMyFile()
+        } else {
+            Toast.makeText(context, "Нет разрешений", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getMyFile() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        val pickIntent = Intent(Intent.ACTION_PICK)
+        pickIntent.type = "image/*"
+        val chooser = Intent.createChooser(pickIntent, "Some text here")
+        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
+        startActivityForResult(chooser, IMAGE_PICK_CODE)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            if (data!!.action != null){
+                val b: Bundle = data.extras!!
+                val finalPhoto = b.get("data") as Bitmap
+                profile_setting_image.setImageBitmap(finalPhoto);
+            }else{
+                val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+                profile_setting_image.setImageBitmap(bm);
             }
         }
     }
