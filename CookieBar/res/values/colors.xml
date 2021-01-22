@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_bg_color">#FFFFFF</color>
+    <color name="default_title_color">#ffffff</color>
+    <color name="default_message_color">#ffffff</color>
+    <color name="default_action_color">#26a69a</color>
+
+    <color name="orangeColor">#FFA800</color>
+    <color name="blackColor">#444444</color>
+    <color name="orangeGray">#6A6868</color>
+    <color name="blueColor">#B67123</color>
+    <color name="whiteColor">#FFF</color>
+    <color name="colorDrawer">#FFA800</color>
+    <color name="colorRed">#F60621</color>
+    <color name="colorGrey">#f3f3f3</color>
+    <color name="colorLightGrey">#F1F1F1</color>
+    <color name="colorGreen">#3C932E</color>
+</resources>
