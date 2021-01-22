@@ -331,12 +331,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
-        if (AppPreferences.passwordRecovery == "") {
-            if (home_text_login.text.toString() == "" && home_text_password.text.toString() == "") {
-                home_remember_username.isChecked = true
-                home_login_code.isChecked = true
-                AppPreferences.passwordRecovery = "1"
-            }
+
+        //проверяет Checked включон или нет!
+        if (AppPreferences.passwordRecovery == "" && AppPreferences.loginRecovery == "") {
+            home_remember_username.isChecked = true
+            home_login_code.isChecked = true
+            AppPreferences.passwordRecovery = "1"
+            AppPreferences.loginRecovery == "1"
         }
         if (inputsAnim) {
             TransitionAnimation(this).transitionLeft(home_layout_anim)
@@ -456,11 +457,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 // 3
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.error_msg_auth_error, errString),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        applicationContext,
+//                        getString(R.string.error_msg_auth_error, errString),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     home_touch_id.isChecked = false
                 }
 
