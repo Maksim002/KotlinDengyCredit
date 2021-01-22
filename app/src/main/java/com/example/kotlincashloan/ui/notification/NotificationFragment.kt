@@ -226,6 +226,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun notificationClickListener(position: Int, item: ResultListNoticeModel) {
         val bundle = Bundle()
         bundle.putInt("noticeId", item.id!!)
+        bundle.putString("title", item.title)
         notificationAnim = false
         findNavController().navigate(R.id.navigation_detail_notification, bundle)
     }
@@ -263,11 +264,11 @@ class NotificationFragment : Fragment(), NotificationListener {
             notificationAnim = true
             initRestart()
         }
-//        if (!notificationAnim) {
-//            //notificationAnim анимация для перехода с адного дествия в другое
-//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
-//            notificationAnim = true
-//        }
+        if (!notificationAnim) {
+            //notificationAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
+            notificationAnim = true
+        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

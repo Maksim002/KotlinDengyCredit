@@ -323,7 +323,11 @@ class ProfileSettingFragment : Fragment() {
                         }
                         profile_s_mask.setOnClickListener {
                             profile_setting_second_phone.clearFocus()
-                            closeKeyboard()
+                            try {
+                                closeKeyboard()
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
                             profile_s_mask.showDropDown()
                         }
                         profile_s_mask.onFocusChangeListener =
@@ -564,10 +568,12 @@ class ProfileSettingFragment : Fragment() {
         if (view != null) {
             // now assign the system
             // service to InputMethodManager
-            val manager = requireActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE
-            ) as InputMethodManager?
-            manager!!.hideSoftInputFromWindow(view.windowToken, 0)
+            try {
+                val manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                manager!!.hideSoftInputFromWindow(view.windowToken, 0)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
         }
     }
 
@@ -934,11 +940,11 @@ class ProfileSettingFragment : Fragment() {
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+            profile_s_swipe.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.VISIBLE
             if (profileSettingAnimR) {
                 TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
                 profileSettingAnimR = false
