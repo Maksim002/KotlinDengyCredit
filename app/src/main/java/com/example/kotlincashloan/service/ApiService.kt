@@ -3,6 +3,7 @@ package com.timelysoft.tsjdomcom.service
 
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
+import com.example.kotlincashloan.service.model.Loans.LoanInResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
@@ -158,5 +159,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("uploadImg?token=oYyxhIFgJjAb")
     fun uploadImg(@FieldMap params: Map<String, String>):Call<CommonResponse<UploadImgResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("getLoanInfo?token=oYyxhIFgJjAb")
+    fun getLoanInfo(@FieldMap params: Map<String, String>):Call<CommonResponse<LoanInResultModel>>
 }
 

@@ -12,22 +12,30 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
+import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 
 
 class LoanStepTwoFragment : Fragment() {
     private var myAdapter = LoansStepAdapter()
+    private var viewModel = LoansViewModel()
+    val map = HashMap<String, String>()
 
-    private val sumMax = 25
-    private val sumMin = 0
+    private var maxCounter = 0
+    private var minCounter = 0
 
-    private val monthMax = 12
-    private val monthMin = 0
+    private var sumMax = 0
+    private var sumMin = 0
+
+    private var monthMax = 0
+    private var monthMin = 0
 
     private var position = 0
 
@@ -42,26 +50,37 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initSeekBar()
-        initImageSum()
-        initImagMonth()
-        initResiscler()
+    }
+
+    private fun initСounter() {
+        //Если запрос счётчика прошол успешно
+        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result->
+            if (result.result != null) {
+                sumMin = result.result.minSum.toString().toDouble().toInt()
+                sumMax = result.result.maxSum.toString().toDouble().toInt()
+                maxCounter = result.result.maxCount.toString().toInt()
+                minCounter = result.result.minCount.toString().toInt()
+
+                position = minCounter
+
+                minCounterLoan.setText(minCounter.toString())
+                maxCounterLoan.setText(maxCounter.toString())
+
+                initSeekBar()
+                initImageSum()
+                initImagMonth()
+                initResiscler()
+            }
+        })
     }
 
     private fun initResiscler() {
+        var numberCount = minCounter
         val list: ArrayList<LoansStepTwoModel> = arrayListOf()
-        list.add(LoansStepTwoModel(1))
-        list.add(LoansStepTwoModel(2))
-        list.add(LoansStepTwoModel(3))
-        list.add(LoansStepTwoModel(4))
-        list.add(LoansStepTwoModel(5))
-        list.add(LoansStepTwoModel(6))
-        list.add(LoansStepTwoModel(7))
-        list.add(LoansStepTwoModel(8))
-        list.add(LoansStepTwoModel(9))
-        list.add(LoansStepTwoModel(10))
-        list.add(LoansStepTwoModel(11))
-        list.add(LoansStepTwoModel(12))
+        while (numberCount <= maxCounter) {
+            list.add(LoansStepTwoModel(numberCount))
+            numberCount++
+        }
 
         step_item_list.initialize(myAdapter)
         step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
@@ -103,8 +122,8 @@ class LoanStepTwoFragment : Fragment() {
 
     @SuppressLint("NewApi")
     private fun initSeekBar() {
-        val max = sumMax - 5
-        val min = sumMin
+        val max = sumMax
+        val min = 0
         loan_step_seek.max = max
         loan_step_seek.min = min
         loan_step_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -116,13 +135,14 @@ class LoanStepTwoFragment : Fragment() {
                 resultSum = seekbarValue.toInt() * 1 + 5
 
 
-                progressBarr(resultSum.toString() + " " + "000")
+                progressBarr(resultSum.toString())
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
 
+        loan_step_month_seek.max = maxCounter - minCounter
         loan_step_month_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 position = progress
@@ -210,6 +230,10 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loan_step_sum.text = "5 000"
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
+        map.put("id", "1")
+        viewModel.getInfo(map)
+        initСounter()
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.service.model.Loans.LoanInResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
@@ -110,6 +111,37 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }
+            }
+        })
+    }
+
+
+    val errorGetLoanInfo = MutableLiveData<String>()
+    var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
+
+    fun getInfo(map: Map<String, String>){
+        HomeActivity.alert.show()
+        RetrofitService.apiService().getLoanInfo(map).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetLoanInfo.postValue( "601")
+                }else{
+                    errorGetLoanInfo.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<LoanInResultModel>>, response: Response<CommonResponse<LoanInResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        getLoanInfoDta.postValue(response.body())
+                    }else{
+                        errorGetLoanInfo.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorGetLoanInfo.postValue(response.code().toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },400)
             }
         })
     }
