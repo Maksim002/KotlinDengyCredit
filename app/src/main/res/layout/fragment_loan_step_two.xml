@@ -186,6 +186,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/totalSumLoans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="right"
@@ -199,6 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="32dp"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/orangeColor"
             android:text="руб."/>
     </LinearLayout>

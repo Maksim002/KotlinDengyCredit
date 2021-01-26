@@ -27,7 +27,6 @@ class GetLoanActivity : AppCompatActivity() {
     private fun initViewPager() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
-        list.add(LoansListModel(LoanStepOneFragment()))
 
         get_loan_view_pagers.isEnabled = true
 
@@ -57,6 +56,6 @@ class GetLoanActivity : AppCompatActivity() {
         super.onResume()
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
-        }, 900)
+        }, 1200)
     }
 }

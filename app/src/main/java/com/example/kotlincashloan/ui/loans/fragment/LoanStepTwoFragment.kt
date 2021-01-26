@@ -21,6 +21,8 @@ import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
+import java.lang.Math.pow
+import kotlin.math.round
 
 
 class LoanStepTwoFragment : Fragment() {
@@ -34,11 +36,13 @@ class LoanStepTwoFragment : Fragment() {
     private var sumMax = 0
     private var sumMin = 0
 
-    private var monthMax = 0
-    private var monthMin = 0
+    private var monthMax = 12
 
     private var position = 0
 
+    private var totalSum = 0
+    private var totalCounter = 0
+    private var totalRate = 0.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +65,13 @@ class LoanStepTwoFragment : Fragment() {
                 maxCounter = result.result.maxCount.toString().toInt()
                 minCounter = result.result.minCount.toString().toInt()
 
+                totalRate = result.result.rate!!.toDouble()
+
                 position = minCounter
+                progressBarr(sumMin.toString())
+
+                totalCounter = result.result.minCount.toString().toInt()
+                totalSum = result.result.minSum!!.toDouble().toInt()
 
                 minCounterLoan.setText(minCounter.toString())
                 maxCounterLoan.setText(maxCounter.toString())
@@ -70,6 +80,7 @@ class LoanStepTwoFragment : Fragment() {
                 initImageSum()
                 initImagMonth()
                 initResiscler()
+                totalSum()
             }
         })
     }
@@ -97,6 +108,11 @@ class LoanStepTwoFragment : Fragment() {
         })
     }
 
+    private fun totalSum(){
+        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), - totalCounter.toDouble())))
+        totalSumLoans.setText(equ.toInt().toString())
+    }
+
     operator fun hasNext(): Boolean {
         return step_item_list.getAdapter() != null &&
                 getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
@@ -119,23 +135,24 @@ class LoanStepTwoFragment : Fragment() {
         )
     }
 
-
     @SuppressLint("NewApi")
     private fun initSeekBar() {
-        val max = sumMax
+        val max = sumMax / 1000 - 5
         val min = 0
         loan_step_seek.max = max
         loan_step_seek.min = min
         loan_step_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
 
-                seekBar.min = sumMin
+                seekBar.min = min
                 val seekbarValue = i.toString()
                 var resultSum = 0
-                resultSum = seekbarValue.toInt() * 1 + 5
-
+                resultSum = seekbarValue.toInt() * 1000 + sumMin
 
                 progressBarr(resultSum.toString())
+                totalSum = resultSum
+
+                totalSum()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
@@ -146,6 +163,10 @@ class LoanStepTwoFragment : Fragment() {
         loan_step_month_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 position = progress
+
+                totalCounter = progress + 2
+
+                totalSum()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -167,7 +188,7 @@ class LoanStepTwoFragment : Fragment() {
         )
         params.weight = 1.0f
         params.gravity = Gravity.CENTER
-        val sum = monthMax - monthMin
+        val sum = monthMax
         val pairs = arrayOfNulls<ImageView>(sum)
         var v = pairs.size - 1
 
@@ -194,7 +215,7 @@ class LoanStepTwoFragment : Fragment() {
         )
         params.weight = 1.0f
         params.gravity = Gravity.CENTER
-        val sum = sumMax - sumMin
+        val sum = sumMax / 1000
         val pairs = arrayOfNulls<ImageView>(sum)
         var v = pairs.size - 1
 
