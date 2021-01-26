@@ -95,9 +95,9 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorClientInfo.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    HomeActivity.alert.hide()
+//                },1200)
             }
         })
     }
@@ -124,6 +124,9 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListGender.postValue(response.raw().code.toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
             }
         })
     }
@@ -202,9 +205,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListSecretQuestion.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },500)
             }
         })
     }
@@ -283,6 +283,9 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorGetImg.postValue(response.raw().code.toString())
                 }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                },500)
             }
         })
     }
