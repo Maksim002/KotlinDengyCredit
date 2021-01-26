@@ -1,9 +1,13 @@
 package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Handler
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
 import android.view.LayoutInflater
@@ -30,6 +34,10 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -118,6 +126,29 @@ class ProfileFragment : Fragment() {
         startActivity(intent)
     }
 
+    // Method to save an bitmap to a file
+    private fun bitmapToFile(bitmap: Bitmap): Uri {
+        // Get the context wrapper
+        val wrapper = ContextWrapper(requireContext())
+        // Initialize a new file instance to save bitmap object
+        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
+        file = File(file,"${UUID.randomUUID()}.jpg")
+
+        try{
+            // Compress the bitmap and save in jpg format
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
+            stream.flush()
+            stream.close()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
+
+        // Return the saved bitmap uri
+        sendPicture = file.absolutePath
+        return Uri.parse(file.absolutePath)
+    }
+
     private fun initRecycler() {
         //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
@@ -195,16 +226,20 @@ class ProfileFragment : Fragment() {
                 e.printStackTrace()
             }
         })
-
+//        // запрос для выгрузки изоброжение с сервира
+//        initGetImgDta()
+    }
+    // запрос для выгрузки изоброжение с сервира
+    private fun initGetImgDta(){
         // запрос для выгрузки изоброжение с сервира
         viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null){
+                    errorGetImg = result.code.toString()
                     var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                     image_profile.setImageBitmap(decodedImage)
-                    sendPicture = result.result.data.toString()
-                    errorGetImg = result.code.toString()
+                    bitmapToFile(decodedImage)
                 }else{
                     //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                     if (result.error.code != 404){
@@ -385,6 +420,7 @@ class ProfileFragment : Fragment() {
                         viewModel.clientInfo(map)
                         viewModel.getImg(mapImg)
                         initRecycler()
+                        initGetImgDta()
                     }, 500)
                 }
             } else {
@@ -406,6 +442,7 @@ class ProfileFragment : Fragment() {
                     viewModel.clientInfo(map)
                     viewModel.getImg(mapImg)
                     initRecycler()
+                    initGetImgDta()
                 }, 500)
             }
         }
@@ -436,6 +473,9 @@ class ProfileFragment : Fragment() {
                 if (inputsAnim != 0){
                     profAnim = true
                 }
+                viewModel.listGetImgDta.postValue(null)
+                viewModel.getImg(mapImg)
+                initGetImgDta()
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 1
