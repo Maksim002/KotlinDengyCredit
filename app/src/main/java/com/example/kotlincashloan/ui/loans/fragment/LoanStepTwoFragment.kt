@@ -1,11 +1,9 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -19,8 +17,16 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.loan_layout_parallel
+import kotlinx.android.synthetic.main.fragment_loans.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.lang.Math.pow
 import kotlin.math.round
 
@@ -54,6 +60,25 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initClick()
+    }
+
+    private fun initClick() {
+        no_connection_repeat.setOnClickListener {
+            initRestart()
+        }
+
+        access_restricted.setOnClickListener {
+            initRestart()
+        }
+
+        not_found.setOnClickListener {
+            initRestart()
+        }
+
+        technical_work.setOnClickListener {
+            initRestart()
+        }
     }
 
     private fun initСounter() {
@@ -76,11 +101,27 @@ class LoanStepTwoFragment : Fragment() {
                 minCounterLoan.setText(minCounter.toString())
                 maxCounterLoan.setText(maxCounter.toString())
 
+                layout_two.visibility = View.VISIBLE
+                loans_two_found.visibility = View.GONE
+                loans_two_work.visibility = View.GONE
+                loans_two_connection.visibility = View.GONE
+                loans_two_restricted.visibility = View.GONE
+
                 initSeekBar()
                 initImageSum()
                 initImagMonth()
-                initResiscler()
                 totalSum()
+                initResiscler()
+            }else{
+                if (result.error.code != null) {
+                    initErrorResult(result.error.code!!)
+                }
+            }
+        })
+
+        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error->
+            if (error != null){
+                initError(error)
             }
         })
     }
@@ -93,9 +134,14 @@ class LoanStepTwoFragment : Fragment() {
             numberCount++
         }
 
-        step_item_list.initialize(myAdapter)
-        step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
-        myAdapter.update(list)
+        try {
+            step_item_list.initialize(myAdapter)
+            step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
+            myAdapter.update(list)
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
 
         step_item_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -249,12 +295,86 @@ class LoanStepTwoFragment : Fragment() {
         pairs[number]!!.setPadding(10, 5, 10, 5)
     }
 
+    private fun initErrorResult(result: Int) {
+        if (result == 403) {
+            loans_two_found.visibility = View.GONE
+            loans_two_work.visibility = View.GONE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.VISIBLE
+        } else if (result == 404) {
+            loans_two_found.visibility = View.VISIBLE
+            loans_two_work.visibility = View.GONE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+        } else if (result == 401) {
+            initAuthorized()
+        } else if (result == 500 || result == 400 || result == 409 || result == 429) {
+            loans_two_work.visibility = View.VISIBLE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+        }
+    }
+
+    private fun initError(error: String) {
+        if (error == "601") {
+            loans_two_connection.visibility = View.VISIBLE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+            loans_two_work.visibility = View.GONE
+        } else if (error == "403") {
+            loans_two_restricted.visibility = View.VISIBLE
+            loans_two_found.visibility = View.GONE
+            loans_two_work.visibility = View.GONE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+        } else if (error == "404") {
+            loans_two_found.visibility = View.VISIBLE
+            loans_two_work.visibility = View.GONE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+        } else if (error == "401") {
+            initAuthorized()
+        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600") {
+            loans_two_work.visibility = View.VISIBLE
+            loans_two_connection.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+        }
+    }
+
+    private fun initAuthorized() {
+        val intent = Intent(context, HomeActivity::class.java)
+        AppPreferences.token = ""
+        startActivity(intent)
+    }
+
     override fun onResume() {
         super.onResume()
+        initRestart()
+    }
+
+    private fun initRestart(){
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", "1")
-        viewModel.getInfo(map)
-        initСounter()
+
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loans_two_connection.visibility = View.VISIBLE
+            loans_two_work.visibility = View.GONE
+            layout_two.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+        }else{
+            viewModel.getInfo(map)
+            initСounter()
+        }
     }
 }
