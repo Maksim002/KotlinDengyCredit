@@ -11,6 +11,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.NumberBusyBottomSheetFragment
@@ -31,6 +32,7 @@ import kotlin.collections.HashMap
 class NumberActivity : AppCompatActivity() {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
+    private var repeatAnim = false
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
 
@@ -311,6 +313,14 @@ class NumberActivity : AppCompatActivity() {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!repeatAnim) {
+            TransitionAnimation(this).transitionRightActivity(number_layout_anim)
+            repeatAnim = true
+        }
     }
 
     private fun initViews() {

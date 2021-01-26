@@ -234,4 +234,82 @@ class ProfileViewModel : ViewModel(){
             }
         })
     }
+
+    val errorCheckPassword = MutableLiveData<String>()
+    var listCheckPasswordDta = MutableLiveData<CommonResponse<CheckPasswordResultModel>>()
+
+    fun checkPassword(map: Map<String, String>){
+        RetrofitService.apiService().checkPassword(map).enqueue(object : Callback<CommonResponse<CheckPasswordResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<CheckPasswordResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorCheckPassword.postValue( "601")
+                }else{
+                    errorCheckPassword.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<CheckPasswordResultModel>>, response: Response<CommonResponse<CheckPasswordResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listCheckPasswordDta.postValue(response.body())
+                    }else{
+                        errorCheckPassword.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorCheckPassword.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
+
+    val errorGetImg = MutableLiveData<String>()
+    var listGetImgDta = MutableLiveData<CommonResponse<GetImgResultModel>>()
+
+    fun getImg(map: Map<String, String>){
+        RetrofitService.apiService().getImg(map).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<GetImgResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetImg.postValue( "601")
+                }else{
+                    errorGetImg.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<GetImgResultModel>>, response: Response<CommonResponse<GetImgResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listGetImgDta.postValue(response.body())
+                    }else{
+                        errorGetImg.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorGetImg.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
+
+    val errorUploadImg = MutableLiveData<String>()
+    var listUploadImgDta = MutableLiveData<CommonResponse<UploadImgResultModel>>()
+
+    fun uploadImg(map: Map<String, String>){
+        RetrofitService.apiService().uploadImg(map).enqueue(object : Callback<CommonResponse<UploadImgResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<UploadImgResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorUploadImg.postValue( "601")
+                }else{
+                    errorUploadImg.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<UploadImgResultModel>>, response: Response<CommonResponse<UploadImgResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listUploadImgDta.postValue(response.body())
+                    }else{
+                        errorUploadImg.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorUploadImg.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
 }

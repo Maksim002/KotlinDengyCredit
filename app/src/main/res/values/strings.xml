@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Кредит и деньги</string>
+    <string name="app_name">Деньги и Кредит</string>
     <string name="error_msg_no_biometric_hardware">Никаких биометрических функций на этом устройстве нет.</string>
     <string name="error_msg_biometric_hw_unavailable">Биометрические характеристики в настоящее время недоступны.</string>
     <string name="error_msg_biometric_not_setup">Пользователь не связал никаких биометрических учетных данных со своей учетной записью.</string>

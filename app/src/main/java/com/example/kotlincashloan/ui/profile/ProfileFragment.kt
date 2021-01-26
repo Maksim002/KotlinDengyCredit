@@ -2,29 +2,27 @@ package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
-import android.os.Bundle
 import android.os.Handler
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
-import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -38,12 +36,17 @@ import kotlin.collections.ArrayList
 class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
+    private val mapImg = HashMap<String, String>()
     val handler = Handler()
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
     private var errorCode = ""
     private var errorCodeClient = ""
+    private var errorGetImg = ""
     private var numberBar = 0
-    val bundle = Bundle()
+    private val bundle = Bundle()
+    private var profAnim = false
+    private var inputsAnim = 0
+    private var sendPicture = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +56,6 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -62,16 +64,35 @@ class ProfileFragment : Fragment() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
 
+        mapImg.put("login", AppPreferences.login.toString())
+        mapImg.put("token", AppPreferences.token.toString())
+        mapImg.put("type", "profile")
+        mapImg.put("doc_id", "0")
+        mapImg.put("type_id", "0")
+
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
 
         initRefresh()
         initClick()
     }
 
+    private fun initArgument() {
+        profAnim = try {
+            requireArguments().getBoolean("false")
+        }catch (e: Exception){
+            false
+        }
+    }
+
     private fun initClick() {
 
         profile_your.setOnClickListener {
-            findNavController().navigate(R.id.profile_setting_navigation)
+            val bundle = Bundle()
+            if (sendPicture != ""){
+                bundle.putString("sendPicture", sendPicture)
+            }
+            inputsAnim = 1
+            findNavController().navigate(R.id.profile_setting_navigation, bundle)
         }
 
         access_restricted.setOnClickListener {
@@ -143,7 +164,7 @@ class ProfileFragment : Fragment() {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_swipe.isRefreshing = false
-                if (errorCode == "200" && errorCodeClient == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
                     resultSuccessfully()
                 }
             }catch (e: Exception){
@@ -167,12 +188,50 @@ class ProfileFragment : Fragment() {
                     }
                     listListResult(result.error.code!!)
                 }
-                if (errorCode == "200" && errorCodeClient == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
                     resultSuccessfully()
                 }
             }catch (e: Exception){
                 e.printStackTrace()
             }
+        })
+
+        // запрос для выгрузки изоброжение с сервира
+        viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
+            try {
+                if (result.result != null){
+                    var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
+                    val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                    image_profile.setImageBitmap(decodedImage)
+                    sendPicture = result.result.data.toString()
+                    errorGetImg = result.code.toString()
+                }else{
+                    //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
+                    if (result.error.code != 404){
+                        listListResult(result.error.code!!)
+                    }else{
+                        errorGetImg = "200"
+                    }
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                    resultSuccessfully()
+                }
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+        })
+
+        // запрос для выгрузки изоброжение с сервира если есть ошибка
+        viewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
+            try {
+                errorGetImg = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (error != null) {
+                errorList(error)
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         })
     }
 
@@ -183,6 +242,13 @@ class ProfileFragment : Fragment() {
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
         profile_not_found.visibility = View.GONE
+        if (profAnim) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
+            inputsAnim = 0
+            AppPreferences.inputsAnim = 0
+            profAnim = false
+        }
     }
 
     private fun listListResult(result: Int) {
@@ -246,7 +312,6 @@ class ProfileFragment : Fragment() {
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()
 
-
         profile_pager.isEnabled = false
 
         v1.setOnClickListener {
@@ -282,10 +347,7 @@ class ProfileFragment : Fragment() {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 initRestart()
@@ -309,16 +371,19 @@ class ProfileFragment : Fragment() {
             profile_not_found.visibility = View.GONE
             viewModel.errorListOperation.value = null
             viewModel.errorClientInfo.value = null
+            viewModel.errorGetImg.value = null
             errorCode = "601"
             errorCodeClient = "601"
+            errorGetImg = "601"
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null) {
                 if (!viewModel.refreshCode) {
                     HomeActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listOperation(map)
                         viewModel.clientInfo(map)
+                        viewModel.getImg(mapImg)
                         initRecycler()
                     }, 500)
                 }
@@ -332,20 +397,45 @@ class ProfileFragment : Fragment() {
                         viewModel.listClientInfoDta.postValue(null)
                         viewModel.errorClientInfo.value = null
                         viewModel.clientInfo(map)
+                    }else if (viewModel.errorGetImg.value != null){
+                        viewModel.listGetImgDta.postValue(null)
+                        viewModel.errorGetImg.value = null
+                        viewModel.getImg(mapImg)
                     }
                     viewModel.listOperation(map)
                     viewModel.clientInfo(map)
+                    viewModel.getImg(mapImg)
                     initRecycler()
                 }, 500)
             }
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null) {
-            if (errorCode == "200" || errorCodeClient == "200") {
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        profAnim = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initArgument()
+
+        if (AppPreferences.inputsAnim != 0){
+            inputsAnim = AppPreferences.inputsAnim
+        }
+        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null || viewModel.listGetImgDta.value != null) {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200") {
                 AppPreferences.reviewCode = 0
+                if (inputsAnim != 0){
+                    profAnim = true
+                }
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 1
@@ -356,18 +446,7 @@ class ProfileFragment : Fragment() {
             viewModel.refreshCode = false
             initRestart()
         }
-    }
 
-
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
         if (numberBar != 0) {
             profile_pager.currentItem = numberBar
             profile_bar_one.visibility = View.VISIBLE

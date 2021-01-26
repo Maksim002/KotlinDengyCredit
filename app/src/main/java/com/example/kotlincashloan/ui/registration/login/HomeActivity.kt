@@ -15,8 +15,10 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.adapter.PintCodeBottomListener
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.NumberActivity
@@ -30,6 +32,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.home_forget_password
+import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
@@ -40,6 +43,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
+    private var inputsAnim = false
+    private var waiting = 0
 
     companion object {
         var repeatedClick = 0
@@ -88,6 +93,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_forget_password.setOnClickListener {
             val intent = Intent(this, PasswordRecoveryActivity::class.java)
+            inputsAnim = true
             home_touch_id.isChecked = false
             home_login_code.isChecked = false
             startActivity(intent)
@@ -95,6 +101,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_registration.setOnClickListener {
             val intent = Intent(this, NumberActivity::class.java)
+            inputsAnim = true
             home_touch_id.isChecked = false
             home_login_code.isChecked = false
             startActivity(intent)
@@ -304,17 +311,16 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
-        if (AppPreferences.token != ""){
+        if (AppPreferences.token != "") {
             startMainActivity()
-        }else{
-            if (AppPreferences.isNumber){
+        } else {
+            if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
-                        initBottomSheet()
+                        if (AppPreferences.isPinCode) {
+                            initBottomSheet()
+                        }
                     }
-//                    if (home_touch_id.isChecked) {
-//                        iniTouchId()
-//                    }
                 }
                 AppPreferences.isNumber = false
             }
@@ -325,6 +331,18 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
+
+        //проверяет Checked включон или нет!
+        if (AppPreferences.passwordRecovery == "" && AppPreferences.loginRecovery == "") {
+            home_remember_username.isChecked = true
+            home_login_code.isChecked = true
+            AppPreferences.passwordRecovery = "1"
+            AppPreferences.loginRecovery == "1"
+        }
+        if (inputsAnim) {
+            TransitionAnimation(this).transitionLeft(home_layout_anim)
+            inputsAnim = true
+        }
         if (home_touch_id.isChecked) {
             iniTouchId()
         }
@@ -348,6 +366,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     getString(R.string.error_msg_no_biometric_hardware),
                     Toast.LENGTH_LONG
                 ).show()
+                AppPreferences.isTouchId = false
+                home_touch_id.isChecked = false
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
                 Toast.makeText(
@@ -437,11 +457,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 // 3
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.error_msg_auth_error, errString),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        applicationContext,
+//                        getString(R.string.error_msg_auth_error, errString),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                     home_touch_id.isChecked = false
                 }
 

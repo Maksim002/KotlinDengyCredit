@@ -17,6 +17,7 @@ import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultMo
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
@@ -28,6 +29,8 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
+import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -41,7 +44,8 @@ class ContactingServiceActivity : AppCompatActivity() {
     private var numberCharacters: Int = 0
     private var myViewMode = PasswordViewMode()
     private var typeId: Int = 0
-    val handler = Handler()
+    private val handler = Handler()
+    private var profNumber = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +61,7 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun initArgument() {
-//        profNumber = intent.extras!!.getString("number").toString()
+            profNumber = intent.extras!!.getString("number").toString()
     }
 
     private fun iniClick() {
@@ -196,13 +200,13 @@ class ContactingServiceActivity : AppCompatActivity() {
     }
 
     private fun initBottomSheet() {
-        val bottomSheetDialogFragment = YourApplicationFragment()
+        val bottomSheetDialogFragment = YourApplicationFragment(profNumber)
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     private fun initBottomSheetMistake() {
-        val bottomSheetDialogFragment = ShippedSheetFragment()
+        val bottomSheetDialogFragment = ShippedSheetFragment(profNumber)
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -297,6 +301,8 @@ class ContactingServiceActivity : AppCompatActivity() {
                 AppPreferences.isFormatMask = list[position].phoneMask
                 numberCharacters = list[position].phoneLength!!.toInt()
                 questionnaire_phone_additional.setText("")
+                questionnaire_phone_list_country.error = null
+                questionnaire_phone_additional.error = null
                 questionnaire_phone_additional.mask = ""
                 questionnaire_phone_additional.mask = list[position].phoneMask
                 if (questionnaire_phone_list_country.text.toString() != "") {
@@ -403,6 +409,7 @@ class ContactingServiceActivity : AppCompatActivity() {
             password_recovery_type.setOnItemClickListener { adapterView, view, position, l ->
                 password_recovery_type.showDropDown()
                 typeId = list[position].id!!
+                password_recovery_type.error = null
                 password_recovery_type.clearFocus()
             }
             password_recovery_type.setOnClickListener {
@@ -480,6 +487,7 @@ class ContactingServiceActivity : AppCompatActivity() {
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
         }, 2000)
+        TransitionAnimation(this).transitionRight(contacts_layout_anim)
     }
 
     override fun onStop() {

@@ -46,6 +46,10 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
 
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         existing_one.setOnClickListener {
             currentPinInput += "1"

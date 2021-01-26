@@ -19,6 +19,18 @@ object AppPreferences {
         editor.apply()
     }
 
+    var passwordRecovery: String?
+        get() = preferences.getString("passwordRecovery", "")
+        set(value) = preferences.edit {
+            it.putString("passwordRecovery", value)
+        }
+
+    var loginRecovery: String?
+        get() = preferences.getString("loginRecovery", "")
+        set(value) = preferences.edit {
+            it.putString("loginRecovery", value)
+        }
+
     var token: String?
         get() = preferences.getString("token", "")
         set(value) = preferences.edit {
@@ -126,6 +138,12 @@ object AppPreferences {
         get() = preferences.getBoolean("isNumber", false)
         set(value) = preferences.edit {
             it.putBoolean("isNumber", value)
+        }
+
+    var inputsAnim: Int
+        get() = preferences.getInt("inputsAnim", 0)
+        set(value) = preferences.edit {
+            it.putInt("inputsAnim", value)
         }
 
     var isValid: Boolean

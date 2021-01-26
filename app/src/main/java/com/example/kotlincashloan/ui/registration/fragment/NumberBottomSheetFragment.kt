@@ -38,6 +38,10 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         number_bottom_code.setOnClickListener {
             this.dismiss()

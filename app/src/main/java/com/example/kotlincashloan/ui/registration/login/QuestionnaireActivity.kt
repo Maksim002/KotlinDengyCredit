@@ -17,6 +17,7 @@ import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.ListGenderResultModel
 import com.example.kotlinscreenscanner.service.model.ListNationalityResultModel
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
@@ -603,7 +604,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
         questionnaire_id_secret.clearFocus()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        TransitionAnimation(this).transitionRight(question_layout_anim)
     }
 
     private fun validate(): Boolean {

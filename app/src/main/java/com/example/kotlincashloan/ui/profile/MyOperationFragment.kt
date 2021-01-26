@@ -11,6 +11,7 @@ import com.example.kotlincashloan.adapter.profile.MyOperationAdapter
 import com.example.kotlincashloan.adapter.profile.OperationListener
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 
 class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf()) : Fragment(), OperationListener {
@@ -34,6 +35,8 @@ class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListO
     override fun operationClickListener(int: Int, item: ResultOperationModel) {
         val bundle = Bundle()
         bundle.putInt("operationId", item.id!!)
+        bundle.putString("title", item.title)
+        AppPreferences.inputsAnim = 1
         findNavController().navigate(R.id.navigation_detail_profile, bundle)
     }
 

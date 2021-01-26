@@ -12,8 +12,9 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_shipped_sheet.*
+import kotlinx.android.synthetic.main.fragment_your_application.*
 
-class ShippedSheetFragment() : BottomSheetDialogFragment() {
+class ShippedSheetFragment(var profNumber: String) : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,6 +26,17 @@ class ShippedSheetFragment() : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
+    }
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (profNumber != "0"){
+            shipped_sheet_enter.text = "Назад"
+        }
     }
 
     private fun initClick() {

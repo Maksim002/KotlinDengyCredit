@@ -9,9 +9,7 @@
         <item name="android:navigationBarColor">@android:color/background_dark</item>
         <item name="android:windowLightNavigationBar">false</item>
 
-        <item name="android:statusBarColor" tools:ignore="NewApi">
-            @color/design_default_color_on_primary
-        </item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/whiteColor</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 </resources>

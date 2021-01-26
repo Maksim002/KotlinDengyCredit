@@ -4,8 +4,6 @@ import android.content.Intent
 import android.util.SparseArray
 import android.view.Menu
 import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.annotation.NonNull
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.core.util.forEach
 import androidx.core.util.set
@@ -53,7 +51,7 @@ fun BottomNavigationView.setupWithNavController(
         // Find or create the Navigation host fragment
         val navHostFragment = obtainNavHostFragment(
             fragmentManager,
-            fragmentTag,
+            fragmentTag.toString(),
             navGraphId,
             containerId
         )
@@ -68,7 +66,7 @@ fun BottomNavigationView.setupWithNavController(
         }
 
         // Save to the map
-        graphIdToTagMap[graphId] = fragmentTag
+        graphIdToTagMap[graphId] = fragmentTag.toString()
 
         // Attach or detach nav host fragment depending on whether it's the selected item.
         if (this.selectedItemId == graphId) {
@@ -100,15 +98,32 @@ fun BottomNavigationView.setupWithNavController(
                 val selectedFragment = fragmentManager.findFragmentByTag(newlySelectedItemTag)
                         as NavHostFragment
 
+                var anim_1 = 0
+                var anim_2 = 0
+                var anim_3 = 0
+                var anim_4 = 0
+
+                if (selectedItemTag.toInt() < newlySelectedItemTag.toInt()){
+                    anim_1 = R.anim.slide_in_right
+                    anim_2 = R.anim.slide_out_left
+                    anim_3 = R.anim.pop_in
+                    anim_4 = R.anim.pop_out
+                }else{
+                    anim_1 = R.anim.slide_in_left
+                    anim_2 = R.anim.slide_out_right
+                    anim_3 = R.anim.pop_in
+                    anim_4 = R.anim.pop_out
+                }
+
                 // Exclude the first fragment tag because it's always in the back stack.
                 if (firstFragmentTag != newlySelectedItemTag) {
                     // Commit a transaction that cleans the back stack and adds the first fragment
                     // to it, creating the fixed started destination.
                     fragmentManager.beginTransaction().setCustomAnimations(
-                        R.anim.slide_in_from_right,
-                        R.anim.slide_out_to_left,
-                        R.anim.slide_in_from_left,
-                        R.anim.slide_out_to_right
+                        anim_1,
+                        anim_2,
+                        anim_3,
+                        anim_4
                     )
                         .attach(selectedFragment)
                         .setPrimaryNavigationFragment(selectedFragment)
@@ -227,7 +242,7 @@ private fun BottomNavigationView.setupDeepLinks(
         // Find or create the Navigation host fragment
         val navHostFragment = obtainNavHostFragment(
             fragmentManager,
-            fragmentTag,
+            fragmentTag.toString(),
             navGraphId,
             containerId
         )
@@ -305,4 +320,4 @@ private fun FragmentManager.isOnBackStack(backStackName: String): Boolean {
     return false
 }
 
-private fun getFragmentTag(index: Int) = "bottomNavigation#$index"
+private fun getFragmentTag(index: Int) = index

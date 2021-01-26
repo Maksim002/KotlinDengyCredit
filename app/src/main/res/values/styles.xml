@@ -8,10 +8,19 @@
         <item name="android:navigationBarColor">@android:color/white</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
 
-        <item name="android:statusBarColor" tools:ignore="NewApi">@color/design_default_color_on_primary</item>
+        <item name="android:statusBarColor" tools:ignore="NewApi">@color/whiteColor</item>
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
 
     <style name="RoundedOrangeBackground" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/circle_orange_backround</item>
@@ -34,6 +43,12 @@
         </item>
     </style>
 
+    // стили для дилоговова окна
+    <style name="CustomDialogTheme" parent="Base.Theme.AppCompat.Dialog.MinWidth">
+        <item name="colorAccent">@color/orangeColor</item>
+        <item name="android:textColorPrimary">@color/blackColor</item>
+    </style>
+
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">18sp</item>
     </style>
@@ -54,9 +69,12 @@
         <item name="actionMenuTextColor">@color/colorDrawer</item>
     </style>
 
-    <style name="DatePickerSpinner">
+    <style name="DatePickerSpinner" >
         <item name="android:textSize">22dp</item>
         <item name="android:textColorPrimary">@color/blackColor</item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/colorDrawer</item>
+        <item name="android:colorControlNormal">@color/colorDrawer</item>
     </style>
+
+
+
 </resources>

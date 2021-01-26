@@ -43,6 +43,10 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
         iniClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun iniClick() {
         bottom_sheet_closed.setOnClickListener {
             listener.pinCodeClockListener()

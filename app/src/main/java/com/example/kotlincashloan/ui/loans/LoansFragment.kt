@@ -2,8 +2,6 @@ package com.example.kotlincashloan.ui.loans
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -12,7 +10,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -23,10 +20,12 @@ import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans.*
+import kotlinx.android.synthetic.main.fragment_loans.loans_layout
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -42,6 +41,7 @@ class LoansFragment : Fragment(), LoansListener {
     private var listNewsId: String = ""
     private var listLoanId: String = ""
     private var alertValid = false
+    private var loansAnim = true
 
     private var progressPositionMax = 0
     private var progressPositionRemains = 0
@@ -82,27 +82,27 @@ class LoansFragment : Fragment(), LoansListener {
                     initCode()
                     if (result.result != null) {
                         // Ползунок Параллельный заем, появляется в случае если массив result содержит вложенный массив parallel_loan и имеет значение status = true.
-                        if (result.result.parallelLoan!!.status == false){
+                        if (result.result.parallelLoan!!.status == false) {
                             loan_layout_parallel.visibility = View.GONE
-                        }else if (result.result.parallelLoan!!.status == true){
+                        } else if (result.result.parallelLoan!!.status == true) {
                             loan_layout_parallel.visibility = View.VISIBLE
                         }
                         //Кнопка Внести погашение. Показываем если выбранный тип займа имеет status = true
-                        if (result.result.activeLoan!!.status == false){
+                        if (result.result.activeLoan!!.status == false) {
                             loan_active_status.visibility = View.GONE
-                        }else if (result.result.activeLoan!!.status == true){
+                        } else if (result.result.activeLoan!!.status == true) {
                             loan_active_status.visibility = View.VISIBLE
                         }
                         // Кнопка Получить заем. Показываем если result содержит get_active_loan = true
-                        if (result.result.getActiveLoan == false){
+                        if (result.result.getActiveLoan == false) {
                             loan_get_active_loan.visibility = View.GONE
-                        }else if (result.result.getActiveLoan == true){
+                        } else if (result.result.getActiveLoan == true) {
                             loan_get_active_loan.visibility = View.VISIBLE
                         }
                         // Кнопка Получить параллельный заем. Показываем если result содержит get_parallel_loan = true
-                        if (result.result.getParallelLoan == false){
+                        if (result.result.getParallelLoan == false) {
                             loan_get_parallel_loan.visibility = View.GONE
-                        }else if (result.result.getParallelLoan == true){
+                        } else if (result.result.getParallelLoan == true) {
                             loan_get_parallel_loan.visibility = View.VISIBLE
                         }
                         // проверка следующего погошения
@@ -115,7 +115,7 @@ class LoansFragment : Fragment(), LoansListener {
                                 result.result.activeLoan!!.total.toString().toInt()
                             progressPositionRemains =
                                 result.result.activeLoan!!.paid.toString().toInt()
-                        }else{
+                        } else {
                             progressPositionMax = 0
                             progressPositionRemains = 0
                         }
@@ -123,28 +123,28 @@ class LoansFragment : Fragment(), LoansListener {
                         initLogicSeekBar()
 
                         loan_switch.setOnClickListener {
-                            if (!loan_switch.isChecked){
-                                if (result.result.activeLoan != null){
+                            if (!loan_switch.isChecked) {
+                                if (result.result.activeLoan != null) {
                                     if (result.result.activeLoan!!.paid != null || result.result.activeLoan!!.total != null) {
                                         progressPositionMax =
                                             result.result.activeLoan!!.total.toString().toInt()
                                         progressPositionRemains =
                                             result.result.activeLoan!!.paid.toString().toInt()
-                                    }else{
+                                    } else {
                                         progressPositionMax = 0
                                         progressPositionRemains = 0
                                     }
                                     verificationArrayActive(result)
                                     //Кнопка Внести погашение. Показываем если выбранный тип займа имеет status = true
-                                    if (result.result.activeLoan!!.status == false){
+                                    if (result.result.activeLoan!!.status == false) {
                                         loan_active_status.visibility = View.GONE
-                                    }else if (result.result.activeLoan!!.status == true){
+                                    } else if (result.result.activeLoan!!.status == true) {
                                         loan_active_status.visibility = View.VISIBLE
                                     }
                                     // Кнопка Получить заем. Показываем если result содержит get_active_loan = true
-                                    if (result.result.getActiveLoan == false){
+                                    if (result.result.getActiveLoan == false) {
                                         loan_get_active_loan.visibility = View.GONE
-                                    }else if (result.result.getActiveLoan == true){
+                                    } else if (result.result.getActiveLoan == true) {
                                         loan_get_active_loan.visibility = View.VISIBLE
                                     }
                                 }
@@ -152,26 +152,28 @@ class LoansFragment : Fragment(), LoansListener {
                                 // проверка следующего погошения
                                 nextRepaymentActive(result)
                                 initLogicSeekBar()
-                            }else{
+                            } else {
                                 if (result.result.parallelLoan!!.paid != null || result.result.parallelLoan!!.total != null) {
-                                    progressPositionMax = result.result.parallelLoan!!.total.toString().toInt()
-                                    progressPositionRemains = result.result.parallelLoan!!.paid.toString().toInt()
-                                }else{
+                                    progressPositionMax =
+                                        result.result.parallelLoan!!.total.toString().toInt()
+                                    progressPositionRemains =
+                                        result.result.parallelLoan!!.paid.toString().toInt()
+                                } else {
                                     progressPositionMax = 0
                                     progressPositionRemains = 0
                                 }
 
                                 verificationArrayParallel(result)
                                 //Кнопка Внести погашение. Показываем если выбранный тип займа имеет status = true
-                                if (result.result.parallelLoan!!.status == false){
+                                if (result.result.parallelLoan!!.status == false) {
                                     loan_active_status.visibility = View.GONE
-                                }else if (result.result.parallelLoan!!.status == true){
+                                } else if (result.result.parallelLoan!!.status == true) {
                                     loan_active_status.visibility = View.VISIBLE
                                 }
                                 // Кнопка Получить заем. Показываем если result содержит get_active_loan = true
-                                if (result.result.getParallelLoan == false){
+                                if (result.result.getParallelLoan == false) {
                                     loan_get_active_loan.visibility = View.GONE
-                                }else if (result.result.getParallelLoan == true){
+                                } else if (result.result.getParallelLoan == true) {
                                     loan_get_active_loan.visibility = View.VISIBLE
                                 }
                                 // проверка следующего погошения
@@ -187,15 +189,15 @@ class LoansFragment : Fragment(), LoansListener {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 loans_layout.isRefreshing = false
-                if (alertValid == false){
+                if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         HomeActivity.alert.hide()
                         alertValid = true
-                    },650)
-                }else{
+                    }, 650)
+                } else {
                     HomeActivity.alert.hide()
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
@@ -209,7 +211,7 @@ class LoansFragment : Fragment(), LoansListener {
         })
     }
 
-    private fun nextRepaymentActive(result: CommonResponse<LoanInfoResultModel>){
+    private fun nextRepaymentActive(result: CommonResponse<LoanInfoResultModel>) {
         // проверка следующего погошения
         if (result.result.activeLoan!!.status == false) {
             loan_text_active.visibility = View.VISIBLE
@@ -218,7 +220,7 @@ class LoansFragment : Fragment(), LoansListener {
             loan_payment_sum.visibility = View.GONE
             loan_payment_date.visibility = View.GONE
             loan_trait.visibility = View.GONE
-        } else if (result.result.activeLoan!!.status== true) {
+        } else if (result.result.activeLoan!!.status == true) {
             loan_text_active.visibility = View.GONE
             text_center.visibility = View.VISIBLE
             loan_currency_icon.visibility = View.VISIBLE
@@ -228,7 +230,7 @@ class LoansFragment : Fragment(), LoansListener {
         }
     }
 
-    private fun nextRepaymentParallel(result: CommonResponse<LoanInfoResultModel>){
+    private fun nextRepaymentParallel(result: CommonResponse<LoanInfoResultModel>) {
         // проверка следующего погошения
         if (result.result.parallelLoan!!.status == false) {
             loan_text_active.visibility = View.VISIBLE
@@ -247,24 +249,24 @@ class LoansFragment : Fragment(), LoansListener {
         }
     }
 
-    private fun verificationArrayActive(result: CommonResponse<LoanInfoResultModel>){
+    private fun verificationArrayActive(result: CommonResponse<LoanInfoResultModel>) {
         if (result.result.activeLoan!!.balance == null
             || result.result.activeLoan!!.paid == null
             || result.result.activeLoan!!.total == null
             || result.result.activeLoan!!.paymentSum == null
             || result.result.activeLoan!!.paymentDate == null
-        ){
+        ) {
             loans_sum.text = "0"
             loan_paid.text = "0"
             loan_total.text = "0"
             loan_payment_sum.text = "0"
             loan_payment_date.text = "0-0-0"
-        }else{
+        } else {
             resActiveLoan(result)
         }
     }
 
-    private fun verificationArrayParallel(result: CommonResponse<LoanInfoResultModel>){
+    private fun verificationArrayParallel(result: CommonResponse<LoanInfoResultModel>) {
         if (result.result.parallelLoan!!.balance == null
             || result.result.parallelLoan!!.paid == null
             || result.result.parallelLoan!!.total == null
@@ -276,12 +278,12 @@ class LoansFragment : Fragment(), LoansListener {
             loan_total.text = "0"
             loan_payment_sum.text = "0"
             loan_payment_date.text = "0-0-0"
-        }else{
+        } else {
             resParallelLoan(result)
         }
     }
 
-    private fun resActiveLoan(result: CommonResponse<LoanInfoResultModel>){
+    private fun resActiveLoan(result: CommonResponse<LoanInfoResultModel>) {
         loans_sum.text = result.result.activeLoan!!.balance.toString()
         loan_paid.text = result.result.activeLoan!!.paid.toString()
         loan_total.text = result.result.activeLoan!!.total.toString()
@@ -289,7 +291,7 @@ class LoansFragment : Fragment(), LoansListener {
         loan_payment_date.text = result.result.activeLoan!!.paymentDate
     }
 
-    private fun resParallelLoan(result: CommonResponse<LoanInfoResultModel>){
+    private fun resParallelLoan(result: CommonResponse<LoanInfoResultModel>) {
         loans_sum.text = result.result.parallelLoan!!.balance.toString()
         loan_paid.text = result.result.parallelLoan!!.paid.toString()
         loan_total.text = result.result.parallelLoan!!.total.toString()
@@ -366,8 +368,7 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.setOnRefreshListener {
             requireActivity().window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable {
                 initRepeat()
             }, 700)
@@ -403,15 +404,15 @@ class LoansFragment : Fragment(), LoansListener {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 loans_layout.isRefreshing = false
-                if (alertValid == false){
+                if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         HomeActivity.alert.hide()
                         alertValid = true
-                    },650)
-                }else{
+                    }, 650)
+                } else {
                     HomeActivity.alert.hide()
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
@@ -441,6 +442,7 @@ class LoansFragment : Fragment(), LoansListener {
         val build = Bundle()
         build.putInt("idNews", idNews)
         build.putString("title", title)
+        loansAnim = true
         findNavController().navigate(R.id.loans_details_navigation, build)
     }
 
@@ -500,8 +502,17 @@ class LoansFragment : Fragment(), LoansListener {
         loans_layout.isRefreshing = false
     }
 
+    init {
+        loansAnim = false
+    }
+
     override fun onResume() {
         super.onResume()
+        // animation перехода с одного фрагмента в друной
+        if (loansAnim) {
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(loans_layout_anim)
+            loansAnim = false
+        }
         val handler = Handler()
         HomeActivity.alert.show()
         if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {

@@ -24,6 +24,10 @@ class ConnectionBottomSheetFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         connection_repeat.setOnClickListener {
             this.dismiss()

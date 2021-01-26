@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -20,6 +22,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loans_details.*
@@ -36,6 +39,7 @@ class LoansDetailsFragment : Fragment() {
     val map = HashMap<String, String>()
     val handler = Handler()
     private var errorCode = ""
+    private var loansAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,6 +139,11 @@ class LoansDetailsFragment : Fragment() {
         viewModel.listGetDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.code == 200 && result.result != null) {
+                    // animation перехода с одного фрагмента в друной
+                    if (!loansAnim){
+                        TransitionAnimation(activity as  AppCompatActivity).transitionRight(loans_layout)
+                        loansAnim = true
+                    }
                     loans_details_name.setText(result.result.name)
                     loans_details_description.setText(result.result.description)
                     loans_details_text.loadMarkdown(result.result.text)
@@ -225,12 +234,14 @@ class LoansDetailsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         if (viewModel.listGetDta.value != null) {
             if (errorCode == "200") {
                 initRequest()
             }
         } else {
             initRestart()
+            loansAnim = false
         }
 
         //меняет цвета навигационной понели
