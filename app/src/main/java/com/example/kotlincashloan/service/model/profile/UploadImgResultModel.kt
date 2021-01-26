@@ -8,8 +8,8 @@ class UploadImgResultModel (
     @Expose
     var code: Int? = null,
 
-    @SerializedName("message")
+    @SerializedName("result")
     @Expose
-    var message: String? = null
+    var result: UploadImgResultModel? = null
 
 )

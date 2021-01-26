@@ -5,14 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.PorterDuff
-import android.graphics.Rect
+import android.graphics.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
+import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.view.*
@@ -22,9 +22,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
@@ -44,6 +46,8 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -77,6 +81,10 @@ class ProfileSettingFragment : Fragment() {
 
     private var imageString :String = ""
 
+    lateinit var currentPhotoPath: String
+
+    private lateinit var myThread: Thread
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,7 +101,11 @@ class ProfileSettingFragment : Fragment() {
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initClick()
         initArgument()
+        iniImageToServer()
+
     }
+
+
 
     private fun initArgument() {
         val sendPicture = try {
@@ -103,9 +115,10 @@ class ProfileSettingFragment : Fragment() {
         }
 
         if (sendPicture != null) {
-            val imageBytes = Base64.decode(sendPicture, Base64.DEFAULT)
-            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            profile_setting_image.setImageBitmap(decodedImage)
+            Glide
+                .with(this)
+                .load(sendPicture)
+                .into(profile_setting_image);
         }
     }
 
@@ -599,6 +612,9 @@ class ProfileSettingFragment : Fragment() {
                 profile_s_one_password.text = null
                 profile_s_two_password.text = null
                 initRestart()
+                if (imageString != ""){
+                    gitImage()
+                }
             }, 500)
             profile_s_two_password.error = null
             profile_s_two_password.error = null
@@ -816,9 +832,6 @@ class ProfileSettingFragment : Fragment() {
 
 
         profile_s_enter.setOnClickListener {
-            if (imageString != ""){
-                gitImage()
-            }
             if (profile_s_one_password.text.toString() != "" && profile_s_two_password.text.toString() != "") {
                 if (AppPreferences.password == profile_s_old_password.text.toString()) {
                     val mapProfilePassword = HashMap<String, String>()
@@ -926,6 +939,7 @@ class ProfileSettingFragment : Fragment() {
         }
     }
 
+    // отправка картинки на сервер
     private fun gitImage(){
         val mapUploadImg = HashMap<String, String>()
         mapUploadImg.put("login", AppPreferences.login.toString())
@@ -934,7 +948,18 @@ class ProfileSettingFragment : Fragment() {
         mapUploadImg.put("doc_id", "0")
         mapUploadImg.put("type_id", "0")
         mapUploadImg.put("file", imageString)
-        viewModel.uploadImg(mapUploadImg)
+         viewModel.uploadImg(mapUploadImg)
+        myThread.interrupt()
+
+    }
+
+    //если картинка на сервер добавилась успешно
+    private fun iniImageToServer() {
+        viewModel.listUploadImgDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result->
+            if (result.result != null){
+                HomeActivity.alert.hide()
+            }
+        })
     }
 
     // проверка если errorCode и errorCodeClient == 200
@@ -974,37 +999,73 @@ class ProfileSettingFragment : Fragment() {
     }
 
     private fun getMyFile() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val pickIntent = Intent(Intent.ACTION_PICK)
-        pickIntent.type = "image/*"
-        val chooser = Intent.createChooser(pickIntent, "Some text here")
-        chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
-        startActivityForResult(chooser, IMAGE_PICK_CODE)
+        val file = "photo"
+        val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        try {
+            val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
+            currentPhotoPath = files.absolutePath
+            val imagUri: Uri =  FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
+
+            val takePictureIntent = Intent(ACTION_IMAGE_CAPTURE)
+            val pickIntent = Intent(Intent.ACTION_PICK)
+            pickIntent.type = "image/*"
+            val chooser = Intent.createChooser(pickIntent, "Some text here")
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imagUri)
+            chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
+            startActivityForResult(chooser, IMAGE_PICK_CODE)
+
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            if (data!!.action != null){
-                val b: Bundle = data.extras!!
-                val finalPhoto = b.get("data") as Bitmap
-                imageConverter(finalPhoto)
-                profile_setting_image.setImageBitmap(finalPhoto);
+            if (data == null){
+                val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                HomeActivity.alert.show()
+                BITMAP_RESIZER(imageBitmap, profile_setting_image.width, profile_setting_image.height)
             }else{
                 val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
-                imageConverter(bm)
-                profile_setting_image.setImageBitmap(bm);
+                HomeActivity.alert.show()
+                BITMAP_RESIZER(bm, profile_setting_image.width, profile_setting_image.height)
             }
         }
     }
 
     //encode image to base64 string
     private fun imageConverter(bitmap: Bitmap){
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
-        val imageBytes: ByteArray = baos.toByteArray()
-        imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+        myThread = Thread() {
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageBytes: ByteArray = baos.toByteArray()
+            imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+            gitImage()
+        }
+        myThread.start()
+    }
+
+    fun BITMAP_RESIZER(bitmap: Bitmap, newWidth: Int, newHeight: Int): Bitmap? {
+        val scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888)
+        val ratioX = newWidth / bitmap.width.toFloat()
+        val ratioY = newHeight / bitmap.height.toFloat()
+        val middleX = newWidth / 2.0f
+        val middleY = newHeight / 2.0f
+        val scaleMatrix = Matrix()
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY)
+        val canvas = Canvas(scaledBitmap)
+        canvas.setMatrix(scaleMatrix)
+        canvas.drawBitmap(
+            bitmap,
+            middleX - bitmap.width / 2,
+            middleY - bitmap.height / 2,
+            Paint(Paint.FILTER_BITMAP_FLAG)
+        )
+        profile_setting_image.setImageBitmap(scaledBitmap);
+        imageConverter(scaledBitmap)
+        return scaledBitmap
     }
 
     private fun initAuthorized() {
