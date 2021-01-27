@@ -1043,12 +1043,18 @@ class ProfileSettingFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null){
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
+                val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
+                val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
+                imageConverter(scaled)
+                profile_setting_image.setImageBitmap(scaled)
                 HomeActivity.alert.show()
-                BITMAP_RESIZER(imageBitmap, profile_setting_image.width, profile_setting_image.height)
             }else{
                 val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+                val nh = (bm.height * (512.0 / bm.width)).toInt()
+                val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
+                imageConverter(scaled)
+                profile_setting_image.setImageBitmap(scaled)
                 HomeActivity.alert.show()
-                BITMAP_RESIZER(bm, profile_setting_image.width, profile_setting_image.height)
             }
         }
     }
@@ -1063,27 +1069,6 @@ class ProfileSettingFragment : Fragment() {
             gitImage()
         }
         myThread.start()
-    }
-
-    fun BITMAP_RESIZER(bitmap: Bitmap, newWidth: Int, newHeight: Int): Bitmap? {
-        val scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888)
-        val ratioX = newWidth / bitmap.width.toFloat()
-        val ratioY = newHeight / bitmap.height.toFloat()
-        val middleX = newWidth / 2.0f
-        val middleY = newHeight / 2.0f
-        val scaleMatrix = Matrix()
-        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY)
-        val canvas = Canvas(scaledBitmap)
-        canvas.setMatrix(scaleMatrix)
-        canvas.drawBitmap(
-            bitmap,
-            middleX - bitmap.width / 2,
-            middleY - bitmap.height / 2,
-            Paint(Paint.FILTER_BITMAP_FLAG)
-        )
-        profile_setting_image.setImageBitmap(scaledBitmap);
-        imageConverter(scaledBitmap)
-        return scaledBitmap
     }
 
     private fun initAuthorized() {
