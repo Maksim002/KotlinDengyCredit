@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -19,6 +20,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -84,6 +86,7 @@ class ProfileSettingFragment : Fragment() {
     lateinit var currentPhotoPath: String
 
     private lateinit var myThread: Thread
+    private lateinit var dialog: AlertDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,6 +99,8 @@ class ProfileSettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initPreloader()
+
         //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
@@ -103,6 +108,16 @@ class ProfileSettingFragment : Fragment() {
         initArgument()
         iniImageToServer()
 
+    }
+
+    private fun initPreloader(){
+        val builder = AlertDialog.Builder(requireContext())
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.alert_loading, null)
+        builder.setView(view)
+        builder.setCancelable(false)
+        dialog = builder.create()
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
 
@@ -160,7 +175,7 @@ class ProfileSettingFragment : Fragment() {
                 viewModel.errorListSecretQuestion.value == null && viewModel.errorSaveProfile.value == null && viewModel.errorClientInfo.value == null
             ) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    dialog.show()
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.refreshCode = false
@@ -422,6 +437,9 @@ class ProfileSettingFragment : Fragment() {
                     e.printStackTrace()
                 }
                 profile_s_swipe.isRefreshing = false
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    dialog.dismiss()
+                },500)
             })
 
         viewModel.errorListSecretQuestion.observe(
