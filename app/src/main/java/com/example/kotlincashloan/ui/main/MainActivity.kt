@@ -125,6 +125,5 @@ class MainActivity : AppCompatActivity() {
             timer.timeStart()
             AppPreferences.isNumber = false
         }
-
     }
 }

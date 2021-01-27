@@ -158,6 +158,13 @@ object AppPreferences {
             it.putInt("id", value)
         }
 
+    var isSeekBar: Int?
+        get() = preferences.getInt("isSeekBar", 0)
+        set(value) = preferences.edit {
+            if (value != null) {
+                it.putInt("isSeekBar", value)
+            }
+        }
 
     fun clear() {
         preferences.edit {

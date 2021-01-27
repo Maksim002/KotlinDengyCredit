@@ -61,6 +61,7 @@ class LoanStepTwoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
+        initRestart()
     }
 
     private fun initClick() {
@@ -107,11 +108,11 @@ class LoanStepTwoFragment : Fragment() {
                 loans_two_connection.visibility = View.GONE
                 loans_two_restricted.visibility = View.GONE
 
-                initSeekBar()
                 initImageSum()
                 initImagMonth()
                 totalSum()
                 initResiscler()
+                initSeekBar()
             }else{
                 if (result.error.code != null) {
                     initErrorResult(result.error.code!!)
@@ -138,6 +139,7 @@ class LoanStepTwoFragment : Fragment() {
             step_item_list.initialize(myAdapter)
             step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
             myAdapter.update(list)
+
         }catch (e: Exception){
             e.printStackTrace()
         }
@@ -149,6 +151,10 @@ class LoanStepTwoFragment : Fragment() {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     val position = getCurrentItem()
                     loan_step_month_seek.progress = position
+                }
+                if (newState == RecyclerView.SCREEN_STATE_ON){
+                    val position = getCurrentItem()
+                    AppPreferences.isSeekBar = position
                 }
             }
         })
@@ -183,21 +189,14 @@ class LoanStepTwoFragment : Fragment() {
 
     @SuppressLint("NewApi")
     private fun initSeekBar() {
-        val max = sumMax / 1000 - 5
-        val min = 0
-        loan_step_seek.max = max
-        loan_step_seek.min = min
+        loan_step_seek.max = sumMax / 1000 - 5
         loan_step_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-
-                seekBar.min = min
                 val seekbarValue = i.toString()
                 var resultSum = 0
                 resultSum = seekbarValue.toInt() * 1000 + sumMin
-
                 progressBarr(resultSum.toString())
                 totalSum = resultSum
-
                 totalSum()
             }
 
@@ -209,22 +208,20 @@ class LoanStepTwoFragment : Fragment() {
         loan_step_month_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 position = progress
-
                 totalCounter = progress + 2
-
                 totalSum()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 step_item_list.smoothScrollToPosition(position)
+                AppPreferences.isSeekBar = position
             }
         })
     }
 
     fun progressBarr(i: String) {
         loan_step_sum.setText(i)
-
     }
 
     private fun initImagMonth() {
@@ -353,11 +350,6 @@ class LoanStepTwoFragment : Fragment() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initRestart()
     }
 
     private fun initRestart(){

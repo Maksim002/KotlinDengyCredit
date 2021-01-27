@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.loans
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
@@ -20,8 +21,15 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
-        initViewPager()
 
+        if (savedInstanceState == null) {
+            initViewPager()
+        } // Else, need to wait for onRestoreInstanceState
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        initViewPager()
     }
 
     private fun initViewPager() {
@@ -49,6 +57,11 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         MainActivity.timer.timeStart()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        AppPreferences.isSeekBar = 0
     }
 
 
