@@ -3,12 +3,13 @@ package com.example.kotlincashloan.utils
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
+import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 
 
-class TimerListener(var activity: Activity){
+class TimerListenerLoan(var activity: Activity){
     private lateinit var timer: CountDownTimer
     var numberContractions = 0
 
@@ -21,11 +22,12 @@ class TimerListener(var activity: Activity){
                 }
 
                 override fun onFinish() {
+                    activity.onBackPressed()
                     AppPreferences.token = ""
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
                     AppPreferences.isPinCode = true
-                    activity.finish()
+                    activity.finishAffinity()
                 }
             }
         }catch (e: Exception){

@@ -1,10 +1,7 @@
 package com.timelysoft.tsjdomcom.service
 
 
-import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
-import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
-import com.example.kotlincashloan.service.model.Loans.LoanInResultModel
-import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.service.model.profile.*
@@ -164,5 +161,55 @@ interface ApiService {
     @FormUrlEncoded
     @POST("getLoanInfo?token=oYyxhIFgJjAb")
     fun getLoanInfo(@FieldMap params: Map<String, String>):Call<CommonResponse<LoanInResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("defaultList?token=oYyxhIFgJjAb")
+    fun defaultList(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<DefaultListModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFamilyStatus?token=oYyxhIFgJjAb")
+    fun listFamilyStatus(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListFamilyStatusModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listIncome?token=oYyxhIFgJjAb")
+    fun listIncome(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListIncomeResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listNumbers?token=oYyxhIFgJjAb")
+    fun listNumbers(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListNumbersResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTypeIncome?token=oYyxhIFgJjAb")
+    fun listTypeIncome(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListTypeIncomeModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listYears?token=oYyxhIFgJjAb")
+    fun listYears(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListYearsResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFamily?token=oYyxhIFgJjAb")
+    fun listFamily(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListFamilyResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listWork?token=oYyxhIFgJjAb")
+    fun listWork(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListWorkResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTypeWork?token=oYyxhIFgJjAb")
+    fun listTypeWork(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListTypeWorkModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listCity?token=oYyxhIFgJjAb")
+    fun listCity(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListCityResultModel>>>
 }
 
