@@ -30,8 +30,8 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
-        timer = TimerListenerLoan(this)
         onBackPressedDispatcher.addCallback(this) {}
+        timer = TimerListenerLoan(this)
         if (savedInstanceState == null) {
             initViewPager()
         } // Else, need to wait for onRestoreInstanceState
