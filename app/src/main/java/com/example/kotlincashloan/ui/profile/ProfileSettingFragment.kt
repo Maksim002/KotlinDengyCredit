@@ -572,9 +572,8 @@ class ProfileSettingFragment : Fragment() {
                                 .setDuration(5000)
                                 .setCookiePosition(Gravity.TOP)
                                 .show()
-                            val bundle = Bundle()
-                            bundle.putBoolean("false", true)
-                            findNavController().navigate(R.id.profile_navigation, bundle)
+                            AppPreferences.boleanCode = true
+                            findNavController().navigate(R.id.profile_navigation)
                         }
                         reView = false
                     }

@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Handler
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +39,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
@@ -85,11 +84,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initArgument() {
-        profAnim = try {
-            requireArguments().getBoolean("false")
-        }catch (e: Exception){
-            false
-        }
+        profAnim = AppPreferences.boleanCode
     }
 
     private fun initClick() {
@@ -283,6 +278,7 @@ class ProfileFragment : Fragment() {
             inputsAnim = 0
             AppPreferences.inputsAnim = 0
             profAnim = false
+            AppPreferences.boleanCode = false
         }
     }
 

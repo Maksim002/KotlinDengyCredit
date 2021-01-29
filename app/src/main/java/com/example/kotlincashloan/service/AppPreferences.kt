@@ -74,10 +74,10 @@ object AppPreferences {
         }
 
 
-    var errorCode: String?
-        get() = preferences.getString("errorCode", "")
+    var boleanCode: Boolean
+        get() = preferences.getBoolean("errorCode", false)
         set(value) = preferences.edit {
-            it.putString("errorCode", value)
+            it.putBoolean("errorCode", value)
         }
 
     var isFormatMask: String?
