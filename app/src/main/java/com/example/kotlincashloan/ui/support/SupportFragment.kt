@@ -179,9 +179,6 @@ class SupportFragment : Fragment() {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 support_swipe_layout.isRefreshing = false
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                HomeActivity.alert.hide()
-//            },600)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

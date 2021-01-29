@@ -14,8 +14,6 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
 
     override fun bind(item: ListFaqResultModel, holder: ViewHolder) {
         holder.itemView.support_name.text = item.name
-        holder.itemView.support_text.loadMarkdown(item.text)
-        holder.itemView.support_text.getSettings().loadWithOverviewMode = true
 
         holder.itemView.setOnClickListener {
             if (item.clicked) {
@@ -30,6 +28,8 @@ class SupportAdapter(var date: ArrayList<ListFaqResultModel> = arrayListOf()) : 
         if (item.clicked) {
             holder.itemView.support_text.visibility = View.VISIBLE
             holder.itemView.support_image_anim.animate().rotation(90F).start()
+            holder.itemView.support_text.loadMarkdown(item.text)
+            holder.itemView.support_text.getSettings().loadWithOverviewMode = true
         } else {
             holder.itemView.support_text.visibility = View.GONE
             holder.itemView.support_image_anim.animate().rotation(0F).start()
