@@ -30,7 +30,6 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
-        onBackPressedDispatcher.addCallback(this) {}
         timer = TimerListenerLoan(this)
         if (savedInstanceState == null) {
             initViewPager()
@@ -61,11 +60,7 @@ class GetLoanActivity : AppCompatActivity() {
         }
 
         loan_cross_clear.setOnClickListener {
-            if (get_loan_view_pagers.currentItem == 0){
-                finish()
-            }else{
-                get_loan_view_pagers.setCurrentItem(get_loan_view_pagers.currentItem  - 1)
-            }
+            finish()
         }
 
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);
@@ -79,7 +74,9 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 //        MainActivity.timer.timeStart()
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
         timer.timeStart()
+        }, 200)
     }
 
     override fun onDestroy() {

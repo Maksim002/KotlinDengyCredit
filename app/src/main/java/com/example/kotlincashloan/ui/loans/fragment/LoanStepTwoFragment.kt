@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,7 +14,6 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -44,7 +44,7 @@ class LoanStepTwoFragment : Fragment() {
     private var sumMax = 0
     private var sumMin = 0
 
-    private var monthMax = 12
+    private var monthMax = 0
 
     private var position = 0
 
@@ -104,6 +104,8 @@ class LoanStepTwoFragment : Fragment() {
                 minCounterLoan.setText(minCounter.toString())
                 maxCounterLoan.setText(maxCounter.toString())
 
+                monthMax = result.result.maxCount!!.toInt() - 1
+
                 layout_two.visibility = View.VISIBLE
                 loans_two_found.visibility = View.GONE
                 loans_two_work.visibility = View.GONE
@@ -136,6 +138,9 @@ class LoanStepTwoFragment : Fragment() {
             list.add(LoansStepTwoModel(numberCount))
             numberCount++
         }
+
+        //Отключение прокрутки RecyclerView
+        step_item_list.setOnTouchListener(OnTouchListener { v, event -> true })
 
         try {
             step_item_list.initialize(myAdapter)
@@ -212,12 +217,15 @@ class LoanStepTwoFragment : Fragment() {
                 position = progress
                 totalCounter = progress + 2
                 totalSum()
+
+                step_item_list.smoothScrollToPosition(position)
+                AppPreferences.isSeekBar = position
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                step_item_list.smoothScrollToPosition(position)
-                AppPreferences.isSeekBar = position
+//                step_item_list.smoothScrollToPosition(position)
+//                AppPreferences.isSeekBar = position
             }
         })
     }

@@ -21,10 +21,12 @@
         android:id="@+id/loan_cross_clear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginRight="6dp"
         android:src="@drawable/ic_cross_clear"
-        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         tools:ignore="MissingConstraints" />
 
     <Button
