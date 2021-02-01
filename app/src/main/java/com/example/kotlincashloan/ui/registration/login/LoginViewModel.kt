@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.service.model.Loans.ListTrafficSource
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.myapplication.model.ResultModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
@@ -49,5 +50,9 @@ class LoginViewModel : ViewModel() {
 
     fun listAvailableCountry(phone:  Map<String, Int>): LiveData<ResultStatus<CommonResponse<ArrayList<CounterResultModel>>>> {
         return repository.listAvailableCountry(phone)
+    }
+
+    fun listTrafficSource(map:  Map<String, Int>): LiveData<ResultStatus<CommonResponse<ArrayList<ListTrafficSource>>>> {
+        return repository.listTrafficSource(map)
     }
 }

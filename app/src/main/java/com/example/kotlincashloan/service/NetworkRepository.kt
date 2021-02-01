@@ -264,63 +264,28 @@ class NetworkRepository {
         }
     }
 
-//    fun listFaq(map: Map<String, String>) = liveData(Dispatchers.IO) {
-//        try {
-//            val response = RetrofitService.apiService().listFaq(map)
-//            when {
-//                response.isSuccessful -> {
-//                    if (response.body() != null) {
-//                        emit(ResultStatus.success(response.body()))
-//                    } else {
-//                        emit(ResultStatus.error(response.code().toString()))
-//                    }
-//                }
-//                else -> {
-//                    emit(ResultStatus.error(response.code().toString()))
-//                }
-//            }
-//        } catch (e: Exception) {
-//            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
-//        }
-//    }
+    fun listTrafficSource(map: Map<String, Int>) = liveData(Dispatchers.IO) {
+        try {
+            val response = RetrofitService.apiService().listTrafficSource(map)
+            when {
+                response.isSuccessful -> {
+                    if (response.body() != null) {
+                        emit(ResultStatus.success(response.body()))
+                    } else {
+                        emit(ResultStatus.error("Запрос прошел успешно"))
+                    }
+                }
+                else -> {
+                    emit(ResultStatus.error(response.code().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
+        }
+    }
 
-//    fun listNews(map: Map<String, String>) = liveData(Dispatchers.IO) {
-//        try {
-//            val response = RetrofitService.apiService().listNews(map)
-//            when {
-//                response.isSuccessful -> {
-//                    if (response.body() != null) {
-//                        emit(ResultStatus.success(response.body()))
-//                    } else {
-//                        emit(ResultStatus.error(response.code().toString()))
-//                    }
-//                }
-//                else -> {
-//                    emit(ResultStatus.error(response.code().toString()))
-//                }
-//            }
-//        } catch (e: Exception) {
-//            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
-//        }
-//    }
-
-//    fun getNews(map: Map<String, String>) = liveData(Dispatchers.IO) {
-//        try {
-//            val response = RetrofitService.apiService().getNews(map)
-//            when {
-//                response.isSuccessful -> {
-//                    if (response.body() != null) {
-//                        emit(ResultStatus.success(response.body()))
-//                    } else {
-//                        emit(ResultStatus.error(response.code().toString()))
-//                    }
-//                }
-//                else -> {
-//                    emit(ResultStatus.error(response.code().toString()))
-//                }
-//            }
-//        } catch (e: Exception) {
-//            emit(ResultStatus.netwrok("Проблеммы с подключением интернета", null))
-//        }
-//    }
 }

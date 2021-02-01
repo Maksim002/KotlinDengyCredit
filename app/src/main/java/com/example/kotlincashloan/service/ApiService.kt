@@ -211,5 +211,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listCity?token=oYyxhIFgJjAb")
     fun listCity(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListCityResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTrafficSource?token=oYyxhIFgJjAb")
+    suspend fun listTrafficSource(@FieldMap map: Map<String, Int>): Response<CommonResponse<ArrayList<ListTrafficSource>>>
 }
 

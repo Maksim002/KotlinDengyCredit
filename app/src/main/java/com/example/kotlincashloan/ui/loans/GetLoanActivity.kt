@@ -74,9 +74,7 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 //        MainActivity.timer.timeStart()
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
         timer.timeStart()
-        }, 200)
     }
 
     override fun onDestroy() {

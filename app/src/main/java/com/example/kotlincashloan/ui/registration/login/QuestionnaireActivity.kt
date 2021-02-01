@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.service.model.Loans.ListTrafficSource
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -46,6 +47,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var idSex: Int = 0
     private var listNationalityId: Int = 0
     private var listSecretQuestionId: Int = 0
+    private var listАoundId: Int = 0
     private var included = false
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
@@ -66,6 +68,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         getListNationality()
         getIdSxs()
         getAutoOperation()
+        gitFound()
         initClock()
         initViews()
         initCheck()
@@ -80,42 +83,46 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         no_connection_repeat.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
+                gitFound()
             }
         }
 
         access_restricted.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
+                gitFound()
             }
         }
 
         not_found.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
+                gitFound()
             }
         }
 
         technical_work.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
+                gitFound()
             }
         }
     }
@@ -144,6 +151,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 ""
             }
             map["question"] = listSecretQuestionId.toString()
+            map["traffic_source"] = listАoundId.toString()
             map["response"] = questionnaire_secret_response.text.toString()
             map["sms_code"] = AppPreferences.receivedSms.toString()
             map.put("uid", AppPreferences.pushNotificationsId.toString())
@@ -419,6 +427,102 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
 
+    // Получет места те о которых узнал пользхователь о нас
+    private fun gitFound() {
+        var list: ArrayList<ListTrafficSource> = arrayListOf()
+        val map = HashMap<String, Int>()
+        map.put("id", 0)
+        viewModel.listTrafficSource(map).observe(this, Observer { result->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        val adapterFound = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
+                        questionnaire_found.setAdapter(adapterFound)
+                        list = data.result
+                    }else{
+                        if (data.error.code == 403){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 404){
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        }else if (data.error.code == 401){
+                            initAuthorized()
+                        }else{
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        }
+                    }
+                }
+                Status.ERROR -> {
+                    if (msg == "404"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "403"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+
+                    }else if (msg == "401"){
+                        initAuthorized()
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }
+                }
+                Status.NETWORK -> {
+                    if (msg == "600"){
+                        questionnaire_no_questionnaire.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                    }else{
+                        questionnaire_no_questionnaire.visibility = View.VISIBLE
+                        questionnaire_layout.visibility = View.GONE
+                        questionnaire_technical_work.visibility = View.GONE
+                        questionnaire_not_found.visibility = View.GONE
+                        questionnaire_access_restricted.visibility = View.GONE
+                    }
+
+                }
+            }
+            HomeActivity.alert.hide()
+        })
+        questionnaire_found.keyListener = null
+        questionnaire_found.setOnItemClickListener { adapterView, view, position, l ->
+            questionnaire_found.showDropDown()
+            listАoundId = list[position].id!!
+            questionnaire_found.clearFocus()
+            questionnaire_owner.requestFocus()
+
+        }
+        questionnaire_found.setOnClickListener {
+            questionnaire_found.showDropDown()
+        }
+        questionnaire_found.onFocusChangeListener =
+            View.OnFocusChangeListener { view, hasFocus ->
+                try {
+                    if (hasFocus) {
+                        closeKeyboard()
+                        questionnaire_found.showDropDown()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        questionnaire_found.clearFocus()
+    }
+
+
     private fun getListNationality() {
         var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
@@ -623,11 +727,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             valid = false
         }
 
-        if (questionnaire_text_patronymics.text.toString().isEmpty()) {
-            questionnaire_text_patronymics.error = "Введите отчество"
-            valid = false
-        }
-
         if (questionnaire_date_birth.text!!.toString().isEmpty()) {
             questionnaire_date_birth.error = "Выберите дату"
             valid = false
@@ -656,6 +755,13 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_id_secret.error = null
         }
 
+        if (questionnaire_found.text.toString().isEmpty()) {
+            questionnaire_found.error = "Выберите ответ"
+            valid = false
+        } else {
+            questionnaire_found.error = null
+        }
+
         if (questionnaire_secret_response.text.toString().isEmpty()) {
             questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
@@ -681,6 +787,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
         questionnaire_id_secret.addTextChangedListener {
             questionnaire_id_secret.error = null
+        }
+
+        questionnaire_found.addTextChangedListener {
+            questionnaire_found.error = null
         }
     }
 

@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        GetLoanActivity.timer.timeStop()
         // Я сменил "" на "null"
         if (AppPreferences.dataKey != "") {
             bottomNavigationView.ClickPushNotification()
@@ -119,7 +120,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             timer.timeStop()
-            GetLoanActivity.timer.timeStop()
         }, 2000)
     }
 

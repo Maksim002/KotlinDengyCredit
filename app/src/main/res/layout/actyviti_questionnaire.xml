@@ -130,7 +130,6 @@
                     android:padding="13dp"
                     android:textSize="14dp" />
 
-
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_nationality"
                     android:layout_width="match_parent"
@@ -175,6 +174,25 @@
                     android:imeOptions="actionDone"
                     android:inputType="phone"
                     android:scrollHorizontally="true"/>
+
+                 <AutoCompleteTextView
+                    android:id="@+id/questionnaire_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="@color/blackColor"
+                    android:inputType ="textMultiLine"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="Откуда вы о нас узнали"
+                    android:padding="13dp"
+                    android:textSize="14dp" />
+
+            <include
+                android:id="@+id/questionnaire_owner"
+                layout="@layout/item_focus" />
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_secret"
@@ -246,10 +264,6 @@
                     android:textColor="#FF9900"
                     android:textSize="15sp" />
             </LinearLayout>
-
-            <include
-                android:id="@+id/questionnaire_owner"
-                layout="@layout/item_focus" />
 
         </LinearLayout>
         </LinearLayout>
