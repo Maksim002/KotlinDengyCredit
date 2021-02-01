@@ -107,4 +107,10 @@ dependencies {
 
     //the frame for the date selection
     implementation project(path: ':SpinnerDatePickerLib')
+
+    //Regula
+    implementation 'com.regula.documentreader.full:core:+@aar'
+    implementation('com.regula.documentreader:api:5.3.+@aar') {
+        transitive = true;
+    }
 }

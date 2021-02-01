@@ -21,8 +21,7 @@ class TimerListenerLoan(var activity: Activity){
 //                    Toast.makeText(activity.applicationContext, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show()
                 }
 
-                override fun onFinish() {
-                    activity.onBackPressed()
+                override fun onFinish() { activity.onBackPressed()
                     AppPreferences.token = ""
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true

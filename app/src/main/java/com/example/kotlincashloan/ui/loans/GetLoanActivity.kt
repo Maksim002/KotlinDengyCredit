@@ -4,12 +4,12 @@ package com.example.kotlincashloan.ui.loans
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
 import com.example.kotlincashloan.ui.loans.fragment.LoanStepOneFragment
+import com.example.kotlincashloan.ui.loans.fragment.LoanStepTrueFragment
 import com.example.kotlincashloan.ui.loans.fragment.LoanStepTwoFragment
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
@@ -44,6 +44,7 @@ class GetLoanActivity : AppCompatActivity() {
     private fun initViewPager() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
+        list.add(LoansListModel(LoanStepTrueFragment()))
 
         get_loan_view_pagers.isEnabled = true
 

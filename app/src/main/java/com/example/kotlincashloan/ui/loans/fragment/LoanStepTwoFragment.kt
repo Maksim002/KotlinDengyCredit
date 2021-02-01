@@ -365,7 +365,7 @@ class LoanStepTwoFragment : Fragment() {
     private fun initRestart(){
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("id", "1")
+        map.put("loan_type", "1")
 
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
