@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -20,10 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -62,6 +65,7 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initClick()
         initRestart()
     }
@@ -82,6 +86,8 @@ class LoanStepTwoFragment : Fragment() {
         technical_work.setOnClickListener {
             initRestart()
         }
+
+        (activity as GetLoanActivity?)!!.get_loan_view_click.visibility = View.VISIBLE
     }
 
     private fun initСounter() {

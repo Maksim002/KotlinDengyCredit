@@ -4,6 +4,7 @@ import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.*
+import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.timelysoft.tsjdomcom.service.NetworkRepository
@@ -427,6 +428,33 @@ class LoansViewModel: ViewModel() {
                     }
                 }else{
                     errorListCity.postValue(response.code().toString())
+                }
+            }
+        })
+    }
+
+    //saveLoan Отправка на сервер отсканированные паспорта
+    val errorSaveLoan = MutableLiveData<String>()
+    var getSaveLoan = MutableLiveData<CommonResponse<ArrayList<SaveLoanResultModel>>>()
+
+    fun saveLoan(map: Map<String, String>){
+        RetrofitService.apiService().saveLoan(map).enqueue(object : Callback<CommonResponse<ArrayList<SaveLoanResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<SaveLoanResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorSaveLoan.postValue( "601")
+                }else{
+                    errorSaveLoan.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<SaveLoanResultModel>>>, response: Response<CommonResponse<ArrayList<SaveLoanResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        getSaveLoan.postValue(response.body())
+                    }else{
+                        errorSaveLoan.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorSaveLoan.postValue(response.code().toString())
                 }
             }
         })

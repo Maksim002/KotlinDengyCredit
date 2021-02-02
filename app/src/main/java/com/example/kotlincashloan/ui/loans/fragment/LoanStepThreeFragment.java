@@ -11,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
+import com.example.kotlincashloan.ui.loans.GetLoanActivity;
+import com.example.kotlincashloan.ui.loans.LoansViewModel;
 import com.example.kotlincashloan.utils.ObservedInternet;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
@@ -38,15 +42,22 @@ import com.regula.documentreader.api.results.DocumentReaderScenario;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 import com.timelysoft.tsjdomcom.service.AppPreferences;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import kotlinx.serialization.PrimitiveKind;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
 import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
 
 public class LoanStepThreeFragment extends Fragment {
+    ArrayList<ImageStringModel> list = new ArrayList<>();
+    private HashMap<String, String> map = new HashMap<>();
+    private LoansViewModel viewModel;
 
     private static final int REQUEST_BROWSE_PICTURE = 11;
 
@@ -282,53 +293,41 @@ public class LoanStepThreeFragment extends Fragment {
     private void displayResults(DocumentReaderResults results){
         if(results!=null) {
             try {
-                //ФИО
-                String name = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES);
-                if (name != null){
-
-                }
-
-                //ФИО (Нац)
-                String nameTv = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME_AND_GIVEN_NAMES, KYRGYZ_CYRILICK);
-                if (nameTv != null){
-
-                }
-
-
                 //Фамилия
                 String surnameS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME);
                 if (surnameS != null){
-
+                    map.put("last_name", surnameS);
                 }
 
                 //Фамилия (Ныц)
                 String surnameNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME, KYRGYZ_CYRILICK);
                 if (surnameNationalS != null){
-
+                    map.put("last_name_l", surnameNationalS);
                 }
 
                 //Имя
                 String namesS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES);
                 if (namesS != null){
-
+                    map.put("first_name", namesS);
                 }
 
                 //Имя (Нац)
                 String namesNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES, KYRGYZ_CYRILICK);
                 if (namesNationalS != null){
-
+                    map.put("first_name_l", namesNationalS);
                 }
 
                 //Отчество (Нац)
                 String NameNationalityS = results.getTextFieldValueByType(eVisualFieldType.FT_FATHERS_NAME);
                 if (NameNationalityS != null){
-
+                    map.put("second_name_l", "");
+                    map.put("second_name", NameNationalityS);
                 }
 
                 //Дата рождения
                 String dataS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH);
                 if (dataS != null){
-
+                    map.put("u_date", dataS);
                 }
 
                 // Место рождения
@@ -346,13 +345,13 @@ public class LoanStepThreeFragment extends Fragment {
                 //номер документа
                 String documentNumberS = results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER);
                 if (documentNumberS != null){
-
+                    map.put("passport_number", documentNumberS);
                 }
 
                 //Личный номер
                 String personalNumberS = results.getTextFieldValueByType(eVisualFieldType.FT_PERSONAL_NUMBER);
                 if (personalNumberS != null){
-
+                    map.put("passport_inn", personalNumberS);
                 }
 
                 //возраст
@@ -364,24 +363,24 @@ public class LoanStepThreeFragment extends Fragment {
                 //пол
                 String sexS = results.getTextFieldValueByType(eVisualFieldType.FT_SEX);
                 if (sexS != null){
-
+                    map.put("gender", sexS);
                 }
                 // оставшися срок
                 String remainderTermS = results.getTextFieldValueByType(eVisualFieldType.FT_REMAINDER_TERM);
                 if (remainderTermS != null){
-
+                    map.put("passport_valid", remainderTermS);
                 }
 
                 // Дата окончания действия
                 String dateExpiryS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_EXPIRY);
                 if (dateExpiryS != null){
-
+                    map.put("passport_expired", dateExpiryS);
                 }
 
                 // Орган выдачи
                 String authorityS = results.getTextFieldValueByType(eVisualFieldType.FT_AUTHORITY);
                 if (authorityS != null){
-
+                    map.put("passport_authority", authorityS);
                 }
 
                 // Тип mrz
@@ -435,7 +434,7 @@ public class LoanStepThreeFragment extends Fragment {
                 // Код типа документа
                 String documentClassCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE);
                 if (documentClassCodeS != null){
-
+                    map.put("passport_series", documentClassCodeS);
                 }
 
                 // Нацанальность (Нац)
@@ -447,13 +446,13 @@ public class LoanStepThreeFragment extends Fragment {
                 // Название государтсво выдачи
                 String issuingStateNameS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME);
                 if (issuingStateNameS != null){
-
+                    map.put("nationality", issuingStateNameS);
                 }
 
                 // Дата выпуска
                 String date_of_IssueS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_ISSUE);
                 if (date_of_IssueS != null){
-
+                    map.put("passport_issue", date_of_IssueS);
                 }
 
                 // Контрольная цифра даты окончания действия
@@ -497,6 +496,7 @@ public class LoanStepThreeFragment extends Fragment {
                 Bitmap portrait = results.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT);
                 if(portrait!=null){
                     portraitIv.setImageBitmap(portrait);
+                    gotImageString(portrait);
                 }
 
                 Bitmap documentImage = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE);
@@ -504,6 +504,7 @@ public class LoanStepThreeFragment extends Fragment {
                     double aspectRatio = (double) documentImage.getWidth() / (double) documentImage.getHeight();
                     documentImage = Bitmap.createScaledBitmap(documentImage, (int)(480 * aspectRatio), 480, false);
                     docImageIv.setImageBitmap(documentImage);
+                    gotImageString(documentImage);
                 }
 
                 Bitmap documentImageTwo = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE, eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE, 1);
@@ -511,13 +512,22 @@ public class LoanStepThreeFragment extends Fragment {
 
                     double aspectRatio = (double) documentImageTwo.getWidth() / (double) documentImageTwo.getHeight();
                     documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo, (int)(480 * aspectRatio), 480, false);
-
+                    gotImageString(documentImageTwo);
                 }
 
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
+    }
+
+    //encode image to base64 string
+    private void gotImageString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        list.add(new ImageStringModel(imageString));
     }
 
     private void clearResults(){
