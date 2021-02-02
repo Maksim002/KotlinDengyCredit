@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/loans_step_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/blackColor"
+        android:textSize="18dp"
+        android:text="Личная информация"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="выберите город"
+        android:textColor="@color/blackColor"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <EditText
+        android:id="@+id/loans_step_four_residence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle_orange_background_edit"
+        android:hint="Поле места проживания"
+        android:imeOptions="actionDone"
+        android:textColor="@color/blackColor"
+        android:inputType="text"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="Ваше семейное положение"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blackColor"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_family"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="Численность семьи"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blackColor"
+        android:inputType="number"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_children"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="Количество детей"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blackColor"
+        android:inputType="number"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_federation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="Сколько лет проживаете в РФ"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blackColor"
+        android:inputType="number"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+    <AutoCompleteTextView
+        android:id="@+id/loans_step_four_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/circle_orange_background_edit"
+        android:drawableEnd="@drawable/ic_expend"
+        android:hint="Наличие банковской карты"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/blackColor"
+        android:inputType="number"
+        android:padding="13dp"
+        android:textSize="14dp" />
+
+        <include
+            android:id="@+id/loans_step_owner"
+            layout="@layout/item_focus" />
+
+    </LinearLayout>
+
+
+    <include
+        android:id="@+id/loans_ste_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/loans_ste_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/loans_ste_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/loans_ste_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
+</LinearLayout>

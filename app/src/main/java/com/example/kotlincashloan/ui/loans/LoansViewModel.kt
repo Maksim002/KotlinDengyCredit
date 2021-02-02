@@ -201,7 +201,7 @@ class LoansViewModel: ViewModel() {
     }
 
 
-    //listFamilyStatus Список доходов.
+    //listIncome Список доходов.
     val errorListIncome = MutableLiveData<String>()
     var getListIncomeDta = MutableLiveData<CommonResponse<ArrayList<ListIncomeResultModel>>>()
 

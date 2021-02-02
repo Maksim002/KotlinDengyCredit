@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
+import com.example.kotlincashloan.ui.loans.fragment.LoanStepFourFragment
 import com.example.kotlincashloan.ui.loans.fragment.LoanStepOneFragment
-import com.example.kotlincashloan.ui.loans.fragment.LoanStepTrueFragment
+import com.example.kotlincashloan.ui.loans.fragment.LoanStepThreeFragment
 import com.example.kotlincashloan.ui.loans.fragment.LoanStepTwoFragment
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
@@ -22,7 +22,7 @@ class GetLoanActivity : AppCompatActivity() {
     private var list = mutableListOf<LoansListModel>()
     val handler = Handler()
 
-    companion object{
+    companion object {
         lateinit var timer: TimerListenerLoan
     }
 
@@ -44,7 +44,8 @@ class GetLoanActivity : AppCompatActivity() {
     private fun initViewPager() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
-        list.add(LoansListModel(LoanStepTrueFragment()))
+        list.add(LoansListModel(LoanStepThreeFragment()))
+        list.add(LoansListModel(LoanStepFourFragment()))
 
         get_loan_view_pagers.isEnabled = true
 
@@ -57,7 +58,7 @@ class GetLoanActivity : AppCompatActivity() {
         get_loan_view_pagers.adapter = adapters
 
         get_loan_view_click.setOnClickListener {
-            get_loan_view_pagers.setCurrentItem(get_loan_view_pagers.currentItem  + 1)
+            get_loan_view_pagers.setCurrentItem(get_loan_view_pagers.currentItem + 1)
         }
 
         loan_cross_clear.setOnClickListener {
@@ -66,7 +67,10 @@ class GetLoanActivity : AppCompatActivity() {
 
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);
         // or keep last page as "end page"
-        get_loan_stepper_indicator.setViewPager(get_loan_view_pagers, get_loan_view_pagers.getAdapter()!!.getCount() - 1); //
+        get_loan_stepper_indicator.setViewPager(
+            get_loan_view_pagers,
+            get_loan_view_pagers.getAdapter()!!.getCount() - 1
+        ); //
         // or manual change
         get_loan_stepper_indicator.setStepCount(5);
         get_loan_stepper_indicator.setCurrentStep(0);

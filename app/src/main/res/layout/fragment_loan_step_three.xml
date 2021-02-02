@@ -3,8 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,6 +43,13 @@
         android:textColor="@color/whiteColor"
         android:layout_marginLeft="16dp"
         android:text="Сканировать документ"
-        android:layout_gravity="center"
-    />
+        android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/status_no_questionnaire"
+        layout="@layout/item_no_connection"
+        android:visibility="gone"/>
+
 </LinearLayout>

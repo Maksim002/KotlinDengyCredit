@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.opengl.Visibility;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,14 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
-import com.example.kotlinscreenscanner.ui.MainActivity;
+import com.example.kotlincashloan.utils.ObservedInternet;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
@@ -47,7 +46,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
 import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
 
-public class LoanStepTrueFragment extends Fragment {
+public class LoanStepThreeFragment extends Fragment {
 
     private static final int REQUEST_BROWSE_PICTURE = 11;
 
@@ -56,13 +55,16 @@ public class LoanStepTrueFragment extends Fragment {
     private ImageView portraitIv;
     private ImageView docImageIv;
 
+    private LinearLayout layout_status, status_no_questionnaire;
+    private Button no_connection_repeat;
+
     private boolean doRfid = false;
     private AlertDialog loadingDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_loan_step_true, container, false);
+        return inflater.inflate(R.layout.fragment_loan_step_three, container, false);
     }
 
     @Override
@@ -74,12 +76,38 @@ public class LoanStepTrueFragment extends Fragment {
         portraitIv = view.findViewById(R.id.portraitIv);
         docImageIv = view.findViewById(R.id.documentImageIv);
 
-        initDocumentReader();
+        layout_status = view.findViewById(R.id.layout_status);
+        status_no_questionnaire = view.findViewById(R.id.status_no_questionnaire);
+
+        no_connection_repeat = view.findViewById(R.id.no_connection_repeat);
+
+        initInternet();
+        initClick();
     }
+
+    private void initClick() {
+        no_connection_repeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initInternet();
+            }
+        });
+    }
+
+    private void initInternet(){
+        new ObservedInternet().observedInternet(requireContext());
+        if (!AppPreferences.INSTANCE.getObservedInternet()) {
+            status_no_questionnaire.setVisibility(View.VISIBLE);
+            layout_status.setVisibility(View.GONE);
+        }else {
+            initDocumentReader();
+        }
+    }
+
 
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
-            final AlertDialog initDialog = showDialog("Initializing");
+            final AlertDialog initDialog = showDialog("Инициализация");
 
             //Reading the license from raw resource file
             try {
@@ -93,7 +121,7 @@ public class LoanStepTrueFragment extends Fragment {
                 DocumentReader.Instance().prepareDatabase(requireContext(), "Full", new IDocumentReaderPrepareCompletion() {
                     @Override
                     public void onPrepareProgressChanged(int progress) {
-                        initDialog.setTitle("Downloading database: " + progress + "%");
+                        initDialog.setTitle("Загрузка базы данных: " + progress + "%");
                     }
 
                     @Override
@@ -105,6 +133,8 @@ public class LoanStepTrueFragment extends Fragment {
                             public void onInitCompleted(boolean success, Throwable error) {
                                 if (initDialog.isShowing()) {
                                     initDialog.dismiss();
+                                    layout_status.setVisibility(View.VISIBLE);
+                                    status_no_questionnaire.setVisibility(View.GONE);
                                 }
 
                                 DocumentReader.Instance().customization().edit().setShowHelpAnimation(false).apply();
@@ -150,6 +180,9 @@ public class LoanStepTrueFragment extends Fragment {
                 ex.printStackTrace();
             }
         }else {
+            layout_status.setVisibility(View.VISIBLE);
+            status_no_questionnaire.setVisibility(View.GONE);
+
             showScanner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
