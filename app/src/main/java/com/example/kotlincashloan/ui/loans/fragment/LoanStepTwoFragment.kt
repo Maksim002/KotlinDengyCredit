@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -26,7 +25,6 @@ import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -87,7 +85,12 @@ class LoanStepTwoFragment : Fragment() {
             initRestart()
         }
 
-        (activity as GetLoanActivity?)!!.get_loan_view_click.visibility = View.VISIBLE
+        bottom_step_two.setOnClickListener {
+            AppPreferences.type = totalCounter.toString()
+            AppPreferences.sum = loan_step_sum.text.toString()
+
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
+        }
     }
 
     private fun initСounter() {

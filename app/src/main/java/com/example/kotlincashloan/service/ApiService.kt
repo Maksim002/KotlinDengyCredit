@@ -4,7 +4,7 @@ package com.timelysoft.tsjdomcom.service
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
-import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
+import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
@@ -221,6 +221,6 @@ interface ApiService {
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("saveLoan?token=oYyxhIFgJjAb")
-    fun saveLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SaveLoanResultModel>>>
+    fun saveLoan(@FieldMap params: Map<String, String>):Call<SaveLoanModel>
 }
 

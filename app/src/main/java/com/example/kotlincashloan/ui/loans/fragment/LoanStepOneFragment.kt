@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_step_one_loan.*
 
 class LoanStepOneFragment() : Fragment() {
     private var viewModel = LoansViewModel()
@@ -29,6 +31,9 @@ class LoanStepOneFragment() : Fragment() {
 
     private fun initClick() {
 
+        bottom_step_one.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
+        }
     }
 
     override fun onStart() {

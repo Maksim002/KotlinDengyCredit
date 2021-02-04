@@ -4,6 +4,7 @@ import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.*
+import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
@@ -118,7 +119,7 @@ class LoansViewModel: ViewModel() {
     var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
 
     fun getInfo(map: Map<String, String>){
-        HomeActivity.alert.show()
+//        HomeActivity.alert.show()
         RetrofitService.apiService().getLoanInfo(map).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -137,9 +138,9 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorGetLoanInfo.postValue(response.code().toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },400)
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    HomeActivity.alert.hide()
+//                },400)
             }
         })
     }
@@ -178,7 +179,6 @@ class LoansViewModel: ViewModel() {
     var getListFamilyStatusDta = MutableLiveData<CommonResponse<ArrayList<ListFamilyStatusModel>>>()
 
     fun listFamilyStatus(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listFamilyStatus(map).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyStatusModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyStatusModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -236,7 +236,6 @@ class LoansViewModel: ViewModel() {
     var getListNumbersDta = MutableLiveData<CommonResponse<ArrayList<ListNumbersResultModel>>>()
 
     fun listNumbers(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listNumbers(map).enqueue(object : Callback<CommonResponse<ArrayList<ListNumbersResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNumbersResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -294,7 +293,6 @@ class LoansViewModel: ViewModel() {
     var getListYearsDta = MutableLiveData<CommonResponse<ArrayList<ListYearsResultModel>>>()
 
     fun listYears(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listYears(map).enqueue(object : Callback<CommonResponse<ArrayList<ListYearsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListYearsResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -381,7 +379,6 @@ class LoansViewModel: ViewModel() {
     var getListTypeWorkDta = MutableLiveData<CommonResponse<ArrayList<ListTypeWorkModel>>>()
 
     fun listTypeWork(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listTypeWork(map).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeWorkModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeWorkModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -410,7 +407,6 @@ class LoansViewModel: ViewModel() {
     var getListCityDta = MutableLiveData<CommonResponse<ArrayList<ListCityResultModel>>>()
 
     fun listCity(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listCity(map).enqueue(object : Callback<CommonResponse<ArrayList<ListCityResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListCityResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -433,20 +429,20 @@ class LoansViewModel: ViewModel() {
         })
     }
 
-    //saveLoan Отправка на сервер отсканированные паспорта
+    //saveLoan Отправка на сервер
     val errorSaveLoan = MutableLiveData<String>()
-    var getSaveLoan = MutableLiveData<CommonResponse<ArrayList<SaveLoanResultModel>>>()
+    var getSaveLoan = MutableLiveData<SaveLoanModel>()
 
     fun saveLoan(map: Map<String, String>){
-        RetrofitService.apiService().saveLoan(map).enqueue(object : Callback<CommonResponse<ArrayList<SaveLoanResultModel>>> {
-            override fun onFailure(call: Call<CommonResponse<ArrayList<SaveLoanResultModel>>>, t: Throwable) {
+        RetrofitService.apiService().saveLoan(map).enqueue(object : Callback<SaveLoanModel> {
+            override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorSaveLoan.postValue( "601")
                 }else{
                     errorSaveLoan.postValue( "600")
                 }
             }
-            override fun onResponse(call: Call<CommonResponse<ArrayList<SaveLoanResultModel>>>, response: Response<CommonResponse<ArrayList<SaveLoanResultModel>>>) {
+            override fun onResponse(call: Call<SaveLoanModel>, response: Response<SaveLoanModel>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         getSaveLoan.postValue(response.body())
@@ -456,6 +452,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorSaveLoan.postValue(response.code().toString())
                 }
+                HomeActivity.alert.hide()
             }
         })
     }

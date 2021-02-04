@@ -25,6 +25,18 @@ object AppPreferences {
             it.putString("passwordRecovery", value)
         }
 
+    var type: String?
+        get() = preferences.getString("type", "")
+        set(value) = preferences.edit {
+            it.putString("type", value)
+        }
+
+    var sum: String?
+        get() = preferences.getString("sum", "")
+        set(value) = preferences.edit {
+            it.putString("sum", value)
+        }
+
     var loginRecovery: String?
         get() = preferences.getString("loginRecovery", "")
         set(value) = preferences.edit {

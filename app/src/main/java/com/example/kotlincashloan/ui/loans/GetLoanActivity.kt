@@ -4,24 +4,25 @@ package com.example.kotlincashloan.ui.loans
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.ViewPager
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
-import com.example.kotlincashloan.ui.loans.fragment.LoanStepFourFragment
-import com.example.kotlincashloan.ui.loans.fragment.LoanStepOneFragment
-import com.example.kotlincashloan.ui.loans.fragment.LoanStepThreeFragment
-import com.example.kotlincashloan.ui.loans.fragment.LoanStepTwoFragment
+import com.example.kotlincashloan.ui.loans.fragment.*
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
 
 
 class GetLoanActivity : AppCompatActivity() {
     private var list = mutableListOf<LoansListModel>()
     val handler = Handler()
+
+    lateinit var get_loan_view_pagers: ViewPager
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -32,6 +33,10 @@ class GetLoanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
         timer = TimerListenerLoan(this)
+        HomeActivity.alert = LoadingAlert(this)
+
+        get_loan_view_pagers = findViewById(R.id.get_loan_view_pagers)
+
         if (savedInstanceState == null) {
             initViewPager()
         } // Else, need to wait for onRestoreInstanceState
@@ -47,6 +52,7 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepTwoFragment()))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment()))
+        list.add(LoansListModel(LoanStepFiveFragment()))
 
         get_loan_view_pagers.isEnabled = true
 
@@ -58,9 +64,9 @@ class GetLoanActivity : AppCompatActivity() {
 
         get_loan_view_pagers.adapter = adapters
 
-        get_loan_view_click.setOnClickListener {
-            get_loan_view_pagers.setCurrentItem(get_loan_view_pagers.currentItem + 1)
-        }
+//        get_loan_view_click.setOnClickListener {
+//            get_loan_view_pagers.setCurrentItem(get_loan_view_pagers.currentItem + 1)
+//        }
 
         loan_cross_clear.setOnClickListener {
             finish()

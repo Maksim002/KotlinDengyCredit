@@ -25,8 +25,7 @@ import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 import java.util.*
 
 
-class ExistingBottomFragment(private val listener: ExistingBottomListener) :
-    BottomSheetDialogFragment() {
+class ExistingBottomFragment(private val listener: ExistingBottomListener) : BottomSheetDialogFragment() {
     private var viewModel = LoginViewModel()
     var currentPinInput = ""
     var initpin = ""

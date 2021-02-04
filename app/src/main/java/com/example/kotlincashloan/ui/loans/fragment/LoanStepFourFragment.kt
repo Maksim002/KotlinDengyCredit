@@ -8,16 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -30,6 +30,13 @@ class LoanStepFourFragment : Fragment() {
     private var getListFamilyStatusDta = ""
     private var getListNumbersDta = ""
     private var getListYearsDta = ""
+
+    private var cityId = ""
+    private var statusId = ""
+    private var familyId = ""
+    private var childrenId = ""
+    private var liveId = ""
+    private var cardId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,9 +70,14 @@ class LoanStepFourFragment : Fragment() {
         not_found.setOnClickListener {
             initInternet()
         }
+
+        bottom_loan_four.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+            initSaveLoan()
+        }
     }
 
-    private fun initInternet(){
+    private fun initInternet() {
         getValueNull()
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -74,8 +86,8 @@ class LoanStepFourFragment : Fragment() {
             loans_ste_technical_work.visibility = View.GONE
             loans_ste_access_restricted.visibility = View.GONE
             loans_ste_not_found.visibility = View.GONE
-            loans_step_owner.requestFocus()
-        }else{
+//            loans_step_owner.requestFocus()
+        } else {
             initListCity()
             initListFamilyStatus()
             initListNumbers()
@@ -97,11 +109,16 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListCityDta = result.code.toString()
                 getResultOk()
-                val adapterIdCity = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                val adapterIdCity = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    result.result
+                )
                 loans_step_four_city.setAdapter(adapterIdCity)
 
                 loans_step_four_city.keyListener = null
                 loans_step_four_city.setOnItemClickListener { adapterView, view, position, l ->
+                    cityId = result.result[position].id!!
                     loans_step_four_city.showDropDown()
                 }
                 loans_step_four_city.setOnClickListener {
@@ -117,7 +134,7 @@ class LoanStepFourFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-            }else{
+            } else {
                 getListCityDta = result.error.code.toString()
                 listResult(result.error.code!!)
             }
@@ -143,11 +160,16 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListFamilyStatusDta = result.code.toString()
                 getResultOk()
-                val adapterIdStatus = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                val adapterIdStatus = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    result.result
+                )
                 loans_step_four_status.setAdapter(adapterIdStatus)
 
                 loans_step_four_status.keyListener = null
                 loans_step_four_status.setOnItemClickListener { adapterView, view, position, l ->
+                    statusId = result.result[position].id!!
                     loans_step_four_status.showDropDown()
                 }
                 loans_step_four_status.setOnClickListener {
@@ -163,7 +185,7 @@ class LoanStepFourFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-            }else{
+            } else {
                 getListFamilyStatusDta = result.error.code.toString()
                 listResult(result.error.code!!)
             }
@@ -189,11 +211,16 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
                 getResultOk()
-                val adapterIdFamily = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                val adapterIdFamily = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    result.result
+                )
                 loans_step_four_family.setAdapter(adapterIdFamily)
 
                 loans_step_four_family.keyListener = null
                 loans_step_four_family.setOnItemClickListener { adapterView, view, position, l ->
+                    familyId = result.result[position].id!!
                     loans_step_four_family.showDropDown()
                 }
                 loans_step_four_family.setOnClickListener {
@@ -209,7 +236,7 @@ class LoanStepFourFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-            }else{
+            } else {
                 getListNumbersDta = result.error.code.toString()
                 listResult(result.error.code!!)
             }
@@ -235,11 +262,16 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
                 getResultOk()
-                val adapterIdChildren = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                val adapterIdChildren = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    result.result
+                )
                 loans_step_four_children.setAdapter(adapterIdChildren)
 
                 loans_step_four_children.keyListener = null
                 loans_step_four_children.setOnItemClickListener { adapterView, view, position, l ->
+                    childrenId = result.result[position].id!!
                     loans_step_four_children.showDropDown()
                 }
                 loans_step_four_children.setOnClickListener {
@@ -255,7 +287,7 @@ class LoanStepFourFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-            }else{
+            } else {
                 getListNumbersDta = result.error.code.toString()
                 listResult(result.error.code!!)
             }
@@ -281,11 +313,16 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
                 getResultOk()
-                val adapterIdFederation = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
+                val adapterIdFederation = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    result.result
+                )
                 loans_step_four_federation.setAdapter(adapterIdFederation)
 
                 loans_step_four_federation.keyListener = null
                 loans_step_four_federation.setOnItemClickListener { adapterView, view, position, l ->
+                    liveId = result.result[position].id!!
                     loans_step_four_federation.showDropDown()
                 }
                 loans_step_four_federation.setOnClickListener {
@@ -301,7 +338,7 @@ class LoanStepFourFragment : Fragment() {
                         } catch (e: Exception) {
                         }
                     }
-            }else{
+            } else {
                 getListYearsDta = result.error.code.toString()
                 listResult(result.error.code!!)
             }
@@ -319,11 +356,13 @@ class LoanStepFourFragment : Fragment() {
     private fun defaultList() {
         val catsNames = arrayOf("Нет", "Да")
 
-        val adapterIdCard = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, catsNames)
+        val adapterIdCard =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, catsNames)
         loans_step_four_card.setAdapter(adapterIdCard)
 
         loans_step_four_card.keyListener = null
         loans_step_four_card.setOnItemClickListener { adapterView, view, position, l ->
+            cardId = position.toString()
             loans_step_four_card.showDropDown()
         }
         loans_step_four_card.setOnClickListener {
@@ -341,6 +380,55 @@ class LoanStepFourFragment : Fragment() {
             }
     }
 
+    //Сохронение на сервер данных
+    private fun initSaveLoan() {
+        val mapSave = mutableMapOf<String, String>()
+        mapSave.put("login", AppPreferences.login.toString())
+        mapSave.put("token", AppPreferences.token.toString())
+        mapSave.put("id", AppPreferences.sum.toString())
+        mapSave.put("city", cityId)
+        mapSave.put("address", loans_step_four_residence.text.toString())
+        mapSave.put("family_status", statusId)
+        mapSave.put("count_family", familyId)
+        mapSave.put("count_children", childrenId)
+        mapSave.put("live_in_ru", liveId)
+        mapSave.put("bank_card", cardId)
+        mapSave.put("step", "2")
+
+        viewModel.saveLoan(mapSave)
+
+        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                loans_step_layout.visibility = View.VISIBLE
+                loans_ste_technical_work.visibility = View.GONE
+                loans_ste_no_connection.visibility = View.GONE
+                loans_ste_access_restricted.visibility = View.GONE
+                loans_ste_not_found.visibility = View.GONE
+
+            } else if (result.reject != null) {
+                initBottomSheet(result.reject!!.message!!)
+                loans_step_layout.visibility = View.VISIBLE
+                loans_ste_technical_work.visibility = View.GONE
+                loans_ste_no_connection.visibility = View.GONE
+                loans_ste_not_found.visibility = View.GONE
+            } else if (result.result != null) {
+                listResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error->
+            if (error != null){
+                errorList(error)
+            }
+        })
+    }
+
+    private fun initBottomSheet(message: String) {
+        val stepBottomFragment = StepBottomFragment(message)
+        stepBottomFragment.isCancelable = false
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
+    }
+
     //Метотд для скрытия клавиатуры
     private fun closeKeyboard() {
         val view: View = requireActivity().currentFocus!!
@@ -354,7 +442,7 @@ class LoanStepFourFragment : Fragment() {
         }
     }
 
-    private fun getResultOk(){
+    private fun getResultOk() {
         if (getListCityDta == "200" && getListFamilyStatusDta == "200" && getListNumbersDta == "200" && getListYearsDta == "200") {
             loans_step_layout.visibility = View.VISIBLE
             loans_ste_technical_work.visibility = View.GONE
@@ -364,7 +452,7 @@ class LoanStepFourFragment : Fragment() {
         }
     }
 
-    private fun getValueNull(){
+    private fun getValueNull() {
         getListCityDta = ""
         getListFamilyStatusDta = ""
         getListNumbersDta = ""
@@ -433,6 +521,6 @@ class LoanStepFourFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loans_step_owner.requestFocus()
+//        loans_step_owner.requestFocus()
     }
 }

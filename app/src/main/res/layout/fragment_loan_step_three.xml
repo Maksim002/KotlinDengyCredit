@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/layout_status"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
@@ -47,9 +54,36 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/get_view_click"
+        style="@style/RoundedOrangeBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="75dp"
+        android:paddingRight="75dp"
+        android:layout_marginBottom="10dp"
+        android:text="Далее"
+        android:layout_gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/get_loan_stepper_indicator"
+        tools:ignore="MissingConstraints" />
+    </LinearLayout>
+
     <include
         android:id="@+id/status_no_questionnaire"
         layout="@layout/item_no_connection"
         android:visibility="gone"/>
 
+    <include
+        android:id="@+id/status_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/status_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 </LinearLayout>
