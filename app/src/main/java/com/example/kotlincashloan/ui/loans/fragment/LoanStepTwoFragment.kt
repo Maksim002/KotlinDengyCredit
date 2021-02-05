@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.loans.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +53,8 @@ class LoanStepTwoFragment : Fragment() {
     private var totalSum = 0
     private var totalCounter = 0
     private var totalRate = 0.0
+
+    val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -132,6 +135,7 @@ class LoanStepTwoFragment : Fragment() {
                 }
             }
         })
+
 
         viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error->
             if (error != null){

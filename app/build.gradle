@@ -113,4 +113,7 @@ dependencies {
     implementation('com.regula.documentreader:api:5.3.+@aar') {
         transitive = true;
     }
+
+    //anim to button
+    implementation 'com.github.koushikcse:LoadingButton:1.7'
 }

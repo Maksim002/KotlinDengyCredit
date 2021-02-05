@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
@@ -56,6 +55,7 @@ import java.util.HashMap;
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
 import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
+import static com.regula.documentreader.api.enums.LCID.RUSSIAN;
 
 public class LoanStepThreeFragment extends Fragment {
     ArrayList<ImageStringModel> list = new ArrayList<>();
@@ -67,7 +67,8 @@ public class LoanStepThreeFragment extends Fragment {
 
     private static final int REQUEST_BROWSE_PICTURE = 11;
 
-    private TextView showScanner;
+    private Button showScanner;
+    private Thread thread;
 
     private ImageView portraitIv;
     private ImageView docImageIv;
@@ -89,7 +90,7 @@ public class LoanStepThreeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         AppPreferences.INSTANCE.init(requireContext());
 
-        showScanner = view.findViewById(R.id.loan_active_status);
+        showScanner = view.findViewById(R.id.thee_active_status);
         portraitIv = view.findViewById(R.id.portraitIv);
         docImageIv = view.findViewById(R.id.documentImageIv);
 
@@ -140,6 +141,7 @@ public class LoanStepThreeFragment extends Fragment {
 
     private void initResult() {
         HomeActivity.alert.show();
+
         map.put("login", AppPreferences.INSTANCE.getLogin());
         map.put("token", AppPreferences.INSTANCE.getToken());
         if (portrait != null) {
@@ -167,39 +169,48 @@ public class LoanStepThreeFragment extends Fragment {
         viewModel.getGetSaveLoan().observe(getViewLifecycleOwner(), new Observer<SaveLoanModel>() {
             @Override
             public void onChanged(SaveLoanModel result) {
-                if (result.getResult() != null) {
-                    if (result.getResult().getId() != null) {
-                        layout_status.setVisibility(View.VISIBLE);
-                        status_technical_work.setVisibility(View.GONE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        status_not_found.setVisibility(View.GONE);
-                        AppPreferences.INSTANCE.setSum(result.getResult().getId().toString());
-                        ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-                    } else if (result.getResult().getMessage() != null) {
-                        initBottomSheet(result.getReject().getMessage());
-                        layout_status.setVisibility(View.VISIBLE);
-                        status_technical_work.setVisibility(View.GONE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        status_not_found.setVisibility(View.GONE);
+                try {
+                    if (result != null) {
+                        if (result.getResult() != null) {
+                            if (result.getResult().getId() != null) {
+                                layout_status.setVisibility(View.VISIBLE);
+                                status_technical_work.setVisibility(View.GONE);
+                                status_no_questionnaire.setVisibility(View.GONE);
+                                status_not_found.setVisibility(View.GONE);
+                                AppPreferences.INSTANCE.setSum(result.getResult().getId().toString());
+                                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                            }
+                        } else if (result.getError() != null) {
+                            if (result.getError().getCode().equals(400)) {
+                                Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show();
+                            } else if (result.getError().getCode() == 500) {
+                                status_technical_work.setVisibility(View.VISIBLE);
+                                status_no_questionnaire.setVisibility(View.GONE);
+                                layout_status.setVisibility(View.GONE);
+                                status_not_found.setVisibility(View.GONE);
+                            } else if (result.getError().getCode() == 401) {
+                                initAuthorized();
+                            } else if (result.getError().getCode() == 409) {
+                                Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                            } else if (result.getError().getCode() == 404) {
+                                status_not_found.setVisibility(View.VISIBLE);
+                                status_technical_work.setVisibility(View.GONE);
+                                status_no_questionnaire.setVisibility(View.GONE);
+                                layout_status.setVisibility(View.GONE);
+                            }
+                        } else if (result.getReject() != null) {
+                            initBottomSheet(result.getReject().getMessage());
+                            layout_status.setVisibility(View.VISIBLE);
+                            status_technical_work.setVisibility(View.GONE);
+                            status_no_questionnaire.setVisibility(View.GONE);
+                            status_not_found.setVisibility(View.GONE);
+                        }
+                        if (viewModel.getGetSaveLoan() != null){
+                            viewModel.getGetSaveLoan().setValue(null);
+                        }
                     }
-                } else {
-                    if (result.getError().getCode().equals(400)) {
-                        Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show();
-                    } else if (result.getError().getCode() == 500) {
-                        status_technical_work.setVisibility(View.VISIBLE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        layout_status.setVisibility(View.GONE);
-                        status_not_found.setVisibility(View.GONE);
-                    } else if (result.getError().getCode() == 401) {
-                        initAuthorized();
-                    } else if (result.getError().getCode() == 409) {
-                        Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
-                    } else if (result.getError().getCode() == 404) {
-                        status_not_found.setVisibility(View.VISIBLE);
-                        status_technical_work.setVisibility(View.GONE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        layout_status.setVisibility(View.GONE);
-                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
@@ -253,14 +264,24 @@ public class LoanStepThreeFragment extends Fragment {
             status_technical_work.setVisibility(View.GONE);
             layout_status.setVisibility(View.GONE);
         } else {
-            initDocumentReader();
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    initDocumentReader();
+                    thread.interrupt();
+                }
+            };
+            thread = new Thread(runnable);
+            thread.start();
         }
     }
 
-
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
-            final AlertDialog initDialog = showDialog("Инициализация");
+//            final AlertDialog initDialog = showDialog("Инициализация");
+            showScanner.setText("Инициализация");
+            showScanner.setClickable(false);
+
+
 
             //Reading the license from raw resource file
             try {
@@ -274,7 +295,8 @@ public class LoanStepThreeFragment extends Fragment {
                 DocumentReader.Instance().prepareDatabase(requireContext(), "Full", new IDocumentReaderPrepareCompletion() {
                     @Override
                     public void onPrepareProgressChanged(int progress) {
-                        initDialog.setTitle("Загрузка базы данных: " + progress + "%");
+//                        initDialog.setTitle("Загрузка базы данных: " + progress + "%");
+                        showScanner.setText("Загрузка базы данных: " + progress + "%");
                     }
 
                     @Override
@@ -284,13 +306,21 @@ public class LoanStepThreeFragment extends Fragment {
                         DocumentReader.Instance().initializeReader(getActivity(), license, new IDocumentReaderInitCompletion() {
                             @Override
                             public void onInitCompleted(boolean success, Throwable error) {
-                                if (initDialog.isShowing()) {
-                                    initDialog.dismiss();
-                                    layout_status.setVisibility(View.VISIBLE);
-                                    status_no_questionnaire.setVisibility(View.GONE);
-                                }
+//                                if (initDialog.isShowing()) {
+//                                    initDialog.dismiss();
+//                                    showScanner.setText("Сканировать документ");
+//                                    showScanner.setClickable(true);
+//                                    layout_status.setVisibility(View.VISIBLE);
+//                                    status_no_questionnaire.setVisibility(View.GONE);
+//                                }
+
+                                showScanner.setText("Сканировать документ");
+                                showScanner.setClickable(true);
+                                layout_status.setVisibility(View.VISIBLE);
+                                status_no_questionnaire.setVisibility(View.GONE);
 
                                 DocumentReader.Instance().customization().edit().setShowHelpAnimation(false).apply();
+                                DocumentReader.Instance().functionality().edit().setShowSkipNextPageButton(false).apply();
 
                                 //initialization successful
                                 if (success) {
@@ -302,6 +332,7 @@ public class LoanStepThreeFragment extends Fragment {
                                             //starting video processing
                                             DocumentReader.Instance().showScanner(requireContext(), completion);
                                             DocumentReader.Instance().processParams().multipageProcessing = true;
+
                                         }
                                     });
 
@@ -368,7 +399,8 @@ public class LoanStepThreeFragment extends Fragment {
                     Uri selectedImage = data.getData();
                     Bitmap bmp = getBitmap(selectedImage, 1920, 1080);
 
-                    loadingDialog = showDialog("Processing image");
+                    showScanner.setText("Processing image");
+//                    loadingDialog = showDialog("Processing image");
 
                     DocumentReader.Instance().recognizeImage(bmp, completion);
                 }
@@ -423,14 +455,14 @@ public class LoanStepThreeFragment extends Fragment {
         }
     };
 
-    private AlertDialog showDialog(String msg) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
-        View dialogView = getLayoutInflater().inflate(R.layout.simple_dialog, null);
-        dialog.setTitle(msg);
-        dialog.setView(dialogView);
-        dialog.setCancelable(false);
-        return dialog.show();
-    }
+//    private AlertDialog showDialog(String msg) {
+//        AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
+//        View dialogView = getLayoutInflater().inflate(R.layout.simple_dialog, null);
+//        dialog.setTitle(msg);
+//        dialog.setView(dialogView);
+//        dialog.setCancelable(false);
+//        return dialog.show();
+//    }
 
     //show received results on the UI
     private void displayResults(DocumentReaderResults results) {
@@ -453,7 +485,7 @@ public class LoanStepThreeFragment extends Fragment {
                 }
 
                 //Фамилия (Ныц)
-                String surnameNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME, KYRGYZ_CYRILICK);
+                String surnameNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME, RUSSIAN);
                 if (surnameNationalS != null) {
                     map.put("last_name", surnameNationalS);
                 } else {
@@ -461,7 +493,7 @@ public class LoanStepThreeFragment extends Fragment {
                 }
 
                 //Имя (Нац)
-                String namesNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES, KYRGYZ_CYRILICK);
+                String namesNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES, RUSSIAN);
                 if (namesNationalS != null) {
                     map.put("first_name", namesNationalS);
                 } else {
@@ -469,7 +501,7 @@ public class LoanStepThreeFragment extends Fragment {
                 }
 
                 //Отчество (Нац)
-                String nameNationalityS = results.getTextFieldValueByType(eVisualFieldType.FT_FATHERS_NAME);
+                String nameNationalityS = results.getTextFieldValueByType(eVisualFieldType.FT_FATHERS_NAME, RUSSIAN);
                 if (nameNationalityS != null) {
                     map.put("second_name_l", "");
                     map.put("second_name", nameNationalityS);
@@ -580,9 +612,7 @@ public class LoanStepThreeFragment extends Fragment {
                 // Название государтсво выдачи
                 String issuingStateNameS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME);
                 if (issuingStateNameS != null) {
-                    map.put("nationality", issuingStateNameS);
-                } else {
-                    map.put("nationality", "");
+
                 }
 
                 // Дата выпуска

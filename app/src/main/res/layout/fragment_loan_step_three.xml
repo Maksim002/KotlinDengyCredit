@@ -42,7 +42,7 @@
         </LinearLayout>
 
     <Button
-        android:id="@+id/loan_active_status"
+        android:id="@+id/thee_active_status"
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
