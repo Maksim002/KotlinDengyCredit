@@ -2,9 +2,11 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/layout_fire"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -24,6 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circle_orange_background_edit"
             android:hint="Место работаы"
+            android:layout_marginTop="16dp"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:padding="13dp"
@@ -31,6 +34,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_type_employment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -42,6 +46,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_post"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -53,6 +58,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_work_experience_r_f"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -64,6 +70,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_work_experience"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -75,6 +82,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_list_income"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -86,6 +94,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_additional_income"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -97,6 +106,7 @@
             android:textSize="14dp" />
 
         <AutoCompleteTextView
+            android:id="@+id/fire_additional_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -122,4 +132,24 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
     </LinearLayout>
+
+    <include
+        android:id="@+id/fire_ste_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/fire_ste_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/fire_ste_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/fire_ste_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 </LinearLayout>

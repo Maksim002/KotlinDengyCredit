@@ -119,7 +119,6 @@ class LoansViewModel: ViewModel() {
     var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
 
     fun getInfo(map: Map<String, String>){
-//        HomeActivity.alert.show()
         RetrofitService.apiService().getLoanInfo(map).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -207,7 +206,6 @@ class LoansViewModel: ViewModel() {
     var getListIncomeDta = MutableLiveData<CommonResponse<ArrayList<ListIncomeResultModel>>>()
 
     fun listIncome(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listIncome(map).enqueue(object : Callback<CommonResponse<ArrayList<ListIncomeResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListIncomeResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -264,7 +262,6 @@ class LoansViewModel: ViewModel() {
     var getListTypeIncomeDta = MutableLiveData<CommonResponse<ArrayList<ListTypeIncomeModel>>>()
 
     fun listTypeIncome(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listTypeIncome(map).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeIncomeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeIncomeModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -350,7 +347,6 @@ class LoansViewModel: ViewModel() {
     var getListWorkDta = MutableLiveData<CommonResponse<ArrayList<ListWorkResultModel>>>()
 
     fun listWork(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listWork(map).enqueue(object : Callback<CommonResponse<ArrayList<ListWorkResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListWorkResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){

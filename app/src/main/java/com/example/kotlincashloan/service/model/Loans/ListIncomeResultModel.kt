@@ -11,4 +11,8 @@ class ListIncomeResultModel (
     @SerializedName("name")
     @Expose
     var name: String? = null
-)
+){
+    override fun toString(): String {
+        return name.toString()
+    }
+}
