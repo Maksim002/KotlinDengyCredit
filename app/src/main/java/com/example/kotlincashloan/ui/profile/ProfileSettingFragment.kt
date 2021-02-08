@@ -68,15 +68,18 @@ class ProfileSettingFragment : Fragment() {
     var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var list: ArrayList<CounterNumResultModel> = arrayListOf()
+    private var listClientInfo = ClientInfoResultModel()
     private var codeNationality = 0
     private var numberAvailable = 0
     private var checkNumber = 0
     private var codeMack = ""
     private var reView = false
     private var reNum = ""
-    private var question = ""
     private var profileSettingAnim = false
     private var profileSettingAnimR = false
+
+    private var phoneSecondId = ""
+    private var questionId = ""
 
     private var textPasswordOne = ""
     private var textPasswordTwo = ""
@@ -120,8 +123,6 @@ class ProfileSettingFragment : Fragment() {
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
-
-
     private fun initArgument() {
         val sendPicture = try {
             requireArguments().getString("sendPicture")
@@ -135,17 +136,38 @@ class ProfileSettingFragment : Fragment() {
                 .load(sendPicture)
                 .into(profile_setting_image);
         }
+
+        listClientInfo = try {
+            requireArguments().getSerializable("client") as ClientInfoResultModel
+        }catch (e: Exception){
+            listClientInfo
+        }
     }
 
     private fun initRestart() {
         val mapNationality = HashMap<String, String>()
         mapNationality.put("login", clientResult.gender.toString())
+        mapNationality.put("id", listClientInfo.nationality.toString())
 
         val mapGender = HashMap<String, String>()
         mapGender.put("login", clientResult.nationality.toString())
+        mapGender.put("id", listClientInfo.gender.toString())
+
 
         val mapRegistration = HashMap<String, String>()
-        mapRegistration.put("id", "")
+        if (phoneSecondId != ""){
+            mapRegistration.put("id", phoneSecondId)
+        }else{
+            mapRegistration.put("id", listClientInfo.phoneSecond.toString())
+        }
+
+        val mapQuestion = HashMap<String, String>()
+        if (questionId != ""){
+            mapQuestion.put("id", questionId)
+        }else{
+            mapQuestion.put("id", listClientInfo.question.toString())
+        }
+
 
         val mapInfo = HashMap<String, String>()
         mapInfo.put("login", AppPreferences.login.toString())
@@ -183,7 +205,7 @@ class ProfileSettingFragment : Fragment() {
                     viewModel.listGender(mapGender)
                     viewModel.getListNationality(mapNationality)
                     viewModel.listAvailableCountry(mapRegistration)
-                    viewModel.listSecretQuestion(mapRegistration)
+                    viewModel.listSecretQuestion(mapQuestion)
                     initResult()
                 }, 500)
             } else {
@@ -341,6 +363,7 @@ class ProfileSettingFragment : Fragment() {
 
                         profile_s_mask.keyListener = null
                         profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
+                            phoneSecondId = result.result[position].id.toString()
                             codeNationality = position
                             codeMack = result.result[position].phoneCode.toString()
                             numberAvailable = result.result[position].phoneLength!!.toInt()
@@ -396,9 +419,9 @@ class ProfileSettingFragment : Fragment() {
                     if (result.result != null) {
                         profile_s_question.setText(result.result[clientResult.question!!.toInt() - 1].name)
                         var numberPosition = 0
-                        if (question == "") {
+                        if (questionId == "") {
                             numberPosition = clientResult.question!!.toInt()
-                            question = numberPosition.toString()
+                            questionId = numberPosition.toString()
                         }
                         val adapterListCountry = ArrayAdapter(
                             requireContext(),
@@ -409,8 +432,7 @@ class ProfileSettingFragment : Fragment() {
 
                         profile_s_question.keyListener = null
                         profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
-
-                            question = result.result[position].id.toString()
+                            questionId = result.result[position].id.toString()
                             profile_s_question.showDropDown()
                             profile_s_question.clearFocus()
                         }
@@ -492,7 +514,7 @@ class ProfileSettingFragment : Fragment() {
         mapProfile.put("token", AppPreferences.token.toString())
         mapProfile.put("password", AppPreferences.password.toString())
         mapProfile.put("second_phone", reNum)
-        mapProfile.put("question", question)
+        mapProfile.put("question", questionId)
         mapProfile.put("response", profile_s_response.text.toString())
         if (isValid()) {
             viewModel.saveProfile(mapProfile)

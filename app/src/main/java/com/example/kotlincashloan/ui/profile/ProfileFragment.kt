@@ -22,6 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -39,6 +40,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ProfileFragment : Fragment() {
     private var viewModel = ProfileViewModel()
@@ -46,6 +48,7 @@ class ProfileFragment : Fragment() {
     private val mapImg = HashMap<String, String>()
     val handler = Handler()
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
+    private var listClientInfo: ArrayList<ClientInfoResultModel> = arrayListOf()
     private var errorCode = ""
     private var errorCodeClient = ""
     private var errorGetImg = ""
@@ -90,7 +93,6 @@ class ProfileFragment : Fragment() {
     private fun initClick() {
 
         profile_your.setOnClickListener {
-            val bundle = Bundle()
             if (sendPicture != ""){
                 bundle.putString("sendPicture", sendPicture)
             }
