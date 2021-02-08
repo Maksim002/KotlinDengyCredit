@@ -21,7 +21,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/loans_step_four_residence"
+            android:id="@+id/fire_step_four_residence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_orange_background_edit"
@@ -120,7 +120,7 @@
     </LinearLayout>
 
         <Button
-            android:id="@+id/bottom_loan_four"
+            android:id="@+id/bottom_loan_fire"
             style="@style/RoundedOrangeBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

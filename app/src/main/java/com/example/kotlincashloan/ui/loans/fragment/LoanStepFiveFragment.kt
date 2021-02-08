@@ -11,11 +11,16 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 
 class LoanStepFiveFragment : Fragment() {
     private var viewModel = LoansViewModel()
@@ -55,6 +60,53 @@ class LoanStepFiveFragment : Fragment() {
         initListIncome()
         initLisTypeIncome()
         initListIncomeAdditional()
+        initClick()
+    }
+
+    private fun initClick() {
+        bottom_loan_fire.setOnClickListener {
+            initSaveLoan()
+        }
+
+        access_restricted.setOnClickListener {
+            initListWork()
+            initListTypeWork()
+            initListYears()
+            initWorkExperience()
+            initListIncome()
+            initLisTypeIncome()
+            initListIncomeAdditional()
+        }
+
+        no_connection_repeat.setOnClickListener {
+            initListWork()
+            initListTypeWork()
+            initListYears()
+            initWorkExperience()
+            initListIncome()
+            initLisTypeIncome()
+            initListIncomeAdditional()
+        }
+
+        technical_work.setOnClickListener {
+            initListWork()
+            initListTypeWork()
+            initListYears()
+            initWorkExperience()
+            initListIncome()
+            initLisTypeIncome()
+            initListIncomeAdditional()
+        }
+
+        not_found.setOnClickListener {
+            initListWork()
+            initListTypeWork()
+            initListYears()
+            initWorkExperience()
+            initListIncome()
+            initLisTypeIncome()
+            initListIncomeAdditional()
+        }
     }
 
     // TODO: 21-2-5  Вид занятости
@@ -386,6 +438,52 @@ class LoanStepFiveFragment : Fragment() {
                 errorList(error)
             }
         })
+    }
+
+
+    // TODO: 21-2-8  Сохронение Данные о трудовой деятельности.
+    private fun initSaveLoan(){
+        val mapSave = mutableMapOf<String, String>()
+        mapSave["login"] = AppPreferences.login.toString()
+        mapSave["token"] = AppPreferences.token.toString()
+        mapSave["id"] = AppPreferences.sum.toString()
+        mapSave["work"] = workId
+        mapSave["type_work"] = typeId
+        mapSave["work_exp_ru"] = yearsRfId
+        mapSave["work_exp_last"] = yearsId
+        mapSave["income"] = incomeId
+        mapSave["sub_income_id"] = typeIncomeId
+        mapSave["sub_income_sum"] = additionalId
+        mapSave["place_work"] = fire_step_four_residence.text.toString()
+        mapSave["step"] = "3"
+        viewModel.saveLoan(mapSave)
+
+        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result->
+            if (result.result != null){
+                layout_fire.visibility = View.VISIBLE
+                fire_ste_technical_work.visibility = View.GONE
+                fire_ste_no_connection.visibility = View.GONE
+                fire_ste_access_restricted.visibility = View.GONE
+                fire_ste_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
+            }else if (result.reject != null){
+                initBottomSheet(result.reject!!.message.toString())
+            }else if (result.error.code != null){
+                listResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error->
+            if (error != null){
+                errorList(error)
+            }
+        })
+    }
+
+    private fun initBottomSheet(message: String) {
+        val stepBottomFragment = StepBottomFragment(message)
+        stepBottomFragment.isCancelable = false
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun getResultOk() {

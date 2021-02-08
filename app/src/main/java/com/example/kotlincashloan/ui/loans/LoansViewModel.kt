@@ -318,7 +318,6 @@ class LoansViewModel: ViewModel() {
     var getListFamilyDta = MutableLiveData<CommonResponse<ArrayList<ListFamilyResultModel>>>()
 
     fun listFamily(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().listFamily(map).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
