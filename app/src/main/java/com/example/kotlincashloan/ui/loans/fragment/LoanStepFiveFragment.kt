@@ -13,10 +13,10 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -65,7 +65,9 @@ class LoanStepFiveFragment : Fragment() {
 
     private fun initClick() {
         bottom_loan_fire.setOnClickListener {
-            initSaveLoan()
+            if (validate()){
+                initSaveLoan()
+            }
         }
 
         access_restricted.setOnClickListener {
@@ -138,6 +140,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_type_employment.showDropDown()
+                                fire_type_employment.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -185,6 +188,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_post.showDropDown()
+                                fire_post.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -232,6 +236,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_work_experience_r_f.showDropDown()
+                                fire_work_experience_r_f.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -279,6 +284,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_work_experience.showDropDown()
+                                fire_work_experience.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -327,6 +333,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_list_income.showDropDown()
+                                fire_list_income.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -375,6 +382,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_additional_income.showDropDown()
+                                fire_additional_income.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -423,6 +431,7 @@ class LoanStepFiveFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 fire_additional_amount.showDropDown()
+                                fire_additional_amount.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -465,7 +474,7 @@ class LoanStepFiveFragment : Fragment() {
                 fire_ste_no_connection.visibility = View.GONE
                 fire_ste_access_restricted.visibility = View.GONE
                 fire_ste_not_found.visibility = View.GONE
-                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
+                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
             }else if (result.reject != null){
                 initBottomSheet(result.reject!!.message.toString())
             }else if (result.error.code != null){
@@ -481,7 +490,10 @@ class LoanStepFiveFragment : Fragment() {
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment = StepBottomFragment(message)
+        val stepBottomFragment =
+            StepBottomFragment(
+                message
+            )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -568,5 +580,66 @@ class LoanStepFiveFragment : Fragment() {
             ) as InputMethodManager?
             manager!!.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+
+    private fun validate(): Boolean {
+        var valid = true
+        if (fire_step_four_residence.text.isEmpty()) {
+            fire_step_four_residence.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_step_four_residence.error = null
+        }
+
+        if (fire_type_employment.text.isEmpty()) {
+            fire_type_employment.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_type_employment.error = null
+        }
+
+        if (fire_post.text.isEmpty()) {
+            fire_post.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_post.error = null
+        }
+
+        if (fire_work_experience_r_f.text.isEmpty()) {
+            fire_work_experience_r_f.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_work_experience_r_f.error = null
+        }
+
+        if (fire_work_experience.text.isEmpty()) {
+            fire_work_experience.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_work_experience.error = null
+        }
+
+        if (fire_list_income.text.isEmpty()) {
+            fire_list_income.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_list_income.error = null
+        }
+
+        if (fire_additional_income.text.isEmpty()) {
+            fire_additional_income.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_additional_income.error = null
+        }
+
+        if (fire_additional_amount.text.isEmpty()) {
+            fire_additional_amount.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            fire_additional_amount.error = null
+        }
+
+        return valid
     }
 }

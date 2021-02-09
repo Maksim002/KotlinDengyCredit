@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.loans.fragment
+package com.example.kotlincashloan.ui.loans.fragment.dialogue
 
 import android.os.Bundle
 import android.view.LayoutInflater

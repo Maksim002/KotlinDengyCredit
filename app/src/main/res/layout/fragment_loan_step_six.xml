@@ -5,13 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_loan_six"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
         <LinearLayout
+            android:id="@+id/layout_loan_six"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -21,101 +16,60 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <include
+                    android:id="@+id/questionnaire_owner"
+                    layout="@layout/item_focus" />
+
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:gravity="center"
+                    android:text="Дополнительные контакты"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal"
-                        android:paddingLeft="16dp"
-                        android:paddingTop="16dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="16dp">
+                <AutoCompleteTextView
+                    android:id="@+id/six_available_country"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/blackColor"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:hint="Список доступных стран"
+                    android:padding="14dp"
+                    android:textSize="14dp" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/six_number_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:digits="0123456789"
+                    android:ellipsize="end"
+                    android:textColor="@color/blackColor"
+                    android:hint="Номер телефона"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:padding="14dp"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="код"
-                                android:textSize="14sp" />
-
-                            <AutoCompleteTextView
-                                android:id="@+id/six_available_country"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:background="@null"
-                                android:editable="true"
-                                android:focusableInTouchMode="false"
-                                android:inputType="number"
-                                android:textColor="@color/blackColor"
-                                android:textSize="17sp"
-                                android:windowSoftInputMode="adjustResize"
-                                tools:text="+996" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.4"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Дополнительный номер"
-                                android:textSize="14sp" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:orientation="horizontal">
-
-                                <com.santalu.maskedittext.MaskEditText
-                                    android:id="@+id/six_number_phone"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="@null"
-                                    android:digits="0123456789"
-                                    android:editable="false"
-                                    android:ellipsize="end"
-                                    android:imeOptions="actionNext"
-                                    android:inputType="number"
-                                    android:textColor="@color/blackColor"
-                                    android:textSize="17sp"
-                                    android:windowSoftInputMode="adjustResize"
-                                    tools:text="700 700 540" />
-                            </LinearLayout>
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="Доверенный контакт"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp" />
 
                 <EditText
                     android:id="@+id/six_loan_surname"
@@ -123,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
-                    android:hint="Фамилия"
+                    android:hint="Фамилия контактного лица"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:padding="13dp"
@@ -136,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
-                    android:hint="Имя"
+                    android:hint="Имя контактного лица"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:padding="13dp"
@@ -149,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
-                    android:hint="Отчество"
+                    android:hint="Отчество контактного лица"
                     android:imeOptions="actionDone"
                     android:inputType="text"
                     android:padding="13dp"
@@ -176,7 +130,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:digits="0123456789"
                     android:ellipsize="end"
-                    android:hint="Номер телефона"
+                    android:hint="Номер телефона контактного лица"
                     android:imeOptions="actionDone"
                     android:inputType="phone"
                     android:padding="14dp"
@@ -184,21 +138,21 @@
                     android:textColor="@color/blackColor"
                     android:textSize="14sp"
                     android:visibility="visible" />
-            </LinearLayout>
-        </LinearLayout>
 
-        <Button
-            android:id="@+id/bottom_loan_six"
-            style="@style/RoundedOrangeBackground"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
-            android:paddingLeft="75dp"
-            android:paddingRight="75dp"
-            android:text="Далее"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bottom_loan_six"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="75dp"
+                android:paddingRight="75dp"
+                android:text="Далее"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
     </LinearLayout>
 
     <include

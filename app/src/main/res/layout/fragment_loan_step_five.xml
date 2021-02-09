@@ -8,24 +8,34 @@
     <LinearLayout
         android:id="@+id/layout_fire"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:padding="16dp"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Трудовая деятельность"
+            android:textColor="@color/blackColor"
+            android:textSize="18dp" />
+
 
         <EditText
             android:id="@+id/fire_step_four_residence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_orange_background_edit"
-            android:hint="Место работаы"
+            android:hint="Место работы"
             android:layout_marginTop="16dp"
             android:imeOptions="actionDone"
             android:inputType="text"
@@ -76,7 +86,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/circle_orange_background_edit"
             android:drawableEnd="@drawable/ic_expend"
-            android:hint="Стаж работы в последнем месте"
+            android:hint="Стаж работы в последнем месте в РФ"
             android:padding="13dp"
             android:textColor="@color/blackColor"
             android:textSize="14dp" />

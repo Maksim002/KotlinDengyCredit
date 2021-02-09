@@ -28,6 +28,7 @@ import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanModel;
 import com.example.kotlincashloan.ui.loans.GetLoanActivity;
 import com.example.kotlincashloan.ui.loans.LoansViewModel;
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment;
 import com.example.kotlincashloan.ui.registration.login.HomeActivity;
 import com.example.kotlincashloan.utils.ObservedInternet;
 import com.regula.documentreader.api.DocumentReader;
@@ -39,6 +40,7 @@ import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.enums.eRFID_Password_Type;
 import com.regula.documentreader.api.enums.eRPRM_ResultType;
 import com.regula.documentreader.api.enums.eVisualFieldType;
+import com.regula.documentreader.api.errors.DocumentReaderException;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderScenario;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
@@ -74,7 +76,7 @@ public class LoanStepThreeFragment extends Fragment {
     private ImageView docImageIv;
 
     private LinearLayout layout_status, status_no_questionnaire, status_technical_work, status_not_found;
-    private Button no_connection_repeat, get_view_click, technical_work, not_found;
+    private Button no_connection_repeat, technical_work, not_found;
 
     private boolean doRfid = false;
     private AlertDialog loadingDialog;
@@ -100,7 +102,6 @@ public class LoanStepThreeFragment extends Fragment {
         status_not_found = view.findViewById(R.id.status_not_found);
 
         no_connection_repeat = view.findViewById(R.id.no_connection_repeat);
-        get_view_click = view.findViewById(R.id.get_view_click);
         technical_work = view.findViewById(R.id.technical_work);
         not_found = view.findViewById(R.id.not_found);
 
@@ -129,14 +130,6 @@ public class LoanStepThreeFragment extends Fragment {
                 initResult();
             }
         });
-
-
-        get_view_click.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initResult();
-            }
-        });
     }
 
     private void initResult() {
@@ -150,14 +143,14 @@ public class LoanStepThreeFragment extends Fragment {
             map.put("passport_photo", "");
         }
         if (documentImage != null) {
-            map.put("passport_img_a", list.get(1).getString());
+            map.put("passport_img_1", list.get(1).getString());
         } else {
-            map.put("passport_img_a", "");
+            map.put("passport_img_1", "");
         }
         if (documentImageTwo != null) {
-            map.put("passport_img_b", list.get(2).getString());
+            map.put("passport_img_2", list.get(2).getString());
         } else {
-            map.put("passport_img_b", "");
+            map.put("passport_img_2", "");
         }
         map.put("loan_type", "1");
         map.put("loan_term", AppPreferences.INSTANCE.getType());
@@ -205,11 +198,11 @@ public class LoanStepThreeFragment extends Fragment {
                             status_no_questionnaire.setVisibility(View.GONE);
                             status_not_found.setVisibility(View.GONE);
                         }
-                        if (viewModel.getGetSaveLoan() != null){
+                        if (viewModel.getGetSaveLoan() != null) {
                             viewModel.getGetSaveLoan().setValue(null);
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -282,7 +275,6 @@ public class LoanStepThreeFragment extends Fragment {
             showScanner.setClickable(false);
 
 
-
             //Reading the license from raw resource file
             try {
                 InputStream licInput = getResources().openRawResource(R.raw.regula);
@@ -300,12 +292,11 @@ public class LoanStepThreeFragment extends Fragment {
                     }
 
                     @Override
-                    public void onPrepareCompleted(boolean status, Throwable error) {
-
+                    public void onPrepareCompleted(boolean b, DocumentReaderException e) {
                         //Initializing the reader
                         DocumentReader.Instance().initializeReader(getActivity(), license, new IDocumentReaderInitCompletion() {
                             @Override
-                            public void onInitCompleted(boolean success, Throwable error) {
+                            public void onInitCompleted(boolean b, DocumentReaderException e) {
 //                                if (initDialog.isShowing()) {
 //                                    initDialog.dismiss();
 //                                    showScanner.setText("Сканировать документ");
@@ -323,7 +314,7 @@ public class LoanStepThreeFragment extends Fragment {
                                 DocumentReader.Instance().functionality().edit().setShowSkipNextPageButton(false).apply();
 
                                 //initialization successful
-                                if (success) {
+                                if (b) {
                                     showScanner.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -351,9 +342,10 @@ public class LoanStepThreeFragment extends Fragment {
                                 }
                                 //Initialization was not successful
                                 else {
-                                    Toast.makeText(requireContext(), "Init failed:" + error, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(requireContext(), "Init failed:" + e, Toast.LENGTH_LONG).show();
                                 }
                             }
+
                         });
                     }
                 });
@@ -411,23 +403,23 @@ public class LoanStepThreeFragment extends Fragment {
     //DocumentReader processing callback
     private IDocumentReaderCompletion completion = new IDocumentReaderCompletion() {
         @Override
-        public void onCompleted(int action, DocumentReaderResults results, Throwable error) {
-            //processing is finished, all results are ready
-            if (action == DocReaderAction.COMPLETE) {
+        public void onCompleted(int i, DocumentReaderResults documentReaderResults, DocumentReaderException e) {
+//processing is finished, all results are ready
+            if (i == DocReaderAction.COMPLETE) {
                 if (loadingDialog != null && loadingDialog.isShowing()) {
                     loadingDialog.dismiss();
                 }
 
                 //Checking, if nfc chip reading should be performed
-                if (doRfid && results != null && results.chipPage != 0) {
+                if (doRfid && documentReaderResults != null && documentReaderResults.chipPage != 0) {
                     //setting the chip's access key - mrz on car access number
                     String accessKey = null;
-                    if ((accessKey = results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)) != null && !accessKey.isEmpty()) {
-                        accessKey = results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)
+                    if ((accessKey = documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)) != null && !accessKey.isEmpty()) {
+                        accessKey = documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)
                                 .replace("^", "").replace("\n", "");
                         DocumentReader.Instance().rfidScenario().setMrz(accessKey);
                         DocumentReader.Instance().rfidScenario().setPacePasswordType(eRFID_Password_Type.PPT_MRZ);
-                    } else if ((accessKey = results.getTextFieldValueByType(eVisualFieldType.FT_CARD_ACCESS_NUMBER)) != null && !accessKey.isEmpty()) {
+                    } else if ((accessKey = documentReaderResults.getTextFieldValueByType(eVisualFieldType.FT_CARD_ACCESS_NUMBER)) != null && !accessKey.isEmpty()) {
                         DocumentReader.Instance().rfidScenario().setPassword(accessKey);
                         DocumentReader.Instance().rfidScenario().setPacePasswordType(eRFID_Password_Type.PPT_CAN);
                     }
@@ -435,21 +427,21 @@ public class LoanStepThreeFragment extends Fragment {
                     //starting chip reading
                     DocumentReader.Instance().startRFIDReader(requireContext(), new IDocumentReaderCompletion() {
                         @Override
-                        public void onCompleted(int rfidAction, DocumentReaderResults results, Throwable error) {
-                            if (rfidAction == DocReaderAction.COMPLETE || rfidAction == DocReaderAction.CANCEL) {
-                                displayResults(results);
+                        public void onCompleted(int i, DocumentReaderResults documentReaderResults, DocumentReaderException e) {
+                            if (i == DocReaderAction.COMPLETE || i == DocReaderAction.CANCEL) {
+                                displayResults(documentReaderResults);
                             }
                         }
                     });
                 } else {
-                    displayResults(results);
+                    displayResults(documentReaderResults);
                 }
             } else {
                 //something happened before all results were ready
-                if (action == DocReaderAction.CANCEL) {
+                if (i == DocReaderAction.CANCEL) {
                     Toast.makeText(requireContext(), "Scanning was cancelled", Toast.LENGTH_LONG).show();
-                } else if (action == DocReaderAction.ERROR) {
-                    Toast.makeText(requireContext(), "Error:" + error, Toast.LENGTH_LONG).show();
+                } else if (i == DocReaderAction.ERROR) {
+                    Toast.makeText(requireContext(), "Error:" + e, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -471,67 +463,67 @@ public class LoanStepThreeFragment extends Fragment {
                 //Фамилия
                 String surnameS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME);
                 if (surnameS != null) {
-                    map.put("last_name_l", surnameS);
+                    map.put("passport_last_name_l", surnameS);
                 } else {
-                    map.put("last_name_l", "");
+                    map.put("passport_last_name_l", "");
                 }
 
                 //Имя
                 String namesS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES);
                 if (namesS != null) {
-                    map.put("first_name_l", namesS);
+                    map.put("passport_first_name_l", namesS);
                 } else {
-                    map.put("first_name_l", "");
+                    map.put("passport_first_name_l", "");
                 }
 
                 //Фамилия (Ныц)
                 String surnameNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME, RUSSIAN);
                 if (surnameNationalS != null) {
-                    map.put("last_name", surnameNationalS);
+                    map.put("passport_last_name", surnameNationalS);
                 } else {
-                    map.put("last_name", "");
+                    map.put("passport_last_name", "");
                 }
 
                 //Имя (Нац)
                 String namesNationalS = results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES, RUSSIAN);
                 if (namesNationalS != null) {
-                    map.put("first_name", namesNationalS);
+                    map.put("passport_first_name", namesNationalS);
                 } else {
-                    map.put("first_name", "");
+                    map.put("passport_first_name", "");
                 }
 
                 //Отчество (Нац)
                 String nameNationalityS = results.getTextFieldValueByType(eVisualFieldType.FT_FATHERS_NAME, RUSSIAN);
                 if (nameNationalityS != null) {
-                    map.put("second_name_l", "");
-                    map.put("second_name", nameNationalityS);
+                    map.put("passport_second_name_l", "");
+                    map.put("passport_second_name", nameNationalityS);
                 } else {
-                    map.put("second_name_l", "");
-                    map.put("second_name", "");
+                    map.put("passport_second_name_l", "");
+                    map.put("passport_second_name", "");
                 }
 
                 //Дата рождения
                 String dataS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH);
                 SimpleDateFormat sdf = null;
                 if (dataS != null) {
-                   if (dataS.length() == 8){
-                       sdf = new SimpleDateFormat("dd.MM.yy");
-                   }else {
-                       sdf = new SimpleDateFormat("dd.MM.yyy");
-                   }
+                    if (dataS.length() == 8) {
+                        sdf = new SimpleDateFormat("dd.MM.yy");
+                    } else {
+                        sdf = new SimpleDateFormat("dd.MM.yyy");
+                    }
                     Date d1 = sdf.parse(dataS);
                     sdf.applyPattern("yyyy-MM-dd");
-                    map.put("u_date", sdf.format(d1));
+                    map.put("passport_u_date", sdf.format(d1));
                 } else {
-                    map.put("u_date", "");
+                    map.put("passport_u_date", "");
                 }
 
                 //пол
                 String sexS = results.getTextFieldValueByType(eVisualFieldType.FT_SEX);
                 if (sexS != null) {
-                    map.put("gender", sexS);
+                    map.put("passport_gender", sexS);
                 } else {
-                    map.put("gender", "");
+                    map.put("passport_gender", "");
                 }
 
                 // Место рождения
@@ -543,9 +535,9 @@ public class LoanStepThreeFragment extends Fragment {
                 //Код государтсва выдочи
                 String placeCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE);
                 if (placeCodeS != null) {
-                    map.put("nationality", placeCodeS);
+                    map.put("passport_nationality", placeCodeS);
                 } else {
-                    map.put("nationality", "");
+                    map.put("passport_nationality", "");
                 }
 
                 //номер документа
@@ -581,9 +573,9 @@ public class LoanStepThreeFragment extends Fragment {
                 // Дата окончания действия
                 String dateExpiryS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_EXPIRY);
                 if (dateExpiryS != null) {
-                    if (dataS.length() == 8){
+                    if (dataS.length() == 8) {
                         sdf = new SimpleDateFormat("dd.MM.yy");
-                    }else {
+                    } else {
                         sdf = new SimpleDateFormat("dd.MM.yyy");
                     }
                     Date d1 = sdf.parse(dateExpiryS);
@@ -618,9 +610,9 @@ public class LoanStepThreeFragment extends Fragment {
                 // Дата выпуска
                 String date_of_IssueS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_ISSUE);
                 if (date_of_IssueS != null) {
-                    if (dataS.length() == 8){
+                    if (dataS.length() == 8) {
                         sdf = new SimpleDateFormat("dd.MM.yy");
-                    }else {
+                    } else {
                         sdf = new SimpleDateFormat("dd.MM.yyy");
                     }
                     Date d1 = sdf.parse(date_of_IssueS);
@@ -747,6 +739,8 @@ public class LoanStepThreeFragment extends Fragment {
                     documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo, (int) (480 * aspectRatio), 480, false);
                     gotImageString(documentImageTwo);
                 }
+
+                initResult();
 
             } catch (Exception e) {
                 e.printStackTrace();

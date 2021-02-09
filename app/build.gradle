@@ -110,7 +110,7 @@ dependencies {
 
     //Regula
     implementation 'com.regula.documentreader.full:core:+@aar'
-    implementation('com.regula.documentreader:api:5.3.+@aar') {
+    implementation('com.regula.documentreader:api:5.4.+@aar') {
         transitive = true;
     }
 

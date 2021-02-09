@@ -8,19 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
-import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.*
 
 class LoanStepSixFragment : Fragment() {
     private var viewModel = LoansViewModel()
@@ -31,7 +29,7 @@ class LoanStepSixFragment : Fragment() {
 
     private var family = ""
     private var codeMaskId = ""
-
+    private var phoneLength = ""
     private var reNum = ""
 
     override fun onCreateView(
@@ -47,8 +45,8 @@ class LoanStepSixFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         six_loan_phone.mask = "+7 (###)-###-##-##"
 
-        initAvailableCountry()
         initListFamily()
+        initAvailableCountry()
 
         initClick()
     }
@@ -66,36 +64,30 @@ class LoanStepSixFragment : Fragment() {
         viewModelProfile.listAvailableCountry(mapCountry)
 
         viewModelProfile.listAvailableCountryDta.observe(viewLifecycleOwner, Observer { result ->
-            listAvailableCountryDta = result.code.toString()
-            getResultOk()
-
-            six_available_country.setText("+" + result.result[0].phoneCode)
-            six_number_phone.mask = result.result[0].phoneMaskSmall
-
             if (result.result != null) {
-                val adapterIdCountry = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
+                listAvailableCountryDta = result.code.toString()
+                getResultOk()
+                val adapterIdCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
                 six_available_country.setAdapter(adapterIdCountry)
 
                 six_available_country.keyListener = null
                 six_available_country.setOnItemClickListener { adapterView, view, position, l ->
                     six_available_country.showDropDown()
-                    six_number_phone.mask = result.result[position].phoneMaskSmall
+                    six_number_phone.mask = ""
+                    six_number_phone.text = null
+                    six_number_phone.visibility = View.VISIBLE
+                    phoneLength = result.result[position].phoneLength.toString()
+                    six_number_phone.mask = result.result[position].phoneMask
                     codeMaskId = result.result[position].isoCode.toString()
                 }
                 six_available_country.setOnClickListener {
                     six_available_country.showDropDown()
-                    six_number_phone.mask = null
-                    six_number_phone.text = null
-                    closeKeyboard()
                 }
                 six_available_country.onFocusChangeListener =
                     View.OnFocusChangeListener { view, hasFocus ->
                         try {
                             if (hasFocus) {
+                                closeKeyboard()
                                 six_available_country.showDropDown()
                             }
                         } catch (e: Exception) {
@@ -192,7 +184,7 @@ class LoanStepSixFragment : Fragment() {
                 six_ste_no_connection.visibility = View.GONE
                 six_ste_access_restricted.visibility = View.GONE
                 six_ste_not_found.visibility = View.GONE
-                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(7)
+                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
             }else if (result.reject != null){
                 initBottomSheet(result.reject!!.message.toString())
             }else if (result.error != null){
@@ -208,7 +200,10 @@ class LoanStepSixFragment : Fragment() {
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment = StepBottomFragment(message)
+        val stepBottomFragment =
+            StepBottomFragment(
+                message
+            )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -348,6 +343,24 @@ class LoanStepSixFragment : Fragment() {
         }else{
             six_loan_phone.error = null
         }
+
+        if (phoneLength == "11"){
+            if (six_number_phone.text.toString().toFullPhone().length != 20){
+                six_number_phone.error = "Введите валидный номер"
+                valid = false
+            }else{
+                six_number_phone.error = null
+            }
+        }else{
+            if (six_number_phone.text.toString().toFullPhone().length != 21){
+                six_number_phone.error = "Введите валидный номер"
+                valid = false
+            }else{
+                six_number_phone.error = null
+            }
+        }
+
+
 
         return valid
     }

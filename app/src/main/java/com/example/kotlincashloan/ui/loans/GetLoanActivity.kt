@@ -80,7 +80,7 @@ class GetLoanActivity : AppCompatActivity() {
             get_loan_view_pagers.getAdapter()!!.getCount() - 1
         ); //
         // or manual change
-        get_loan_stepper_indicator.setStepCount(5);
+        get_loan_stepper_indicator.setStepCount(6);
         get_loan_stepper_indicator.setCurrentStep(0);
     }
 

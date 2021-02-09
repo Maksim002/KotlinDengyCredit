@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
@@ -72,8 +72,9 @@ class LoanStepFourFragment : Fragment() {
         }
 
         bottom_loan_four.setOnClickListener {
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
-            initSaveLoan()
+            if (validate()){
+                initSaveLoan()
+            }
         }
     }
 
@@ -130,6 +131,7 @@ class LoanStepFourFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 loans_step_four_city.showDropDown()
+                                loans_step_four_city.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -181,6 +183,7 @@ class LoanStepFourFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 loans_step_four_status.showDropDown()
+                                loans_step_four_status.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -232,6 +235,7 @@ class LoanStepFourFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 loans_step_four_family.showDropDown()
+                                loans_step_four_family.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -283,6 +287,7 @@ class LoanStepFourFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 loans_step_four_children.showDropDown()
+                                loans_step_four_children.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -334,6 +339,7 @@ class LoanStepFourFragment : Fragment() {
                             if (hasFocus) {
                                 closeKeyboard()
                                 loans_step_four_federation.showDropDown()
+                                loans_step_four_federation.error = null
                             }
                         } catch (e: Exception) {
                         }
@@ -374,6 +380,7 @@ class LoanStepFourFragment : Fragment() {
                     if (hasFocus) {
                         closeKeyboard()
                         loans_step_four_card.showDropDown()
+                        loans_step_four_card.error = null
                     }
                 } catch (e: Exception) {
                 }
@@ -404,7 +411,7 @@ class LoanStepFourFragment : Fragment() {
                 loans_ste_no_connection.visibility = View.GONE
                 loans_ste_access_restricted.visibility = View.GONE
                 loans_ste_not_found.visibility = View.GONE
-
+                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
             } else if (result.reject != null) {
                 initBottomSheet(result.reject!!.message!!)
                 loans_step_layout.visibility = View.VISIBLE
@@ -424,7 +431,10 @@ class LoanStepFourFragment : Fragment() {
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment = StepBottomFragment(message)
+        val stepBottomFragment =
+            StepBottomFragment(
+                message
+            )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -522,5 +532,59 @@ class LoanStepFourFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 //        loans_step_owner.requestFocus()
+    }
+
+    private fun validate(): Boolean {
+        var valid = true
+        if (loans_step_four_residence.text.isEmpty()) {
+            loans_step_four_residence.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_residence.error = null
+        }
+
+        if (loans_step_four_city.text.isEmpty()) {
+            loans_step_four_city.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_city.error = null
+        }
+
+        if (loans_step_four_status.text.isEmpty()) {
+            loans_step_four_status.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_status.error = null
+        }
+
+        if (loans_step_four_family.text.isEmpty()) {
+            loans_step_four_family.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_family.error = null
+        }
+
+        if (loans_step_four_children.text.isEmpty()) {
+            loans_step_four_children.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_children.error = null
+        }
+
+        if (loans_step_four_federation.text.isEmpty()) {
+            loans_step_four_federation.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_federation.error = null
+        }
+
+        if (loans_step_four_card.text.isEmpty()) {
+            loans_step_four_card.error = "Поле не должно быть пустым"
+            valid = false
+        }else {
+            loans_step_four_card.error = null
+        }
+
+        return valid
     }
 }
