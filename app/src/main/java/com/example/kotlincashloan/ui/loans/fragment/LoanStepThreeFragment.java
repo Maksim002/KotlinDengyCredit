@@ -152,7 +152,7 @@ public class LoanStepThreeFragment extends Fragment {
         } else {
             map.put("passport_img_2", "");
         }
-        map.put("loan_type", "1");
+        map.put("loan_type", "2");
         map.put("loan_term", AppPreferences.INSTANCE.getType());
         map.put("loan_sum", AppPreferences.INSTANCE.getSum());
         map.put("step", "1");
