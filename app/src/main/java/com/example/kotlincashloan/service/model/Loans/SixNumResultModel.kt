@@ -1,8 +1,8 @@
-package com.example.kotlincashloan.service.model.profile
+package com.example.kotlincashloan.service.model.Loans
 
 import com.google.gson.annotations.SerializedName
 
-class CounterNumResultModel(
+class SixNumResultModel(
     @SerializedName("id")
     var id: Int? = null,
 
@@ -25,6 +25,6 @@ class CounterNumResultModel(
     var phoneMaskSmall: String? = null
 ) {
     override fun toString(): String {
-        return "+" + phoneCode.toString()
+        return name.toString()
     }
 }

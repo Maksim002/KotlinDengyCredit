@@ -3,9 +3,11 @@ package com.example.kotlincashloan.ui.profile
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
 import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,7 +69,7 @@ class ProfileViewModel : ViewModel(){
                     errorGetOperation.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },500)
             }
         })
@@ -125,7 +127,7 @@ class ProfileViewModel : ViewModel(){
                     errorListGender.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },500)
             }
         })
@@ -284,7 +286,7 @@ class ProfileViewModel : ViewModel(){
                     errorGetImg.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },500)
             }
         })

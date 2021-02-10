@@ -1,7 +1,6 @@
 package com.example.kotlincashloan.ui.still
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +9,9 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
+import com.example.kotlincashloan.utils.ExitDialogFragment
 import com.example.kotlinscreenscanner.ui.MainActivity
-import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_still.*
 
 class StillFragment : Fragment() {
@@ -38,7 +36,8 @@ class StillFragment : Fragment() {
 
     private fun initClick() {
         still_exit.setOnClickListener {
-            val myDialogFragment = ExitDialogFragment()
+            val myDialogFragment =
+                ExitDialogFragment()
             val manager = requireActivity().supportFragmentManager
             myDialogFragment.isCancelable = false;
             myDialogFragment.show(manager, "exitDialog")

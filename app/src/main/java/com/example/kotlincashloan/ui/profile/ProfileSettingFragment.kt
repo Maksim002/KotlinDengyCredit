@@ -996,7 +996,7 @@ class ProfileSettingFragment : Fragment() {
     private fun iniImageToServer() {
         viewModel.listUploadImgDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result->
             if (result.result != null){
-                HomeActivity.alert.hide()
+                MainActivity.alert.hide()
             }
         })
     }

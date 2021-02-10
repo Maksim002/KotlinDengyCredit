@@ -95,7 +95,7 @@ class DetailNotificationFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listNoticeDetailDta.value == null) {
-                HomeActivity.alert.show()
+                MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNotice(map)
                     initRequest()

@@ -70,7 +70,7 @@ class GetLoanActivity : AppCompatActivity() {
 //        }
 
         loan_cross_clear.setOnClickListener {
-            finish()
+           this.onBackPressed()
         }
 
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);

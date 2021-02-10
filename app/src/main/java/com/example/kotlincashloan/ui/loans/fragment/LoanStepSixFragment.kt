@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 
 class LoanStepSixFragment : Fragment() {
     private var viewModel = LoansViewModel()
-    private var viewModelProfile = ProfileViewModel()
 
     private var listAvailableCountryDta = ""
     private var getListFamilyDta = ""
@@ -61,10 +61,11 @@ class LoanStepSixFragment : Fragment() {
     private fun initAvailableCountry() {
         val mapCountry = mutableMapOf<String, String>()
         mapCountry["id"] = ""
-        viewModelProfile.listAvailableCountry(mapCountry)
+        viewModel.listAvailableSix(mapCountry)
 
-        viewModelProfile.listAvailableCountryDta.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.listAvailableSixDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
+
                 listAvailableCountryDta = result.code.toString()
                 getResultOk()
                 val adapterIdCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
@@ -73,7 +74,9 @@ class LoanStepSixFragment : Fragment() {
                 six_available_country.keyListener = null
                 six_available_country.setOnItemClickListener { adapterView, view, position, l ->
                     six_available_country.showDropDown()
+                    //Очещает старую маску при выборе новой
                     six_number_phone.mask = ""
+                    // Очещает поле
                     six_number_phone.text = null
                     six_number_phone.visibility = View.VISIBLE
                     phoneLength = result.result[position].phoneLength.toString()
@@ -98,7 +101,7 @@ class LoanStepSixFragment : Fragment() {
             }
         })
 
-        viewModelProfile.errorListAvailableCountry.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listAvailableCountryDta = error
                 errorList(error)

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
@@ -41,7 +42,7 @@ class SupportViewModel : ViewModel(){
                     error.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },400)
             }
         })

@@ -411,7 +411,7 @@ class ProfileFragment : Fragment() {
         } else {
             if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listOperation(map)

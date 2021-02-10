@@ -1,6 +1,7 @@
 package com.example.kotlinscreenscanner.ui
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
@@ -30,14 +31,19 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    companion object{
+    companion object {
         lateinit var timer: TimerListener
+        lateinit var alert: LoadingAlert
     }
 
     @SuppressLint("WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Инцилизация Прилоудера
+        alert = LoadingAlert(this)
+
         HomeActivity.alert = LoadingAlert(this)
         timer = TimerListener(this)
         GetLoanActivity.timer = TimerListenerLoan(this)
@@ -45,7 +51,8 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val notificationmanager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationmanager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
@@ -125,11 +132,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        if (AppPreferences.token != ""){
+        if (AppPreferences.token != "") {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            timer.timeStart()
-            AppPreferences.isNumber = false
+                timer.timeStart()
+                AppPreferences.isNumber = false
             }, 200)
-           }
+        }
     }
 }

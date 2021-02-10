@@ -191,11 +191,11 @@ class LoansFragment : Fragment(), LoansListener {
                 loans_layout.isRefreshing = false
                 if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        HomeActivity.alert.hide()
+                        MainActivity.alert.hide()
                         alertValid = true
                     }, 650)
                 } else {
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -207,7 +207,7 @@ class LoansFragment : Fragment(), LoansListener {
                 initError(error)
                 listLoanId = error
             }
-            HomeActivity.alert.hide()
+            MainActivity.alert.hide()
         })
     }
 
@@ -338,7 +338,7 @@ class LoansFragment : Fragment(), LoansListener {
             listNewsId = "601"
             listLoanId = "601"
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            HomeActivity.alert.hide()
+            MainActivity.alert.hide()
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
@@ -406,11 +406,11 @@ class LoansFragment : Fragment(), LoansListener {
                 loans_layout.isRefreshing = false
                 if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        HomeActivity.alert.hide()
+                        MainActivity.alert.hide()
                         alertValid = true
                     }, 650)
                 } else {
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -422,12 +422,12 @@ class LoansFragment : Fragment(), LoansListener {
                 initError(error)
                 listNewsId = error
             }
-            HomeActivity.alert.hide()
+            MainActivity.alert.hide()
         })
     }
 
     private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
     }
@@ -514,7 +514,7 @@ class LoansFragment : Fragment(), LoansListener {
             loansAnim = false
         }
         val handler = Handler()
-        HomeActivity.alert.show()
+        MainActivity.alert.show()
         if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)

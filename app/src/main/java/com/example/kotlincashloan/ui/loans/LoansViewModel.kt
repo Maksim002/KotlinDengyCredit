@@ -451,4 +451,31 @@ class LoansViewModel: ViewModel() {
             }
         })
     }
+
+    // Список даступных стран
+    val errorListAvailableSix = MutableLiveData<String>()
+    var listAvailableSixDta = MutableLiveData<CommonResponse<ArrayList<SixNumResultModel>>>()
+
+    fun listAvailableSix(map: Map<String, String>){
+        RetrofitService.apiService().listAvailableSix(map).enqueue(object : Callback<CommonResponse<ArrayList<SixNumResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<SixNumResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListAvailableSix.postValue( "601")
+                }else{
+                    errorListAvailableSix.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<SixNumResultModel>>>, response: Response<CommonResponse<ArrayList<SixNumResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listAvailableSixDta.postValue(response.body())
+                    }else{
+                        errorListAvailableSix.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListAvailableSix.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
 }

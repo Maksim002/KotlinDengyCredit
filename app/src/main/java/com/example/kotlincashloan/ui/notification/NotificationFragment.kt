@@ -99,7 +99,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         } else {
             if (viewModel.listNoticeDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listNotice(map)

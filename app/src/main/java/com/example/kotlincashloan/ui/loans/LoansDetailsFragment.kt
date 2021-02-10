@@ -114,7 +114,7 @@ class LoansDetailsFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetDta.value == null) {
-               HomeActivity.alert.show()
+               MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNews(map)
                     initRequest()

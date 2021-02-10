@@ -135,6 +135,11 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
+    @POST("listAvailableCountry?token=oYyxhIFgJjAb")
+    fun listAvailableSix(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SixNumResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
     @POST("listSecretQuestion?token=oYyxhIFgJjAb")
     fun listSecretQuestion(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>
 

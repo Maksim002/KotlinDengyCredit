@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.still
+package com.example.kotlincashloan.utils
 
 import android.app.AlertDialog
 import android.app.Dialog
