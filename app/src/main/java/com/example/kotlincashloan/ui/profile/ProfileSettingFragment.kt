@@ -385,8 +385,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             })
     }
 
-
-
     // TODO: 21-2-11  Список секретных вопросов
     private fun listQuestions() {
         viewModel.listSecretQuestionDta.observe(

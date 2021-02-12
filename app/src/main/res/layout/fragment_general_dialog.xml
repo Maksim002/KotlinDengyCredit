@@ -8,6 +8,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_dialog"
         android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
         android:layout_height="300dp"
         android:layout_weight="1"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

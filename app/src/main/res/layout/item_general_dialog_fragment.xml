@@ -16,6 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:textSize="16sp"
             android:textColor="@color/blackColor" />
 
@@ -23,8 +24,9 @@
             android:id="@+id/radio_dialog"
             android:layout_width="match_parent"
             android:clickable="false"
+            android:layout_gravity="center"
             android:theme="@style/RadioButtonStyle"
-            android:layout_height="23dp"
+            android:layout_height="wrap_content"
             android:layout_weight="10" />
     </LinearLayout>
 

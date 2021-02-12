@@ -29,6 +29,13 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
+        initClick()
+    }
+
+    private fun initClick() {
+        home_enter.setOnClickListener {
+            dismiss()
+        }
     }
 
     //Инцелезация recycler
