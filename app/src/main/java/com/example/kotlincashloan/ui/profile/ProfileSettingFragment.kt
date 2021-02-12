@@ -18,7 +18,6 @@ import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -91,12 +90,14 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     private var imageString :String = ""
     lateinit var currentPhotoPath: String
-    private var selectionPosition = -1
+    private var questionPosition = -1
+    private var countriesPosition = -1
 
     private lateinit var myThread: Thread
     private lateinit var dialog: AlertDialog
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var question: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
+    private var countries: ArrayList<CounterNumResultModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -315,6 +316,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 try {
                     // первый номер
                     if (result.result != null) {
+                        //Перезаписывает список
+                        countries = result.result
                         if (clientResult.phoneFirst != "") {
                             profile_setting_first.mask = null
 
@@ -342,12 +345,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
                             checkNumber = secondNationality
 
+                            countriesPosition = secondNationality
+
                             codeMack = result.result[secondNationality].phoneCode.toString()
 
-                            profile_setting_second_phone.mask =
-                                result.result[secondNationality].phoneMaskSmall
-                            profile_setting_second_phone.setText(
-                                MyUtils.toMask(
+                            profile_setting_second_phone.mask = result.result[secondNationality].phoneMaskSmall
+                            profile_setting_second_phone.setText(MyUtils.toMask(
                                     clientResult.secondPhone.toString(),
                                     result.result[secondNationality].phoneCode!!.length,
                                     result.result[secondNationality].phoneLength!!.toInt()
@@ -358,43 +361,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                             profile_setting_second_phone.text = null
                             codeMack = result.result[codeNationality].phoneCode.toString()
                             profile_s_mask.setText("+" + list[codeNationality].phoneCode)
+                            countriesPosition = codeNationality
                         }
+
 
                         errorListAvailableCountry = result.code.toString()
                         resultSuccessfully()
-
-                        val adapterListCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                        profile_s_mask.setAdapter(adapterListCountry)
-
-                        profile_s_mask.keyListener = null
-                        profile_s_mask.setOnItemClickListener { adapterView, view, position, l ->
-                            phoneSecondId = result.result[position].id.toString()
-                            codeNationality = position
-                            codeMack = result.result[position].phoneCode.toString()
-                            numberAvailable = result.result[position].phoneLength!!.toInt()
-                            profile_setting_second_phone.setText("")
-                            initCleaningRoom()
-                            profile_s_mask.showDropDown()
-                            profile_s_mask.clearFocus()
-                        }
-                        profile_s_mask.setOnClickListener {
-                            profile_setting_second_phone.clearFocus()
-                            try {
-                                closeKeyboard()
-                            }catch (e: Exception){
-                                e.printStackTrace()
-                            }
-                            profile_s_mask.showDropDown()
-                        }
-                        profile_s_mask.onFocusChangeListener =
-                            View.OnFocusChangeListener { view, hasFocus ->
-                                try {
-                                    if (hasFocus) {
-                                        profile_s_mask.showDropDown()
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -424,7 +396,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                     if (result.result != null) {
                         question = result.result
                         profile_s_question.setText(result.result[clientResult.question!!.toInt() - 1].name)
-                        selectionPosition = clientResult.question!!.toInt() - 1
+                        questionPosition = clientResult.question!!.toInt() - 1
                         var numberPosition = 0
                         if (questionId == "") {
                             numberPosition = clientResult.question!!.toInt()
@@ -434,14 +406,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                         errorListSecretQuestion = result.code.toString()
                         resultSuccessfully()
 
-                        //Мутод заполняет список данными дя адапера
-                        if (itemDialog.size == 0) {
-                            for (i in 0..result.result.size) {
-                                if (i <= result.result.size) {
-                                    itemDialog.add(GeneralDialogModel(result.result[i].name.toString(), "listQuestions", i))
-                                }
-                            }
-                        }
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -636,17 +600,58 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listQuestions"){
             profile_s_question.setText(question[model.position].name)
-            selectionPosition = model.position
+            questionPosition = model.position
             questionId = question[model.position].id.toString()
+
+        }else if (model.key == "listCountries"){
+            profile_setting_second_phone.mask = null
+            profile_s_mask.setText("+" + countries[model.position].phoneCode)
+            countriesPosition = model.position
+            numberAvailable = countries[model.position].phoneLength!!.toInt()
+            codeNationality = model.position
+            codeMack = countries[model.position].phoneCode.toString()
+            profile_setting_second_phone.mask = countries[model.position].phoneMaskSmall
+            profile_setting_second_phone.setText("")
+            initCleaningRoom()
         }
+    }
+
+    //очещает список
+    private fun initClearList(){
+        itemDialog.clear()
     }
 
     private fun initClick() {
 
-        //Click на получение списков
+        //Click Список секретных вопросов
         profile_s_question.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..question.size) {
+                    if (i <= question.size) {
+                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1))
+                    }
+                }
+            }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, selectionPosition)
+                initBottomSheet(itemDialog, questionPosition)
+            }
+        }
+
+        //Click Список доступных стран
+        profile_s_mask.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..countries.size) {
+                    if (i <= countries.size) {
+                        itemDialog.add(GeneralDialogModel(countries[i-1].name.toString(), "listCountries", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0){
+                initBottomSheet(itemDialog, countriesPosition)
             }
         }
 

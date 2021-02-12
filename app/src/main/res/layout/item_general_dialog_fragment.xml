@@ -23,6 +23,7 @@
             android:id="@+id/radio_dialog"
             android:layout_width="match_parent"
             android:clickable="false"
+            android:theme="@style/RadioButtonStyle"
             android:layout_height="23dp"
             android:layout_weight="10" />
     </LinearLayout>

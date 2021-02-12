@@ -12,6 +12,12 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
+    //меняет стиль RadioBottom
+    <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/orangeColor</item>
+        <item name="android:textColorSecondary">@color/orangeColor</item>
+    </style>
+
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
