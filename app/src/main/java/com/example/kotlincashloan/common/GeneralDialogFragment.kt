@@ -46,8 +46,6 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
 
     //Слушатель адаптера
     override fun listenerClickDialog(position: Int, name: String, key: String) {
-//        AppPreferences.position = position.toString()
-//        AppPreferences.key = key
         listener.listenerClickResult(list.get(position))
         dismiss()
     }

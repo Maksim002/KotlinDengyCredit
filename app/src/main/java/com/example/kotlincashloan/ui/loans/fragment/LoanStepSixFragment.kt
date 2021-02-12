@@ -11,6 +11,11 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.service.model.Loans.ListWorkResultModel
+import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
@@ -19,9 +24,10 @@ import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
+import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 
-class LoanStepSixFragment : Fragment() {
+class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     private var viewModel = LoansViewModel()
 
     private var listAvailableCountryDta = ""
@@ -31,6 +37,11 @@ class LoanStepSixFragment : Fragment() {
     private var codeMaskId = ""
     private var phoneLength = ""
     private var reNum = ""
+
+    private var sixPosition = -1
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +66,48 @@ class LoanStepSixFragment : Fragment() {
         bottom_loan_six.setOnClickListener {
             initSaveLoan()
         }
+
+        six_available_country.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listAvailableSix.size) {
+                    if (i <= listAvailableSix.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listAvailableSix[i - 1].name.toString(),
+                                "listAvailableSix",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, sixPosition)
+            }
+        }
+    }
+
+    //очещает список
+    private fun initClearList() {
+        itemDialog.clear()
+    }
+
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listAvailableSix") {
+            six_available_country.setText(listAvailableSix[model.position].name)
+            sixPosition = model.position
+            codeMaskId = listAvailableSix[model.position].id.toString()
+            //Очещает старую маску при выборе новой
+            six_number_phone.mask = ""
+            // Очещает поле
+            six_number_phone.text = null
+            six_number_phone.visibility = View.VISIBLE
+            phoneLength = listAvailableSix[model.position].phoneLength.toString()
+            six_number_phone.mask = listAvailableSix[model.position].phoneMask
+        }
     }
 
     // TODO: 21-2-8 Список доступных стран
@@ -65,37 +118,9 @@ class LoanStepSixFragment : Fragment() {
 
         viewModel.listAvailableSixDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-
                 listAvailableCountryDta = result.code.toString()
                 getResultOk()
-                val adapterIdCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                six_available_country.setAdapter(adapterIdCountry)
-
-                six_available_country.keyListener = null
-                six_available_country.setOnItemClickListener { adapterView, view, position, l ->
-                    six_available_country.showDropDown()
-                    //Очещает старую маску при выборе новой
-                    six_number_phone.mask = ""
-                    // Очещает поле
-                    six_number_phone.text = null
-                    six_number_phone.visibility = View.VISIBLE
-                    phoneLength = result.result[position].phoneLength.toString()
-                    six_number_phone.mask = result.result[position].phoneMask
-                    codeMaskId = result.result[position].isoCode.toString()
-                }
-                six_available_country.setOnClickListener {
-                    six_available_country.showDropDown()
-                }
-                six_available_country.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                six_available_country.showDropDown()
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listAvailableSix = result.result
             } else {
                 listResult(result.error.code!!)
             }
@@ -165,7 +190,7 @@ class LoanStepSixFragment : Fragment() {
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveLoan() {
         initCleaningRoom()
-        val mapSave= mutableMapOf<String, String>()
+        val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.sum.toString()
@@ -176,30 +201,36 @@ class LoanStepSixFragment : Fragment() {
         mapSave["type"] = family
         mapSave["phone"] = six_loan_phone.text.toString()
         mapSave["step"] = "4"
-        if (validate()){
+        if (validate()) {
             viewModel.saveLoan(mapSave)
         }
 
-        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result->
-            if (result.reject != null){
+        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
+            if (result.reject != null) {
                 layout_loan_six.visibility = View.VISIBLE
                 six_ste_technical_work.visibility = View.GONE
                 six_ste_no_connection.visibility = View.GONE
                 six_ste_access_restricted.visibility = View.GONE
                 six_ste_not_found.visibility = View.GONE
                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
-            }else if (result.reject != null){
+            } else if (result.reject != null) {
                 initBottomSheet(result.reject!!.message.toString())
-            }else if (result.error != null){
+            } else if (result.error != null) {
                 listResult(result.error.code!!)
             }
         })
 
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
                 errorList(error)
             }
         })
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun initBottomSheet(message: String) {
@@ -212,14 +243,15 @@ class LoanStepSixFragment : Fragment() {
     }
 
     //метод удаляет все символы из строки
-    private fun initCleaningRoom(){
+    private fun initCleaningRoom() {
         if (six_number_phone.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMaskId + six_number_phone.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = codeMaskId + six_number_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
             }
-        }else{
+        } else {
             reNum = ""
         }
     }
@@ -312,53 +344,53 @@ class LoanStepSixFragment : Fragment() {
         if (six_loan_surname.text.isEmpty()) {
             six_loan_surname.error = "Поле не должно быть пустым"
             valid = false
-        }else {
+        } else {
             six_loan_surname.error = null
         }
 
-        if (six_loan_name.text.isEmpty()){
+        if (six_loan_name.text.isEmpty()) {
             six_loan_name.error = "Поле не должно быть пустым"
             valid = false
-        }else {
+        } else {
             six_loan_name.error = null
         }
 
-        if (six_loan_name.text.isEmpty()){
+        if (six_loan_name.text.isEmpty()) {
             six_loan_name.error = "Поле не должно быть пустым"
             valid = false
-        }else {
+        } else {
             six_loan_name.error = null
         }
 
-        if (six_loan_family.text.isEmpty()){
+        if (six_loan_family.text.isEmpty()) {
             six_loan_family.error = "Поле не должно быть пустым"
             valid = false
-        }else {
+        } else {
             six_loan_family.error = null
         }
 
-        if (six_loan_phone.text!!.isEmpty()){
+        if (six_loan_phone.text!!.isEmpty()) {
             six_loan_phone.error = "Поле не должно быть пустым"
             valid = false
-        }else if (six_loan_phone.text.toString().toFullPhone().length != 20){
+        } else if (six_loan_phone.text.toString().toFullPhone().length != 20) {
             six_loan_phone.error = "Введите валидный номер"
             valid = false
-        }else{
+        } else {
             six_loan_phone.error = null
         }
 
-        if (phoneLength == "11"){
-            if (six_number_phone.text.toString().toFullPhone().length != 20){
+        if (phoneLength == "11") {
+            if (six_number_phone.text.toString().toFullPhone().length != 20) {
                 six_number_phone.error = "Введите валидный номер"
                 valid = false
-            }else{
+            } else {
                 six_number_phone.error = null
             }
-        }else{
-            if (six_number_phone.text.toString().toFullPhone().length != 21){
+        } else {
+            if (six_number_phone.text.toString().toFullPhone().length != 21) {
                 six_number_phone.error = "Введите валидный номер"
                 valid = false
-            }else{
+            } else {
                 six_number_phone.error = null
             }
         }

@@ -11,18 +11,23 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.service.model.Loans.*
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment : Fragment() {
+class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -40,6 +45,23 @@ class LoanStepFiveFragment : Fragment() {
     private var incomeId = ""
     private var typeIncomeId = ""
     private var additionalId = ""
+
+    private var workPosition = -1
+    private var typeWorkPosition = -1
+    private var yearsPosition = -1
+    private var experiencePosition = -1
+    private var incomePosition = -1
+    private var typeIncomePosition = -1
+    private var incomeAdditionalPosition = -1
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listWork: ArrayList<ListWorkResultModel> = arrayListOf()
+    private var listTypeWork: ArrayList<ListTypeWorkModel> = arrayListOf()
+    private var listYears: ArrayList<ListYearsResultModel> = arrayListOf()
+    private var listWorkExperience: ArrayList<ListYearsResultModel> = arrayListOf()
+    private var listIncome: ArrayList<ListIncomeResultModel> = arrayListOf()
+    private var listTypeIncome: ArrayList<ListTypeIncomeModel> = arrayListOf()
+    private var listIncomeAdditional: ArrayList<ListIncomeResultModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,6 +131,161 @@ class LoanStepFiveFragment : Fragment() {
             initLisTypeIncome()
             initListIncomeAdditional()
         }
+
+        fire_type_employment.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listWork.size) {
+                    if (i <= listWork.size) {
+                        itemDialog.add(GeneralDialogModel(listWork[i-1].name.toString(), "listWork", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, workPosition)
+            }
+        }
+
+        fire_post.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listTypeWork.size) {
+                    if (i <= listTypeWork.size) {
+                        itemDialog.add(GeneralDialogModel(listTypeWork[i-1].name.toString(), "listTypeWork", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, typeWorkPosition)
+            }
+        }
+
+        fire_work_experience_r_f.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listYears.size) {
+                    if (i <= listYears.size) {
+                        itemDialog.add(GeneralDialogModel(listYears[i-1].name.toString(), "listYears", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, yearsPosition)
+            }
+        }
+
+        fire_work_experience.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listWorkExperience.size) {
+                    if (i <= listWorkExperience.size) {
+                        itemDialog.add(GeneralDialogModel(listWorkExperience[i-1].name.toString(), "listWorkExperience", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, experiencePosition)
+            }
+        }
+
+        fire_list_income.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listIncome.size) {
+                    if (i <= listIncome.size) {
+                        itemDialog.add(GeneralDialogModel(listIncome[i-1].name.toString(), "listIncome", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, incomePosition)
+            }
+        }
+
+        fire_additional_income.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listTypeIncome.size) {
+                    if (i <= listTypeIncome.size) {
+                        itemDialog.add(GeneralDialogModel(listTypeIncome[i-1].name.toString(), "listTypeIncome", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, typeIncomePosition)
+            }
+        }
+
+        fire_additional_amount.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listIncomeAdditional.size) {
+                    if (i <= listIncomeAdditional.size) {
+                        itemDialog.add(GeneralDialogModel(listIncomeAdditional[i-1].name.toString(), "listIncomeAdditional", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, incomeAdditionalPosition)
+            }
+        }
+    }
+
+    //очещает список
+    private fun initClearList(){
+        itemDialog.clear()
+    }
+
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listWork") {
+            fire_type_employment.setText(listWork[model.position].name)
+            workPosition = model.position
+            workId = listWork[model.position].id!!
+        }
+
+        if (model.key == "listTypeWork") {
+            fire_post.setText(listTypeWork[model.position].name)
+            typeWorkPosition = model.position
+            typeId = listTypeWork[model.position].id!!
+        }
+
+        if (model.key == "listYears") {
+            fire_work_experience_r_f.setText(listYears[model.position].name)
+            yearsPosition = model.position
+            yearsRfId = listYears[model.position].id!!
+        }
+
+        if (model.key == "listWorkExperience") {
+            fire_work_experience.setText(listWorkExperience[model.position].name)
+            experiencePosition = model.position
+            yearsId = listWorkExperience[model.position].id!!
+        }
+
+        if (model.key == "listIncome") {
+            fire_list_income.setText(listIncome[model.position].name)
+            incomePosition = model.position
+            incomeId = listIncome[model.position].id!!
+        }
+
+        if (model.key == "listTypeIncome") {
+            fire_additional_income.setText(listTypeIncome[model.position].name)
+            typeIncomePosition = model.position
+            typeIncomeId = listTypeIncome[model.position].id!!
+        }
+
+        if (model.key == "listIncomeAdditional") {
+            fire_additional_amount.setText(listIncomeAdditional[model.position].name)
+            incomeAdditionalPosition = model.position
+            additionalId = listIncomeAdditional[model.position].id!!
+        }
     }
 
     // TODO: 21-2-5  Вид занятости
@@ -123,28 +300,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListWorkDta = result.code.toString()
                 getResultOk()
-                val adapterIdType = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_type_employment.setAdapter(adapterIdType)
-
-                fire_type_employment.keyListener = null
-                fire_type_employment.setOnItemClickListener { adapterView, view, position, l ->
-                    workId = result.result[position].id!!
-                    fire_type_employment.showDropDown()
-                }
-                fire_type_employment.setOnClickListener {
-                    fire_type_employment.showDropDown()
-                }
-                fire_type_employment.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_type_employment.showDropDown()
-                                fire_type_employment.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listWork = result.result
             } else {
                 getListWorkDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -171,28 +327,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListTypeWorkDta = result.code.toString()
                 getResultOk()
-                val adapterIdPost = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_post.setAdapter(adapterIdPost)
-
-                fire_post.keyListener = null
-                fire_post.setOnItemClickListener { adapterView, view, position, l ->
-                    typeId = result.result[position].id!!
-                    fire_post.showDropDown()
-                }
-                fire_post.setOnClickListener {
-                    fire_post.showDropDown()
-                }
-                fire_post.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_post.showDropDown()
-                                fire_post.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listTypeWork = result.result
             } else {
                 getListTypeWorkDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -219,28 +354,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListYearsDtaF = result.code.toString()
                 getResultOk()
-                val adapterIdExperience = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_work_experience_r_f.setAdapter(adapterIdExperience)
-
-                fire_work_experience_r_f.keyListener = null
-                fire_work_experience_r_f.setOnItemClickListener { adapterView, view, position, l ->
-                    yearsRfId = result.result[position].id!!
-                    fire_work_experience_r_f.showDropDown()
-                }
-                fire_work_experience_r_f.setOnClickListener {
-                    fire_work_experience_r_f.showDropDown()
-                }
-                fire_work_experience_r_f.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_work_experience_r_f.showDropDown()
-                                fire_work_experience_r_f.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listYears = result.result
             } else {
                 getListYearsDtaF = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -267,28 +381,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
                 getResultOk()
-                val adapterIdExperience = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_work_experience.setAdapter(adapterIdExperience)
-
-                fire_work_experience.keyListener = null
-                fire_work_experience.setOnItemClickListener { adapterView, view, position, l ->
-                    yearsId = result.result[position].id!!
-                    fire_work_experience.showDropDown()
-                }
-                fire_work_experience.setOnClickListener {
-                    fire_work_experience.showDropDown()
-                }
-                fire_work_experience.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_work_experience.showDropDown()
-                                fire_work_experience.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listWorkExperience = result.result
             } else {
                 getListWorkDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -316,28 +409,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListIncomeDta = result.code.toString()
                 getResultOk()
-                val adapterIdIncome = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_list_income.setAdapter(adapterIdIncome)
-
-                fire_list_income.keyListener = null
-                fire_list_income.setOnItemClickListener { adapterView, view, position, l ->
-                    incomeId = result.result[position].id!!
-                    fire_list_income.showDropDown()
-                }
-                fire_list_income.setOnClickListener {
-                    fire_list_income.showDropDown()
-                }
-                fire_list_income.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_list_income.showDropDown()
-                                fire_list_income.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listIncome = result.result
             } else {
                 getListIncomeDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -365,28 +437,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListTypeIncomeDta = result.code.toString()
                 getResultOk()
-                val adapterIdIncome = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_additional_income.setAdapter(adapterIdIncome)
-
-                fire_additional_income.keyListener = null
-                fire_additional_income.setOnItemClickListener { adapterView, view, position, l ->
-                    typeIncomeId = result.result[position].id!!
-                    fire_additional_income.showDropDown()
-                }
-                fire_additional_income.setOnClickListener {
-                    fire_additional_income.showDropDown()
-                }
-                fire_additional_income.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_additional_income.showDropDown()
-                                fire_additional_income.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listTypeIncome = result.result
             } else {
                 getListTypeIncomeDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -414,28 +465,7 @@ class LoanStepFiveFragment : Fragment() {
             if (result.result != null) {
                 getListAdditionalDta = result.code.toString()
                 getResultOk()
-                val adapterIdIncome = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
-                fire_additional_amount.setAdapter(adapterIdIncome)
-
-                fire_additional_amount.keyListener = null
-                fire_additional_amount.setOnItemClickListener { adapterView, view, position, l ->
-                    additionalId = result.result[position].id!!
-                    fire_additional_amount.showDropDown()
-                }
-                fire_additional_amount.setOnClickListener {
-                    fire_additional_amount.showDropDown()
-                }
-                fire_additional_amount.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                fire_additional_amount.showDropDown()
-                                fire_additional_amount.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listIncomeAdditional = result.result
             } else {
                 getListAdditionalDta = result.error.code.toString()
             }
@@ -487,6 +517,12 @@ class LoanStepFiveFragment : Fragment() {
                 errorList(error)
             }
         })
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun initBottomSheet(message: String) {

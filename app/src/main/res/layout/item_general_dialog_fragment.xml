@@ -26,7 +26,7 @@
             android:clickable="false"
             android:layout_gravity="center"
             android:theme="@style/RadioButtonStyle"
-            android:layout_height="wrap_content"
+            android:layout_height="26dp"
             android:layout_weight="10" />
     </LinearLayout>
 

@@ -11,6 +11,13 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.service.model.Loans.ListCityResultModel
+import com.example.kotlincashloan.service.model.Loans.ListFamilyStatusModel
+import com.example.kotlincashloan.service.model.Loans.ListNumbersResultModel
+import com.example.kotlincashloan.service.model.Loans.ListYearsResultModel
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -23,7 +30,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment : Fragment() {
+class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -37,6 +44,22 @@ class LoanStepFourFragment : Fragment() {
     private var childrenId = ""
     private var liveId = ""
     private var cardId = ""
+
+    private var cityPosition = -1
+    private var familyPosition = -1
+    private var numbersPosition = -1
+    private var childrenPosition = -1
+    private var yearsPosition = -1
+    private var catsNamesPosition = -1
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listCity: ArrayList<ListCityResultModel> = arrayListOf()
+    private var listFamilyStatus: ArrayList<ListFamilyStatusModel> = arrayListOf()
+    private var listNumbers: ArrayList<ListNumbersResultModel> = arrayListOf()
+    private var listNumbersChildren: ArrayList<ListNumbersResultModel> = arrayListOf()
+    private var listYears: ArrayList<ListYearsResultModel> = arrayListOf()
+    //Наличие банковской карты
+    private var listCatsNames = arrayOf("Нет", "Да")
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,6 +99,139 @@ class LoanStepFourFragment : Fragment() {
                 initSaveLoan()
             }
         }
+
+        loans_step_four_city.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listCity.size) {
+                    if (i <= listCity.size) {
+                        itemDialog.add(GeneralDialogModel(listCity[i-1].name.toString(), "listCity", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, cityPosition)
+            }
+        }
+
+        loans_step_four_status.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listFamilyStatus.size) {
+                    if (i <= listFamilyStatus.size) {
+                        itemDialog.add(GeneralDialogModel(listFamilyStatus[i-1].name.toString(), "listFamilyStatus", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, familyPosition)
+            }
+        }
+
+        loans_step_four_family.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listNumbers.size) {
+                    if (i <= listNumbers.size) {
+                        itemDialog.add(GeneralDialogModel(listNumbers[i-1].name.toString(), "listNumbers", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, numbersPosition)
+            }
+        }
+
+        loans_step_four_children.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listNumbersChildren.size) {
+                    if (i <= listNumbersChildren.size) {
+                        itemDialog.add(GeneralDialogModel(listNumbersChildren[i-1].name.toString(), "listNumbersChildren", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, childrenPosition)
+            }
+        }
+
+        loans_step_four_federation.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listYears.size) {
+                    if (i <= listYears.size) {
+                        itemDialog.add(GeneralDialogModel(listYears[i-1].name.toString(), "listYears", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, yearsPosition)
+            }
+        }
+
+        loans_step_four_card.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listCatsNames.size) {
+                    if (i <= listCatsNames.size) {
+                        itemDialog.add(GeneralDialogModel(listCatsNames[i-1], "listCatsNames", i-1))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, catsNamesPosition)
+            }
+        }
+    }
+
+    //очещает список
+    private fun initClearList(){
+        itemDialog.clear()
+    }
+
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listCity") {
+            loans_step_four_city.setText(listCity[model.position].name)
+            cityPosition = model.position
+            cityId = listCity[model.position].id!!
+        }
+        if (model.key == "listFamilyStatus") {
+            loans_step_four_status.setText(listFamilyStatus[model.position].name)
+            familyPosition = model.position
+            statusId = listFamilyStatus[model.position].id!!
+        }
+
+        if (model.key == "listNumbers") {
+            loans_step_four_family.setText(listNumbers[model.position].name)
+            numbersPosition = model.position
+            familyId = listNumbers[model.position].id!!
+        }
+
+        if (model.key == "listNumbersChildren") {
+            loans_step_four_children.setText(listNumbersChildren[model.position].name)
+            childrenPosition = model.position
+            childrenId = listNumbersChildren[model.position].id!!
+        }
+
+        if (model.key == "listYears") {
+            loans_step_four_federation.setText(listYears[model.position].name)
+            yearsPosition = model.position
+            liveId = listYears[model.position].id!!
+        }
+
+        if (model.key == "listCatsNames") {
+            loans_step_four_card.setText(listCatsNames[model.position])
+            catsNamesPosition = model.position
+            cardId = listCatsNames[model.position]
+        }
     }
 
     private fun initInternet() {
@@ -87,18 +243,16 @@ class LoanStepFourFragment : Fragment() {
             loans_ste_technical_work.visibility = View.GONE
             loans_ste_access_restricted.visibility = View.GONE
             loans_ste_not_found.visibility = View.GONE
-//            loans_step_owner.requestFocus()
         } else {
             initListCity()
             initListFamilyStatus()
             initListNumbers()
             initListNumbersChildren()
             initListYears()
-            defaultList()
         }
     }
 
-    //выберите город
+    // TODO: 21-2-12  выберите город
     private fun initListCity() {
         val mapCity = mutableMapOf<String, String>()
         mapCity["login"] = AppPreferences.login.toString()
@@ -110,32 +264,7 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListCityDta = result.code.toString()
                 getResultOk()
-                val adapterIdCity = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                loans_step_four_city.setAdapter(adapterIdCity)
-
-                loans_step_four_city.keyListener = null
-                loans_step_four_city.setOnItemClickListener { adapterView, view, position, l ->
-                    cityId = result.result[position].id!!
-                    loans_step_four_city.showDropDown()
-                }
-                loans_step_four_city.setOnClickListener {
-                    loans_step_four_city.showDropDown()
-                }
-                loans_step_four_city.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                loans_step_four_city.showDropDown()
-                                loans_step_four_city.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listCity = result.result
             } else {
                 getListCityDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -150,7 +279,7 @@ class LoanStepFourFragment : Fragment() {
         })
     }
 
-    //Ваше семейное положение
+    // TODO: 21-2-12 Ваше семейное положение
     private fun initListFamilyStatus() {
         val mapStatus = mutableMapOf<String, String>()
         mapStatus["login"] = AppPreferences.login.toString()
@@ -162,32 +291,7 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListFamilyStatusDta = result.code.toString()
                 getResultOk()
-                val adapterIdStatus = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                loans_step_four_status.setAdapter(adapterIdStatus)
-
-                loans_step_four_status.keyListener = null
-                loans_step_four_status.setOnItemClickListener { adapterView, view, position, l ->
-                    statusId = result.result[position].id!!
-                    loans_step_four_status.showDropDown()
-                }
-                loans_step_four_status.setOnClickListener {
-                    loans_step_four_status.showDropDown()
-                }
-                loans_step_four_status.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                loans_step_four_status.showDropDown()
-                                loans_step_four_status.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listFamilyStatus = result.result
             } else {
                 getListFamilyStatusDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -202,7 +306,7 @@ class LoanStepFourFragment : Fragment() {
         })
     }
 
-    //Численность семьи
+    // TODO: 21-2-12 Численность семьи
     private fun initListNumbers() {
         val mapNumbers = mutableMapOf<String, String>()
         mapNumbers["login"] = AppPreferences.login.toString()
@@ -214,32 +318,7 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
                 getResultOk()
-                val adapterIdFamily = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                loans_step_four_family.setAdapter(adapterIdFamily)
-
-                loans_step_four_family.keyListener = null
-                loans_step_four_family.setOnItemClickListener { adapterView, view, position, l ->
-                    familyId = result.result[position].id!!
-                    loans_step_four_family.showDropDown()
-                }
-                loans_step_four_family.setOnClickListener {
-                    loans_step_four_family.showDropDown()
-                }
-                loans_step_four_family.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                loans_step_four_family.showDropDown()
-                                loans_step_four_family.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listNumbers = result.result
             } else {
                 getListNumbersDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -254,7 +333,7 @@ class LoanStepFourFragment : Fragment() {
         })
     }
 
-    //Количество детей
+    // TODO: 21-2-12 Количество детей
     private fun initListNumbersChildren() {
         val mapNumbers = mutableMapOf<String, String>()
         mapNumbers["login"] = AppPreferences.login.toString()
@@ -266,32 +345,8 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
                 getResultOk()
-                val adapterIdChildren = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                loans_step_four_children.setAdapter(adapterIdChildren)
+                listNumbersChildren = result.result
 
-                loans_step_four_children.keyListener = null
-                loans_step_four_children.setOnItemClickListener { adapterView, view, position, l ->
-                    childrenId = result.result[position].id!!
-                    loans_step_four_children.showDropDown()
-                }
-                loans_step_four_children.setOnClickListener {
-                    loans_step_four_children.showDropDown()
-                }
-                loans_step_four_children.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                loans_step_four_children.showDropDown()
-                                loans_step_four_children.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
             } else {
                 getListNumbersDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -306,7 +361,7 @@ class LoanStepFourFragment : Fragment() {
         })
     }
 
-    // Сколько лет проживаете в РФ
+    // TODO: 21-2-12 Сколько лет проживаете в РФ
     private fun initListYears() {
         val mapYears = mutableMapOf<String, String>()
         mapYears["login"] = AppPreferences.login.toString()
@@ -318,32 +373,7 @@ class LoanStepFourFragment : Fragment() {
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
                 getResultOk()
-                val adapterIdFederation = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                loans_step_four_federation.setAdapter(adapterIdFederation)
-
-                loans_step_four_federation.keyListener = null
-                loans_step_four_federation.setOnItemClickListener { adapterView, view, position, l ->
-                    liveId = result.result[position].id!!
-                    loans_step_four_federation.showDropDown()
-                }
-                loans_step_four_federation.setOnClickListener {
-                    loans_step_four_federation.showDropDown()
-                }
-                loans_step_four_federation.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                closeKeyboard()
-                                loans_step_four_federation.showDropDown()
-                                loans_step_four_federation.error = null
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listYears = result.result
             } else {
                 getListYearsDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -356,35 +386,6 @@ class LoanStepFourFragment : Fragment() {
                 errorList(error)
             }
         })
-    }
-
-    //Наличие банковской карты
-    private fun defaultList() {
-        val catsNames = arrayOf("Нет", "Да")
-
-        val adapterIdCard =
-            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, catsNames)
-        loans_step_four_card.setAdapter(adapterIdCard)
-
-        loans_step_four_card.keyListener = null
-        loans_step_four_card.setOnItemClickListener { adapterView, view, position, l ->
-            cardId = position.toString()
-            loans_step_four_card.showDropDown()
-        }
-        loans_step_four_card.setOnClickListener {
-            loans_step_four_card.showDropDown()
-        }
-        loans_step_four_card.onFocusChangeListener =
-            View.OnFocusChangeListener { view, hasFocus ->
-                try {
-                    if (hasFocus) {
-                        closeKeyboard()
-                        loans_step_four_card.showDropDown()
-                        loans_step_four_card.error = null
-                    }
-                } catch (e: Exception) {
-                }
-            }
     }
 
     //Сохронение на сервер данных
@@ -430,6 +431,12 @@ class LoanStepFourFragment : Fragment() {
         })
     }
 
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
+    }
+
     private fun initBottomSheet(message: String) {
         val stepBottomFragment =
             StepBottomFragment(
@@ -437,19 +444,6 @@ class LoanStepFourFragment : Fragment() {
             )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
-    }
-
-    //Метотд для скрытия клавиатуры
-    private fun closeKeyboard() {
-        val view: View = requireActivity().currentFocus!!
-        if (view != null) {
-            // now assign the system
-            // service to InputMethodManager
-            val manager = requireActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE
-            ) as InputMethodManager?
-            manager!!.hideSoftInputFromWindow(view.windowToken, 0)
-        }
     }
 
     private fun getResultOk() {
@@ -527,11 +521,6 @@ class LoanStepFourFragment : Fragment() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        loans_step_owner.requestFocus()
     }
 
     private fun validate(): Boolean {
