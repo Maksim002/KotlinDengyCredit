@@ -73,6 +73,19 @@ object AppPreferences {
             it.putString("password", value)
         }
 
+
+    var position: String?
+        get() = preferences.getString("position", "")
+        set(value) = preferences.edit {
+            it.putString("position", value)
+        }
+
+    var key: String?
+        get() = preferences.getString("key", "")
+        set(value) = preferences.edit {
+            it.putString("key", value)
+        }
+
     var dataKey: String?
         get() = preferences.getString("dataKey", "")
         set(value) = preferences.edit {

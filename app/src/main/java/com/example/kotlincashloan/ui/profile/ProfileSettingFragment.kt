@@ -31,6 +31,9 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -38,6 +41,7 @@ import com.example.kotlincashloan.ui.registration.recovery.ContactingServiceActi
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
+import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
@@ -52,8 +56,9 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ProfileSettingFragment : Fragment() {
+class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private val IMAGE_PICK_CODE = 10
     val CAMERA_PERM_CODE = 101
     private var viewModel = ProfileViewModel()
@@ -85,11 +90,13 @@ class ProfileSettingFragment : Fragment() {
     private var textPasswordTwo = ""
 
     private var imageString :String = ""
-
     lateinit var currentPhotoPath: String
+    private var selectionPosition = -1
 
     private lateinit var myThread: Thread
     private lateinit var dialog: AlertDialog
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var question: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -300,7 +307,7 @@ class ProfileSettingFragment : Fragment() {
             })
     }
 
-    //Список доступных стран
+    // TODO: 21-2-12  Список доступных стран
     private fun listCountries() {
         viewModel.listAvailableCountryDta.observe(
             viewLifecycleOwner,
@@ -353,12 +360,10 @@ class ProfileSettingFragment : Fragment() {
                             profile_s_mask.setText("+" + list[codeNationality].phoneCode)
                         }
 
-                        val adapterListCountry = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            result.result
-                        )
+                        errorListAvailableCountry = result.code.toString()
+                        resultSuccessfully()
 
+                        val adapterListCountry = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, result.result)
                         profile_s_mask.setAdapter(adapterListCountry)
 
                         profile_s_mask.keyListener = null
@@ -390,8 +395,6 @@ class ProfileSettingFragment : Fragment() {
                                 } catch (e: Exception) {
                                 }
                             }
-                        errorListAvailableCountry = result.code.toString()
-                        resultSuccessfully()
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -410,48 +413,35 @@ class ProfileSettingFragment : Fragment() {
             })
     }
 
-    //Список секретных вопросов
+
+
+    // TODO: 21-2-11  Список секретных вопросов
     private fun listQuestions() {
         viewModel.listSecretQuestionDta.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
+                        question = result.result
                         profile_s_question.setText(result.result[clientResult.question!!.toInt() - 1].name)
+                        selectionPosition = clientResult.question!!.toInt() - 1
                         var numberPosition = 0
                         if (questionId == "") {
                             numberPosition = clientResult.question!!.toInt()
                             questionId = numberPosition.toString()
                         }
-                        val adapterListCountry = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_dropdown_item_1line,
-                            result.result
-                        )
-                        profile_s_question.setAdapter(adapterListCountry)
 
-                        profile_s_question.keyListener = null
-                        profile_s_question.setOnItemClickListener { adapterView, view, position, l ->
-                            questionId = result.result[position].id.toString()
-                            profile_s_question.showDropDown()
-                            profile_s_question.clearFocus()
-                        }
-                        click_s_question.setOnClickListener {
-                            closeKeyboard()
-                            profile_s_question.showDropDown()
-                        }
-                        profile_s_question.onFocusChangeListener =
-                            View.OnFocusChangeListener { view, hasFocus ->
-                                try {
-                                    if (hasFocus) {
-                                        closeKeyboard()
-                                        profile_s_question.showDropDown()
-                                    }
-                                } catch (e: Exception) {
-                                }
-                            }
                         errorListSecretQuestion = result.code.toString()
                         resultSuccessfully()
+
+                        //Мутод заполняет список данными дя адапера
+                        if (itemDialog.size == 0) {
+                            for (i in 0..result.result.size) {
+                                if (i <= result.result.size) {
+                                    itemDialog.add(GeneralDialogModel(result.result[i].name.toString(), "listQuestions", i))
+                                }
+                            }
+                        }
                     } else {
                         listListResult(result.error.code!!)
                     }
@@ -642,7 +632,24 @@ class ProfileSettingFragment : Fragment() {
         }
     }
 
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listQuestions"){
+            profile_s_question.setText(question[model.position].name)
+            selectionPosition = model.position
+            questionId = question[model.position].id.toString()
+        }
+    }
+
     private fun initClick() {
+
+        //Click на получение списков
+        profile_s_question.setOnClickListener {
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, selectionPosition)
+            }
+        }
+
 
         profile_s_swipe.setOnRefreshListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -1103,6 +1110,12 @@ class ProfileSettingFragment : Fragment() {
         if (activity is MainActivity) {
             activity.setTitle(title, color)
         }
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     override fun onResume() {

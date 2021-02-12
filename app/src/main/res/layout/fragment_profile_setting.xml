@@ -463,6 +463,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:editable="true"
+                                    android:focusable="false"
                                     android:textColor="@color/blackColor"
                                     android:inputType="textMultiLine"
                                     android:background="@null"
