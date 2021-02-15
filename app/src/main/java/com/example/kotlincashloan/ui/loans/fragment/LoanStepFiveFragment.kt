@@ -246,42 +246,49 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listWork") {
+            fire_type_employment.error = null
             fire_type_employment.setText(listWork[model.position].name)
             workPosition = model.position
             workId = listWork[model.position].id!!
         }
 
         if (model.key == "listTypeWork") {
+            fire_post.error = null
             fire_post.setText(listTypeWork[model.position].name)
             typeWorkPosition = model.position
             typeId = listTypeWork[model.position].id!!
         }
 
         if (model.key == "listYears") {
+            fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = model.position
             yearsRfId = listYears[model.position].id!!
         }
 
         if (model.key == "listWorkExperience") {
+            fire_work_experience.error = null
             fire_work_experience.setText(listWorkExperience[model.position].name)
             experiencePosition = model.position
             yearsId = listWorkExperience[model.position].id!!
         }
 
         if (model.key == "listIncome") {
+            fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
             incomePosition = model.position
             incomeId = listIncome[model.position].id!!
         }
 
         if (model.key == "listTypeIncome") {
+            fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
             typeIncomePosition = model.position
             typeIncomeId = listTypeIncome[model.position].id!!
         }
 
         if (model.key == "listIncomeAdditional") {
+            fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
             incomeAdditionalPosition = model.position
             additionalId = listIncomeAdditional[model.position].id!!

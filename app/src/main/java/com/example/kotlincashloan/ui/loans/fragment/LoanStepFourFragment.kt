@@ -199,35 +199,41 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listCity") {
+            loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
             cityPosition = model.position
             cityId = listCity[model.position].id!!
         }
         if (model.key == "listFamilyStatus") {
+            loans_step_four_status.error = null
             loans_step_four_status.setText(listFamilyStatus[model.position].name)
             familyPosition = model.position
             statusId = listFamilyStatus[model.position].id!!
         }
 
         if (model.key == "listNumbers") {
+            loans_step_four_family.error = null
             loans_step_four_family.setText(listNumbers[model.position].name)
             numbersPosition = model.position
             familyId = listNumbers[model.position].id!!
         }
 
         if (model.key == "listNumbersChildren") {
+            loans_step_four_children.error = null
             loans_step_four_children.setText(listNumbersChildren[model.position].name)
             childrenPosition = model.position
             childrenId = listNumbersChildren[model.position].id!!
         }
 
         if (model.key == "listYears") {
+            loans_step_four_federation.error = null
             loans_step_four_federation.setText(listYears[model.position].name)
             yearsPosition = model.position
             liveId = listYears[model.position].id!!
         }
 
         if (model.key == "listCatsNames") {
+            loans_step_four_card.error = null
             loans_step_four_card.setText(listCatsNames[model.position])
             catsNamesPosition = model.position
             cardId = listCatsNames[model.position]

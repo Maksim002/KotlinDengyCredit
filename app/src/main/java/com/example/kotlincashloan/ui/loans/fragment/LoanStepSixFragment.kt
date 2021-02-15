@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
 import com.example.kotlincashloan.service.model.Loans.ListWorkResultModel
 import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
@@ -39,9 +40,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     private var reNum = ""
 
     private var sixPosition = -1
+    private var familyPosition = -1
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
+    private var listFamily: ArrayList<ListFamilyResultModel> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,6 +90,23 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
                 initBottomSheet(itemDialog, sixPosition)
             }
         }
+
+
+        six_loan_family.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listFamily.size) {
+                    if (i <= listFamily.size) {
+                        itemDialog.add(GeneralDialogModel(listFamily[i-1].name.toString(), "listFamily", i-1)
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, familyPosition)
+            }
+        }
     }
 
     //очещает список
@@ -107,6 +127,13 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
             six_number_phone.visibility = View.VISIBLE
             phoneLength = listAvailableSix[model.position].phoneLength.toString()
             six_number_phone.mask = listAvailableSix[model.position].phoneMask
+        }
+
+        if (model.key == "listFamily") {
+            six_loan_family.setText(listFamily[model.position].name)
+            familyPosition = model.position
+            family = listFamily[model.position].id.toString()
+            six_loan_family.error = null
         }
     }
 
@@ -146,33 +173,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
             if (result.result != null) {
                 getListFamilyDta = result.code.toString()
                 getResultOk()
-
-                val adapterIdFamily = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    result.result
-                )
-                six_loan_family.setAdapter(adapterIdFamily)
-
-                six_loan_family.keyListener = null
-                six_loan_family.setOnItemClickListener { adapterView, view, position, l ->
-                    family = result.result[position].id!!
-                    six_loan_family.error = null
-                    six_loan_family.showDropDown()
-                }
-                six_loan_family.setOnClickListener {
-                    six_loan_family.showDropDown()
-                    closeKeyboard()
-                }
-                six_loan_family.onFocusChangeListener =
-                    View.OnFocusChangeListener { view, hasFocus ->
-                        try {
-                            if (hasFocus) {
-                                six_loan_family.showDropDown()
-                            }
-                        } catch (e: Exception) {
-                        }
-                    }
+                listFamily = result.result
             } else {
                 listResult(result.error.code!!)
             }
