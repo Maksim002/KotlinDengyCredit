@@ -13,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.Loans.ListTrafficSource
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -33,6 +36,8 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.questionnaire_owner
+import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -41,7 +46,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener{
+class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener,
+    ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var data: String = ""
     private var idSex: Int = 0
@@ -54,6 +60,17 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var yearSelective = 0
     private var monthSelective = 0
     private var dayOfMonthSelective = 0
+
+    private var genderPosition = -1
+    private var nationalityPosition = -1
+    private var sourcePosition = -1
+    private var questionPosition = -1
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listGender: ArrayList<ListGenderResultModel> = arrayListOf()
+    private var listNationality: ArrayList<ListNationalityResultModel> = arrayListOf()
+    private var listTrafficSource: ArrayList<ListTrafficSource> = arrayListOf()
+    private var listSecretQuestion: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -223,6 +240,91 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     private fun initClock() {
+
+        questionnaire_id_sxs.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listGender.size) {
+                    if (i <= listGender.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listGender[i - 1].name.toString(),
+                                "listGender",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, genderPosition)
+            }
+        }
+
+        questionnaire_id_nationality.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listNationality.size) {
+                    if (i <= listNationality.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listNationality[i - 1].name.toString(),
+                                "listNationality",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, nationalityPosition)
+            }
+        }
+
+        questionnaire_found.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listTrafficSource.size) {
+                    if (i <= listTrafficSource.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listTrafficSource[i - 1].name.toString(),
+                                "listTrafficSource",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, sourcePosition)
+            }
+        }
+
+        questionnaire_id_secret.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listSecretQuestion.size) {
+                    if (i <= listSecretQuestion.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listSecretQuestion[i - 1].name.toString(),
+                                "listSecretQuestion",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, questionPosition)
+            }
+        }
+
         questionnaire_agreement.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
                 questionnaire_enter.isClickable = true
@@ -299,13 +401,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     private fun iniData() {
         questionnaire_date_birth.setOnClickListener(View.OnClickListener { v: View? ->
-//            val datePickerDialogFragment = com.example.kotlincashloan.custom_view.DatePickerDialogFragment()
-//            datePickerDialogFragment.setOnDateChooseListener { year, month, day ->
-//                questionnaire_date_birth.setText("$day-$month-$year")
-//                data = (MyUtils.convertDate(year, month, day))
-//            }
-//            datePickerDialogFragment.show(fragmentManager, "DatePickerDialogFragment")
-
             if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
                 showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
             }else{
@@ -335,8 +430,8 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             .show()
     }
 
+    //Регистрация. Выбо пола.
     private fun getIdSxs() {
-        var list: ArrayList<ListGenderResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
         HomeActivity.alert.show()
@@ -346,9 +441,9 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        val adapterIdSxs = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
-                        questionnaire_id_sxs.setAdapter(adapterIdSxs)
-                        list = data.result
+//                        val adapterIdSxs = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
+//                        questionnaire_id_sxs.setAdapter(adapterIdSxs)
+                        listGender = data.result
                     }else{
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -405,31 +500,30 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }
             HomeActivity.alert.hide()
         })
-        questionnaire_id_sxs.keyListener = null
-        questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
-            questionnaire_id_sxs.showDropDown()
-            idSex = list[position].id!!
-            questionnaire_id_sxs.clearFocus()
-        }
-        questionnaire_id_sxs.setOnClickListener {
-            questionnaire_id_sxs.showDropDown()
-        }
-        questionnaire_id_sxs.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-            try {
-                if (hasFocus) {
-                    closeKeyboard()
-                    questionnaire_id_sxs.showDropDown()
-                }
-            } catch (e: Exception) {
-            }
-        }
-        questionnaire_id_sxs.clearFocus()
+//        questionnaire_id_sxs.keyListener = null
+//        questionnaire_id_sxs.setOnItemClickListener { adapterView, view, position, l ->
+//            questionnaire_id_sxs.showDropDown()
+//            idSex = list[position].id!!
+//            questionnaire_id_sxs.clearFocus()
+//        }
+//        questionnaire_id_sxs.setOnClickListener {
+//            questionnaire_id_sxs.showDropDown()
+//        }
+//        questionnaire_id_sxs.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+//            try {
+//                if (hasFocus) {
+//                    closeKeyboard()
+//                    questionnaire_id_sxs.showDropDown()
+//                }
+//            } catch (e: Exception) {
+//            }
+//        }
+//        questionnaire_id_sxs.clearFocus()
     }
 
 
     // Получет места те о которых узнал пользхователь о нас
     private fun gitFound() {
-        var list: ArrayList<ListTrafficSource> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
         viewModel.listTrafficSource(map).observe(this, Observer { result->
@@ -438,9 +532,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        val adapterFound = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
-                        questionnaire_found.setAdapter(adapterFound)
-                        list = data.result
+                        listTrafficSource = data.result
                     }else{
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -497,34 +589,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }
             HomeActivity.alert.hide()
         })
-        questionnaire_found.keyListener = null
-        questionnaire_found.setOnItemClickListener { adapterView, view, position, l ->
-            questionnaire_found.showDropDown()
-            listАoundId = list[position].id!!
-            questionnaire_found.clearFocus()
-            questionnaire_owner.requestFocus()
-
-        }
-        questionnaire_found.setOnClickListener {
-            questionnaire_found.showDropDown()
-        }
-        questionnaire_found.onFocusChangeListener =
-            View.OnFocusChangeListener { view, hasFocus ->
-                try {
-                    if (hasFocus) {
-                        closeKeyboard()
-                        questionnaire_found.showDropDown()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        questionnaire_found.clearFocus()
     }
 
-
+    //Регистрация получение грожданство
     private fun getListNationality() {
-        var list: ArrayList<ListNationalityResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
         HomeActivity.alert.show()
@@ -534,9 +602,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        val adapterListNationality = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
-                        questionnaire_id_nationality.setAdapter(adapterListNationality)
-                        list = data.result
+                        listNationality = data.result
                     } else {
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -591,31 +657,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }
             HomeActivity.alert.hide()
         })
-        questionnaire_id_nationality.keyListener = null
-        questionnaire_id_nationality.setOnItemClickListener { adapterView, view, position, l ->
-            questionnaire_id_nationality.showDropDown()
-            listNationalityId = list[position].id!!
-            questionnaire_id_nationality.clearFocus()
-        }
-        questionnaire_id_nationality.setOnClickListener {
-            questionnaire_id_nationality.showDropDown()
-        }
-        questionnaire_id_nationality.onFocusChangeListener =
-            View.OnFocusChangeListener { view, hasFocus ->
-                try {
-                    if (hasFocus) {
-                        closeKeyboard()
-                        questionnaire_id_nationality.showDropDown()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        questionnaire_id_nationality.clearFocus()
     }
 
+    // Регистрация выбор серетного вопроса
     private fun getAutoOperation() {
-        var list: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
         HomeActivity.alert.show()
@@ -625,13 +670,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        val adapterListSecretQuestion = ArrayAdapter(
-                            this,
-                            android.R.layout.simple_dropdown_item_1line,
-                            data.result
-                        )
-                        questionnaire_id_secret.setAdapter(adapterListSecretQuestion)
-                        list = data.result
+                        listSecretQuestion = data.result
                     }else{
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -684,30 +723,48 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }
             HomeActivity.alert.hide()
         })
+    }
 
-        questionnaire_id_secret.setKeyListener(null)
-
-        questionnaire_id_secret.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, _, position, _ ->
-                questionnaire_id_secret.showDropDown()
-                parent.getItemAtPosition(position).toString()
-                listSecretQuestionId = list[position].id!!
-                questionnaire_id_secret.clearFocus()
-                questionnaire_owner.requestFocus()
-            }
-        questionnaire_id_secret.setOnClickListener {
-            questionnaire_id_secret.showDropDown()
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listGender") {
+            questionnaire_id_sxs.setText(listGender[model.position].name)
+            genderPosition = model.position
+            idSex = listGender[model.position].id!!.toInt()
+            questionnaire_id_sxs.error = null
         }
-        questionnaire_id_secret.onFocusChangeListener =
-            View.OnFocusChangeListener { view, hasFocus ->
-                try {
-                    closeKeyboard()
-                    questionnaire_id_secret.showDropDown()
-                } catch (e: Exception) {
 
-                }
-            }
-        questionnaire_id_secret.clearFocus()
+        if (model.key == "listNationality") {
+            questionnaire_id_nationality.setText(listNationality[model.position].name)
+            nationalityPosition = model.position
+            listNationalityId = listNationality[model.position].id!!.toInt()
+            questionnaire_id_nationality.error = null
+        }
+
+        if (model.key == "listTrafficSource") {
+            questionnaire_found.setText(listTrafficSource[model.position].name)
+            sourcePosition = model.position
+            listАoundId = listTrafficSource[model.position].id!!.toInt()
+            questionnaire_found.error = null
+        }
+
+        if (model.key == "listSecretQuestion") {
+            questionnaire_id_secret.setText(listSecretQuestion[model.position].name)
+            questionPosition = model.position
+            listSecretQuestionId = listSecretQuestion[model.position].id!!.toInt()
+            questionnaire_id_secret.error = null
+        }
+    }
+
+    //очещает список
+    private fun initClearList() {
+        itemDialog.clear()
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+        stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 
     override fun onResume() {

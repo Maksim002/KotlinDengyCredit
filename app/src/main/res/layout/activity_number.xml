@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:textColor="@color/blackColor"
+            android:focusable="false"
             android:background="@drawable/circle_orange_background_edit"
             android:drawableEnd="@drawable/ic_expend"
             android:hint="Список доступных стран"
