@@ -170,6 +170,8 @@ public class LoanStepThreeFragment extends Fragment {
                                 status_technical_work.setVisibility(View.GONE);
                                 status_no_questionnaire.setVisibility(View.GONE);
                                 status_not_found.setVisibility(View.GONE);
+                                docImageIv.setImageBitmap(documentImage);
+                                portraitIv.setImageBitmap(portrait);
                                 AppPreferences.INSTANCE.setSum(result.getResult().getId().toString());
                                 ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
                             }
@@ -543,9 +545,9 @@ public class LoanStepThreeFragment extends Fragment {
                 //номер документа
                 String documentNumberS = results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER);
                 if (documentNumberS != null) {
-                    map.put("passport_number", documentNumberS);
+                    map.put("passport_reg_number", documentNumberS);
                 } else {
-                    map.put("passport_number", "");
+                    map.put("passport_reg_number", "");
                 }
 
                 //Личный номер
@@ -596,9 +598,9 @@ public class LoanStepThreeFragment extends Fragment {
                 // Код типа документа
                 String documentClassCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE);
                 if (documentClassCodeS != null) {
-                    map.put("passport_series", documentClassCodeS);
+                    map.put("passport_type", documentClassCodeS);
                 } else {
-                    map.put("passport_series", "");
+                    map.put("passport_type", "");
                 }
 
                 // Название государтсво выдачи
@@ -720,7 +722,6 @@ public class LoanStepThreeFragment extends Fragment {
 
                 portrait = results.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT);
                 if (portrait != null) {
-                    portraitIv.setImageBitmap(portrait);
                     gotImageString(portrait);
                 }
 
@@ -728,7 +729,6 @@ public class LoanStepThreeFragment extends Fragment {
                 if (documentImage != null) {
                     double aspectRatio = (double) documentImage.getWidth() / (double) documentImage.getHeight();
                     documentImage = Bitmap.createScaledBitmap(documentImage, (int) (480 * aspectRatio), 480, false);
-                    docImageIv.setImageBitmap(documentImage);
                     gotImageString(documentImage);
                 }
 

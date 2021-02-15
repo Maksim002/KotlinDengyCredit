@@ -478,4 +478,31 @@ class LoansViewModel: ViewModel() {
             }
         })
     }
+
+    //listCity Список городов.
+    val errorListEntryGoal = MutableLiveData<String>()
+    var listEntryGoal = MutableLiveData<CommonResponse<ArrayList<ListEntryGoalResult>>>()
+
+    fun listEntryGoal(map: Map<String, String>){
+        RetrofitService.apiService().listEntryGoal(map).enqueue(object : Callback<CommonResponse<ArrayList<ListEntryGoalResult>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ListEntryGoalResult>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListEntryGoal.postValue( "601")
+                }else{
+                    errorListEntryGoal.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ListEntryGoalResult>>>, response: Response<CommonResponse<ArrayList<ListEntryGoalResult>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listEntryGoal.postValue(response.body())
+                    }else{
+                        errorListEntryGoal.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListEntryGoal.postValue(response.code().toString())
+                }
+            }
+        })
+    }
 }

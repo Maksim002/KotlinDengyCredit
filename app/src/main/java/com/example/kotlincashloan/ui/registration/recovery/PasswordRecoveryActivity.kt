@@ -8,8 +8,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -25,17 +28,23 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.ArrayList
 
-class PasswordRecoveryActivity : AppCompatActivity() {
+class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var myModel = PasswordViewMode()
     private var numberCharacters: Int = 0
     private var inputsAnim = true
+
+    private var countryPosition = -1
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listAvailableCountry: ArrayList<CounterResultModel> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +55,28 @@ class PasswordRecoveryActivity : AppCompatActivity() {
     }
 
     private fun iniClick() {
+
+        questionnaire_phone_list_country.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listAvailableCountry.size) {
+                    if (i <= listAvailableCountry.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listAvailableCountry[i - 1].name.toString(),
+                                "listTypeWork",
+                                i - 1
+                            )
+                        )
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, countryPosition)
+            }
+        }
+
         password_recovery_enter.setOnClickListener {
             if (validate()) {
                 initResult()
@@ -53,9 +84,9 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
 
         no_connection_repeat.setOnClickListener {
-            if (numberCharacters != 0){
+            if (numberCharacters != 0) {
                 initResult()
-            }else{
+            } else {
                 getListCountry()
             }
         }
@@ -73,6 +104,27 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listTypeWork") {
+            questionnaire_phone_list_country.error = null
+            questionnaire_phone_additional.error = null
+            password_recovery_word.error = null
+            questionnaire_phone_additional.setText("")
+            questionnaire_phone_list_country.setText(listAvailableCountry[model.position].name)
+            countryPosition = model.position
+            AppPreferences.numberCharacters =
+                listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
+            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            questionnaire_phone_additional.mask = ""
+            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMask
+            if (questionnaire_phone_list_country.text.toString() != "") {
+                layout_visible.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun initToolBar() {
         setSupportActionBar(password_toolbar)
         supportActionBar!!.setDisplayShowHomeEnabled(true)
@@ -80,7 +132,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         supportActionBar!!.title = ""
     }
 
-    fun initResult(){
+    fun initResult() {
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             recovery_no_questionnaire.visibility = View.VISIBLE
@@ -123,12 +175,12 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                             loadingMistake(this)
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "600"){
+                    Status.NETWORK -> {
+                        if (msg == "600") {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        } else {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingConnection(this)
@@ -140,12 +192,12 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         }
     }
 
-    fun initVisibilities(){
+    fun initVisibilities() {
         recovery_no_questionnaire.visibility = View.GONE
         password_layout.visibility = View.VISIBLE
     }
 
-    private fun initAuthorized(){
+    private fun initAuthorized() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
@@ -171,7 +223,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
 
     private fun initBusyBottomSheet() {
         val bottomSheetDialogFragment = PasswordRecoveryFragment()
-        inputsAnim  = false
+        inputsAnim = false
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
@@ -185,7 +237,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
             recovery_not_found.visibility = View.GONE
             recovery_access_restricted.visibility = View.GONE
         } else {
-            var list: ArrayList<CounterResultModel> = arrayListOf()
             val map = HashMap<String, Int>()
             map.put("id", 0)
             HomeActivity.alert.show()
@@ -197,13 +248,7 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
-                                val adapterListCountry = ArrayAdapter(
-                                    this,
-                                    android.R.layout.simple_dropdown_item_1line,
-                                    data.result
-                                )
-                                questionnaire_phone_list_country.setAdapter(adapterListCountry)
-                                list = data.result
+                                listAvailableCountry = data.result
                                 initVisibilities()
                             } else {
                                 if (data.error.code == 403) {
@@ -244,12 +289,12 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                                 password_layout.visibility = View.GONE
                             }
                         }
-                        Status.NETWORK ->{
-                            if (msg == "600"){
+                        Status.NETWORK -> {
+                            if (msg == "600") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
-                            }else{
+                            } else {
                                 recovery_technical_work.visibility = View.GONE
                                 recovery_no_questionnaire.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
@@ -258,35 +303,18 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                     }
                     HomeActivity.alert.hide()
                 })
-            questionnaire_phone_list_country.keyListener = null
-            questionnaire_phone_list_country.setOnItemClickListener { adapterView, view, position, l ->
-                questionnaire_phone_list_country.showDropDown()
-                AppPreferences.numberCharacters = list[position].phoneLength!!.toInt()
-                AppPreferences.isFormatMask = list[position].phoneMask
-                numberCharacters = list[position].phoneLength!!.toInt()
-                questionnaire_phone_additional.setText("")
-                questionnaire_phone_additional.mask = ""
-                questionnaire_phone_additional.mask = list[position].phoneMask
-                if (questionnaire_phone_list_country.text.toString() != "") {
-                    layout_visible.visibility = View.VISIBLE
-                }
-
-                questionnaire_phone_list_country.clearFocus()
-            }
-            questionnaire_phone_list_country.setOnClickListener {
-                questionnaire_phone_list_country.showDropDown()
-            }
-            questionnaire_phone_list_country.onFocusChangeListener =
-                View.OnFocusChangeListener { view, hasFocus ->
-                    try {
-                        if (hasFocus) {
-                            questionnaire_phone_list_country.showDropDown()
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
         }
+    }
+
+    //очещает список
+    private fun initClearList() {
+        itemDialog.clear()
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+        stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 
     override fun onResume() {
@@ -305,7 +333,6 @@ class PasswordRecoveryActivity : AppCompatActivity() {
         } else {
             questionnaire_phone_list_country.error = null
         }
-
         if (numberCharacters != 11) {
             if (questionnaire_phone_additional.text!!.toString().length != 19) {
                 questionnaire_phone_additional.error = "Введите валидный номер"
@@ -321,12 +348,14 @@ class PasswordRecoveryActivity : AppCompatActivity() {
                 questionnaire_phone_additional.error = null
             }
         }
+
+
         if (password_recovery_word.text.toString().isEmpty()) {
             password_recovery_word.error = "Введите кодовое слово"
             valid = false
         }
 
-        if (!valid){
+        if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid

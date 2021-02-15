@@ -48,12 +48,14 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
+
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment()))
         list.add(LoansListModel(LoanStepFiveFragment()))
         list.add(LoansListModel(LoanStepSixFragment()))
+        list.add(LoansListModel(LoanStepFifthFragment()))
 
         get_loan_view_pagers.isEnabled = true
 
