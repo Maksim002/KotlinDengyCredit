@@ -1019,21 +1019,20 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 }
                 portrait = results.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT)
                 if (portrait != null) {
-                    russian_patent.setImageBitmap(portrait)
+
                 }
 
-                documentImage =
-                    results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
+                documentImage = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
                 if (documentImage != null) {
-                    val aspectRatio = documentImage!!.getWidth() as Double / documentImage!!.getHeight() as Double
+                    val aspectRatio = documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
                     documentImage = Bitmap.createScaledBitmap(documentImage!!, (480 * aspectRatio).toInt(), 480, false)
                     russian_patent.setImageBitmap(documentImage)
                 }
 
                 documentImageTwo = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE, eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE, 1)
                 if (documentImageTwo != null) {
-                    val aspectRatio = documentImageTwo!!.getWidth() as Double / documentImageTwo!!.getHeight() as Double
-                    documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo!!, (480 * aspectRatio).toInt(), 480, false)
+                    val aspectRatio = documentImageTwo!!.width.toDouble() / documentImageTwo!!.height.toDouble()
+                    documentImage = Bitmap.createScaledBitmap(documentImage!!, (480 * aspectRatio).toInt(), 480, false)
                     russian_patent.setImageBitmap(documentImageTwo)
                 }
             } catch (e: java.lang.Exception) {

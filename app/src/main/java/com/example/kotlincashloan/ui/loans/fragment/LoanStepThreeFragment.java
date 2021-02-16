@@ -734,7 +734,6 @@ public class LoanStepThreeFragment extends Fragment {
 
                 documentImageTwo = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE, eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE, 1);
                 if (documentImageTwo != null) {
-
                     double aspectRatio = (double) documentImageTwo.getWidth() / (double) documentImageTwo.getHeight();
                     documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo, (int) (480 * aspectRatio), 480, false);
                     gotImageString(documentImageTwo);
