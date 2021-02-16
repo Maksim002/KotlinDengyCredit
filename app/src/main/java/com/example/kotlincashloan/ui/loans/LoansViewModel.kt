@@ -479,20 +479,20 @@ class LoansViewModel: ViewModel() {
         })
     }
 
-    //listCity Список городов.
+    //listEntryGoal Список целей въезда.
     val errorListEntryGoal = MutableLiveData<String>()
-    var listEntryGoal = MutableLiveData<CommonResponse<ArrayList<ListEntryGoalResult>>>()
+    var listEntryGoal = MutableLiveData<CommonResponse<ArrayList<EntryGoalResultModel>>>()
 
     fun listEntryGoal(map: Map<String, String>){
-        RetrofitService.apiService().listEntryGoal(map).enqueue(object : Callback<CommonResponse<ArrayList<ListEntryGoalResult>>> {
-            override fun onFailure(call: Call<CommonResponse<ArrayList<ListEntryGoalResult>>>, t: Throwable) {
+        RetrofitService.apiService().listEntryGoal(map).enqueue(object : Callback<CommonResponse<ArrayList<EntryGoalResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<EntryGoalResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListEntryGoal.postValue( "601")
                 }else{
                     errorListEntryGoal.postValue( "600")
                 }
             }
-            override fun onResponse(call: Call<CommonResponse<ArrayList<ListEntryGoalResult>>>, response: Response<CommonResponse<ArrayList<ListEntryGoalResult>>>) {
+            override fun onResponse(call: Call<CommonResponse<ArrayList<EntryGoalResultModel>>>, response: Response<CommonResponse<ArrayList<EntryGoalResultModel>>>) {
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listEntryGoal.postValue(response.body())
@@ -501,6 +501,33 @@ class LoansViewModel: ViewModel() {
                     }
                 }else{
                     errorListEntryGoal.postValue(response.code().toString())
+                }
+            }
+        })
+    }
+
+    //listTypeContract Список типов договора.
+    val errorListTypeContract = MutableLiveData<String>()
+    var listTypeContract = MutableLiveData<CommonResponse<ArrayList<TypeContractResultModel>>>()
+
+    fun listTypeContract(map: Map<String, String>){
+        RetrofitService.apiService().listTypeContract(map).enqueue(object : Callback<CommonResponse<ArrayList<TypeContractResultModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<TypeContractResultModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListTypeContract.postValue( "601")
+                }else{
+                    errorListTypeContract.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<TypeContractResultModel>>>, response: Response<CommonResponse<ArrayList<TypeContractResultModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listTypeContract.postValue(response.body())
+                    }else{
+                        errorListTypeContract.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListTypeContract.postValue(response.code().toString())
                 }
             }
         })

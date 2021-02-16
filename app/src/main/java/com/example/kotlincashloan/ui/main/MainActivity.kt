@@ -130,13 +130,23 @@ class MainActivity : AppCompatActivity() {
         }, 2000)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         if (AppPreferences.token != "") {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 timer.timeStart()
                 AppPreferences.isNumber = false
             }, 200)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        if (AppPreferences.token != "") {
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                timer.timeStart()
+//                AppPreferences.isNumber = false
+//            }, 200)
+//        }
     }
 }

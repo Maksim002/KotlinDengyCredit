@@ -68,8 +68,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private var errorSaveProfile = ""
     private var errorClientInfo = ""
     private var errorCheckPassword = ""
-    val handler = Handler()
-    var clientResult = ClientInfoResultModel()
+    private val handler = Handler()
+    private var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var list: ArrayList<CounterNumResultModel> = arrayListOf()
     private var listClientInfo = ClientInfoResultModel()
@@ -89,7 +89,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private var textPasswordTwo = ""
 
     private var imageString :String = ""
-    lateinit var currentPhotoPath: String
+    private lateinit var currentPhotoPath: String
     private var questionPosition = -1
     private var countriesPosition = -1
 

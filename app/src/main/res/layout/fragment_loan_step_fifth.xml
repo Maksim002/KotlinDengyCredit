@@ -1,297 +1,344 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
-
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/layout_fifth"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:text="Заявка на займ"
-            android:textColor="@color/blackColor"
-            android:textSize="18dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото регистрации в РФ:"
-            android:textColor="@color/blackColor" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/russian_federation"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Заявка на займ"
+                android:textColor="@color/blackColor"
+                android:textSize="18dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото регистрации в РФ:"
+                android:textColor="@color/blackColor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/russian_federation"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fifth_goal_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Дата окончания срока регистрации"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:padding="13dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp" />
+
+            <com.ycuwq.datepicker.date.DatePicker
+                android:id="@+id/fifth__datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото миграционной карты:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/migration_card"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:src="@drawable/id" />
+
+            <AutoCompleteTextView
+                android:id="@+id/list_countries"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:drawableEnd="@drawable/ic_expend"
+                android:focusable="false"
+                android:hint="Цель въезда"
+                android:padding="14dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/date_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Дата въезда"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:padding="13dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото патента РФ:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/russian_patent"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:src="@drawable/id" />
+
+            <LinearLayout
+                android:id="@+id/patent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Фото квитанции об оплате патента:"
+                    android:textColor="@color/blackColor" />
+
+                <ImageView
+                    android:id="@+id/receipt_patent"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото разрешение на работу:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/work_permit"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:src="@drawable/id" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото 2НДФЛ:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/photo_2NDFL"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:src="@drawable/id" />
+
+            <AutoCompleteTextView
+                android:id="@+id/contract_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:drawableEnd="@drawable/ic_expend"
+                android:focusable="false"
+                android:hint="Тип договора"
+                android:padding="14dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото договор - 1 и последняя страница:"
+                android:textColor="@color/blackColor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/last_page_one"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+
+                <ImageView
+                    android:id="@+id/last_page_two"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/date_the_contract"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:hint="Дата окончания договора"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:padding="13dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото РВП:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/photo_RVP"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/circle_orange_background_edit"
+                android:src="@drawable/id" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="Фото ВНЖ:"
+                android:textColor="@color/blackColor" />
+
+            <ImageView
+                android:id="@+id/photo_VNJ"
+                android:layout_width="200dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="30dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:src="@drawable/id" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <TextView
-            android:id="@+id/six_loan_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Дата окончания срока регистрации"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
+    <include
+        android:id="@+id/fifth_ste_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото миграционной карты:"
-            android:textColor="@color/blackColor" />
+    <include
+        android:id="@+id/fifth_ste_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/migration_card"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
+    <include
+        android:id="@+id/fifth_ste_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
 
-        <AutoCompleteTextView
-            android:id="@+id/list_countries"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:focusable="false"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
-            android:hint="Цель въезда"
-            android:padding="14dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/date_entry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Дата въезда"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото патента РФ:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/russian_patent"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото квитанции об оплате патента:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/receipt_patent"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото разрешение на работу:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/work_permit"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото 2НДФЛ:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/photo_2NDFL"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-
-        <AutoCompleteTextView
-            android:id="@+id/сontract_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:focusable="false"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="16dp"
-            android:hint="Тип договора"
-            android:padding="14dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото договор - 1 и последняя страница:"
-            android:textColor="@color/blackColor" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/last_page_one"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_margin="10dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
-
-            <ImageView
-                android:id="@+id/last_page_two"
-                android:layout_width="match_parent"
-                android:layout_height="140dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/date_the_contract"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Дата окончания договора"
-            android:imeOptions="actionNext"
-            android:inputType="text"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото РВП:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/photo_RVP"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:text="Фото ВНЖ:"
-            android:textColor="@color/blackColor" />
-
-        <ImageView
-            android:id="@+id/photo_VNJ"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:src="@drawable/id" />
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    <include
+        android:id="@+id/fifth_ste_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
+</LinearLayout>
