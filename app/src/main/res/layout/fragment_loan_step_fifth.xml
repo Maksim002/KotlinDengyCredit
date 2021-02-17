@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whiteColor"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
@@ -31,6 +33,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
+                android:paddingLeft="14dp"
                 android:text="Фото регистрации в РФ:"
                 android:textColor="@color/blackColor" />
 
@@ -41,14 +44,45 @@
                 android:layout_marginRight="30dp"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/russian_federation"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/russian_federationA"
+                        android:layout_width="200dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+
+                    <ImageView
+                        android:id="@+id/russian_federationB"
+                        android:layout_width="200dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="3dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/fifth_incorrectA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:src="@drawable/id" />
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -69,27 +103,60 @@
             <com.ycuwq.datepicker.date.DatePicker
                 android:id="@+id/fifth__datePicker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
+                android:paddingLeft="14dp"
                 android:layout_marginRight="16dp"
                 android:text="Фото миграционной карты:"
                 android:textColor="@color/blackColor" />
 
-            <ImageView
-                android:id="@+id/migration_card"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/migration_cardA"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+
+                <ImageView
+                    android:id="@+id/migration_cardB"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/fifth_incorrect_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                android:drawablePadding="10dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
+                android:text="Неверный логин или пароль"
+                android:textColor="@color/colorRed"
+                android:visibility="gone" />
 
             <AutoCompleteTextView
                 android:id="@+id/list_countries"
@@ -106,6 +173,7 @@
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />
 
+
             <TextView
                 android:id="@+id/date_entry"
                 android:layout_width="match_parent"
@@ -121,29 +189,69 @@
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />
 
-            <TextView
-                android:id="@+id/text"
+            <LinearLayout
+                android:id="@+id/fifth_potent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:text="Фото патента РФ:"
-                android:textColor="@color/blackColor" />
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/russian_patent"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="14dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Фото патента РФ:"
+                    android:textColor="@color/blackColor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/russian_patentA"
+                        android:layout_width="200dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="3dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+
+                    <ImageView
+                        android:id="@+id/russian_patentB"
+                        android:layout_width="200dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="1"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="30dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_patent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+            </LinearLayout>
+
 
             <LinearLayout
-                android:id="@+id/patent"
+                android:id="@+id/fifth_receipt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -153,6 +261,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
+                    android:paddingLeft="14dp"
                     android:layout_marginRight="16dp"
                     android:text="Фото квитанции об оплате патента:"
                     android:textColor="@color/blackColor" />
@@ -167,55 +276,110 @@
                     android:layout_marginRight="30dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:src="@drawable/id" />
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_receipt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/fifth_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:text="Фото разрешение на работу:"
-                android:textColor="@color/blackColor" />
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/work_permit"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="14dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Фото разрешение на работу:"
+                    android:textColor="@color/blackColor" />
 
-            <TextView
+                <ImageView
+                    android:id="@+id/work_permit"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fifth_2n"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:text="Фото 2НДФЛ:"
-                android:textColor="@color/blackColor" />
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/photo_2NDFL"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
-                android:src="@drawable/id" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:paddingLeft="14dp"
+                    android:text="Фото 2НДФЛ:"
+                    android:textColor="@color/blackColor" />
+
+                <ImageView
+                    android:id="@+id/photo_2NDFL"
+                    android:layout_width="200dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:src="@drawable/id" />
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_2NDFL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+            </LinearLayout>
+
 
             <AutoCompleteTextView
                 android:id="@+id/contract_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:drawableEnd="@drawable/ic_expend"
@@ -225,44 +389,64 @@
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:text="Фото договор - 1 и последняя страница:"
-                android:textColor="@color/blackColor" />
-
             <LinearLayout
+                android:id="@+id/fifth_contract"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/last_page_one"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:layout_margin="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:src="@drawable/id" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:paddingLeft="14dp"
+                    android:layout_marginRight="16dp"
+                    android:text="Фото договор - 1 и последняя страница:"
+                    android:textColor="@color/blackColor" />
 
-                <ImageView
-                    android:id="@+id/last_page_two"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:src="@drawable/id" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/last_page_one"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:layout_margin="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+
+                    <ImageView
+                        android:id="@+id/last_page_two"
+                        android:layout_width="match_parent"
+                        android:layout_height="140dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:src="@drawable/id" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:layout_gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -286,6 +470,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
+                android:paddingLeft="14dp"
                 android:text="Фото РВП:"
                 android:textColor="@color/blackColor" />
 
@@ -306,6 +491,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
+                android:paddingLeft="14dp"
                 android:text="Фото ВНЖ:"
                 android:textColor="@color/blackColor" />
 
@@ -319,6 +505,20 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:src="@drawable/id" />
+
+            <Button
+                android:id="@+id/bottom_loan_fifth"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="75dp"
+                android:paddingRight="75dp"
+                android:text="Далее"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

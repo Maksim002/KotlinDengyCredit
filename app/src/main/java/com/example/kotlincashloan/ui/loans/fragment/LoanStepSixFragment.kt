@@ -207,7 +207,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
         }
 
         viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
-            if (result.reject != null) {
+            if (result.result != null) {
                 layout_loan_six.visibility = View.VISIBLE
                 six_ste_technical_work.visibility = View.GONE
                 six_ste_no_connection.visibility = View.GONE

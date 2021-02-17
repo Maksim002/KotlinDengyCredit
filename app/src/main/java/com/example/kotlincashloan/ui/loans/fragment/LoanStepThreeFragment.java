@@ -538,6 +538,7 @@ public class LoanStepThreeFragment extends Fragment {
                 String placeCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE);
                 if (placeCodeS != null) {
                     map.put("passport_nationality", placeCodeS);
+                    AppPreferences.INSTANCE.setNationality(placeCodeS);
                 } else {
                     map.put("passport_nationality", "");
                 }

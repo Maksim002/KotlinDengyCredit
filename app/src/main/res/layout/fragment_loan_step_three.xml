@@ -51,7 +51,7 @@
                 <ImageView
                     android:id="@+id/portraitIv"
                     android:layout_width="117dp"
-                    android:layout_height="105dp"
+                    android:layout_height="104dp"
                     android:src="@drawable/portrait"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

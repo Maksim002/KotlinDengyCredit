@@ -31,6 +31,12 @@ object AppPreferences {
             it.putString("type", value)
         }
 
+    var nationality: String?
+        get() = preferences.getString("nationality", "")
+        set(value) = preferences.edit {
+            it.putString("nationality", value)
+        }
+
     var sum: String?
         get() = preferences.getString("sum", "")
         set(value) = preferences.edit {
