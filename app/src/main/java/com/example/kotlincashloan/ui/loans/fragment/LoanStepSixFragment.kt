@@ -80,8 +80,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
                             GeneralDialogModel(
                                 listAvailableSix[i - 1].name.toString(),
                                 "listAvailableSix",
-                                i - 1
-                            )
+                                i - 1)
                         )
                     }
                 }
@@ -213,7 +212,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
                 six_ste_no_connection.visibility = View.GONE
                 six_ste_access_restricted.visibility = View.GONE
                 six_ste_not_found.visibility = View.GONE
-                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
+                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
             } else if (result.reject != null) {
                 initBottomSheet(result.reject!!.message.toString())
             } else if (result.error != null) {
@@ -235,10 +234,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment =
-            StepBottomFragment(
-                message
-            )
+        val stepBottomFragment = StepBottomFragment(message)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -380,6 +376,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
             six_loan_phone.error = null
         }
 
+        if (six_number_phone.text!!.isNotEmpty()){
         if (phoneLength == "11") {
             if (six_number_phone.text.toString().toFullPhone().length != 20) {
                 six_number_phone.error = "Введите валидный номер"
@@ -394,6 +391,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
             } else {
                 six_number_phone.error = null
             }
+          }
         }
 
 

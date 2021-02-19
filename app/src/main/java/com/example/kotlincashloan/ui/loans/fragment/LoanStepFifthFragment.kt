@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -21,6 +22,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -31,8 +33,10 @@ import com.example.kotlincashloan.service.model.Loans.MyDataListModel
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
 import com.example.kotlincashloan.service.model.Loans.TypeContractResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
-import com.example.kotlincashloan.service.model.login.ImageStringModel
+import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.spinnerdatepickerlib.DatePicker
 import com.example.spinnerdatepickerlib.DatePickerDialog
@@ -45,13 +49,13 @@ import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
-    DatePickerDialog.OnDateSetListener {
+class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener {
     private var viewModel = LoansViewModel()
     private val IMAGE_PICK_CODE = 10
     private val CAMERA_PERM_CODE = 101
@@ -63,7 +67,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
     private var documentImageTwo: Bitmap? = null
     private var portrait: Bitmap? = null
     private var documentImage: Bitmap? = null
-    private var list = ArrayList<ImageStringModel>()
 
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
@@ -80,6 +83,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
 
     private var goalPosition = -1
     private var contractPosition = -1
+    private var contractTypeId = 0
+
+    private var imageScanId = ""
+    private var textImA = ""
+    private var textImB = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listEntryGoal: ArrayList<EntryGoalResultModel> = arrayListOf()
@@ -91,10 +99,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
     private var russianPatentA = false
     private var russianPatentB = false
     private var receiptPatent = false
-    private var workPermit = false
+    private var workPermitA = false
+    private var workPermitB = false
     private var photo2NDFL = false
     private var lastPageOne = false
     private var lastPageTwo = false
+    private var saveValidate = false
     val mapSave = mutableMapOf<String, String>()
 
     override fun onCreateView(
@@ -110,14 +120,103 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
         super.onViewCreated(view, savedInstanceState)
 
         //формат даты
-        simpleDateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.US)
+        simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
         initListEntryGoal()
         initTypeContract()
         initClick()
         iniData()
         initHidingFields()
-        initDocumentReader()
+        if (fifth_potent.visibility != View.GONE) {
+            initDocumentReader()
+        }
+        initTextValidation()
+    }
+
+    //Сохронение картинки на сервер
+    private fun initSaveImage() {
+        val mapImage = mutableMapOf<String, String>()
+        mapImage["login"] = AppPreferences.login.toString()
+        mapImage["token"] = AppPreferences.token.toString()
+        mapImage["id"] = AppPreferences.sum.toString()
+        mapImage["step"] = "0"
+        mapImage["patent_img_1"] = textImA
+        mapImage["patent_img_2"] = textImB
+
+        if (imageString.size != 0) {
+            if (imageString.containsKey("russian_federationA")) {
+                mapImage["reg_img_1"] = imageString["russian_federationA"]!!.string
+            }
+            if (imageString.containsKey("russian_federationB")) {
+                mapImage["reg_img_2"] = imageString["russian_federationB"]!!.string
+            }
+            if (imageString.containsKey("migration_cardA")) {
+                mapImage["entry_img_1"] = imageString["migration_cardA"]!!.string
+            }
+            if (imageString.containsKey("migration_cardB")) {
+                mapImage["entry_img_2"] = imageString["migration_cardB"]!!.string
+            }
+            if (imageString.containsKey("receipt_patent")) {
+                mapImage["patent_invoice_img"] = imageString["receipt_patent"]!!.string
+            }
+            if (imageString.containsKey("work_permitA")) {
+                mapImage["work_permit_img_1"] = imageString["work_permitA"]!!.string
+            }
+            if (imageString.containsKey("work_permitB")) {
+                mapImage["work_permit_img_2"] = imageString["work_permitB"]!!.string
+            }
+            if (imageString.containsKey("photo_2NDFL")) {
+                mapImage["ndfl2_img"] = imageString["photo_2NDFL"]!!.string
+            }
+            if (imageString.containsKey("last_page_one")) {
+                mapImage["contract_img_1"] = imageString["last_page_one"]!!.string
+            }
+            if (imageString.containsKey("last_page_two")) {
+                mapImage["contract_img_2"] = imageString["last_page_two"]!!.string
+            }
+            if (imageString.containsKey("photo_RVP")) {
+                mapImage["rvp_img"] = imageString["photo_RVP"]!!.string
+            }
+            if (imageString.containsKey("photo_VNJ")) {
+                mapImage["vnzh_img"] = imageString["photo_VNJ"]!!.string
+            }
+
+            if (contractPosition == -1) {
+                mapImage["type_contract"] = ""
+            } else {
+                mapImage["type_contract"] = contractTypeId.toString()
+            }
+        }
+
+        GetLoanActivity.alert.show()
+        viewModel.saveLoan(mapImage)
+        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                imageString.clear()
+                textImA = ""
+                textImB = ""
+            } else if (result.reject != null) {
+                initBottomSheetError(result.reject!!.message.toString())
+            } else {
+                if (result.error.code == 409) {
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно",Toast.LENGTH_LONG).show()
+                } else {
+                    listResult(result.error.code!!)
+                }
+            }
+            GetLoanActivity.alert.hide()
+        })
+
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
+                if (error == "409") {
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
+                } else {
+                    errorList(error)
+                }
+            }
+            GetLoanActivity.alert.hide()
+        })
     }
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
@@ -125,27 +224,49 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.sum.toString()
-        if (imageString.size != 0){
-            mapSave["reg_img_a"] = imageString["russian_federationA"]!!.string
-            mapSave["reg_img_b"] = imageString["russian_federationB"]!!.string
-            mapSave["entry_img_a"] = imageString["migration_cardA"]!!.string
-            mapSave["entry_img_b"] = imageString["migration_cardB"]!!.string
-        }
         mapSave["reg_date"] = fifth_goal_name.text.toString()
         mapSave["entry_date"] = date_entry.text.toString()
-        mapSave["entry_goal"] = goalPosition.toString()
 
-        mapSave["entry_img_a"] = list[0].string
-        mapSave["entry_img_b"] = list[1].string
-        if (validate()){
-
-
+        if (goalPosition == -1) {
+            mapSave["entry_goal"] = ""
+        } else {
+            mapSave["entry_goal"] = goalPosition.toString()
         }
+        mapSave["contract_date"] = date_the_contract.text.toString()
+        mapSave["step"] = "5"
+
+        if (validate()) {
+            viewModel.saveLoan(mapSave)
+        }
+
+        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                layout_fifth.visibility = View.VISIBLE
+                fifth_ste_technical_work.visibility = View.GONE
+                fifth_ste_no_connection.visibility = View.GONE
+                fifth_ste_access_restricted.visibility = View.GONE
+                fifth_ste_not_found.visibility = View.GONE
+                if (saveValidate) {
+                    (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                }
+            } else if (result.reject != null) {
+                initBottomSheetError(result.reject!!.message.toString())
+            } else {
+                listResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
+                errorList(error)
+            }
+        })
     }
 
     //Скрытие полей
     private fun initHidingFields() {
-//        hidingLayout = AppPreferences.nationality.toString()
+        hidingLayout = AppPreferences.nationality.toString()
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {
             fifth_potent.visibility = View.VISIBLE
@@ -155,7 +276,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
             date_the_contract.visibility = View.GONE
-        }else if (hidingLayout == "RUS"){
+        } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
             fifth_potent.visibility = View.VISIBLE
             fifth_receipt.visibility = View.VISIBLE
@@ -163,7 +284,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
             date_the_contract.visibility = View.GONE
-        }else if (hidingLayout == "KGZ"){
+        } else if (hidingLayout == "KGZ") {
             contract_type.visibility = View.VISIBLE
             fifth_contract.visibility = View.VISIBLE
             date_the_contract.visibility = View.VISIBLE
@@ -173,9 +294,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             fifth_2n.visibility = View.GONE
         }
 
-        if (documentImage != null){
+        if (documentImage != null) {
             fifth_permission.visibility = View.GONE
-        }else if (imageString.containsKey("work_permit")){
+        } else if (imageString.containsKey("work_permit")) {
             fifth_potent.visibility = View.GONE
             fifth_receipt.visibility = View.GONE
         }
@@ -236,6 +357,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
     private fun initClick() {
 
         bottom_loan_fifth.setOnClickListener {
+            saveValidate = true
             initSaveServer()
         }
 
@@ -248,9 +370,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     if (i <= listEntryGoal.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listEntryGoal[i - 1].name.toString(),
-                                "listEntryGoal",
-                                i - 1
+                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1
                             )
                         )
                     }
@@ -260,6 +380,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 initBottomSheet(itemDialog, goalPosition)
             }
         }
+
+        contract_type.addTextChangedListener {
+            fifth_contract.visibility = View.VISIBLE
+        }
+
 
         contract_type.setOnClickListener {
             contract_type.error = null
@@ -272,7 +397,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                             GeneralDialogModel(
                                 listTypeContract[i - 1].name.toString(),
                                 "listTypeContract",
-                                i - 1
+                                i - 1,
+                                listTypeContract[i - 1].id!!.toInt()
                             )
                         )
                     }
@@ -309,8 +435,13 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             loadFiles()
         }
 
-        work_permit.setOnClickListener {
-            imageKey = "work_permit"
+        work_permitA.setOnClickListener {
+            imageKey = "work_permitA"
+            loadFiles()
+        }
+
+        work_permitB.setOnClickListener {
+            imageKey = "work_permitB"
             loadFiles()
         }
 
@@ -351,6 +482,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
         if (model.key == "listTypeContract") {
             contract_type.setText(listTypeContract[model.position].name)
             contractPosition = model.position
+            contractTypeId = model.id!!
             contract_type.error = null
         }
     }
@@ -358,6 +490,19 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
     //очещает список
     private fun initClearList() {
         itemDialog.clear()
+    }
+
+    private fun initTextValidation() {
+        if (contract_type.text.isEmpty()) {
+            fifth_contract.visibility = View.GONE
+        }
+    }
+
+    //Диалоговое окно с отоброжениеем ошибки reject
+    private fun initBottomSheetError(message: String) {
+        val stepBottomFragment = StepBottomFragment(message)
+        stepBottomFragment.isCancelable = false
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
@@ -432,17 +577,17 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     fifth_incorrectA.visibility = View.GONE
                     russian_federationA.setImageBitmap(scaled)
                     imageKey = ""
-                }else if (imageKey == "russian_federationB"){
+                } else if (imageKey == "russian_federationB") {
                     russianFederationB = true
                     fifth_incorrectA.visibility = View.GONE
                     russian_federationB.setImageBitmap(scaled)
                     imageKey = ""
-                }else if (imageKey == "migration_cardA") {
+                } else if (imageKey == "migration_cardA") {
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
                     migration_cardA.setImageBitmap(scaled)
                     imageKey = ""
-                }else if (imageKey == "migration_cardB") {
+                } else if (imageKey == "migration_cardB") {
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
                     migration_cardB.setImageBitmap(scaled)
@@ -452,11 +597,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     fifth_incorrect_receipt.visibility = View.GONE
                     receipt_patent.setImageBitmap(scaled)
                     imageKey = ""
-                } else if (imageKey == "work_permit") {
-                    workPermit = true
+                } else if (imageKey == "work_permitA") {
+                    workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
-                    work_permit.setImageBitmap(scaled)
-                    initHidingFields()
+                    work_permitA.setImageBitmap(scaled)
+                    imageKey = ""
+                } else if (imageKey == "work_permitB") {
+                    workPermitB = true
+                    fifth_incorrect_work.visibility = View.GONE
+                    work_permitB.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
                     photo2NDFL = true
@@ -479,6 +628,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     photo_VNJ.setImageBitmap(scaled)
                     imageKey = ""
                 }
+                initSaveImage()
             }
         }
 
@@ -719,7 +869,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
 
             if (!DocumentReader.Instance().documentReaderIsReady) {
                 text.setText("Инициализация")
-                russian_patentA.setClickable(false)
+                fifth_potent.setClickable(false)
 
 
                 //Reading the license from raw resource file
@@ -749,7 +899,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                                     license
                                 ) { success, error_initializeReader ->
                                     text.setText("Фото патента РФ:")
-                                    russian_patentA.isClickable = true
+                                    fifth_potent.isClickable = true
                                     DocumentReader.Instance().customization().edit()
                                         .setShowHelpAnimation(
                                             false
@@ -760,7 +910,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                                         ).apply()
                                     if (success) {
                                         //initialization successful
-                                        russian_patentA.setOnClickListener(View.OnClickListener {
+                                        fifth_potent.setOnClickListener(View.OnClickListener {
                                             //starting video processing
                                             DocumentReader.Instance().showScanner(
                                                 requireContext(),
@@ -801,7 +951,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     ex.printStackTrace()
                 }
             } else {
-                russian_patentA.setOnClickListener(View.OnClickListener {
+                fifth_potent.setOnClickListener(View.OnClickListener {
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion)
                     DocumentReader.Instance().processParams().multipageProcessing = true
@@ -909,7 +1059,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 if (nameNationalityS != null) {
                     mapSave["patent_second_name"] = nameNationalityS
                 } else {
-
+                    mapSave["patent_second_name"] = ""
                 }
 
                 //Дата рождения
@@ -947,9 +1097,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 val placeCodeS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE)
                 if (placeCodeS != null) {
-
+                    mapSave["patent_code_issue"] = placeCodeS
                 } else {
-
+                    mapSave["patent_code_issue"] = ""
                 }
 
                 //номер документа
@@ -965,16 +1115,16 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 val registrationNumberS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_REG_CERT_REG_NUMBER)
                 if (registrationNumberS != null) {
-                    mapSave["patent_date_issue"] = registrationNumberS
+                    mapSave["patent_reg_number"] = registrationNumberS
                 } else {
-                    mapSave["patent_date_issue"] = ""
+                    mapSave["patent_reg_number"] = ""
                 }
 
                 //Серия номер документа
                 val seriesDocumentS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_SERIES)
-                if (registrationNumberS != null) {
-                    mapSave["patent_series"] = registrationNumberS
+                    results.getTextFieldValueByType(eVisualFieldType.FT_SERIAL_NUMBER)
+                if (seriesDocumentS != null) {
+                    mapSave["patent_series"] = seriesDocumentS
                 } else {
                     mapSave["patent_series"] = ""
                 }
@@ -1022,9 +1172,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 val authorityS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_AUTHORITY)
                 if (authorityS != null) {
-
+                    mapSave["patent_authority"] = authorityS
                 } else {
+                    mapSave["patent_authority"] = ""
+                }
 
+                // Территориальное действие
+                val territorialS =
+                    results.getTextFieldValueByType(eVisualFieldType.FT_TERRITORIAL_VALIDITY)
+                if (territorialS != null) {
+                    mapSave["patent_territory"] = territorialS
+                } else {
+                    mapSave["patent_territory"] = ""
                 }
 
                 // Код типа документа
@@ -1053,9 +1212,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     }
                     val d1 = sdf.parse(date_of_IssueS)
                     sdf.applyPattern("yyyy-MM-dd")
-
+                    mapSave["patent_date_issue"] = sdf.format(d1)
                 } else {
-
+                    mapSave["patent_date_issue"] = ""
                 }
 
                 // Тип mrz
@@ -1112,6 +1271,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                     LCID.KYRGYZ_CYRILICK
                 )
                 if (nationalityS != null) {
+
+                } else {
+
                 }
 
                 // Контрольная цифра даты окончания действия
@@ -1140,7 +1302,10 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
                 }
 
                 // Адрес
-                val addressS = results.getTextFieldValueByType(eVisualFieldType.FT_ADDRESS, LCID.KYRGYZ_CYRILICK)
+                val addressS = results.getTextFieldValueByType(
+                    eVisualFieldType.FT_ADDRESS,
+                    LCID.KYRGYZ_CYRILICK
+                )
                 if (addressS != null) {
                 }
 
@@ -1162,36 +1327,39 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
 
                 }
 
-                documentImage = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
+                documentImage =
+                    results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
                 if (documentImage != null) {
-                    val aspectRatio = documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
+                    imageScanId = "imageA"
+                    val aspectRatio =
+                        documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
                     documentImage = Bitmap.createScaledBitmap(
                         documentImage!!,
-                        (480 * aspectRatio).toInt(),
-                        480,
+                        (1200 * aspectRatio).toInt(),
+                        1200,
                         false
                     )
                     fifth_incorrect_patent.visibility = View.GONE
                     russianPatentA = true
                     russian_patentA.setImageBitmap(documentImage)
                     gotImageString(documentImage!!)
-                    initHidingFields()
                 }
 
-               documentImageTwo = results.getGraphicFieldImageByType(
-                   eGraphicFieldType.GF_DOCUMENT_IMAGE,
-                   eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE,
-                   1
-               )
+                documentImageTwo = results.getGraphicFieldImageByType(
+                    eGraphicFieldType.GF_DOCUMENT_IMAGE,
+                    eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE,
+                    1
+                )
                 if (documentImageTwo != null) {
-                    val aspectRatio = documentImageTwo!!.width.toDouble() / documentImageTwo!!.height.toDouble()
+                    imageScanId = "imageB"
+                    val aspectRatio =
+                        documentImageTwo!!.width.toDouble() / documentImageTwo!!.height.toDouble()
                     documentImageTwo = Bitmap.createScaledBitmap(
-                        documentImageTwo!!, (480 * aspectRatio).toInt(), 480, false
+                        documentImageTwo!!, (1200 * aspectRatio).toInt(), 1200, false
                     )
                     russianPatentB = true
-                    russian_patentB .setImageBitmap(documentImageTwo)
+                    russian_patentB.setImageBitmap(documentImageTwo)
                     gotImageString(documentImageTwo!!)
-                    initHidingFields()
                 }
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -1205,7 +1373,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val imageBytes = baos.toByteArray()
         val imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT)
-        list.add(ImageStringModel(imageString))
+        if (imageScanId == "imageA") {
+            textImA = imageString
+        } else if (imageScanId == "imageB") {
+            textImB = imageString
+        }
+
+        if (textImA != "" && textImB != "") {
+            initSaveImage()
+        }
     }
 
     // loads bitmap from uri
@@ -1267,14 +1443,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             fifth_incorrectA.text = "Добавьте фото документа"
             fifth_incorrectA.visibility = View.VISIBLE
             valid = false
-        }else {
+        } else {
             fifth_incorrectA.visibility = View.GONE
         }
 
         if (fifth_goal_name.text.isEmpty()) {
             fifth_goal_name.error = "Выберите дату"
             valid = false
-        }else {
+        } else {
             fifth_goal_name.error = null
         }
 
@@ -1282,21 +1458,21 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             fifth_incorrect_card.text = "Добавьте фото документа"
             fifth_incorrect_card.visibility = View.VISIBLE
             valid = false
-        }else {
+        } else {
             fifth_incorrect_card.visibility = View.GONE
         }
 
         if (list_countries.text.isEmpty()) {
             list_countries.error = "Поле не должно быть пустым"
             valid = false
-        }else {
+        } else {
             list_countries.error = null
         }
 
         if (date_entry.text.isEmpty()) {
             date_entry.error = "Выберите дату"
             valid = false
-        }else {
+        } else {
             date_entry.error = null
         }
 
@@ -1321,8 +1497,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             }
         }
 
-        if (work_permit.visibility != View.GONE) {
-            if (!workPermit) {
+        if (fifth_permission.visibility != View.GONE) {
+            if (!workPermitA || !workPermitB) {
                 fifth_incorrect_work.text = "Добавьте фото документа"
                 fifth_incorrect_work.visibility = View.VISIBLE
                 valid = false
@@ -1342,16 +1518,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
         }
 
         if (contract_type.visibility != View.GONE) {
-            if (contract_type.text.isEmpty()) {
-                contract_type.error = "Поле не должно быть пустым"
-                valid = false
-            } else {
-                contract_type.error = null
+            if (contract_type.text.length == 0) {
+                if (contract_type.text.isEmpty()) {
+                    contract_type.error = "Поле не должно быть пустым"
+                    valid = false
+                } else {
+                    contract_type.error = null
+                }
             }
         }
 
-        if (last_page_one.visibility != View.GONE) {
-            if (!lastPageOne) {
+        if (fifth_contract.visibility != View.GONE) {
+            if (!lastPageOne || !lastPageTwo) {
                 fifth_incorrect_page.text = "Добавьте фото документа"
                 fifth_incorrect_page.visibility = View.VISIBLE
                 valid = false
@@ -1360,15 +1538,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult,
             }
         }
 
-        if (last_page_two.visibility != View.GONE) {
-            if (!lastPageTwo) {
-                fifth_incorrect_page.text = "Добавьте фото документа"
-                fifth_incorrect_page.visibility = View.VISIBLE
-                valid = false
-            } else {
-                fifth_incorrect_page.visibility = View.GONE
-            }
-        }
 
         if (date_the_contract.visibility != View.GONE) {
             if (date_the_contract.text.isEmpty()) {

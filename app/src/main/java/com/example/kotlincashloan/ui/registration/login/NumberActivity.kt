@@ -181,13 +181,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listAvailableCountry.size) {
                     if (i <= listAvailableCountry.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listAvailableCountry[i - 1].name.toString(),
-                                "listAvailableCountry",
-                                i - 1
-                            )
-                        )
+                        itemDialog.add(GeneralDialogModel(listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1))
                     }
                 }
             }

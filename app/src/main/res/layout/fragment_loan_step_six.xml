@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Дополнительные контакты"
+                    android:text="Ваш дополнительный номер"
                     android:textColor="@color/blackColor"
                     android:textSize="18dp" />
 

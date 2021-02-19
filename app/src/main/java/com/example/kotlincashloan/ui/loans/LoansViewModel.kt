@@ -8,6 +8,7 @@ import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
@@ -56,7 +57,6 @@ class LoansViewModel: ViewModel() {
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
-        HomeActivity.alert.show()
         RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -76,7 +76,7 @@ class LoansViewModel: ViewModel() {
                     errorGet.postValue(response.code().toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },400)
             }
         })

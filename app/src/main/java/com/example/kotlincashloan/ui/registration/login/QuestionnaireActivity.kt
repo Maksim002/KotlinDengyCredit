@@ -247,13 +247,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listGender.size) {
                     if (i <= listGender.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listGender[i - 1].name.toString(),
-                                "listGender",
-                                i - 1
-                            )
-                        )
+                        itemDialog.add(GeneralDialogModel(listGender[i - 1].name.toString(), "listGender", i - 1, 0))
                     }
                 }
             }
@@ -273,7 +267,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                                 listNationality[i - 1].name.toString(),
                                 "listNationality",
                                 i - 1
-                            )
+                            , 0)
                         )
                     }
                 }
@@ -294,7 +288,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                                 listTrafficSource[i - 1].name.toString(),
                                 "listTrafficSource",
                                 i - 1
-                            )
+                            , 0)
                         )
                     }
                 }
@@ -310,12 +304,8 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listSecretQuestion.size) {
                     if (i <= listSecretQuestion.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listSecretQuestion[i - 1].name.toString(),
-                                "listSecretQuestion",
-                                i - 1
-                            )
+                        itemDialog.add(GeneralDialogModel(listSecretQuestion[i - 1].name.toString(), "listSecretQuestion", i - 1
+                            , 0)
                         )
                     }
                 }

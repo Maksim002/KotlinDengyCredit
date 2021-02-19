@@ -351,10 +351,10 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
                             profile_setting_second_phone.mask = result.result[secondNationality].phoneMaskSmall
                             profile_setting_second_phone.setText(MyUtils.toMask(
-                                    clientResult.secondPhone.toString(),
-                                    result.result[secondNationality].phoneCode!!.length,
-                                    result.result[secondNationality].phoneLength!!.toInt()
-                                )
+                                clientResult.secondPhone.toString(),
+                                result.result[secondNationality].phoneCode!!.length,
+                                result.result[secondNationality].phoneLength!!.toInt()
+                            )
                             )
                             profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
                         } else {
@@ -997,7 +997,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
         mapUploadImg.put("doc_id", "0")
         mapUploadImg.put("type_id", "0")
         mapUploadImg.put("file", imageString)
-         viewModel.uploadImg(mapUploadImg)
+        viewModel.uploadImg(mapUploadImg)
         myThread.interrupt()
 
     }

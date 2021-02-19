@@ -406,7 +406,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
         mapSave.put("count_family", familyId)
         mapSave.put("count_children", childrenId)
         mapSave.put("live_in_ru", liveId)
-        mapSave.put("bank_card", cardId)
+        mapSave.put("bank_card", catsNamesPosition.toString())
         mapSave.put("step", "2")
 
         viewModel.saveLoan(mapSave)

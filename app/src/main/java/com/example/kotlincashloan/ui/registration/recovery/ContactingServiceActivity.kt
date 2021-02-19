@@ -89,8 +89,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             GeneralDialogModel(
                                 listAvailableCountry[i - 1].name.toString(),
                                 "listAvailableCountry",
-                                i - 1
-                            )
+                                i - 1)
                         )
                     }
                 }
@@ -110,8 +109,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             GeneralDialogModel(
                                 listSupportType[i - 1].name.toString(),
                                 "listSupportType",
-                                i - 1
-                            )
+                                i - 1)
                         )
                     }
                 }

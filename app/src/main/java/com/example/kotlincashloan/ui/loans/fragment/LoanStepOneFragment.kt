@@ -38,6 +38,8 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        AppPreferences.sum = ""
+        AppPreferences.nationality = ""
         initRequest()
     }
 

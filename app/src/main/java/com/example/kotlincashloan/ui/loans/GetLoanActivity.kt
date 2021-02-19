@@ -26,6 +26,7 @@ class GetLoanActivity : AppCompatActivity() {
 
     companion object {
         lateinit var timer: TimerListenerLoan
+        lateinit var alert: LoadingAlert
     }
 
 
@@ -33,7 +34,7 @@ class GetLoanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
         timer = TimerListenerLoan(this)
-        HomeActivity.alert = LoadingAlert(this)
+        alert = LoadingAlert(this)
 
         get_loan_view_pagers = findViewById(R.id.get_loan_view_pagers)
 
@@ -57,6 +58,7 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepFiveFragment()))
         list.add(LoansListModel(LoanStepSixFragment()))
         list.add(LoansListModel(LoanStepFifthFragment()))
+        list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true
 
@@ -83,7 +85,7 @@ class GetLoanActivity : AppCompatActivity() {
             get_loan_view_pagers.getAdapter()!!.getCount() - 1
         ); //
         // or manual change
-        get_loan_stepper_indicator.setStepCount(6);
+        get_loan_stepper_indicator.setStepCount(7);
         get_loan_stepper_indicator.setCurrentStep(0);
     }
 
