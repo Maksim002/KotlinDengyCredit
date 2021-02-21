@@ -48,6 +48,7 @@ import com.regula.documentreader.api.enums.*
 import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
@@ -105,7 +106,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var lastPageOne = false
     private var lastPageTwo = false
     private var saveValidate = false
-    val mapSave = mutableMapOf<String, String>()
+    private val mapSave = mutableMapOf<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -204,7 +205,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     listResult(result.error.code!!)
                 }
             }
-            GetLoanActivity.alert.hide()
         })
 
         viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
@@ -215,7 +215,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     errorList(error)
                 }
             }
-            GetLoanActivity.alert.hide()
         })
     }
 
