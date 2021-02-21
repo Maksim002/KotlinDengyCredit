@@ -18,7 +18,7 @@ import retrofit2.Response
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
     val handler = Handler()
-    var refreshCode = false
+    var refreshCode = ""
 
     val errorNews = MutableLiveData<String>()
     var listNewsDta = MutableLiveData<CommonResponse<ArrayList<ListNewsResultModel>>>()
@@ -423,6 +423,8 @@ class LoansViewModel: ViewModel() {
             }
         })
     }
+
+
 
     //saveLoan Отправка на сервер
     val errorSaveLoan = MutableLiveData<String>()

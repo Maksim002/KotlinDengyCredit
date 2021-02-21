@@ -55,7 +55,6 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private val IMAGE_PICK_CODE = 10
@@ -254,11 +253,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     //получение полов
     private fun gettingFloors() {
-        viewModel.listGenderDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
-                    profile_setting_gender.setText(result.result[clientResult.gender!!.toInt() - 1].name)
+                    profile_setting_gender.setText(result.result.first { it.id == clientResult.gender!!.toInt()}.name)
                     errorCodeGender = result.code.toString()
                     resultSuccessfully()
                 } else {
@@ -283,7 +280,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
-                        profile_s_nationality.setText(result.result[clientResult.nationality!!.toInt() - 1].name)
+                        profile_s_nationality.setText(result.result.first { it.id == clientResult.nationality!!.toInt()}.name)
                         errorCodeNationality = result.code.toString()
                         resultSuccessfully()
                     } else {
@@ -310,9 +307,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     // TODO: 21-2-12  Список доступных стран
     private fun listCountries() {
-        viewModel.listAvailableCountryDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        viewModel.listAvailableCountryDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 try {
                     // первый номер
                     if (result.result != null) {
@@ -321,16 +316,10 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                         if (clientResult.phoneFirst != "") {
                             profile_setting_first.mask = null
 
-                            val firstNationality = clientResult.phoneFirst!!.toInt() - 1
+                            val firstNationality = clientResult.phoneFirst!!.toInt()
                             numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
-                            profile_setting_first.mask = result.result[firstNationality].phoneMask
-                            profile_setting_first.setText(
-                                MyUtils.toMask(
-                                    clientResult.firstPhone.toString(),
-                                    result.result[firstNationality].phoneCode!!.length,
-                                    result.result[firstNationality].phoneLength!!.toInt()
-                                )
-                            )
+                            profile_setting_first.mask = result.result.first { it.id ==  firstNationality}.phoneMask
+                            profile_setting_first.setText(MyUtils.toMask(clientResult.firstPhone.toString(), result.result.first { it.id == firstNationality}.phoneCode!!.length, result.result.first { it.id == firstNationality}.phoneLength!!.toInt()))
 
                             list = result.result
 
@@ -339,24 +328,27 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                         if (clientResult.secondPhone != "") {
                             profile_setting_second_phone.mask = null
 
-                            val secondNationality = clientResult.phoneSecond!!.toInt() - 1
-
-                            codeNationality = secondNationality
+                            val secondNationality = clientResult.phoneSecond!!.toInt()
 
                             checkNumber = secondNationality
 
-                            countriesPosition = secondNationality
+                            //вытягивает позицию из списка по его id
+                            val id = result.result.first { it.id == secondNationality }.id
+                            var position = -1
+                            for (i in 0 until result.result.size) {
+                                if (result.result.get(i).id === id) {
+                                    position = i
+                                }
+                            }
+                            codeNationality = position
 
-                            codeMack = result.result[secondNationality].phoneCode.toString()
+                            countriesPosition = position
 
-                            profile_setting_second_phone.mask = result.result[secondNationality].phoneMaskSmall
-                            profile_setting_second_phone.setText(MyUtils.toMask(
-                                clientResult.secondPhone.toString(),
-                                result.result[secondNationality].phoneCode!!.length,
-                                result.result[secondNationality].phoneLength!!.toInt()
-                            )
-                            )
-                            profile_s_mask.setText("+" + result.result[secondNationality].phoneCode)
+                            codeMack = result.result.first { it.id == secondNationality}.phoneCode.toString()
+
+                            profile_setting_second_phone.mask = result.result.first { it.id == secondNationality}.phoneMaskSmall
+                            profile_setting_second_phone.setText(MyUtils.toMask(clientResult.secondPhone.toString(), result.result.first { it.id == secondNationality}.phoneCode!!.length, result.result.first { it.id == secondNationality}.phoneLength!!.toInt()))
+                            profile_s_mask.setText("+" + result.result.first { it.id == secondNationality}.phoneCode)
                         } else {
                             profile_setting_second_phone.text = null
                             codeMack = result.result[codeNationality].phoneCode.toString()
@@ -390,15 +382,25 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
         viewModel.listSecretQuestionDta.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
+                var list: ArrayList<Int> = arrayListOf()
                 try {
                     if (result.result != null) {
                         question = result.result
-                        profile_s_question.setText(result.result[clientResult.question!!.toInt() - 1].name)
-                        questionPosition = clientResult.question!!.toInt() - 1
+                        profile_s_question.setText(result.result.first { it.id == clientResult.question!!.toInt()}.name)
                         var numberPosition = 0
                         if (questionId == "") {
                             numberPosition = clientResult.question!!.toInt()
                             questionId = numberPosition.toString()
+
+                            //вытягивает позицию из списка по его id
+                            val id = result.result.first { it.id == numberPosition }.id
+                            var position = -1
+                            for (i in 0 until result.result.size) {
+                                if (result.result.get(i).id === id) {
+                                    position = i
+                                }
+                            }
+                            questionPosition = position
                         }
 
                         errorListSecretQuestion = result.code.toString()
@@ -475,9 +477,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     private fun initResult() {
         //если все успешно получает информацию о пользователе
-        viewModel.listClientInfoDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
+        viewModel.listClientInfoDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
                         clientResult = result.result
@@ -628,7 +628,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             if (itemDialog.size == 0) {
                 for (i in 1..question.size) {
                     if (i <= question.size) {
-                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1))
+                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1, question[i-1].id))
                     }
                 }
             }
@@ -911,7 +911,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
         profile_setting_second_phone.onFocusChangeListener =
             View.OnFocusChangeListener { v, hasFocus ->
-                if (profile_setting_second_phone != null) {
+                if (profile_setting_second_phone.text!!.isEmpty()) {
                     profile_setting_second_phone.mask = null
                     profile_setting_second_phone.mask = list[codeNationality].phoneMaskSmall
                     profile_setting_second_phone.setSelection(profile_setting_second_phone.text!!.length);
@@ -1078,14 +1078,14 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 imageConverter(scaled)
                 profile_setting_image.setImageBitmap(scaled)
-                HomeActivity.alert.show()
+                MainActivity.alert.show()
             }else{
                 val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
                 val nh = (bm.height * (512.0 / bm.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
                 imageConverter(scaled)
                 profile_setting_image.setImageBitmap(scaled)
-                HomeActivity.alert.show()
+                MainActivity.alert.show()
             }
         }
     }

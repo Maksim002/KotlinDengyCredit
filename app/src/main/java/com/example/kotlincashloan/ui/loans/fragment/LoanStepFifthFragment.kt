@@ -659,12 +659,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
             if (countriesList.size != 0) {
-                showDate(
-                    countriesList[0].year,
-                    countriesList[0].monthOfYear,
-                    countriesList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+                showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
             }
@@ -715,14 +710,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         //отоброжает данные в TextView
                         fifth_goal_name.setText(simpleDateFormat.format(calendar.getTime()))
                         //доболяет новый элемент в список
-                        countriesList.add(
-                            MyDataListModel(
-                                "fifth_goal_name",
-                                year,
-                                monthOfYear,
-                                dayOfMonth
-                            )
-                        )
+                        countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
                         break
                     }
                 }
@@ -1063,8 +1051,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 }
 
                 //Дата рождения
-                val dataS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH)
+                val dataS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH)
                 var sdf: SimpleDateFormat? = null
                 if (dataS != null) {
                     sdf = if (dataS.length == 8) {

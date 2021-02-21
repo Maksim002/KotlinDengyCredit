@@ -15,7 +15,7 @@ import java.util.regex.Pattern
 object MyUtils {
     fun toMyDate(date: String): String {
         return try {
-            date.substring(8, 10) + "." + date.substring(6, 7) + "." + date.substring(0, 4)
+            date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(0, 4)
         } catch (e: Exception) {
             ""
         }
@@ -144,7 +144,6 @@ object MyUtils {
         val matcher = pattern.matcher(fileName)
         return matcher.matches()
     }
-
 
     fun fileName(url: String): String {
         return try {
