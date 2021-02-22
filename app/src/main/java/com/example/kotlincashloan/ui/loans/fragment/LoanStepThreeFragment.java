@@ -273,7 +273,7 @@ public class LoanStepThreeFragment extends Fragment {
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
 //            final AlertDialog initDialog = showDialog("Инициализация");
-            showScanner.setText("Инициализация");
+            showScanner.setText("Ожидайте, идет загрузка...");
             showScanner.setClickable(false);
 
 
