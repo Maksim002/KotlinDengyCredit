@@ -143,7 +143,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, workPosition)
+                initBottomSheet(itemDialog, workPosition, "Вид занятости")
             }
         }
 
@@ -158,7 +158,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition)
+                initBottomSheet(itemDialog, typeWorkPosition, "Должность")
             }
         }
 
@@ -173,7 +173,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition)
+                initBottomSheet(itemDialog, yearsPosition, "Стаж работы в РФ")
             }
         }
 
@@ -188,7 +188,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, experiencePosition)
+                initBottomSheet(itemDialog, experiencePosition, "Стаж работы в последнем месте в РФ")
             }
         }
 
@@ -203,7 +203,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomePosition)
+                initBottomSheet(itemDialog, incomePosition, "Ежемесячный доход")
             }
         }
 
@@ -218,7 +218,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeIncomePosition)
+                initBottomSheet(itemDialog, typeIncomePosition, "Дополнительный доход")
             }
         }
 
@@ -233,7 +233,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomeAdditionalPosition)
+                initBottomSheet(itemDialog, incomeAdditionalPosition, "Сумма доп. дохода")
             }
         }
     }
@@ -527,8 +527,8 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

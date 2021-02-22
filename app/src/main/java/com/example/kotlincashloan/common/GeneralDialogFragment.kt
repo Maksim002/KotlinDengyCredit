@@ -14,7 +14,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_general_dialog.*
 
 
-class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: Int) : BottomSheetDialogFragment(),
+class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: Int, var title: String) : BottomSheetDialogFragment(),
     ListenerGeneralDialog {
     private var adapterDialog = GeneralDialogAdapter(position,this)
 
@@ -30,6 +30,11 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
         initClick()
+        setText()
+    }
+
+    private fun setText() {
+        bottom_dialog_title.text = title
     }
 
     private fun initClick() {

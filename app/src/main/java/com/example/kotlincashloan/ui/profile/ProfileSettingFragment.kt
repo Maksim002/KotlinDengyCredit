@@ -633,7 +633,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition)
+                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос")
             }
         }
 
@@ -649,7 +649,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 }
             }
             if (itemDialog.size != 0){
-                initBottomSheet(itemDialog, countriesPosition)
+                initBottomSheet(itemDialog, countriesPosition, "Список доступных стран")
             }
         }
 
@@ -1116,8 +1116,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

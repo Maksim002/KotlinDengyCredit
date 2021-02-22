@@ -73,7 +73,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countryPosition)
+                initBottomSheet(itemDialog, countryPosition, "Список доступных стран")
             }
         }
 
@@ -312,8 +312,8 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

@@ -111,7 +111,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, cityPosition)
+                initBottomSheet(itemDialog, cityPosition, "Выберите город")
             }
         }
 
@@ -126,7 +126,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, familyPosition)
+                initBottomSheet(itemDialog, familyPosition, "Семейное положение")
             }
         }
 
@@ -141,7 +141,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, numbersPosition)
+                initBottomSheet(itemDialog, numbersPosition, "Количество членов семьи")
             }
         }
 
@@ -156,7 +156,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, childrenPosition)
+                initBottomSheet(itemDialog, childrenPosition, "Количество детей")
             }
         }
 
@@ -171,7 +171,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition)
+                initBottomSheet(itemDialog, yearsPosition, "Сколько лет проживаете в РФ")
             }
         }
 
@@ -186,7 +186,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, catsNamesPosition)
+                initBottomSheet(itemDialog, catsNamesPosition, "Есть банковская карта")
             }
         }
     }
@@ -438,8 +438,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

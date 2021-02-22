@@ -230,6 +230,11 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
+    @POST("saveLoan?token=oYyxhIFgJjAb")
+    fun saveLoanImg(@FieldMap params: Map<String, String>):Call<SaveLoanModel>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
     @POST("listEntryGoal?token=oYyxhIFgJjAb")
     fun listEntryGoal(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<EntryGoalResultModel>>>
 

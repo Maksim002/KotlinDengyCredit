@@ -248,7 +248,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, genderPosition)
+                initBottomSheet(itemDialog, genderPosition, "Выберите пол")
             }
         }
 
@@ -269,7 +269,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, nationalityPosition)
+                initBottomSheet(itemDialog, nationalityPosition, "Укажите гражданство")
             }
         }
 
@@ -290,7 +290,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, sourcePosition)
+                initBottomSheet(itemDialog, sourcePosition, "Откуда вы о нас узнали")
             }
         }
 
@@ -305,7 +305,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition)
+                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос")
             }
         }
 
@@ -745,8 +745,8 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

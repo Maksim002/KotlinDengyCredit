@@ -190,8 +190,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         GetLoanActivity.alert.show()
-        viewModel.saveLoan(mapImage)
-        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.saveLoanImg(mapImage)
+        viewModel.getSaveLoanImg.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 imageString.clear()
                 textImA = ""
@@ -207,7 +207,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         })
 
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
+        viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 if (error == "409") {
                     Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
@@ -376,7 +376,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, goalPosition)
+                initBottomSheet(itemDialog, goalPosition, "Цель въезда")
             }
         }
 
@@ -404,7 +404,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, contractPosition)
+                initBottomSheet(itemDialog, contractPosition, "Тип договора")
             }
         }
 
@@ -505,8 +505,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -855,7 +855,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         try {
 
             if (!DocumentReader.Instance().documentReaderIsReady) {
-                text.setText("Инициализация")
+                text.setText("Ожидайте, идет загрузка...")
                 fifth_potent.setClickable(false)
 
 

@@ -450,6 +450,33 @@ class LoansViewModel: ViewModel() {
                     errorSaveLoan.postValue(response.code().toString())
                 }
                 HomeActivity.alert.hide()
+            }
+        })
+    }
+
+    //saveLoanImg Сохронение на сервер картинок
+    val errorSaveLoanImg = MutableLiveData<String>()
+    var getSaveLoanImg = MutableLiveData<SaveLoanModel>()
+
+    fun saveLoanImg(map: Map<String, String>){
+        RetrofitService.apiService().saveLoanImg(map).enqueue(object : Callback<SaveLoanModel> {
+            override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorSaveLoanImg.postValue( "601")
+                }else{
+                    errorSaveLoanImg.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<SaveLoanModel>, response: Response<SaveLoanModel>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        getSaveLoanImg.postValue(response.body())
+                    }else{
+                        errorSaveLoanImg.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorSaveLoanImg.postValue(response.code().toString())
+                }
                 GetLoanActivity.alert.hide()
             }
         })
