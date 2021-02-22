@@ -49,6 +49,8 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
+//        list.add(LoansListModel(LoanStepFifthFragment()))
+
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment()))
         list.add(LoansListModel(LoanStepThreeFragment()))

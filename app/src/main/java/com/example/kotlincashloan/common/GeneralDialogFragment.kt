@@ -10,7 +10,6 @@ import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.adapter.general.ListenerGeneralDialog
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_general_dialog.*
 
 
@@ -31,6 +30,7 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
         initRecycler()
         initClick()
         setText()
+
     }
 
     private fun setText() {

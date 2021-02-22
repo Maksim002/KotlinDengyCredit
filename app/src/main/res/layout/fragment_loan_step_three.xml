@@ -60,8 +60,6 @@
 
         </LinearLayout>
 
-    </LinearLayout>
-
         <Button
             android:id="@+id/thee_active_status"
             style="@style/RoundedOrangeBackground"
@@ -73,6 +71,8 @@
             android:layout_marginLeft="16dp"
             android:text="Сканировать документ"
             android:layout_gravity="center" />
+
+    </LinearLayout>
     </LinearLayout>
 
     <include

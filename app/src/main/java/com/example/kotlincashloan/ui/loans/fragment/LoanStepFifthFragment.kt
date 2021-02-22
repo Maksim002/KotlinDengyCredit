@@ -292,13 +292,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_permission.visibility = View.GONE
             fifth_2n.visibility = View.GONE
         }
-
-        if (documentImage != null) {
-            fifth_permission.visibility = View.GONE
-        } else if (imageString.containsKey("work_permit")) {
-            fifth_potent.visibility = View.GONE
-            fifth_receipt.visibility = View.GONE
-        }
     }
 
     //listEntryGoal Список целей въезда
@@ -354,7 +347,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     private fun initClick() {
-
         bottom_loan_fifth.setOnClickListener {
             saveValidate = true
             initSaveServer()
@@ -600,11 +592,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
                     work_permitA.setImageBitmap(scaled)
+                    fifth_potent.visibility = View.GONE
+                    fifth_receipt.visibility = View.GONE
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
                     work_permitB.setImageBitmap(scaled)
+                    fifth_potent.visibility = View.GONE
+                    fifth_receipt.visibility = View.GONE
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
                     photo2NDFL = true
@@ -953,9 +949,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private val completion = IDocumentReaderCompletion { i, documentReaderResults, e ->
         //processing is finished, all results are ready
         if (i == DocReaderAction.COMPLETE) {
-//                if (loadingDialog != null && loadingDialog.isShowing()) {
-//                    loadingDialog.dismiss()
-//                }
 
             //Checking, if nfc chip reading should be performed
             if (doRfid && documentReaderResults != null && documentReaderResults.chipPage != 0) {
@@ -1022,24 +1015,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     mapSave["patent_first_name"] = ""
                 }
 
-                //Фамилия (Ныц)
-                val surnameNationalS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_SURNAME, LCID.RUSSIAN)
-                if (surnameNationalS != null) {
-
-                } else {
-
-                }
-
-                //Имя (Нац)
-                val namesNationalS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_GIVEN_NAMES, LCID.RUSSIAN)
-                if (namesNationalS != null) {
-
-                } else {
-
-                }
-
                 //Отчество (Нац)
                 val nameNationalityS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_FATHERS_NAME, LCID.RUSSIAN)
@@ -1063,20 +1038,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     mapSave["patent_u_date"] = sdf.format(d1)
                 } else {
                     mapSave["patent_u_date"] = ""
-                }
-
-                //пол
-                val sexS = results.getTextFieldValueByType(eVisualFieldType.FT_SEX)
-                if (sexS != null) {
-
-                } else {
-
-                }
-
-                // Место рождения
-                val laceOfBirthS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_PLACE_OF_BIRTH)
-                if (laceOfBirthS != null) {
                 }
 
                 //Код государтсва выдочи
@@ -1115,29 +1076,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     mapSave["patent_series"] = ""
                 }
 
-                //Личный номер
-                val personalNumberS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_PERSONAL_NUMBER)
-                if (personalNumberS != null) {
-
-                } else {
-
-                }
-
-                //возраст
-                val ageS = results.getTextFieldValueByType(eVisualFieldType.FT_AGE)
-                if (ageS != null) {
-                }
-
-                // оставшися срок
-                val remainderTermS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_REMAINDER_TERM)
-                if (remainderTermS != null) {
-
-                } else {
-
-                }
-
                 // Дата окончания действия
                 val dateExpiryS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_EXPIRY)
@@ -1172,21 +1110,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     mapSave["patent_territory"] = ""
                 }
 
-                // Код типа документа
-                val documentClassCodeS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_CLASS_CODE)
-                if (documentClassCodeS != null) {
-
-                } else {
-
-                }
-
-                // Название государтсво выдачи
-                val issuingStateNameS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME)
-                if (issuingStateNameS != null) {
-                }
-
                 // Дата выпуска
                 val date_of_IssueS =
                     results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_ISSUE)
@@ -1203,103 +1126,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     mapSave["patent_date_issue"] = ""
                 }
 
-                // Тип mrz
-                val mrzS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_TYPE)
-                if (mrzS != null) {
-                }
-
-                // Строки mrz
-                val MRZStringsS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS)
-                if (MRZStringsS != null) {
-                }
-
-                // Дополонительные данные
-                val optionalDataS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_OPTIONAL_DATA)
-                if (optionalDataS != null) {
-                }
-
-                // Контрольная цифра номера документа
-                val documentNumberCheckS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER_CHECK_DIGIT)
-                if (documentNumberCheckS != null) {
-                }
-
-                // Контрольная цифра даты рождения
-                val dateOfBirthS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH_CHECK_DIGIT)
-                if (dateOfBirthS != null) {
-                }
-
-                // Общая контрольная цифра
-                val finalCheckDigitS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_FINAL_CHECK_DIGIT)
-                if (finalCheckDigitS != null) {
-                }
-
-                // Линея 2 дополниотельные данные
-                val line2OptionalDataS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA)
-                if (line2OptionalDataS != null) {
-                }
-
-                // Лет с мамента выпуска
-                val yearsSinceIssueS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_YEARS_SINCE_ISSUE)
-                if (yearsSinceIssueS != null) {
-                }
-
-                // Нацанальность (Нац)
-                val nationalityS = results.getTextFieldValueByType(
-                    eVisualFieldType.FT_NATIONALITY,
-                    LCID.KYRGYZ_CYRILICK
-                )
-                if (nationalityS != null) {
-
-                } else {
-
-                }
-
-                // Контрольная цифра даты окончания действия
-                val expiryCheckDigitS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_EXPIRY_CHECK_DIGIT)
-                if (expiryCheckDigitS != null) {
-                }
-
-                // Код национальности
-                val nationalityCodeS =
-                    results.getTextFieldValueByType(eVisualFieldType.FT_NATIONALITY_CODE)
-                if (nationalityCodeS != null) {
-                }
-
-                // Код национальности (Нац)
-                val placeOfIssueS = results.getTextFieldValueByType(
-                    eVisualFieldType.FT_PLACE_OF_ISSUE,
-                    LCID.KYRGYZ_CYRILICK
-                )
-                if (placeOfIssueS != null) {
-                    if (authorityS == null) {
-
-                    } else {
-
-                    }
-                }
-
-                // Адрес
-                val addressS = results.getTextFieldValueByType(
-                    eVisualFieldType.FT_ADDRESS,
-                    LCID.KYRGYZ_CYRILICK
-                )
-                if (addressS != null) {
-                }
-
-                // Тип документа
-                val documentClassNameS = results.documentType[0].name
-                if (documentClassNameS != null) {
-                }
-
                 // through all text fields
                 if (results.textResult != null && results.textResult!!.fields != null) {
                     for (textField in results.textResult!!.fields) {
@@ -1313,19 +1139,13 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
                 }
 
-                documentImage =
-                    results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
+                documentImage = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE)
                 if (documentImage != null) {
                     imageScanId = "imageA"
-                    val aspectRatio =
-                        documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
-                    documentImage = Bitmap.createScaledBitmap(
-                        documentImage!!,
-                        (1200 * aspectRatio).toInt(),
-                        1200,
-                        false
-                    )
+                    val aspectRatio = documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
+                    documentImage = Bitmap.createScaledBitmap(documentImage!!, (1200 * aspectRatio).toInt(), 1200, false)
                     fifth_incorrect_patent.visibility = View.GONE
+                    fifth_permission.visibility = View.GONE
                     russianPatentA = true
                     russian_patentA.setImageBitmap(documentImage)
                     gotImageString(documentImage!!)
