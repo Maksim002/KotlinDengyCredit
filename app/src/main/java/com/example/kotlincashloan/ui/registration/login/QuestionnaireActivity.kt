@@ -62,6 +62,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var dayOfMonthSelective = 0
     private var codeMack = ""
     private var reNum = ""
+    private var nationalityCounter = 0
 
     private var genderPosition = -1
     private var nationalityPosition = -1
@@ -169,10 +170,15 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             map["u_date"] = data
             map["gender"] = idSex.toString()
             map["nationality"] = listNationalityId.toString()
-            map["first_phone"] =
-                MyUtils.toFormatMask(questionnaire_phone_number.text.toString())
+
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = questionnaire_phone_number.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+               val firstNum = result.append(matchedText.value).toString()
+                map["first_phone"] = firstNum
+            }
             map["second_phone"] = try {
-                MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+                reNum
             } catch (e: Exception) {
                 ""
             }
@@ -255,7 +261,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_available_countries.setOnClickListener {
-            questionnaire_phone_additional.text = null
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -409,7 +414,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_enter.isClickable = false
             questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
             questionnaire_phone_number.setText(AppPreferences.number.toString())
-//            questionnaire_phone_additional.mask = AppPreferences.isFormatMask
         }else{
             questionnaire_enter.isClickable = true
             questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
@@ -598,6 +602,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         listNationalityCounter = data.result
+
+                        questionnaire_available_countries.setText("+" + result.data.result[0].phoneCode.toString())
+                        questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
+                        nationalityCounter = result.data.result[0].phoneLength!!.toInt()
                     } else {
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -821,23 +829,22 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (model.key == "listNationalityCounter") {
-            if (questionnaire_available_countries.text != null){
-                questionnaire_phone_additional.visibility = View.VISIBLE
-            }
             questionnaire_phone_additional.mask = null
             questionnaire_phone_additional.error = null
-            questionnaire_available_countries.setText(listNationalityCounter[model.position].name)
+            questionnaire_phone_additional.text = null
+            questionnaire_available_countries.setText("+" + listNationalityCounter[model.position].phoneCode.toString())
             counterNationalPosition = model.position
             listNationalityCounterId = listNationalityCounter[model.position].id!!.toInt()
+            nationalityCounter = listNationalityCounter[model.position].phoneLength!!.toInt()
             codeMack = listNationalityCounter[model.position].phoneCode.toString()
-            questionnaire_phone_additional.mask = listNationalityCounter[model.position].phoneMask
+            questionnaire_phone_additional.mask = listNationalityCounter[model.position].phoneMaskSmall
         }
     }
 
     //метод удаляет все символы из строки
     private fun initCleaningRoom(){
         if (questionnaire_phone_additional.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = questionnaire_phone_additional.text.toString())
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = questionnaire_available_countries.text.toString() + questionnaire_phone_additional.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
@@ -871,7 +878,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()){
-            if (reNum.length != listNationalityCounter[counterNationalPosition].phoneLength!!.toInt()) {
+            if (reNum.length != nationalityCounter) {
                 questionnaire_phone_additional.error = "Введите валидный номер"
                 valid = false
             }

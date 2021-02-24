@@ -26,6 +26,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -37,6 +38,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
     private var repeatAnim = false
+    private var reNum = ""
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
 
@@ -61,7 +63,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             number_layout.visibility = View.GONE
         } else {
             val map = HashMap<String, String>()
-            map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
+            map.put("phone", reNum)
             HomeActivity.alert.show()
             no_connection_repeat.isEnabled = false
             viewModel.numberPhones(map).observe(this, Observer { result ->
@@ -85,7 +87,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                 initVisibilities()
                             }
                         } else {
-                            AppPreferences.number = number_phone.text.toString()
+                            AppPreferences.number = number_list_country.text.toString() + number_phone.text.toString()
                             initBottomSheet(data.result.id!!)
                             initVisibilities()
                         }
@@ -142,12 +144,17 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
 
     override fun onStart() {
         super.onStart()
-        number_phone.visibility = View.GONE
+//        number_phone.visibility = View.GONE
         number_focus_text.requestFocus()
         getListCountry()
     }
 
     private fun initClick() {
+
+        number_phone.addTextChangedListener {
+            initCleaningRoom()
+        }
+
         no_connection_repeat.setOnClickListener {
             if (numberCharacters != 0) {
                 initResult()
@@ -203,6 +210,19 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         number_no_connection.visibility = View.GONE
     }
 
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom(){
+        if (number_phone.text.toString() != "") {
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = number_list_country.text.toString() + number_phone.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
+            }
+        }else{
+            reNum = ""
+        }
+    }
+
     // Регистрация. Список доступных стран
     private fun getListCountry() {
         val map = HashMap<String, Int>()
@@ -215,6 +235,10 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         initVisibilities()
+                        number_list_country.setText("+" + result.data.result[0].phoneCode.toString())
+                        number_phone.mask = result.data.result[0].phoneMaskSmall
+                        numberCharacters = result.data.result[0].phoneLength!!.toInt()
+
                         listAvailableCountry = data.result
                         initVisibilities()
                     } else {
@@ -280,19 +304,17 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
-            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
-            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
-            number_list_country.setText(listAvailableCountry[model.position].name)
-            сountryPosition = model.position
+            number_phone.error = null
             //Очещает старую маску при выборе новой
             number_phone.mask = ""
             // Очещает поле
             number_phone.text = null
-            if (number_list_country.text.toString() != "") {
-                number_phone.visibility = View.VISIBLE
-            }
+            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
+            number_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
+            сountryPosition = model.position
             numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
-            number_phone.mask = listAvailableCountry[model.position].phoneMask
+            number_phone.mask = listAvailableCountry[model.position].phoneMaskSmall
         }
     }
 
@@ -321,21 +343,13 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             number_phone.error = null
         }
 
-        if (numberCharacters != 11) {
-            if (number_phone.text!!.toString().length != 19) {
-                number_phone.error = "Введите валидный номер"
-                valid = false
-            } else {
-                number_phone.error = null
-            }
+        if (reNum.length != numberCharacters) {
+            number_phone.error = "Введите валидный номер"
+            valid = false
         } else {
-            if (number_phone.text!!.toString().toFullPhone().length != 20) {
-                number_phone.error = "Введите валидный номер"
-                valid = false
-            } else {
-                number_phone.error = null
-            }
+            number_phone.error = null
         }
+
         if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }

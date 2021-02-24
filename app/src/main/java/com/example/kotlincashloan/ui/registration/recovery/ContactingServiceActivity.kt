@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
@@ -35,6 +36,7 @@ import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -50,6 +52,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private var typeId: Int = 0
     private val handler = Handler()
     private var profNumber = ""
+    private var reNum = ""
+    private var valod = false
 
     private var countryPosition = -1
     private var typePosition = -1
@@ -79,6 +83,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
     private fun iniClick() {
 
+        questionnaire_phone_additional.addTextChangedListener {
+            initCleaningRoom()
+        }
+
         questionnaire_phone_list_country.setOnClickListener {
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -89,7 +97,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             GeneralDialogModel(
                                 listAvailableCountry[i - 1].name.toString(),
                                 "listAvailableCountry",
-                                i - 1)
+                                i - 1
+                            )
                         )
                     }
                 }
@@ -109,7 +118,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             GeneralDialogModel(
                                 listSupportType[i - 1].name.toString(),
                                 "listSupportType",
-                                i - 1)
+                                i - 1
+                            )
                         )
                     }
                 }
@@ -157,19 +167,16 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
             questionnaire_phone_list_country.error = null
-            questionnaire_phone_list_country.setText(listAvailableCountry[model.position].name)
-            countryPosition = model.position
-            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
-            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
-            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             questionnaire_phone_additional.setText("")
-            questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.error = null
             questionnaire_phone_additional.mask = ""
-            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMask
-            if (questionnaire_phone_list_country.text.toString() != "") {
-                questionnaire_phone_additional.visibility = View.VISIBLE
-            }
+            questionnaire_phone_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
+            countryPosition = model.position
+            AppPreferences.numberCharacters =
+                listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMaskSmall
+            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMaskSmall
         }
 
         if (model.key == "listSupportType") {
@@ -177,6 +184,20 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
             password_recovery_type.setText(listSupportType[model.position].name)
             typePosition = model.position
             typeId = listSupportType[model.position].id!!
+        }
+    }
+
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom() {
+        if (questionnaire_phone_additional.text.toString() != "") {
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = questionnaire_phone_list_country.text.toString() + questionnaire_phone_additional.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
+            }
+        } else {
+            reNum = ""
         }
     }
 
@@ -214,7 +235,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
             map["last_name"] = questionnaire_phone_surnames.text.toString()
             map["first_name"] = questionnaire_phone_name.text.toString()
             map["second_name"] = questionnaire_phone_patronymics.text.toString()
-            map["phone"] = MyUtils.toFormatMask(questionnaire_phone_additional.text.toString())
+            map["phone"] = reNum
             map["comment"] = password_recovery_comments.text.toString()
             HomeActivity.alert.show()
             myViewMode.supportTicket(map).observe(this, Observer { result ->
@@ -297,6 +318,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         return true
     }
 
+    // Список доступхныйх стран
     private fun getListCountry() {
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
@@ -316,6 +338,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
                                 listAvailableCountry = data.result
+                                questionnaire_phone_list_country.setText("+" + result.data.result[0].phoneCode)
+                                questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
+                                numberCharacters = result.data.result[0].phoneLength!!.toInt()
+
                                 initVisibilities()
                             } else {
                                 if (data.error.code == 403) {
@@ -455,7 +481,11 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: Int,
+        title: String
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
@@ -491,21 +521,14 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
             password_recovery_type.error = null
         }
 
-        if (numberCharacters != 11) {
-            if (questionnaire_phone_additional.text!!.toString().length != 19) {
-                questionnaire_phone_additional.error = "Введите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
+
+        if (reNum.length != numberCharacters) {
+            questionnaire_phone_additional.error = "Введите валидный номер"
+            valid = false
         } else {
-            if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
-                questionnaire_phone_additional.error = "Введите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
+            questionnaire_phone_additional.error = null
         }
+
 
         if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
@@ -519,7 +542,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
         }, 2000)
-        TransitionAnimation(this).transitionRight(contacts_layout_anim)
+        if (!valod){
+            TransitionAnimation(this).transitionRight(contacts_layout_anim)
+            valod = true
+        }
     }
 
     override fun onStop() {

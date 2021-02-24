@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
@@ -25,9 +26,11 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
+import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_list_country
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -40,6 +43,8 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     private var myModel = PasswordViewMode()
     private var numberCharacters: Int = 0
     private var inputsAnim = true
+    private var availableCountry = 0
+    private var reNum = ""
 
     private var countryPosition = -1
 
@@ -52,9 +57,14 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         HomeActivity.alert = LoadingAlert(this)
         iniClick()
         initToolBar()
+        getListCountry()
     }
 
     private fun iniClick() {
+
+        questionnaire_phone_additional.addTextChangedListener {
+            initCleaningRoom()
+        }
 
         questionnaire_phone_list_country.setOnClickListener {
             initClearList()
@@ -111,17 +121,28 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
             questionnaire_phone_additional.error = null
             password_recovery_word.error = null
             questionnaire_phone_additional.setText("")
-            questionnaire_phone_list_country.setText(listAvailableCountry[model.position].name)
-            countryPosition = model.position
-            AppPreferences.numberCharacters =
-                listAvailableCountry[model.position].phoneLength!!.toInt()
-            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
-            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             questionnaire_phone_additional.mask = ""
-            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMask
-            if (questionnaire_phone_list_country.text.toString() != "") {
-                layout_visible.visibility = View.VISIBLE
+            questionnaire_phone_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
+            countryPosition = model.position
+//            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            availableCountry = listAvailableCountry[model.position].phoneLength!!.toInt()
+//            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMaskSmall
+            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMaskSmall
+        }
+    }
+
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom() {
+        if (questionnaire_phone_additional.text.toString() != "") {
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = questionnaire_phone_list_country.text.toString() + questionnaire_phone_additional.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
             }
+        } else {
+            reNum = ""
         }
     }
 
@@ -139,7 +160,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
             password_layout.visibility = View.GONE
         } else {
             val map = HashMap<String, String>()
-            map.put("phone", MyUtils.toFormatMask(questionnaire_phone_additional.text.toString()))
+            map.put("phone", reNum)
             map.put("response", password_recovery_word.text.toString())
             HomeActivity.alert.show()
             myModel.recoveryAccess(map).observe(this, Observer { result ->
@@ -209,9 +230,9 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
 
     override fun onStart() {
         super.onStart()
-        questionnaire_phone_additional.mask = AppPreferences.isFormatMask
+//        questionnaire_phone_additional.mask = AppPreferences.isFormatMask
         password_focus_text.requestFocus()
-        getListCountry()
+//        getListCountry()
     }
 
     private fun initBusyBottomSheetError() {
@@ -249,6 +270,10 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
                                 listAvailableCountry = data.result
+
+                                questionnaire_phone_list_country.setText("+" + result.data.result[0].phoneCode)
+                                questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
+                                availableCountry = result.data.result[0].phoneLength!!.toInt()
                                 initVisibilities()
                             } else {
                                 if (data.error.code == 403) {
@@ -333,20 +358,12 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         } else {
             questionnaire_phone_list_country.error = null
         }
-        if (numberCharacters != 11) {
-            if (questionnaire_phone_additional.text!!.toString().length != 19) {
-                questionnaire_phone_additional.error = "Введите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
+
+        if (reNum.length != availableCountry) {
+            questionnaire_phone_additional.error = "Введите валидный номер"
+            valid = false
         } else {
-            if (questionnaire_phone_additional.text!!.toString().toFullPhone().length != 20) {
-                questionnaire_phone_additional.error = "Введите валидный номер"
-                valid = false
-            } else {
-                questionnaire_phone_additional.error = null
-            }
+            questionnaire_phone_additional.error = null
         }
 
 
