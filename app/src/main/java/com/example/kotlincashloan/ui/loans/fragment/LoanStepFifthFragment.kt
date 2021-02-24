@@ -664,11 +664,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             date_entry.error = null
             keyData = "list_countries"
             if (goalList.size != 0) {
-                showDate(
-                    goalList[0].year,
-                    goalList[0].monthOfYear,
-                    goalList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
+                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner
                 )
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
@@ -678,13 +674,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         date_the_contract.setOnClickListener {
             date_the_contract.error = null
             keyData = "date_the_contract"
-            if (contractList.size != 0) {
-                showDate(
-                    contractList[0].year,
-                    contractList[0].monthOfYear,
-                    contractList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+            if (contractList.size != 0) { showDate(contractList[0].year, contractList[0].monthOfYear,
+                contractList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
             }
@@ -741,25 +732,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         contractList.removeAt(i - 1)
                         date_the_contract.setText(simpleDateFormat.format(calendar.getTime()))
                         contractList.add(
-                            MyDataListModel(
-                                "date_the_contract",
-                                year,
-                                monthOfYear,
-                                dayOfMonth
-                            )
-                        )
+                            MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth))
                         break
                     }
                 }
             } else {
                 date_the_contract.setText(simpleDateFormat.format(calendar.getTime()))
                 contractList.add(
-                    MyDataListModel(
-                        "date_the_contract",
-                        year,
-                        monthOfYear,
-                        dayOfMonth
-                    )
+                    MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth)
                 )
             }
         }

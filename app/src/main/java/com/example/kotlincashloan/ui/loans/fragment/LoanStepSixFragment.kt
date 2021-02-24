@@ -243,7 +243,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     private fun initCleaningRoom() {
         if (six_number_phone.text.toString() != "") {
             val matchedResults =
-                Regex(pattern = """\d+""").findAll(input = codeMaskId + six_number_phone.text.toString())
+                Regex(pattern = """\d+""").findAll(input = six_number_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()

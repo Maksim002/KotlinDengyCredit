@@ -421,7 +421,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
                 showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
             }else{
-                showDate(1990, 1, 1, R.style.DatePickerSpinner)
+                showDate(1990, 0, 1, R.style.DatePickerSpinner)
             }
         })
     }
@@ -429,7 +429,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     override fun onDateSet(view: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
         val calendar: Calendar = GregorianCalendar(year, monthOfYear, dayOfMonth)
         questionnaire_date_birth.setText(simpleDateFormat.format(calendar.getTime()))
-        data = (MyUtils.convertDate(year, monthOfYear + 1, dayOfMonth))
+        data = (MyUtils.convertDate(year, monthOfYear, dayOfMonth))
         yearSelective = year
         monthSelective = monthOfYear
         dayOfMonthSelective = dayOfMonth
