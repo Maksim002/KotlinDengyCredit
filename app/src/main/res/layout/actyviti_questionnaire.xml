@@ -65,7 +65,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
                     android:imeOptions="actionNext"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
@@ -79,7 +79,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
                     android:imeOptions="actionNext"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
@@ -92,7 +92,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
                     android:imeOptions="actionDone"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
@@ -236,7 +236,7 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Ответ на секретный вопрос"
                     android:imeOptions="actionDone"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
