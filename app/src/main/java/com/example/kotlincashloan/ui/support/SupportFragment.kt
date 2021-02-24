@@ -60,11 +60,6 @@ class SupportFragment : Fragment() {
         initRefresh()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-    }
-
     fun setTitle(title: String?, color: Int) {
         val activity: Activity? = activity
         if (activity is MainActivity) {
@@ -99,7 +94,6 @@ class SupportFragment : Fragment() {
                         viewModel.error.value = null
                     }
                     viewModel.listFaq(map)
-                    initRecycler()
                 }, 500)
             }
         }
