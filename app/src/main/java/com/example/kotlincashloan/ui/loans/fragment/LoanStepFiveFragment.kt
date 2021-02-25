@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
@@ -19,15 +20,17 @@ import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
+class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -75,14 +78,33 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initListWork()
-        initListTypeWork()
-        initListYears()
-        initWorkExperience()
-        initListIncome()
-        initLisTypeIncome()
-        initListIncomeAdditional()
+        initRestart()
         initClick()
+    }
+
+    private fun initRestart(){
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            fire_ste_no_connection.visibility = View.VISIBLE
+            layout_fire.visibility = View.GONE
+            fire_ste_technical_work.visibility = View.GONE
+            fire_ste_access_restricted.visibility = View.GONE
+            fire_ste_not_found.visibility = View.GONE
+        }else{
+            viewModel.errorSaveLoan.value = null
+            initListWork()
+            initListTypeWork()
+            initListYears()
+            initWorkExperience()
+            initListIncome()
+            initLisTypeIncome()
+            initListIncomeAdditional()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initRestart()
     }
 
     private fun initClick() {
@@ -93,43 +115,19 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
         }
 
         access_restricted.setOnClickListener {
-            initListWork()
-            initListTypeWork()
-            initListYears()
-            initWorkExperience()
-            initListIncome()
-            initLisTypeIncome()
-            initListIncomeAdditional()
+            initRestart()
         }
 
         no_connection_repeat.setOnClickListener {
-            initListWork()
-            initListTypeWork()
-            initListYears()
-            initWorkExperience()
-            initListIncome()
-            initLisTypeIncome()
-            initListIncomeAdditional()
+            initRestart()
         }
 
         technical_work.setOnClickListener {
-            initListWork()
-            initListTypeWork()
-            initListYears()
-            initWorkExperience()
-            initListIncome()
-            initLisTypeIncome()
-            initListIncomeAdditional()
+            initRestart()
         }
 
         not_found.setOnClickListener {
-            initListWork()
-            initListTypeWork()
-            initListYears()
-            initWorkExperience()
-            initListIncome()
-            initLisTypeIncome()
-            initListIncomeAdditional()
+            initRestart()
         }
 
         fire_type_employment.setOnClickListener {
@@ -535,7 +533,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
     private fun initBottomSheet(message: String) {
         val stepBottomFragment =
             StepBottomFragment(
-                message
+                this,message
             )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -684,5 +682,9 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult {
         }
 
         return valid
+    }
+
+    override fun onClickStepListener() {
+        requireActivity().finish()
     }
 }

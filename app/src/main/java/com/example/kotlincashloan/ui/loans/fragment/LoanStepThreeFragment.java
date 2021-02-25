@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
+import com.example.kotlincashloan.adapter.loans.StepClickListener;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanModel;
 import com.example.kotlincashloan.ui.loans.GetLoanActivity;
@@ -59,7 +60,7 @@ import static android.graphics.BitmapFactory.decodeStream;
 import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
 import static com.regula.documentreader.api.enums.LCID.RUSSIAN;
 
-public class LoanStepThreeFragment extends Fragment {
+public class LoanStepThreeFragment extends Fragment implements StepClickListener {
     ArrayList<ImageStringModel> list = new ArrayList<>();
     private HashMap<String, String> map = new HashMap<>();
     private LoansViewModel viewModel = new LoansViewModel();
@@ -242,7 +243,7 @@ public class LoanStepThreeFragment extends Fragment {
     }
 
     private void initBottomSheet(String message) {
-        StepBottomFragment stepBottomFragment = new StepBottomFragment(message);
+        StepBottomFragment stepBottomFragment = new StepBottomFragment(this,message);
         stepBottomFragment.setCancelable(false);
         stepBottomFragment.show(requireActivity().getSupportFragmentManager(), stepBottomFragment.getTag());
     }
@@ -257,8 +258,11 @@ public class LoanStepThreeFragment extends Fragment {
         if (!AppPreferences.INSTANCE.getObservedInternet()) {
             status_no_questionnaire.setVisibility(View.VISIBLE);
             status_technical_work.setVisibility(View.GONE);
-            layout_status.setVisibility(View.GONE);
         } else {
+            layout_status.setVisibility(View.VISIBLE);
+            viewModel.getErrorSaveLoan().setValue(null);
+            status_no_questionnaire.setVisibility(View.GONE);
+            status_technical_work.setVisibility(View.GONE);
             Runnable runnable = new Runnable() {
                 public void run() {
                     initDocumentReader();
@@ -268,6 +272,12 @@ public class LoanStepThreeFragment extends Fragment {
             thread = new Thread(runnable);
             thread.start();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initDocumentReader();
     }
 
     private void initDocumentReader() {
@@ -299,13 +309,6 @@ public class LoanStepThreeFragment extends Fragment {
                         DocumentReader.Instance().initializeReader(getActivity(), license, new IDocumentReaderInitCompletion() {
                             @Override
                             public void onInitCompleted(boolean b, DocumentReaderException e) {
-//                                if (initDialog.isShowing()) {
-//                                    initDialog.dismiss();
-//                                    showScanner.setText("Сканировать документ");
-//                                    showScanner.setClickable(true);
-//                                    layout_status.setVisibility(View.VISIBLE);
-//                                    status_no_questionnaire.setVisibility(View.GONE);
-//                                }
 
                                 showScanner.setText("Сканировать документ");
                                 showScanner.setClickable(true);
@@ -449,15 +452,6 @@ public class LoanStepThreeFragment extends Fragment {
         }
     };
 
-//    private AlertDialog showDialog(String msg) {
-//        AlertDialog.Builder dialog = new AlertDialog.Builder(requireContext());
-//        View dialogView = getLayoutInflater().inflate(R.layout.simple_dialog, null);
-//        dialog.setTitle(msg);
-//        dialog.setView(dialogView);
-//        dialog.setCancelable(false);
-//        return dialog.show();
-//    }
-
     //show received results on the UI
     private void displayResults(DocumentReaderResults results) {
         if (results != null) {
@@ -528,12 +522,6 @@ public class LoanStepThreeFragment extends Fragment {
                     map.put("passport_gender", "");
                 }
 
-                // Место рождения
-                String laceOfBirthS = results.getTextFieldValueByType(eVisualFieldType.FT_PLACE_OF_BIRTH);
-                if (laceOfBirthS != null) {
-
-                }
-
                 //Код государтсва выдочи
                 String placeCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_CODE);
                 if (placeCodeS != null) {
@@ -557,12 +545,6 @@ public class LoanStepThreeFragment extends Fragment {
                     map.put("passport_inn", personalNumberS);
                 } else {
                     map.put("passport_inn", "");
-                }
-
-                //возраст
-                String ageS = results.getTextFieldValueByType(eVisualFieldType.FT_AGE);
-                if (ageS != null) {
-
                 }
 
                 // оставшися срок
@@ -604,12 +586,6 @@ public class LoanStepThreeFragment extends Fragment {
                     map.put("passport_type", "");
                 }
 
-                // Название государтсво выдачи
-                String issuingStateNameS = results.getTextFieldValueByType(eVisualFieldType.FT_ISSUING_STATE_NAME);
-                if (issuingStateNameS != null) {
-
-                }
-
                 // Дата выпуска
                 String date_of_IssueS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_ISSUE);
                 if (date_of_IssueS != null) {
@@ -625,72 +601,6 @@ public class LoanStepThreeFragment extends Fragment {
                     map.put("passport_issue", "");
                 }
 
-                // Тип mrz
-                String mrzS = results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_TYPE);
-                if (mrzS != null) {
-
-                }
-
-                // Строки mrz
-                String MRZStringsS = results.getTextFieldValueByType(eVisualFieldType.FT_MRZ_STRINGS);
-                if (MRZStringsS != null) {
-
-                }
-
-                // Дополонительные данные
-                String optionalDataS = results.getTextFieldValueByType(eVisualFieldType.FT_OPTIONAL_DATA);
-                if (optionalDataS != null) {
-
-                }
-
-                // Контрольная цифра номера документа
-                String documentNumberCheckS = results.getTextFieldValueByType(eVisualFieldType.FT_DOCUMENT_NUMBER_CHECK_DIGIT);
-                if (documentNumberCheckS != null) {
-
-                }
-
-                // Контрольная цифра даты рождения
-                String dateOfBirthS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_BIRTH_CHECK_DIGIT);
-                if (dateOfBirthS != null) {
-
-                }
-
-                // Общая контрольная цифра
-                String finalCheckDigitS = results.getTextFieldValueByType(eVisualFieldType.FT_FINAL_CHECK_DIGIT);
-                if (finalCheckDigitS != null) {
-
-                }
-
-                // Линея 2 дополниотельные данные
-                String line2OptionalDataS = results.getTextFieldValueByType(eVisualFieldType.FT_LINE_2_OPTIONAL_DATA);
-                if (line2OptionalDataS != null) {
-
-                }
-
-                // Лет с мамента выпуска
-                String yearsSinceIssueS = results.getTextFieldValueByType(eVisualFieldType.FT_YEARS_SINCE_ISSUE);
-                if (yearsSinceIssueS != null) {
-
-                }
-
-                // Нацанальность (Нац)
-                String nationalityS = results.getTextFieldValueByType(eVisualFieldType.FT_NATIONALITY, KYRGYZ_CYRILICK);
-                if (nationalityS != null) {
-
-                }
-
-                // Контрольная цифра даты окончания действия
-                String expiryCheckDigitS = results.getTextFieldValueByType(eVisualFieldType.FT_DATE_OF_EXPIRY_CHECK_DIGIT);
-                if (expiryCheckDigitS != null) {
-
-                }
-
-                // Код национальности
-                String nationalityCodeS = results.getTextFieldValueByType(eVisualFieldType.FT_NATIONALITY_CODE);
-                if (nationalityCodeS != null) {
-
-                }
-
                 // Код национальности (Нац)
                 String placeOfIssueS = results.getTextFieldValueByType(eVisualFieldType.FT_PLACE_OF_ISSUE, KYRGYZ_CYRILICK);
                 if (placeOfIssueS != null) {
@@ -699,18 +609,6 @@ public class LoanStepThreeFragment extends Fragment {
                     } else {
                         map.put("passport_authority", "");
                     }
-                }
-
-                // Адрес
-                String addressS = results.getTextFieldValueByType(eVisualFieldType.FT_ADDRESS, KYRGYZ_CYRILICK);
-                if (addressS != null) {
-
-                }
-
-                // Тип документа
-                String documentClassNameS = results.documentType.get(0).name;
-                if (documentClassNameS != null) {
-
                 }
 
                 // through all text fields
@@ -810,5 +708,10 @@ public class LoanStepThreeFragment extends Fragment {
         }
 
         return inSampleSize;
+    }
+
+    @Override
+    public void onClickStepListener() {
+        getActivity().finish();
     }
 }

@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
@@ -38,6 +39,7 @@ import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.spinnerdatepickerlib.DatePicker
 import com.example.spinnerdatepickerlib.DatePickerDialog
 import com.example.spinnerdatepickerlib.SpinnerDatePickerDialogBuilder
@@ -52,11 +54,16 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
+import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener {
+class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
     private var viewModel = LoansViewModel()
     private val IMAGE_PICK_CODE = 10
     private val CAMERA_PERM_CODE = 101
@@ -108,11 +115,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var saveValidate = false
     private val mapSave = mutableMapOf<String, String>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_fifth, container, false)
     }
@@ -123,15 +126,34 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         //формат даты
         simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-        initListEntryGoal()
-        initTypeContract()
+        initRestart()
         initClick()
         iniData()
         initHidingFields()
-        if (fifth_potent.visibility != View.GONE) {
-            initDocumentReader()
-        }
         initTextValidation()
+    }
+
+    private fun initRestart(){
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            six_ste_no_connection.visibility = View.VISIBLE
+            layout_loan_six.visibility = View.GONE
+            six_ste_technical_work.visibility = View.GONE
+            six_ste_access_restricted.visibility = View.GONE
+            six_ste_not_found.visibility = View.GONE
+        }else{
+            viewModel.errorSaveLoan.value = null
+            initListEntryGoal()
+            initTypeContract()
+            if (fifth_potent.visibility != View.GONE) {
+                initDocumentReader()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initRestart()
     }
 
     //Сохронение картинки на сервер
@@ -347,6 +369,23 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     private fun initClick() {
+
+        access_restricted.setOnClickListener {
+            initRestart()
+        }
+
+        no_connection_repeat.setOnClickListener {
+            initRestart()
+        }
+
+        technical_work.setOnClickListener {
+            initRestart()
+        }
+
+        not_found.setOnClickListener {
+            initRestart()
+        }
+
         bottom_loan_fifth.setOnClickListener {
             saveValidate = true
             initSaveServer()
@@ -491,7 +530,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     //Диалоговое окно с отоброжениеем ошибки reject
     private fun initBottomSheetError(message: String) {
-        val stepBottomFragment = StepBottomFragment(message)
+        val stepBottomFragment = StepBottomFragment(this, message)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -1335,5 +1374,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         return valid
+    }
+
+    override fun onClickStepListener() {
+        requireActivity().finish()
     }
 }

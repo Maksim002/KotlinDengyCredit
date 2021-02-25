@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
 import com.example.kotlincashloan.service.model.Loans.ListWorkResultModel
@@ -23,12 +24,17 @@ import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.item_access_restricted.*
+import kotlinx.android.synthetic.main.item_no_connection.*
+import kotlinx.android.synthetic.main.item_not_found.*
+import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
+class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var listAvailableCountryDta = ""
@@ -59,14 +65,30 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
         super.onViewCreated(view, savedInstanceState)
         six_loan_phone.mask = "+7 (###)-###-##-##"
 
-        initListFamily()
-        initAvailableCountry()
+        initRestart()
 
         initClick()
     }
 
     private fun initClick() {
+
+        access_restricted.setOnClickListener {
+            initRestart()
+        }
+
+        no_connection_repeat.setOnClickListener {
+            initRestart()
+        }
+
         bottom_loan_six.setOnClickListener {
+            initSaveLoan()
+        }
+
+        technical_work.setOnClickListener {
+            initSaveLoan()
+        }
+
+        not_found.setOnClickListener {
             initSaveLoan()
         }
 
@@ -111,6 +133,27 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     //очещает список
     private fun initClearList() {
         itemDialog.clear()
+    }
+
+
+    private fun initRestart(){
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            six_ste_no_connection.visibility = View.VISIBLE
+            layout_loan_six.visibility = View.GONE
+            six_ste_technical_work.visibility = View.GONE
+            six_ste_access_restricted.visibility = View.GONE
+            six_ste_not_found.visibility = View.GONE
+        }else{
+            viewModel.errorSaveLoan.value = null
+            initListFamily()
+            initAvailableCountry()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        initRestart()
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера
@@ -234,9 +277,13 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment = StepBottomFragment(message)
+        val stepBottomFragment = StepBottomFragment(this, message)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
+    }
+
+    override fun onClickStepListener() {
+        requireActivity().finish()
     }
 
     //метод удаляет все символы из строки
@@ -393,9 +440,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult {
             }
           }
         }
-
-
-
         return valid
     }
 }

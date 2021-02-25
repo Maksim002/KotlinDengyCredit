@@ -1,17 +1,15 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.service.model.Loans.ListCityResultModel
 import com.example.kotlincashloan.service.model.Loans.ListFamilyStatusModel
@@ -30,7 +28,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
+class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -72,7 +70,6 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initInternet()
         initClick()
     }
 
@@ -106,7 +103,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listCity.size) {
                     if (i <= listCity.size) {
-                        itemDialog.add(GeneralDialogModel(listCity[i-1].name.toString(), "listCity", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listCity[i - 1].name.toString(),
+                                "listCity",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -121,7 +124,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listFamilyStatus.size) {
                     if (i <= listFamilyStatus.size) {
-                        itemDialog.add(GeneralDialogModel(listFamilyStatus[i-1].name.toString(), "listFamilyStatus", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listFamilyStatus[i - 1].name.toString(),
+                                "listFamilyStatus",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -136,7 +145,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listNumbers.size) {
                     if (i <= listNumbers.size) {
-                        itemDialog.add(GeneralDialogModel(listNumbers[i-1].name.toString(), "listNumbers", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listNumbers[i - 1].name.toString(),
+                                "listNumbers",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -151,7 +166,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listNumbersChildren.size) {
                     if (i <= listNumbersChildren.size) {
-                        itemDialog.add(GeneralDialogModel(listNumbersChildren[i-1].name.toString(), "listNumbersChildren", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listNumbersChildren[i - 1].name.toString(),
+                                "listNumbersChildren",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -166,7 +187,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listYears.size) {
                     if (i <= listYears.size) {
-                        itemDialog.add(GeneralDialogModel(listYears[i-1].name.toString(), "listYears", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listYears[i - 1].name.toString(),
+                                "listYears",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -181,7 +208,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listCatsNames.size) {
                     if (i <= listCatsNames.size) {
-                        itemDialog.add(GeneralDialogModel(listCatsNames[i-1], "listCatsNames", i-1))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listCatsNames[i - 1],
+                                "listCatsNames",
+                                i - 1
+                            )
+                        )
                     }
                 }
             }
@@ -250,6 +283,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             loans_ste_access_restricted.visibility = View.GONE
             loans_ste_not_found.visibility = View.GONE
         } else {
+            viewModel.errorSaveLoan.value = null
             initListCity()
             initListFamilyStatus()
             initListNumbers()
@@ -430,23 +464,27 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
             }
         })
 
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
+        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
                 errorList(error)
             }
         })
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: Int,
+        title: String
+    ) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun initBottomSheet(message: String) {
         val stepBottomFragment =
             StepBottomFragment(
-                message
+                this, message
             )
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -529,6 +567,11 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
         startActivity(intent)
     }
 
+    override fun onStart() {
+        super.onStart()
+        initInternet()
+    }
+
     private fun validate(): Boolean {
         var valid = true
         if (loans_step_four_residence.text.isEmpty()) {
@@ -581,5 +624,9 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult {
         }
 
         return valid
+    }
+
+    override fun onClickStepListener() {
+        requireActivity().finish()
     }
 }

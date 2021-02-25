@@ -259,37 +259,6 @@
 
                 </LinearLayout>
 
-<!--                <AutoCompleteTextView-->
-<!--                    android:id="@+id/questionnaire_available_countries"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:background="@drawable/circle_orange_background_edit"-->
-<!--                    android:drawableEnd="@drawable/ic_expend"-->
-<!--                    android:focusable="false"-->
-<!--                    android:hint="Список доступных стран"-->
-<!--                    android:inputType="number"-->
-<!--                    android:padding="13dp"-->
-<!--                    android:textColor="@color/blackColor"-->
-<!--                    android:textSize="14dp" />-->
-
-<!--                <com.santalu.maskedittext.MaskEditText-->
-<!--                    android:id="@+id/questionnaire_phone_additional"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:background="@drawable/circle_orange_background_edit"-->
-<!--                    android:digits="0123456789"-->
-<!--                    android:ellipsize="end"-->
-<!--                    android:visibility="gone"-->
-<!--                    android:hint="Дополнительный номер телефона"-->
-<!--                    android:imeOptions="actionDone"-->
-<!--                    android:inputType="phone"-->
-<!--                    android:padding="13dp"-->
-<!--                    android:scrollHorizontally="true"-->
-<!--                    android:textColor="@color/blackColor"-->
-<!--                    android:textSize="14dp" />-->
-
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_found"
                     android:layout_width="match_parent"

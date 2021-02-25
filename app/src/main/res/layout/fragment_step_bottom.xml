@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/whiteColor"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
@@ -10,6 +9,8 @@
         android:id="@+id/step_message_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
         android:textSize="14sp"/>
 
     <Button
@@ -17,7 +18,7 @@
         style="@style/RoundedOrangeBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:text="Далее"
         android:textColor="#FFFFFF"
         android:textSize="16sp"/>

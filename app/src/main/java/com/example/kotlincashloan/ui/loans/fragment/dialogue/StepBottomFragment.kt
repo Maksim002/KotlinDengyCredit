@@ -1,14 +1,17 @@
 package com.example.kotlincashloan.ui.loans.fragment.dialogue
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.loans.StepClickListener
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_step_bottom.*
 
-class StepBottomFragment(var message: String) : BottomSheetDialogFragment(){
+class StepBottomFragment(var listener: StepClickListener, var message: String) : BottomSheetDialogFragment(){
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,6 +27,7 @@ class StepBottomFragment(var message: String) : BottomSheetDialogFragment(){
         step_message_text.text = message
 
         step_next.setOnClickListener {
+            listener.onClickStepListener()
             this.dismiss()
         }
     }
