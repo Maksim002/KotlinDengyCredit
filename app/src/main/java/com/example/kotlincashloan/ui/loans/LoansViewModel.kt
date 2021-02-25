@@ -449,7 +449,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorSaveLoan.postValue(response.code().toString())
                 }
-                HomeActivity.alert.hide()
+                GetLoanActivity.alert.hide()
             }
         })
     }

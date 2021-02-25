@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
@@ -61,12 +62,13 @@ import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
 import static com.regula.documentreader.api.enums.LCID.RUSSIAN;
 
 public class LoanStepThreeFragment extends Fragment implements StepClickListener {
-    ArrayList<ImageStringModel> list = new ArrayList<>();
+    private HashMap<String,ImageStringModel> list = new HashMap();
     private HashMap<String, String> map = new HashMap<>();
     private LoansViewModel viewModel = new LoansViewModel();
     private Bitmap documentImageTwo;
     private Bitmap portrait;
     private Bitmap documentImage;
+    private TextView theeIncorrect;
 
     private static final int REQUEST_BROWSE_PICTURE = 11;
 
@@ -101,6 +103,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         status_technical_work = view.findViewById(R.id.status_technical_work);
         status_no_questionnaire = view.findViewById(R.id.status_no_questionnaire);
         status_not_found = view.findViewById(R.id.status_not_found);
+        theeIncorrect = view.findViewById(R.id.thee_incorrect);
 
         no_connection_repeat = view.findViewById(R.id.no_connection_repeat);
         technical_work = view.findViewById(R.id.technical_work);
@@ -134,22 +137,22 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     }
 
     private void initResult() {
-        HomeActivity.alert.show();
-
+        GetLoanActivity.alert.show();
         map.put("login", AppPreferences.INSTANCE.getLogin());
         map.put("token", AppPreferences.INSTANCE.getToken());
-        if (portrait != null) {
-            map.put("passport_photo", list.get(0).getString());
+
+        if (list.containsKey("passport_photo")) {
+            map.put("passport_photo", list.get("passport_photo").getString());
         } else {
             map.put("passport_photo", "");
         }
-        if (documentImage != null) {
-            map.put("passport_img_1", list.get(1).getString());
+        if (list.containsKey("passport_img_1")) {
+            map.put("passport_img_1", list.get("passport_img_1").getString());
         } else {
             map.put("passport_img_1", "");
         }
-        if (documentImageTwo != null) {
-            map.put("passport_img_2", list.get(2).getString());
+        if (list.containsKey("passport_img_2")) {
+            map.put("passport_img_2", list.get("passport_img_2").getString());
         } else {
             map.put("passport_img_2", "");
         }
@@ -167,6 +170,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                     if (result != null) {
                         if (result.getResult() != null) {
                             if (result.getResult().getId() != null) {
+                                theeIncorrect.setVisibility(View.GONE);
                                 layout_status.setVisibility(View.VISIBLE);
                                 status_technical_work.setVisibility(View.GONE);
                                 status_no_questionnaire.setVisibility(View.GONE);
@@ -178,21 +182,25 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                             }
                         } else if (result.getError() != null) {
                             if (result.getError().getCode().equals(400)) {
-                                Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show();
+                                theeIncorrect.setText("Отсканируйте документ повторно");
+                                theeIncorrect.setVisibility(View.VISIBLE);
                             } else if (result.getError().getCode() == 500) {
                                 status_technical_work.setVisibility(View.VISIBLE);
                                 status_no_questionnaire.setVisibility(View.GONE);
                                 layout_status.setVisibility(View.GONE);
                                 status_not_found.setVisibility(View.GONE);
+                                theeIncorrect.setVisibility(View.GONE);
                             } else if (result.getError().getCode() == 401) {
                                 initAuthorized();
                             } else if (result.getError().getCode() == 409) {
                                 Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                                theeIncorrect.setVisibility(View.GONE);
                             } else if (result.getError().getCode() == 404) {
                                 status_not_found.setVisibility(View.VISIBLE);
                                 status_technical_work.setVisibility(View.GONE);
                                 status_no_questionnaire.setVisibility(View.GONE);
                                 layout_status.setVisibility(View.GONE);
+                                theeIncorrect.setVisibility(View.GONE);
                             }
                         } else if (result.getReject() != null) {
                             initBottomSheet(result.getReject().getMessage());
@@ -200,6 +208,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                             status_technical_work.setVisibility(View.GONE);
                             status_no_questionnaire.setVisibility(View.GONE);
                             status_not_found.setVisibility(View.GONE);
+                            theeIncorrect.setVisibility(View.GONE);
                         }
                         if (viewModel.getGetSaveLoan() != null) {
                             viewModel.getGetSaveLoan().setValue(null);
@@ -220,6 +229,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                         status_technical_work.setVisibility(View.GONE);
                         layout_status.setVisibility(View.GONE);
                         status_not_found.setVisibility(View.GONE);
+                        theeIncorrect.setVisibility(View.GONE);
                     } else if (error.equals("401")) {
                         initAuthorized();
                     } else if (error.equals("500")) {
@@ -227,15 +237,19 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                         status_no_questionnaire.setVisibility(View.GONE);
                         layout_status.setVisibility(View.GONE);
                         status_not_found.setVisibility(View.GONE);
+                        theeIncorrect.setVisibility(View.GONE);
                     } else if (error.equals("409")) {
                         Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                        theeIncorrect.setVisibility(View.GONE);
                     } else if (error.equals("404")) {
                         status_not_found.setVisibility(View.VISIBLE);
                         status_technical_work.setVisibility(View.GONE);
                         status_no_questionnaire.setVisibility(View.GONE);
                         layout_status.setVisibility(View.GONE);
+                        theeIncorrect.setVisibility(View.GONE);
                     } else if (error.equals("400")) {
-                        Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show();
+                        theeIncorrect.setText("Отсканируйте документ повторно");
+                        theeIncorrect.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -621,21 +635,21 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
                 portrait = results.getGraphicFieldImageByType(eGraphicFieldType.GF_PORTRAIT);
                 if (portrait != null) {
-                    gotImageString(portrait);
+                    gotImageString(portrait, "passport_photo");
                 }
 
                 documentImage = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE);
                 if (documentImage != null) {
                     double aspectRatio = (double) documentImage.getWidth() / (double) documentImage.getHeight();
                     documentImage = Bitmap.createScaledBitmap(documentImage, (int) (480 * aspectRatio), 480, false);
-                    gotImageString(documentImage);
+                    gotImageString(documentImage, "passport_img_1");
                 }
 
                 documentImageTwo = results.getGraphicFieldImageByType(eGraphicFieldType.GF_DOCUMENT_IMAGE, eRPRM_ResultType.RPRM_RESULT_TYPE_RAW_IMAGE, 1);
                 if (documentImageTwo != null) {
                     double aspectRatio = (double) documentImageTwo.getWidth() / (double) documentImageTwo.getHeight();
                     documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo, (int) (480 * aspectRatio), 480, false);
-                    gotImageString(documentImageTwo);
+                    gotImageString(documentImageTwo, "passport_img_2");
                 }
 
                 initResult();
@@ -643,16 +657,18 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else {
+            initResult();
         }
     }
 
     //encode image to base64 string
-    private void gotImageString(Bitmap bitmap) {
+    private void gotImageString(Bitmap bitmap, String key) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        list.add(new ImageStringModel(imageString));
+        list.put(key ,new ImageStringModel(imageString));
     }
 
     private void clearResults() {

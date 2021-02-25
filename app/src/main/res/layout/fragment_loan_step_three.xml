@@ -60,6 +60,18 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/thee_incorrect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+            android:drawablePadding="10dp"
+            android:gravity="center"
+            android:text="Неверный логин или пароль"
+            android:textColor="@color/colorRed"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/thee_active_status"
             style="@style/RoundedOrangeBackground"
