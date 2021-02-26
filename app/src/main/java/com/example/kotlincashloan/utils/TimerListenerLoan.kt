@@ -29,6 +29,9 @@ class TimerListenerLoan(var activity: Activity){
                         MainActivity.timer.timeStart()
                     }, 2200)
                     AppPreferences.token = ""
+                    if (AppPreferences.resultPassword == ""){
+                        AppPreferences.password = ""
+                    }
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
                     AppPreferences.isPinCode = true

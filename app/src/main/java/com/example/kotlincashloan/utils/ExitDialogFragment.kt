@@ -22,6 +22,9 @@ class ExitDialogFragment: DialogFragment() {
                     val intent = Intent(context, HomeActivity::class.java)
                     AppPreferences.isPinCode = false
                     AppPreferences.token = ""
+                    if (AppPreferences.resultPassword == ""){
+                        AppPreferences.password = ""
+                    }
                     MainActivity.timer.timeStop()
                     startActivity(intent)
                     dialog.cancel()

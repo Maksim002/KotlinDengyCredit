@@ -22,6 +22,9 @@ class TimerListener(var activity: Activity){
 
                 override fun onFinish() {
                     AppPreferences.token = ""
+                    if (AppPreferences.resultPassword == ""){
+                        AppPreferences.password = ""
+                    }
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
                     AppPreferences.isPinCode = true

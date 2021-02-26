@@ -79,6 +79,12 @@ object AppPreferences {
             it.putString("password", value)
         }
 
+    var resultPassword: String?
+        get() = preferences.getString("resultPassword", "")
+        set(value) = preferences.edit {
+            it.putString("resultPassword", value)
+        }
+
     var dataKey: String?
         get() = preferences.getString("dataKey", "")
         set(value) = preferences.edit {

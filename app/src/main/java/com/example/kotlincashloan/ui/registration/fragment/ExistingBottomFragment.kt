@@ -103,6 +103,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
         existing_btn.setOnClickListener {
             listener.existingClockListener()
             this.dismiss()
+            AppPreferences.password = ""
             AppPreferences.savePin = null
         }
         existing_removal.setOnClickListener {
