@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:gravity="center"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/loan_step_number"
@@ -12,9 +13,11 @@
         tools:text="1"
         android:fontFamily="@font/roboto_black"
         android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:textColor="@color/blackColor"
         android:layout_marginLeft="@dimen/_18sdp"
         android:layout_marginRight="@dimen/_18sdp"
-        android:padding="18dp"
-        android:textSize="@dimen/_53sdp"/>
+        android:padding="@dimen/_16sdp"
+        android:textSize="@dimen/_37sdp"/>
 </LinearLayout>

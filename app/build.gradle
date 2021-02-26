@@ -114,6 +114,9 @@ dependencies {
         transitive = true;
     }
 
+    //Native
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
     //anim to button
     implementation 'com.github.koushikcse:LoadingButton:1.7'
 }

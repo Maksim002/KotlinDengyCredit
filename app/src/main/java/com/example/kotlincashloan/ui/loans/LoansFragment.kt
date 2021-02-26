@@ -32,7 +32,6 @@ import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.lang.Exception
 
-
 class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
     private var viewModel = LoansViewModel()
