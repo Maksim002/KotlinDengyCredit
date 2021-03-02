@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.GeneralDialogAdapter
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.adapter.general.ListenerGeneralDialog
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.utils.KeyboardUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_general_dialog.*
 
 
-class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: Int, var title: String) : BottomSheetDialogFragment(),
+class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: String, var title: String) : BottomSheetDialogFragment(),
     ListenerGeneralDialog {
     private var adapterDialog = GeneralDialogAdapter(position,this)
 
@@ -41,6 +43,11 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
         home_enter.setOnClickListener {
             dismiss()
         }
+
+        dialog_text.addTextChangedListener {
+            val converter  = it.toString().toLowerCase()
+            adapterDialog.filter(converter);
+        }
     }
 
     //Инцелезация recycler
@@ -58,5 +65,10 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
     //Предает даологовому окуну нужный нам стиль.
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme;
+    }
+
+    override fun onStart() {
+        super.onStart()
+        KeyboardUtil(requireActivity(), view)
     }
 }

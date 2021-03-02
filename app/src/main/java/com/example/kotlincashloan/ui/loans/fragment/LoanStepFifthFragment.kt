@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -34,7 +33,6 @@ import com.example.kotlincashloan.service.model.Loans.MyDataListModel
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
 import com.example.kotlincashloan.service.model.Loans.TypeContractResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
-import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -50,7 +48,6 @@ import com.regula.documentreader.api.enums.*
 import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
@@ -85,11 +82,13 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var contractList: ArrayList<MyDataListModel> = arrayListOf()
     private lateinit var calendar: GregorianCalendar
     private var hidingLayout = ""
+    private var thread: Thread? = null
 
     private var listEntryError = ""
     private var listContractError = ""
 
     private var goalPosition = -1
+    private var goalId = 0
     private var contractPosition = -1
     private var contractTypeId = 0
 
@@ -146,7 +145,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             initListEntryGoal()
             initTypeContract()
             if (fifth_potent.visibility != View.GONE) {
-                initDocumentReader()
+                val runnable = Runnable {
+                    initDocumentReader()
+                    thread!!.interrupt()
+                }
+                thread = Thread(runnable)
+                thread!!.start()
             }
         }
     }
@@ -248,11 +252,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         mapSave["reg_date"] = fifth_goal_name.text.toString()
         mapSave["entry_date"] = date_entry.text.toString()
 
-        if (goalPosition == -1) {
-            mapSave["entry_goal"] = ""
-        } else {
-            mapSave["entry_goal"] = goalPosition.toString()
-        }
+        mapSave["entry_goal"] = goalId.toString()
         mapSave["contract_date"] = date_the_contract.text.toString()
         mapSave["step"] = "5"
 
@@ -400,9 +400,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listEntryGoal.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1
-                            )
-                        )
+                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1 , listEntryGoal[i-1].id!!.toInt()))
                     }
                 }
             }
@@ -506,6 +504,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         if (model.key == "listEntryGoal") {
             list_countries.setText(listEntryGoal[model.position].name)
             goalPosition = model.position
+            goalId = model.id!!
             list_countries.error = null
         }
 
@@ -537,7 +536,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

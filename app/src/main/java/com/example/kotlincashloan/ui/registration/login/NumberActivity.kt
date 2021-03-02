@@ -42,7 +42,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
 
-    private var сountryPosition = -1
+    private var сountryPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listAvailableCountry: ArrayList<CounterResultModel> = arrayListOf()
@@ -188,7 +188,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listAvailableCountry.size) {
                     if (i <= listAvailableCountry.size) {
-                        itemDialog.add(GeneralDialogModel(listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1))
+                        itemDialog.add(GeneralDialogModel(listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1,0, listAvailableCountry[i-1].name))
                     }
                 }
             }
@@ -312,7 +312,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
             number_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
-            сountryPosition = model.position
+            сountryPosition = listAvailableCountry[model.position].name.toString()
             numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             number_phone.mask = listAvailableCountry[model.position].phoneMaskSmall
         }
@@ -324,7 +324,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }

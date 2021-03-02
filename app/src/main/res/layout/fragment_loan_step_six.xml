@@ -25,7 +25,6 @@
                     android:id="@+id/questionnaire_owner"
                     layout="@layout/item_focus" />
 
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -33,6 +32,8 @@
                     android:text="Ваш дополнительный номер"
                     android:textColor="@color/blackColor"
                     android:textSize="18dp" />
+
+
 
                 <AutoCompleteTextView
                     android:id="@+id/six_available_country"

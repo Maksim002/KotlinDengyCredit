@@ -486,7 +486,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         selectionPosition: Int,
         title: String
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

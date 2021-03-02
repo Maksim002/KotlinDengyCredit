@@ -94,8 +94,6 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Дата окончания срока регистрации"
-                android:imeOptions="actionNext"
-                android:inputType="text"
                 android:padding="13dp"
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />
@@ -184,7 +182,6 @@
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Дата въезда"
                 android:imeOptions="actionNext"
-                android:inputType="text"
                 android:padding="13dp"
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />
@@ -476,7 +473,6 @@
                 android:background="@drawable/circle_orange_background_edit"
                 android:hint="Дата окончания договора"
                 android:imeOptions="actionNext"
-                android:inputType="text"
                 android:padding="13dp"
                 android:textColor="@color/blackColor"
                 android:textSize="14dp" />

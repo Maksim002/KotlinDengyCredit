@@ -440,7 +440,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         mapSave.put("count_family", familyId)
         mapSave.put("count_children", childrenId)
         mapSave.put("live_in_ru", liveId)
-        mapSave.put("bank_card", catsNamesPosition.toString())
+        mapSave.put("bank_card", cardId)
         mapSave.put("step", "2")
 
         viewModel.saveLoan(mapSave)
@@ -477,7 +477,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         selectionPosition: Int,
         title: String
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

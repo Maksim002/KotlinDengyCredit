@@ -288,12 +288,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        initDocumentReader();
-    }
-
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
 //            final AlertDialog initDialog = showDialog("Инициализация");

@@ -1117,7 +1117,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this,list, "selectionPosition", title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

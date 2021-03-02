@@ -266,7 +266,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listNationalityCounter.size) {
                     if (i <= listNationalityCounter.size) {
-                        itemDialog.add(GeneralDialogModel(listNationalityCounter[i - 1].name.toString(), "listNationalityCounter", i - 1, 0))
+                        itemDialog.add(GeneralDialogModel(listNationalityCounter[i - 1].name.toString(), "listNationalityCounter", i - 1, 0, listNationalityCounter[i-1].name))
                     }
                 }
             }
@@ -861,7 +861,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 
