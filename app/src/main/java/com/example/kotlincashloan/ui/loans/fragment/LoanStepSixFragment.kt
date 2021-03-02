@@ -64,9 +64,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         six_loan_phone.mask = "+7 (###)-###-##-##"
-
         initRestart()
-
         initClick()
     }
 
@@ -100,10 +98,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
                     if (i <= listAvailableSix.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listAvailableSix[i - 1].name.toString(),
-                                "listAvailableSix",
-                                i - 1)
-                        )
+                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1))
                     }
                 }
             }
@@ -159,16 +154,16 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableSix") {
-            six_available_country.setText(listAvailableSix[model.position].name)
-            sixPosition = model.position
-            codeMaskId = listAvailableSix[model.position].id.toString()
+            six_number_phone.error = null
             //Очещает старую маску при выборе новой
             six_number_phone.mask = ""
             // Очещает поле
             six_number_phone.text = null
-            six_number_phone.visibility = View.VISIBLE
+            sixPosition = model.position
+            codeMaskId = listAvailableSix[model.position].id.toString()
             phoneLength = listAvailableSix[model.position].phoneLength.toString()
-            six_number_phone.mask = listAvailableSix[model.position].phoneMask
+            six_available_country.setText("+" + listAvailableSix[model.position].phoneCode)
+            six_number_phone.mask = listAvailableSix[model.position].phoneMaskSmall
         }
 
         if (model.key == "listFamily") {
@@ -190,6 +185,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
                 listAvailableCountryDta = result.code.toString()
                 getResultOk()
                 listAvailableSix = result.result
+                six_number_phone.mask = ""
+                six_number_phone.text = null
+                six_available_country.setText("+" + listAvailableSix[0].phoneCode)
+                six_number_phone.mask = listAvailableSix[0].phoneMaskSmall
+                phoneLength = listAvailableSix[0].phoneLength.toString()
             } else {
                 listResult(result.error.code!!)
             }
@@ -289,8 +289,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     //метод удаляет все символы из строки
     private fun initCleaningRoom() {
         if (six_number_phone.text.toString() != "") {
-            val matchedResults =
-                Regex(pattern = """\d+""").findAll(input = six_number_phone.text.toString())
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = six_available_country.text.toString() + six_number_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
@@ -424,21 +423,12 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         if (six_number_phone.text!!.isNotEmpty()){
-        if (phoneLength == "11") {
-            if (six_number_phone.text.toString().toFullPhone().length != 20) {
+            if (phoneLength != reNum.length.toString()) {
                 six_number_phone.error = "Введите валидный номер"
                 valid = false
             } else {
                 six_number_phone.error = null
             }
-        } else {
-            if (six_number_phone.text.toString().toFullPhone().length != 21) {
-                six_number_phone.error = "Введите валидный номер"
-                valid = false
-            } else {
-                six_number_phone.error = null
-            }
-          }
         }
         return valid
     }
