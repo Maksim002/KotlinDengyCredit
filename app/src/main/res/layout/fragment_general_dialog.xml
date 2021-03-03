@@ -1,57 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:maxHeight="270dp"
-    android:minHeight="0dp">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/bottom_dialog_title"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="Личная информация"
-        android:textColor="@color/blackColor"
-        android:textSize="18dp" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/dialog_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/_13sdp"
-        android:layout_marginLeft="@dimen/_13sdp"
-        android:layout_marginBottom="@dimen/_13sdp"
-        android:drawablePadding="@dimen/_3sdp"
-        android:drawableLeft="@drawable/ic_baseline_search"
-        android:background="@drawable/circle_orange_background_edit"
-        android:padding="@dimen/_8sdp"
-        android:textSize="@dimen/_14sdp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorLightGrey" />
+        <TextView
+            android:id="@+id/bottom_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Личная информация"
+            android:textColor="@color/blackColor"
+            android:textSize="18dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        <EditText
+            android:id="@+id/dialog_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_13sdp"
+            android:layout_marginLeft="@dimen/_13sdp"
+            android:layout_marginBottom="@dimen/_13sdp"
+            android:drawablePadding="@dimen/_3sdp"
+            android:imeOptions="actionDone"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:drawableLeft="@drawable/ic_baseline_search"
+            android:background="@drawable/circle_orange_background_edit"
+            android:padding="@dimen/_8sdp"
+            android:textSize="@dimen/_14sdp" />
 
-    <Button
-        android:id="@+id/home_enter"
-        style="@style/RoundedOrangeBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="12dp"
-        android:text="Закрыть"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"/>
-</LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorLightGrey" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <Button
+            android:id="@+id/home_enter"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_16sdp"
+            android:text="Закрыть"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"/>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

@@ -55,8 +55,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private var reNum = ""
     private var valod = false
 
-    private var countryPosition = -1
-    private var typePosition = -1
+    private var countryPosition = ""
+    private var typePosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     var listAvailableCountry: ArrayList<CounterResultModel> = arrayListOf()
@@ -95,10 +95,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                     if (i <= listAvailableCountry.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listAvailableCountry[i - 1].name.toString(),
-                                "listAvailableCountry",
-                                i - 1
-                            )
+                                listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1, 0,  listAvailableCountry[i - 1].name.toString())
                         )
                     }
                 }
@@ -116,11 +113,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                     if (i <= listSupportType.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listSupportType[i - 1].name.toString(),
-                                "listSupportType",
-                                i - 1
-                            )
-                        )
+                                listSupportType[i - 1].name.toString(), "listSupportType", i - 1, 0, listSupportType[i - 1].name.toString()))
                     }
                 }
             }
@@ -171,9 +164,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
             questionnaire_phone_additional.error = null
             questionnaire_phone_additional.mask = ""
             questionnaire_phone_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
-            countryPosition = model.position
-            AppPreferences.numberCharacters =
-                listAvailableCountry[model.position].phoneLength!!.toInt()
+            countryPosition = listAvailableCountry[model.position].name.toString()
+            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMaskSmall
             numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMaskSmall
@@ -182,7 +174,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         if (model.key == "listSupportType") {
             password_recovery_type.error = null
             password_recovery_type.setText(listSupportType[model.position].name)
-            typePosition = model.position
+            typePosition = listSupportType[model.position].name.toString()
             typeId = listSupportType[model.position].id!!
         }
     }
@@ -338,6 +330,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
                                 listAvailableCountry = data.result
+                                countryPosition = data.result[0].name.toString()
                                 questionnaire_phone_list_country.setText("+" + result.data.result[0].phoneCode)
                                 questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
                                 numberCharacters = result.data.result[0].phoneLength!!.toInt()
@@ -482,11 +475,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: Int,
-        title: String
-    ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

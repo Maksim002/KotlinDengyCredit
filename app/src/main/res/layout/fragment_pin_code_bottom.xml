@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:text="Выберите пин-код"
         android:textSize="20sp"
-
         android:gravity="center"
         android:textStyle="bold"
         android:textColor="@color/blackColor"/>

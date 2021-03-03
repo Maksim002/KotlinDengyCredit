@@ -64,11 +64,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var reNum = ""
     private var nationalityCounter = 0
 
-    private var genderPosition = -1
-    private var nationalityPosition = -1
-    private var sourcePosition = -1
-    private var questionPosition = -1
-    private var counterNationalPosition = -1
+    private var genderPosition = ""
+    private var nationalityPosition = ""
+    private var sourcePosition = ""
+    private var questionPosition = ""
+    private var counterNationalPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listGender: ArrayList<ListGenderResultModel> = arrayListOf()
@@ -281,7 +281,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listGender.size) {
                     if (i <= listGender.size) {
-                        itemDialog.add(GeneralDialogModel(listGender[i - 1].name.toString(), "listGender", i - 1, 0))
+                        itemDialog.add(GeneralDialogModel(listGender[i - 1].name.toString(), "listGender", i - 1, 0, listGender[i - 1].name.toString()))
                     }
                 }
             }
@@ -602,7 +602,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         listNationalityCounter = data.result
-
+                        counterNationalPosition = listNationalityCounter[0].name.toString()
                         questionnaire_available_countries.setText("+" + result.data.result[0].phoneCode.toString())
                         questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
                         nationalityCounter = result.data.result[0].phoneLength!!.toInt()
@@ -802,28 +802,28 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listGender") {
             questionnaire_id_sxs.setText(listGender[model.position].name)
-            genderPosition = model.position
+            genderPosition = listGender[model.position].name.toString()
             idSex = listGender[model.position].id!!.toInt()
             questionnaire_id_sxs.error = null
         }
 
         if (model.key == "listNationality") {
             questionnaire_id_nationality.setText(listNationality[model.position].name)
-            nationalityPosition = model.position
+            nationalityPosition = listNationality[model.position].name.toString()
             listNationalityId = listNationality[model.position].id!!.toInt()
             questionnaire_id_nationality.error = null
         }
 
         if (model.key == "listTrafficSource") {
             questionnaire_found.setText(listTrafficSource[model.position].name)
-            sourcePosition = model.position
+            sourcePosition = listTrafficSource[model.position].name.toString()
             listАoundId = listTrafficSource[model.position].id!!.toInt()
             questionnaire_found.error = null
         }
 
         if (model.key == "listSecretQuestion") {
             questionnaire_id_secret.setText(listSecretQuestion[model.position].name)
-            questionPosition = model.position
+            questionPosition = listSecretQuestion[model.position].name.toString()
             listSecretQuestionId = listSecretQuestion[model.position].id!!.toInt()
             questionnaire_id_secret.error = null
         }
@@ -833,7 +833,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_phone_additional.error = null
             questionnaire_phone_additional.text = null
             questionnaire_available_countries.setText("+" + listNationalityCounter[model.position].phoneCode.toString())
-            counterNationalPosition = model.position
+            counterNationalPosition = listNationalityCounter[model.position].name.toString()
             listNationalityCounterId = listNationalityCounter[model.position].id!!.toInt()
             nationalityCounter = listNationalityCounter[model.position].phoneLength!!.toInt()
             codeMack = listNationalityCounter[model.position].phoneCode.toString()
@@ -860,8 +860,8 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

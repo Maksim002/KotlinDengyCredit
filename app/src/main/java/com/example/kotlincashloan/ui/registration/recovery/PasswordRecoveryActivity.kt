@@ -46,7 +46,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     private var availableCountry = 0
     private var reNum = ""
 
-    private var countryPosition = -1
+    private var countryPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listAvailableCountry: ArrayList<CounterResultModel> = arrayListOf()
@@ -74,11 +74,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                     if (i <= listAvailableCountry.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listAvailableCountry[i - 1].name.toString(),
-                                "listTypeWork",
-                                i - 1
-                            )
-                        )
+                                listAvailableCountry[i - 1].name.toString(), "listTypeWork", i - 1, 0, listAvailableCountry[i - 1].name.toString()))
                     }
                 }
             }
@@ -123,7 +119,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
             questionnaire_phone_additional.setText("")
             questionnaire_phone_additional.mask = ""
             questionnaire_phone_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
-            countryPosition = model.position
+            countryPosition = listAvailableCountry[model.position].name.toString()
 //            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
             availableCountry = listAvailableCountry[model.position].phoneLength!!.toInt()
 //            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMaskSmall
@@ -270,7 +266,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
                                 listAvailableCountry = data.result
-
+                                countryPosition = result.data.result[0].name.toString()
                                 questionnaire_phone_list_country.setText("+" + result.data.result[0].phoneCode)
                                 questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
                                 availableCountry = result.data.result[0].phoneLength!!.toInt()
@@ -337,8 +333,8 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

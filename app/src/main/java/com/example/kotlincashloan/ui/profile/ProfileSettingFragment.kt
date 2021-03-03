@@ -89,8 +89,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     private var imageString :String = ""
     private lateinit var currentPhotoPath: String
-    private var questionPosition = -1
-    private var countriesPosition = -1
+    private var questionPosition = ""
+    private var countriesPosition = ""
 
     private lateinit var myThread: Thread
     private lateinit var dialog: AlertDialog
@@ -342,7 +342,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                             }
                             codeNationality = position
 
-                            countriesPosition = position
+                            countriesPosition = result.result[position].name.toString()
 
                             codeMack = result.result.first { it.id == secondNationality}.phoneCode.toString()
 
@@ -353,7 +353,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                             profile_setting_second_phone.text = null
                             codeMack = result.result[codeNationality].phoneCode.toString()
                             profile_s_mask.setText("+" + list[codeNationality].phoneCode)
-                            countriesPosition = codeNationality
+                            countriesPosition = result.result[codeNationality].name.toString()
                         }
 
 
@@ -400,7 +400,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                                     position = i
                                 }
                             }
-                            questionPosition = position
+                            questionPosition =  result.result[position].name.toString()
                         }
 
                         errorListSecretQuestion = result.code.toString()
@@ -598,13 +598,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listQuestions"){
             profile_s_question.setText(question[model.position].name)
-            questionPosition = model.position
+            questionPosition = question[model.position].name.toString()
             questionId = question[model.position].id.toString()
 
         }else if (model.key == "listCountries"){
             profile_setting_second_phone.mask = null
             profile_s_mask.setText("+" + countries[model.position].phoneCode)
-            countriesPosition = model.position
+            countriesPosition = countries[model.position].name.toString()
             numberAvailable = countries[model.position].phoneLength!!.toInt()
             codeNationality = model.position
             codeMack = countries[model.position].phoneCode.toString()
@@ -628,7 +628,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             if (itemDialog.size == 0) {
                 for (i in 1..question.size) {
                     if (i <= question.size) {
-                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1, question[i-1].id))
+                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1, question[i-1].id, question[i-1].name.toString()))
                     }
                 }
             }
@@ -644,7 +644,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             if (itemDialog.size == 0) {
                 for (i in 1..countries.size) {
                     if (i <= countries.size) {
-                        itemDialog.add(GeneralDialogModel(countries[i-1].name.toString(), "listCountries", i-1))
+                        itemDialog.add(GeneralDialogModel(countries[i-1].name.toString(), "listCountries", i-1, 0, countries[i-1].name.toString()))
                     }
                 }
             }
@@ -1116,8 +1116,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

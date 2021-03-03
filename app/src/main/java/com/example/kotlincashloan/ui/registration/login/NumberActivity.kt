@@ -234,11 +234,12 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        initVisibilities()
+                        number_phone.mask = ""
+                        number_phone.text = null
                         number_list_country.setText("+" + result.data.result[0].phoneCode.toString())
                         number_phone.mask = result.data.result[0].phoneMaskSmall
                         numberCharacters = result.data.result[0].phoneLength!!.toInt()
-
+                        сountryPosition = result.data.result[0].name.toString()
                         listAvailableCountry = data.result
                         initVisibilities()
                     } else {
