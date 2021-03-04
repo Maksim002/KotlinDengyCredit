@@ -41,11 +41,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:paddingTop="16dp"
-                        android:paddingLeft="16dp"
-                        android:paddingBottom="16dp"
-                        android:paddingRight="5dp"
+                        android:layout_weight="1.2"
+                        android:padding="13dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/circle_orange_background_edit"
@@ -61,15 +58,15 @@
                                 android:id="@+id/six_available_country"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
                                 android:editable="true"
                                 android:focusable="false"
+                                android:gravity="center"
                                 android:focusableInTouchMode="false"
                                 android:textColor="@color/blackColor"
                                 android:background="@null"
                                 android:windowSoftInputMode="adjustResize"
                                 android:inputType="number"
-                                android:textSize="17sp"
+                                android:textSize="14sp"
                                 tools:text="+996"/>
                         </LinearLayout>
 
@@ -78,8 +75,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:layout_weight="0.4"
+                        android:padding="13dp"
+                        android:layout_weight="0.3"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/circle_orange_background_edit"
                         android:orientation="horizontal">
@@ -94,7 +91,6 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
                                 android:orientation="horizontal">
 
                                 <com.santalu.maskedittext.MaskEditText
@@ -110,7 +106,7 @@
                                     android:background="@null"
                                     android:windowSoftInputMode="adjustResize"
                                     android:inputType="number"
-                                    android:textSize="17sp"
+                                    android:textSize="14sp"
                                     tools:text="700 700 540"/>
                             </LinearLayout>
                         </LinearLayout>

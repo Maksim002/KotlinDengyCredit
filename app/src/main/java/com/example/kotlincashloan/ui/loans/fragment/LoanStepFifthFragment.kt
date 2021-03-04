@@ -87,9 +87,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var listEntryError = ""
     private var listContractError = ""
 
-    private var goalPosition = -1
+    private var goalPosition = ""
     private var goalId = 0
-    private var contractPosition = -1
+    private var contractPosition = ""
     private var contractTypeId = 0
 
     private var imageScanId = ""
@@ -100,7 +100,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var listEntryGoal: ArrayList<EntryGoalResultModel> = arrayListOf()
     private var listTypeContract: ArrayList<TypeContractResultModel> = arrayListOf()
     private var russianFederationA = false
-    private var russianFederationB = false
     private var migrationCardA = false
     private var migrationCardB = false
     private var russianPatentA = false
@@ -208,7 +207,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 mapImage["vnzh_img"] = imageString["photo_VNJ"]!!.string
             }
 
-            if (contractPosition == -1) {
+            if (contractPosition == "") {
                 mapImage["type_contract"] = ""
             } else {
                 mapImage["type_contract"] = contractTypeId.toString()
@@ -252,7 +251,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         mapSave["reg_date"] = fifth_goal_name.text.toString()
         mapSave["entry_date"] = date_entry.text.toString()
 
-        mapSave["entry_goal"] = goalId.toString()
+        if (goalPosition == ""){
+            mapSave["entry_goal"] = ""
+        }else{
+            mapSave["entry_goal"] = goalId.toString()
+        }
+
         mapSave["contract_date"] = date_the_contract.text.toString()
         mapSave["step"] = "5"
 
@@ -400,7 +404,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listEntryGoal.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1 , listEntryGoal[i-1].id!!.toInt()))
+                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1 , listEntryGoal[i-1].id!!.toInt(), listEntryGoal[i - 1].name.toString()))
                     }
                 }
             }
@@ -423,12 +427,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listTypeContract.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listTypeContract[i - 1].name.toString(),
-                                "listTypeContract",
-                                i - 1,
-                                listTypeContract[i - 1].id!!.toInt()
-                            )
-                        )
+                                listTypeContract[i - 1].name.toString(), "listTypeContract", i - 1, listTypeContract[i - 1].id!!.toInt(), listTypeContract[i - 1].name.toString()))
                     }
                 }
             }
@@ -503,14 +502,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listEntryGoal") {
             list_countries.setText(listEntryGoal[model.position].name)
-            goalPosition = model.position
+            goalPosition = listEntryGoal[model.position].name.toString()
             goalId = model.id!!
             list_countries.error = null
         }
 
         if (model.key == "listTypeContract") {
             contract_type.setText(listTypeContract[model.position].name)
-            contractPosition = model.position
+            contractPosition = listTypeContract[model.position].name.toString()
             contractTypeId = model.id!!
             contract_type.error = null
         }
@@ -535,8 +534,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -607,7 +606,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     russian_federationA.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
-                    russianFederationB = true
                     fifth_incorrectA.visibility = View.GONE
                     russian_federationB.setImageBitmap(scaled)
                     imageKey = ""
@@ -1263,7 +1261,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private fun validate(): Boolean {
         var valid = true
 
-        if (!russianFederationA || !russianFederationB) {
+        if (!russianFederationA) {
             fifth_incorrectA.text = "Добавьте фото документа"
             fifth_incorrectA.visibility = View.VISIBLE
             valid = false

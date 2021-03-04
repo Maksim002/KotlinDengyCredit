@@ -49,13 +49,13 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var typeIncomeId = ""
     private var additionalId = ""
 
-    private var workPosition = -1
-    private var typeWorkPosition = -1
-    private var yearsPosition = -1
-    private var experiencePosition = -1
-    private var incomePosition = -1
-    private var typeIncomePosition = -1
-    private var incomeAdditionalPosition = -1
+    private var workPosition = ""
+    private var typeWorkPosition = ""
+    private var yearsPosition = ""
+    private var experiencePosition = ""
+    private var incomePosition = ""
+    private var typeIncomePosition = ""
+    private var incomeAdditionalPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listWork: ArrayList<ListWorkResultModel> = arrayListOf()
@@ -136,7 +136,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listWork.size) {
                     if (i <= listWork.size) {
-                        itemDialog.add(GeneralDialogModel(listWork[i-1].name.toString(), "listWork", i-1))
+                        itemDialog.add(GeneralDialogModel(listWork[i-1].name.toString(), "listWork", i-1, 0, listWork[i-1].name.toString()))
                     }
                 }
             }
@@ -151,7 +151,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listTypeWork.size) {
                     if (i <= listTypeWork.size) {
-                        itemDialog.add(GeneralDialogModel(listTypeWork[i-1].name.toString(), "listTypeWork", i-1))
+                        itemDialog.add(GeneralDialogModel(listTypeWork[i-1].name.toString(), "listTypeWork", i-1, 0, listTypeWork[i-1].name.toString()))
                     }
                 }
             }
@@ -166,7 +166,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listYears.size) {
                     if (i <= listYears.size) {
-                        itemDialog.add(GeneralDialogModel(listYears[i-1].name.toString(), "listYears", i-1))
+                        itemDialog.add(GeneralDialogModel(listYears[i-1].name.toString(), "listYears", i-1, 0, listYears[i-1].name.toString()))
                     }
                 }
             }
@@ -181,7 +181,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listWorkExperience.size) {
                     if (i <= listWorkExperience.size) {
-                        itemDialog.add(GeneralDialogModel(listWorkExperience[i-1].name.toString(), "listWorkExperience", i-1))
+                        itemDialog.add(GeneralDialogModel(listWorkExperience[i-1].name.toString(), "listWorkExperience", i-1, 0, listWorkExperience[i-1].name.toString()))
                     }
                 }
             }
@@ -196,7 +196,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listIncome.size) {
                     if (i <= listIncome.size) {
-                        itemDialog.add(GeneralDialogModel(listIncome[i-1].name.toString(), "listIncome", i-1))
+                        itemDialog.add(GeneralDialogModel(listIncome[i-1].name.toString(), "listIncome", i-1, 0, listIncome[i-1].name.toString()))
                     }
                 }
             }
@@ -211,7 +211,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listTypeIncome.size) {
                     if (i <= listTypeIncome.size) {
-                        itemDialog.add(GeneralDialogModel(listTypeIncome[i-1].name.toString(), "listTypeIncome", i-1))
+                        itemDialog.add(GeneralDialogModel(listTypeIncome[i-1].name.toString(), "listTypeIncome", i-1, 0, listTypeIncome[i-1].name.toString()))
                     }
                 }
             }
@@ -226,7 +226,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             if (itemDialog.size == 0) {
                 for (i in 1..listIncomeAdditional.size) {
                     if (i <= listIncomeAdditional.size) {
-                        itemDialog.add(GeneralDialogModel(listIncomeAdditional[i-1].name.toString(), "listIncomeAdditional", i-1))
+                        itemDialog.add(GeneralDialogModel(listIncomeAdditional[i-1].name.toString(), "listIncomeAdditional", i-1, 0, listIncomeAdditional[i-1].name.toString()))
                     }
                 }
             }
@@ -246,49 +246,49 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         if (model.key == "listWork") {
             fire_type_employment.error = null
             fire_type_employment.setText(listWork[model.position].name)
-            workPosition = model.position
+            workPosition = listWork[model.position].name.toString()
             workId = listWork[model.position].id!!
         }
 
         if (model.key == "listTypeWork") {
             fire_post.error = null
             fire_post.setText(listTypeWork[model.position].name)
-            typeWorkPosition = model.position
+            typeWorkPosition = listTypeWork[model.position].name.toString()
             typeId = listTypeWork[model.position].id!!
         }
 
         if (model.key == "listYears") {
             fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
-            yearsPosition = model.position
+            yearsPosition = listYears[model.position].name.toString()
             yearsRfId = listYears[model.position].id!!
         }
 
         if (model.key == "listWorkExperience") {
             fire_work_experience.error = null
             fire_work_experience.setText(listWorkExperience[model.position].name)
-            experiencePosition = model.position
+            experiencePosition = listWorkExperience[model.position].name.toString()
             yearsId = listWorkExperience[model.position].id!!
         }
 
         if (model.key == "listIncome") {
             fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
-            incomePosition = model.position
+            incomePosition = listIncome[model.position].name.toString()
             incomeId = listIncome[model.position].id!!
         }
 
         if (model.key == "listTypeIncome") {
             fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
-            typeIncomePosition = model.position
+            typeIncomePosition = listTypeIncome[model.position].name.toString()
             typeIncomeId = listTypeIncome[model.position].id!!
         }
 
         if (model.key == "listIncomeAdditional") {
             fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
-            incomeAdditionalPosition = model.position
+            incomeAdditionalPosition = listIncomeAdditional[model.position].name.toString()
             additionalId = listIncomeAdditional[model.position].id!!
         }
     }
@@ -525,8 +525,8 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

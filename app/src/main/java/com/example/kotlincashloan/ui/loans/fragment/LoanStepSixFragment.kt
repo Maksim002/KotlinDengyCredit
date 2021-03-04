@@ -41,12 +41,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     private var getListFamilyDta = ""
 
     private var family = ""
-    private var codeMaskId = ""
     private var phoneLength = ""
     private var reNum = ""
 
-    private var sixPosition = -1
-    private var familyPosition = -1
+    private var sixPosition = ""
+    private var familyPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
@@ -98,7 +97,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
                     if (i <= listAvailableSix.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1))
+                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
                     }
                 }
             }
@@ -114,7 +113,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             if (itemDialog.size == 0) {
                 for (i in 1..listFamily.size) {
                     if (i <= listFamily.size) {
-                        itemDialog.add(GeneralDialogModel(listFamily[i-1].name.toString(), "listFamily", i-1)
+                        itemDialog.add(GeneralDialogModel(listFamily[i-1].name.toString(), "listFamily", i-1, 0, listFamily[i-1].name.toString())
                         )
                     }
                 }
@@ -159,8 +158,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             six_number_phone.mask = ""
             // Очещает поле
             six_number_phone.text = null
-            sixPosition = model.position
-            codeMaskId = listAvailableSix[model.position].id.toString()
+            sixPosition = listAvailableSix[model.position].name.toString()
             phoneLength = listAvailableSix[model.position].phoneLength.toString()
             six_available_country.setText("+" + listAvailableSix[model.position].phoneCode)
             six_number_phone.mask = listAvailableSix[model.position].phoneMaskSmall
@@ -168,7 +166,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
         if (model.key == "listFamily") {
             six_loan_family.setText(listFamily[model.position].name)
-            familyPosition = model.position
+            familyPosition = listFamily[model.position].name.toString()
             family = listFamily[model.position].id.toString()
             six_loan_family.error = null
         }
@@ -187,9 +185,10 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
                 listAvailableSix = result.result
                 six_number_phone.mask = ""
                 six_number_phone.text = null
-                six_available_country.setText("+" + listAvailableSix[0].phoneCode)
-                six_number_phone.mask = listAvailableSix[0].phoneMaskSmall
-                phoneLength = listAvailableSix[0].phoneLength.toString()
+                sixPosition = result.result[0].name.toString()
+                six_available_country.setText("+" + result.result[0].phoneCode)
+                six_number_phone.mask = result.result[0].phoneMaskSmall
+                phoneLength = result.result[0].phoneLength.toString()
             } else {
                 listResult(result.error.code!!)
             }
@@ -271,8 +270,8 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: Int, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

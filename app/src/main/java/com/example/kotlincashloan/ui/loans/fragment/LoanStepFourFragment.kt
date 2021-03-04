@@ -43,12 +43,12 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var liveId = ""
     private var cardId = ""
 
-    private var cityPosition = -1
-    private var familyPosition = -1
-    private var numbersPosition = -1
-    private var childrenPosition = -1
-    private var yearsPosition = -1
-    private var catsNamesPosition = -1
+    private var cityPosition = ""
+    private var familyPosition = ""
+    private var numbersPosition = ""
+    private var childrenPosition = ""
+    private var yearsPosition = ""
+    private var catsNamesPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listCity: ArrayList<ListCityResultModel> = arrayListOf()
@@ -104,12 +104,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 for (i in 1..listCity.size) {
                     if (i <= listCity.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listCity[i - 1].name.toString(),
-                                "listCity",
-                                i - 1
-                            )
-                        )
+                            GeneralDialogModel(listCity[i - 1].name.toString(), "listCity", i - 1,0, listCity[i - 1].name.toString()))
                     }
                 }
             }
@@ -125,12 +120,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 for (i in 1..listFamilyStatus.size) {
                     if (i <= listFamilyStatus.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listFamilyStatus[i - 1].name.toString(),
-                                "listFamilyStatus",
-                                i - 1
-                            )
-                        )
+                            GeneralDialogModel(listFamilyStatus[i - 1].name.toString(), "listFamilyStatus", i - 1, 0, listFamilyStatus[i - 1].name.toString()))
                     }
                 }
             }
@@ -146,12 +136,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 for (i in 1..listNumbers.size) {
                     if (i <= listNumbers.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listNumbers[i - 1].name.toString(),
-                                "listNumbers",
-                                i - 1
-                            )
-                        )
+                            GeneralDialogModel(listNumbers[i - 1].name.toString(), "listNumbers", i - 1, 0, listNumbers[i - 1].name.toString()))
                     }
                 }
             }
@@ -170,7 +155,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                             GeneralDialogModel(
                                 listNumbersChildren[i - 1].name.toString(),
                                 "listNumbersChildren",
-                                i - 1
+                                i - 1,
+                            0, listNumbersChildren[i - 1].name.toString()
                             )
                         )
                     }
@@ -191,7 +177,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                             GeneralDialogModel(
                                 listYears[i - 1].name.toString(),
                                 "listYears",
-                                i - 1
+                                i - 1, 0,
+                                listYears[i - 1].name.toString()
                             )
                         )
                     }
@@ -210,11 +197,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                     if (i <= listCatsNames.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listCatsNames[i - 1],
-                                "listCatsNames",
-                                i - 1
-                            )
-                        )
+                                listCatsNames[i - 1], "listCatsNames", i - 1, 0,  listCatsNames[i - 1]))
                     }
                 }
             }
@@ -234,42 +217,42 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         if (model.key == "listCity") {
             loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
-            cityPosition = model.position
+            cityPosition = listCity[model.position].name.toString()
             cityId = listCity[model.position].id!!
         }
         if (model.key == "listFamilyStatus") {
             loans_step_four_status.error = null
             loans_step_four_status.setText(listFamilyStatus[model.position].name)
-            familyPosition = model.position
+            familyPosition = listFamilyStatus[model.position].name.toString()
             statusId = listFamilyStatus[model.position].id!!
         }
 
         if (model.key == "listNumbers") {
             loans_step_four_family.error = null
             loans_step_four_family.setText(listNumbers[model.position].name)
-            numbersPosition = model.position
+            numbersPosition = listNumbers[model.position].name.toString()
             familyId = listNumbers[model.position].id!!
         }
 
         if (model.key == "listNumbersChildren") {
             loans_step_four_children.error = null
             loans_step_four_children.setText(listNumbersChildren[model.position].name)
-            childrenPosition = model.position
+            childrenPosition = listNumbersChildren[model.position].name.toString()
             childrenId = listNumbersChildren[model.position].id!!
         }
 
         if (model.key == "listYears") {
             loans_step_four_federation.error = null
             loans_step_four_federation.setText(listYears[model.position].name)
-            yearsPosition = model.position
+            yearsPosition = listYears[model.position].name.toString()
             liveId = listYears[model.position].id!!
         }
 
         if (model.key == "listCatsNames") {
             loans_step_four_card.error = null
             loans_step_four_card.setText(listCatsNames[model.position])
-            catsNamesPosition = model.position
-            cardId = listCatsNames[model.position]
+            catsNamesPosition = listCatsNames[model.position]
+            cardId = model.position.toString()
         }
     }
 
@@ -473,11 +456,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: Int,
-        title: String
-    ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, "selectionPosition", title)
+        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
