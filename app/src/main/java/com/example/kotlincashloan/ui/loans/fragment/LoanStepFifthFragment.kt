@@ -72,7 +72,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var documentImageTwo: Bitmap? = null
     private var portrait: Bitmap? = null
     private var documentImage: Bitmap? = null
-
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var data: String = ""
