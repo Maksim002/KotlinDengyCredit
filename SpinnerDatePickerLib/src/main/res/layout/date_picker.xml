@@ -38,9 +38,10 @@
             android:layout_marginLeft="1dip"
             android:layout_marginRight="1dip"
             android:layout_marginStart="1dip"
+            android:descendantFocusability="blocksDescendants"
+            android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
-            />
+            android:focusableInTouchMode="true" />
 
         <!-- Day -->
         <NumberPicker
@@ -51,6 +52,7 @@
             android:layout_marginLeft="1dip"
             android:layout_marginRight="1dip"
             android:layout_marginStart="1dip"
+            android:descendantFocusability="blocksDescendants"
             android:focusable="true"
             android:focusableInTouchMode="true"
             />
@@ -64,6 +66,7 @@
             android:layout_marginLeft="1dip"
             android:layout_marginRight="1dip"
             android:layout_marginStart="1dip"
+            android:descendantFocusability="blocksDescendants"
             android:focusable="true"
             android:focusableInTouchMode="true"
             />

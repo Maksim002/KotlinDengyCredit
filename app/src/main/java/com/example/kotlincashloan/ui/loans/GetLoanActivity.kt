@@ -29,7 +29,6 @@ class GetLoanActivity : AppCompatActivity() {
         lateinit var alert: LoadingAlert
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
