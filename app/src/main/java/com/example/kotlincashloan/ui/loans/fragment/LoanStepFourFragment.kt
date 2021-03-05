@@ -97,6 +97,10 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
             }
         }
 
+        four_cross_back.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
+        }
+
         loans_step_four_city.setOnClickListener {
             initClearList()
             //Мутод заполняет список данными дя адапера

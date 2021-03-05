@@ -1,154 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_fire"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:padding="16dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Трудовая деятельность"
-            android:textColor="@color/blackColor"
-            android:textSize="18dp" />
-
-
-        <EditText
-            android:id="@+id/fire_step_four_residence"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Место работы"
-            android:layout_marginTop="16dp"
-            android:imeOptions="actionDone"
-            android:inputType="textCapWords"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_type_employment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Вид занятости"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Должность"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_work_experience_r_f"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Стаж работы в РФ"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_work_experience"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Стаж работы в последнем месте в РФ"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_list_income"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Ежемесячный доход"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_additional_income"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Дополнительный доход"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-        <AutoCompleteTextView
-            android:id="@+id/fire_additional_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:focusable="false"
-            android:background="@drawable/circle_orange_background_edit"
-            android:drawableEnd="@drawable/ic_expend"
-            android:hint="Сумма доп. дохода"
-            android:padding="13dp"
-            android:textColor="@color/blackColor"
-            android:textSize="14dp" />
-
-    </LinearLayout>
-
-        <Button
-            android:id="@+id/bottom_loan_fire"
-            style="@style/RoundedOrangeBackground"
+        <ImageView
+            android:id="@+id/five_cross_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingLeft="75dp"
-            android:paddingRight="75dp"
-            android:layout_marginBottom="10dp"
-            android:text="Далее"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
-    </LinearLayout>
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="16dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:id="@+id/layout_fire"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Трудовая деятельность"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp" />
+
+
+                <EditText
+                    android:id="@+id/fire_step_four_residence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Место работы"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_type_employment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Вид занятости"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Должность"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_work_experience_r_f"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Стаж работы в РФ"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_work_experience"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Стаж работы в последнем месте в РФ"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_list_income"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Ежемесячный доход"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_additional_income"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Дополнительный доход"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/fire_additional_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Сумма доп. дохода"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bottom_loan_fire"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="75dp"
+                android:paddingRight="75dp"
+                android:text="Далее"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/fire_ste_access_restricted"

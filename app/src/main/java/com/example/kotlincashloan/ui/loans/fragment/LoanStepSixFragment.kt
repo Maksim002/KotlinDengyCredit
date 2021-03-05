@@ -89,6 +89,10 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             initSaveLoan()
         }
 
+        four_cross_six.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+        }
+
         six_available_country.setOnClickListener {
             initClearList()
             //Мутод заполняет список данными дя адапера

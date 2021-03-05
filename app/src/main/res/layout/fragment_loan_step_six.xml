@@ -1,24 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/four_cross_six"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="16dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <LinearLayout
             android:id="@+id/layout_loan_six"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <include
@@ -41,12 +62,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:padding="13dp"
-                        android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1.2"
                         android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="13dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -58,16 +79,16 @@
                                 android:id="@+id/six_available_country"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@null"
                                 android:editable="true"
                                 android:focusable="false"
-                                android:gravity="center"
                                 android:focusableInTouchMode="false"
-                                android:textColor="@color/blackColor"
-                                android:background="@null"
-                                android:windowSoftInputMode="adjustResize"
+                                android:gravity="center"
                                 android:inputType="number"
+                                android:textColor="@color/blackColor"
                                 android:textSize="14sp"
-                                tools:text="+996"/>
+                                android:windowSoftInputMode="adjustResize"
+                                tools:text="+996" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -75,11 +96,11 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="13dp"
-                        android:layout_weight="0.3"
                         android:layout_marginTop="10dp"
+                        android:layout_weight="0.3"
                         android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="13dp">
 
                         <LinearLayout
                             android:id="@+id/profile_phone_number"
@@ -97,17 +118,17 @@
                                     android:id="@+id/six_number_phone"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/blackColor"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:digits="0123456789"
                                     android:editable="false"
                                     android:ellipsize="end"
-                                    android:layout_weight="1"
-                                    android:digits="0123456789"
                                     android:imeOptions="actionDone"
-                                    android:background="@null"
-                                    android:windowSoftInputMode="adjustResize"
                                     android:inputType="number"
+                                    android:textColor="@color/blackColor"
                                     android:textSize="14sp"
-                                    tools:text="700 700 540"/>
+                                    android:windowSoftInputMode="adjustResize"
+                                    tools:text="700 700 540" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
@@ -117,8 +138,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:text="Доверенный контакт"
                     android:textColor="@color/blackColor"
                     android:textSize="18dp" />
@@ -167,9 +188,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:focusable="false"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
                     android:hint="Кем приходится"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
@@ -206,7 +227,8 @@
                 android:text="Далее"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
-    </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/six_ste_access_restricted"

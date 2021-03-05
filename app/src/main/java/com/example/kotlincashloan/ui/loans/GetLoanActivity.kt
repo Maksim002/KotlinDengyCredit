@@ -79,8 +79,7 @@ class GetLoanActivity : AppCompatActivity() {
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);
         // or keep last page as "end page"
         get_loan_stepper_indicator.setViewPager(
-            get_loan_view_pagers,
-            get_loan_view_pagers.getAdapter()!!.getCount() - 1
+            get_loan_view_pagers, get_loan_view_pagers.getAdapter()!!.getCount() - 1
         ); //
         // or manual change
         get_loan_stepper_indicator.setStepCount(7);

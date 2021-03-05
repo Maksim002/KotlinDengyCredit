@@ -75,7 +75,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private Button showScanner;
     private Thread thread;
 
-    private ImageView portraitIv;
+    private ImageView portraitIv, threeCrossBack;
     private ImageView docImageIv;
 
     private LinearLayout layout_status, status_no_questionnaire, status_technical_work, status_not_found;
@@ -104,6 +104,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         status_no_questionnaire = view.findViewById(R.id.status_no_questionnaire);
         status_not_found = view.findViewById(R.id.status_not_found);
         theeIncorrect = view.findViewById(R.id.thee_incorrect);
+        threeCrossBack = view.findViewById(R.id.three_cross_back);
 
         no_connection_repeat = view.findViewById(R.id.no_connection_repeat);
         technical_work = view.findViewById(R.id.technical_work);
@@ -132,6 +133,13 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             @Override
             public void onClick(View v) {
                 initResult();
+            }
+        });
+
+        threeCrossBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
             }
         });
     }

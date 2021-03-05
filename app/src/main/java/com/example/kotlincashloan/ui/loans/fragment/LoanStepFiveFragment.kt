@@ -130,6 +130,10 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             initRestart()
         }
 
+        five_cross_back.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(3)
+        }
+
         fire_type_employment.setOnClickListener {
             initClearList()
             //Мутод заполняет список данными дя адапера

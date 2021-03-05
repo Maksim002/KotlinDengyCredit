@@ -395,6 +395,10 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             initSaveServer()
         }
 
+        fifth_cross_six.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+        }
+
         list_countries.setOnClickListener {
             list_countries.error = null
             initClearList()
