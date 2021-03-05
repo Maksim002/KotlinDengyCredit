@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.activity_get_loan.*
 class GetLoanActivity : AppCompatActivity() {
     private var list = mutableListOf<LoansListModel>()
     val handler = Handler()
-
     lateinit var get_loan_view_pagers: ViewPager
 
     companion object {
