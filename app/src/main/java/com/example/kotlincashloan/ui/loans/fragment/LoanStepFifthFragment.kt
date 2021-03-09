@@ -77,6 +77,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var data: String = ""
     private var keyData = ""
+    private var countriesPhone = ""
+    private var goalPhone = ""
+    private var contractPhone = ""
     private var countriesList: ArrayList<MyDataListModel> = arrayListOf()
     private var goalList: ArrayList<MyDataListModel> = arrayListOf()
     private var contractList: ArrayList<MyDataListModel> = arrayListOf()
@@ -248,8 +251,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.sum.toString()
-        mapSave["reg_date"] = fifth_goal_name.text.toString()
-        mapSave["entry_date"] = date_entry.text.toString()
+        mapSave["reg_date"] = countriesPhone
+        mapSave["entry_date"] = goalPhone
 
         if (goalPosition == ""){
             mapSave["entry_goal"] = ""
@@ -257,7 +260,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             mapSave["entry_goal"] = goalId.toString()
         }
 
-        mapSave["contract_date"] = date_the_contract.text.toString()
+        mapSave["contract_date"] = contractPhone
         mapSave["step"] = "5"
 
         if (validate()) {
@@ -690,6 +693,16 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     private fun iniData() {
+        if (countriesList.size != 0) {
+            if (countriesList[0].key == "fifth_goal_name") {
+                val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
+                val calendar = simpleDateFormat.format(calendarDta.time)
+                fifth_goal_name.setText(MyUtils.toMyDate(calendar))
+                countriesPhone = calendar
+            }
+        }
+
+
         fifth_goal_name.setOnClickListener(View.OnClickListener { v: View? ->
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
@@ -700,22 +713,39 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         })
 
+        if (goalList.size != 0) {
+            if (goalList[0].key == "date_entry") {
+                val calendarDta = GregorianCalendar(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth)
+                val calendar = simpleDateFormat.format(calendarDta.time)
+                date_entry.setText(MyUtils.toMyDate(calendar))
+                goalPhone = calendar
+            }
+        }
+
         date_entry.setOnClickListener {
             date_entry.error = null
-            keyData = "list_countries"
+            keyData = "date_entry"
             if (goalList.size != 0) {
-                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner
-                )
+                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
+            }
+        }
+
+        if (contractList.size != 0) {
+            if (contractList[0].key == "date_the_contract") {
+                val calendarDta = GregorianCalendar(contractList[0].year, contractList[0].monthOfYear, contractList[0].dayOfMonth)
+                val calendar = simpleDateFormat.format(calendarDta.time)
+                date_the_contract.setText(MyUtils.toMyDate(calendar))
+                contractPhone = calendar
             }
         }
 
         date_the_contract.setOnClickListener {
             date_the_contract.error = null
             keyData = "date_the_contract"
-            if (contractList.size != 0) { showDate(contractList[0].year, contractList[0].monthOfYear,
-                contractList[0].dayOfMonth, R.style.DatePickerSpinner)
+            if (contractList.size != 0) {
+                showDate(contractList[0].year, contractList[0].monthOfYear, contractList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
             }
@@ -734,25 +764,30 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     while (countriesList[i - 1].key == "fifth_goal_name") {
                         countriesList.removeAt(i - 1)
                         //отоброжает данные в TextView
-                        fifth_goal_name.setText(simpleDateFormat.format(calendar.getTime()))
+                        val goal = simpleDateFormat.format(calendar.time)
+                        fifth_goal_name.setText(MyUtils.toMyDate(goal))
+                        countriesPhone = goal
                         //доболяет новый элемент в список
                         countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
                         break
                     }
                 }
             } else {
-                fifth_goal_name.setText(simpleDateFormat.format(calendar.getTime()))
+                val goal = simpleDateFormat.format(calendar.time)
+                fifth_goal_name.setText(MyUtils.toMyDate(goal))
                 countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
             }
-        } else if (keyData == "list_countries") {
+        } else if (keyData == "date_entry") {
             if (goalList.size != 0) {
                 for (i in 1..goalList.size) {
-                    while (goalList[i - 1].key == "fifth_goal_name") {
+                    while (goalList[i - 1].key == "date_entry") {
                         goalList.removeAt(i - 1)
-                        date_entry.setText(simpleDateFormat.format(calendar.getTime()))
+                        val entry = simpleDateFormat.format(calendar.time)
+                        date_entry.setText(MyUtils.toMyDate(entry))
+                        goalPhone = entry
                         goalList.add(
                             MyDataListModel(
-                                "fifth_goal_name",
+                                "date_entry",
                                 year,
                                 monthOfYear,
                                 dayOfMonth
@@ -762,22 +797,26 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     }
                 }
             } else {
-                date_entry.setText(simpleDateFormat.format(calendar.getTime()))
-                goalList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
+                val entry = simpleDateFormat.format(calendar.time)
+                date_entry.setText(MyUtils.toMyDate(entry))
+                goalList.add(MyDataListModel("date_entry", year, monthOfYear, dayOfMonth))
             }
         } else if (keyData == "date_the_contract") {
             if (contractList.size != 0) {
                 for (i in 1..contractList.size) {
                     while (contractList[i - 1].key == "date_the_contract") {
                         contractList.removeAt(i - 1)
-                        date_the_contract.setText(simpleDateFormat.format(calendar.getTime()))
+                        val contract = simpleDateFormat.format(calendar.time)
+                        date_the_contract.setText(MyUtils.toMyDate(contract))
+                        contractPhone = contract
                         contractList.add(
                             MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth))
                         break
                     }
                 }
             } else {
-                date_the_contract.setText(simpleDateFormat.format(calendar.getTime()))
+                val contract = simpleDateFormat.format(calendar.time)
+                date_the_contract.setText(MyUtils.toMyDate(contract))
                 contractList.add(
                     MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth)
                 )

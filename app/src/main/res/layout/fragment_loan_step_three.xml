@@ -35,8 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:orientation="horizontal">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -72,17 +71,22 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/thee_incorrect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                android:drawablePadding="10dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:gravity="center"
-                android:padding="16dp"
-                android:text="Неверный логин или пароль"
-                android:textColor="@color/colorRed"
-                android:visibility="gone" />
+                android:padding="@dimen/_8sdp"
+                android:layout_height="@dimen/_40sdp">
+
+                <TextView
+                    android:id="@+id/thee_incorrect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/thee_active_status"
@@ -90,6 +94,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="10dp"
