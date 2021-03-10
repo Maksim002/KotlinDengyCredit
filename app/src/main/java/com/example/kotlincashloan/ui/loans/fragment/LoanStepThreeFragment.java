@@ -28,11 +28,14 @@ import com.example.kotlincashloan.R;
 import com.example.kotlincashloan.adapter.loans.StepClickListener;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanModel;
+import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel;
+import com.example.kotlincashloan.service.model.login.SaveLoanResultModel;
 import com.example.kotlincashloan.ui.loans.GetLoanActivity;
 import com.example.kotlincashloan.ui.loans.LoansViewModel;
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment;
 import com.example.kotlincashloan.ui.registration.login.HomeActivity;
 import com.example.kotlincashloan.utils.ObservedInternet;
+import com.example.kotlinscreenscanner.service.model.CommonResponseReject;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
@@ -47,6 +50,8 @@ import com.regula.documentreader.api.results.DocumentReaderResults;
 import com.regula.documentreader.api.results.DocumentReaderScenario;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 import com.timelysoft.tsjdomcom.service.AppPreferences;
+import com.timelysoft.tsjdomcom.service.ResultStatus;
+import com.timelysoft.tsjdomcom.service.Status;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -125,14 +130,14 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         technical_work.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initResult();
+                initInternet();
             }
         });
 
         not_found.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initResult();
+                initInternet();
             }
         });
 
@@ -169,99 +174,98 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         map.put("loan_sum", AppPreferences.INSTANCE.getSum());
         map.put("step", "1");
 
-        viewModel.saveLoan(map);
 
-        viewModel.getGetSaveLoan().observe(getViewLifecycleOwner(), new Observer<SaveLoanModel>() {
+        viewModel.saveLoans(map).observe(getViewLifecycleOwner(), new Observer<ResultStatus<CommonResponseReject<SaveLoanResultModel>>>() {
             @Override
-            public void onChanged(SaveLoanModel result) {
-                try {
-                    if (result != null) {
-                        if (result.getResult() != null) {
-                            if (result.getResult().getId() != null) {
-                                theeIncorrect.setVisibility(View.GONE);
-                                layout_status.setVisibility(View.VISIBLE);
-                                status_technical_work.setVisibility(View.GONE);
-                                status_no_questionnaire.setVisibility(View.GONE);
-                                status_not_found.setVisibility(View.GONE);
-                                docImageIv.setImageBitmap(documentImage);
-                                portraitIv.setImageBitmap(portrait);
-                                AppPreferences.INSTANCE.setSum(result.getResult().getId().toString());
-                                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-                            }
-                        } else if (result.getError() != null) {
-                            if (result.getError().getCode().equals(400)) {
-                                theeIncorrect.setText("Отсканируйте документ повторно");
-                                theeIncorrect.setVisibility(View.VISIBLE);
-                            } else if (result.getError().getCode() == 500) {
-                                status_technical_work.setVisibility(View.VISIBLE);
-                                status_no_questionnaire.setVisibility(View.GONE);
-                                layout_status.setVisibility(View.GONE);
-                                status_not_found.setVisibility(View.GONE);
-                                theeIncorrect.setVisibility(View.GONE);
-                            } else if (result.getError().getCode() == 401) {
-                                initAuthorized();
-                            } else if (result.getError().getCode() == 409) {
-                                Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
-                                theeIncorrect.setVisibility(View.GONE);
-                            } else if (result.getError().getCode() == 404) {
-                                status_not_found.setVisibility(View.VISIBLE);
-                                status_technical_work.setVisibility(View.GONE);
-                                status_no_questionnaire.setVisibility(View.GONE);
-                                layout_status.setVisibility(View.GONE);
-                                theeIncorrect.setVisibility(View.GONE);
-                            }
-                        } else if (result.getReject() != null) {
-                            initBottomSheet(result.getReject().getMessage());
-                            layout_status.setVisibility(View.VISIBLE);
-                            status_technical_work.setVisibility(View.GONE);
-                            status_no_questionnaire.setVisibility(View.GONE);
-                            status_not_found.setVisibility(View.GONE);
-                            theeIncorrect.setVisibility(View.GONE);
-                        }
-                        if (viewModel.getGetSaveLoan() != null) {
-                            viewModel.getGetSaveLoan().setValue(null);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onChanged(ResultStatus<CommonResponseReject<SaveLoanResultModel>> result) {
+              switch (result.getStatus()){
+                  case SUCCESS:{
+                      if (result.getData().getResult() != null) {
+                          if (result.getData().getResult().getId() != null) {
+                              layout_status.setVisibility(View.VISIBLE);
+                              theeIncorrect.setVisibility(View.GONE);
+                              status_technical_work.setVisibility(View.GONE);
+                              status_no_questionnaire.setVisibility(View.GONE);
+                              status_not_found.setVisibility(View.GONE);
+                              docImageIv.setImageBitmap(documentImage);
+                              portraitIv.setImageBitmap(portrait);
+                              AppPreferences.INSTANCE.setSum(result.getData().getResult().getId().toString());
+                              ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                          }
+                      }else if (result.getData().getError() != null) {
+                          if (result.getData().getError().getCode() == 400) {
+                              theeIncorrect.setText("Отсканируйте документ повторно");
+                              theeIncorrect.setVisibility(View.VISIBLE);
+                          } else if (result.getData().getError().getCode() == 500) {
+                              status_technical_work.setVisibility(View.VISIBLE);
+                              status_no_questionnaire.setVisibility(View.GONE);
+                              layout_status.setVisibility(View.GONE);
+                              status_not_found.setVisibility(View.GONE);
+                              theeIncorrect.setVisibility(View.GONE);
+                          } else if (result.getData().getError().getCode() == 401) {
+                              initAuthorized();
+                          } else if (result.getData().getError().getCode() == 409) {
+                              Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                              theeIncorrect.setVisibility(View.GONE);
+                          } else if (result.getData().getError().getCode() == 404) {
+                              status_not_found.setVisibility(View.VISIBLE);
+                              status_technical_work.setVisibility(View.GONE);
+                              status_no_questionnaire.setVisibility(View.GONE);
+                              layout_status.setVisibility(View.GONE);
+                              theeIncorrect.setVisibility(View.GONE);
+                          }
+                      }else if (result.getData().getReject() != null) {
+                          initBottomSheet(result.getData().getReject().getMessage());
+                          layout_status.setVisibility(View.VISIBLE);
+                          status_technical_work.setVisibility(View.GONE);
+                          status_no_questionnaire.setVisibility(View.GONE);
+                          status_not_found.setVisibility(View.GONE);
+                          theeIncorrect.setVisibility(View.GONE);
+                      }
+                  }
+                  case NETWORK: case ERROR: {
+                      if (result.getMsg() != null){
+                          errorSaveLoan(result.getMsg());
+                      }else if (result.getData().getCode() != 200){
+                          errorSaveLoan(String.valueOf(result.getData().getCode()));
+                      }
+                  }
+              }
+                GetLoanActivity.alert.hide();
             }
         });
+    }
 
-        viewModel.getErrorSaveLoan().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String error) {
-                if (error != null) {
-                    if (error.equals("601")) {
-                        status_no_questionnaire.setVisibility(View.VISIBLE);
-                        status_technical_work.setVisibility(View.GONE);
-                        layout_status.setVisibility(View.GONE);
-                        status_not_found.setVisibility(View.GONE);
-                        theeIncorrect.setVisibility(View.GONE);
-                    } else if (error.equals("401")) {
-                        initAuthorized();
-                    } else if (error.equals("500")) {
-                        status_technical_work.setVisibility(View.VISIBLE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        layout_status.setVisibility(View.GONE);
-                        status_not_found.setVisibility(View.GONE);
-                        theeIncorrect.setVisibility(View.GONE);
-                    } else if (error.equals("409")) {
-                        Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
-                        theeIncorrect.setVisibility(View.GONE);
-                    } else if (error.equals("404")) {
-                        status_not_found.setVisibility(View.VISIBLE);
-                        status_technical_work.setVisibility(View.GONE);
-                        status_no_questionnaire.setVisibility(View.GONE);
-                        layout_status.setVisibility(View.GONE);
-                        theeIncorrect.setVisibility(View.GONE);
-                    } else if (error.equals("400")) {
-                        theeIncorrect.setText("Отсканируйте документ повторно");
-                        theeIncorrect.setVisibility(View.VISIBLE);
-                    }
-                }
+    private void errorSaveLoan(String error){
+        if (error != null) {
+            if (error.equals("601")) {
+                status_no_questionnaire.setVisibility(View.VISIBLE);
+                status_technical_work.setVisibility(View.GONE);
+                layout_status.setVisibility(View.GONE);
+                status_not_found.setVisibility(View.GONE);
+                theeIncorrect.setVisibility(View.GONE);
+            } else if (error.equals("401")) {
+                initAuthorized();
+            } else if (error.equals("500")) {
+                status_technical_work.setVisibility(View.VISIBLE);
+                status_no_questionnaire.setVisibility(View.GONE);
+                layout_status.setVisibility(View.GONE);
+                status_not_found.setVisibility(View.GONE);
+                theeIncorrect.setVisibility(View.GONE);
+            } else if (error.equals("409")) {
+                Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                theeIncorrect.setVisibility(View.GONE);
+            } else if (error.equals("404")) {
+                status_not_found.setVisibility(View.VISIBLE);
+                status_technical_work.setVisibility(View.GONE);
+                status_no_questionnaire.setVisibility(View.GONE);
+                layout_status.setVisibility(View.GONE);
+                theeIncorrect.setVisibility(View.GONE);
+            } else if (error.equals("400")) {
+                theeIncorrect.setText("Отсканируйте документ повторно");
+                theeIncorrect.setVisibility(View.VISIBLE);
             }
-        });
+        }
     }
 
     private void initBottomSheet(String message) {

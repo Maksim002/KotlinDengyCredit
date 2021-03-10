@@ -48,6 +48,7 @@ import com.regula.documentreader.api.enums.*
 import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
@@ -79,10 +80,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var keyData = ""
     private var countriesPhone = ""
     private var goalPhone = ""
-    private var contractPhone = ""
     private var countriesList: ArrayList<MyDataListModel> = arrayListOf()
     private var goalList: ArrayList<MyDataListModel> = arrayListOf()
-    private var contractList: ArrayList<MyDataListModel> = arrayListOf()
     private lateinit var calendar: GregorianCalendar
     private var hidingLayout = ""
     private var thread: Thread? = null
@@ -248,6 +247,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveServer() {
+        GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.sum.toString()
@@ -259,36 +259,37 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }else{
             mapSave["entry_goal"] = goalId.toString()
         }
-
-        mapSave["contract_date"] = contractPhone
         mapSave["step"] = "5"
 
-        if (validate()) {
-            viewModel.saveLoan(mapSave)
-        }
-
-        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                layout_fifth.visibility = View.VISIBLE
-                fifth_ste_technical_work.visibility = View.GONE
-                fifth_ste_no_connection.visibility = View.GONE
-                fifth_ste_access_restricted.visibility = View.GONE
-                fifth_ste_not_found.visibility = View.GONE
-                if (saveValidate) {
-                    (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+            val data = result.data
+            val msg = result.msg
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        layout_fifth.visibility = View.VISIBLE
+                        fifth_ste_technical_work.visibility = View.GONE
+                        fifth_ste_no_connection.visibility = View.GONE
+                        fifth_ste_access_restricted.visibility = View.GONE
+                        fifth_ste_not_found.visibility = View.GONE
+                        if (saveValidate) {
+                            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                        }
+                    }else if (data.error.code != null) {
+                        listResult(data.error.code!!)
+                    }else if (data.reject != null) {
+                        initBottomSheetError(data.reject.message.toString())
+                    }
                 }
-            } else if (result.reject != null) {
-                initBottomSheetError(result.reject!!.message.toString())
-            } else {
-                listResult(result.error.code!!)
+                Status.ERROR -> {
+                    errorList(msg!!)
+                }
+                Status.NETWORK -> {
+                    errorList(msg!!)
+                }
             }
-        })
-
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null) {
-                errorList(error)
-            }
+            GetLoanActivity.alert.hide()
         })
     }
 
@@ -303,7 +304,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_2n.visibility = View.GONE
             contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
-            date_the_contract.visibility = View.GONE
         } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
             fifth_potent.visibility = View.VISIBLE
@@ -311,11 +311,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_permission.visibility = View.VISIBLE
             contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
-            date_the_contract.visibility = View.GONE
         } else if (hidingLayout == "KGZ") {
             contract_type.visibility = View.VISIBLE
             fifth_contract.visibility = View.VISIBLE
-            date_the_contract.visibility = View.VISIBLE
             fifth_potent.visibility = View.GONE
             fifth_receipt.visibility = View.GONE
             fifth_permission.visibility = View.GONE
@@ -359,7 +357,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         viewModel.listTypeContract.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-                listEntryError = result.code.toString()
+                listContractError = result.code.toString()
                 getResultOk()
                 listTypeContract = result.result
             } else {
@@ -369,7 +367,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         viewModel.errorListTypeContract.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
-                listEntryError = error
+                listContractError = error
                 errorList(error)
             }
         })
@@ -395,7 +393,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         bottom_loan_fifth.setOnClickListener {
             saveValidate = true
-            initSaveServer()
+            if (validate()) {
+                initSaveServer()
+            }
         }
 
         fifth_cross_six.setOnClickListener {
@@ -710,6 +710,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
+                val calendarDta = GregorianCalendar(1990, 0, 1)
+                val calendar = simpleDateFormat.format(calendarDta.time)
+                countriesPhone = calendar
             }
         })
 
@@ -729,25 +732,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
-            }
-        }
-
-        if (contractList.size != 0) {
-            if (contractList[0].key == "date_the_contract") {
-                val calendarDta = GregorianCalendar(contractList[0].year, contractList[0].monthOfYear, contractList[0].dayOfMonth)
+                val calendarDta = GregorianCalendar(1990, 0, 1)
                 val calendar = simpleDateFormat.format(calendarDta.time)
-                date_the_contract.setText(MyUtils.toMyDate(calendar))
-                contractPhone = calendar
-            }
-        }
-
-        date_the_contract.setOnClickListener {
-            date_the_contract.error = null
-            keyData = "date_the_contract"
-            if (contractList.size != 0) {
-                showDate(contractList[0].year, contractList[0].monthOfYear, contractList[0].dayOfMonth, R.style.DatePickerSpinner)
-            } else {
-                showDate(1990, 0, 1, R.style.DatePickerSpinner)
+                goalPhone = calendar
             }
         }
     }
@@ -785,14 +772,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         val entry = simpleDateFormat.format(calendar.time)
                         date_entry.setText(MyUtils.toMyDate(entry))
                         goalPhone = entry
-                        goalList.add(
-                            MyDataListModel(
-                                "date_entry",
-                                year,
-                                monthOfYear,
-                                dayOfMonth
-                            )
-                        )
+                        goalList.add(MyDataListModel("date_entry", year, monthOfYear, dayOfMonth))
                         break
                     }
                 }
@@ -800,26 +780,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 val entry = simpleDateFormat.format(calendar.time)
                 date_entry.setText(MyUtils.toMyDate(entry))
                 goalList.add(MyDataListModel("date_entry", year, monthOfYear, dayOfMonth))
-            }
-        } else if (keyData == "date_the_contract") {
-            if (contractList.size != 0) {
-                for (i in 1..contractList.size) {
-                    while (contractList[i - 1].key == "date_the_contract") {
-                        contractList.removeAt(i - 1)
-                        val contract = simpleDateFormat.format(calendar.time)
-                        date_the_contract.setText(MyUtils.toMyDate(contract))
-                        contractPhone = contract
-                        contractList.add(
-                            MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth))
-                        break
-                    }
-                }
-            } else {
-                val contract = simpleDateFormat.format(calendar.time)
-                date_the_contract.setText(MyUtils.toMyDate(contract))
-                contractList.add(
-                    MyDataListModel("date_the_contract", year, monthOfYear, dayOfMonth)
-                )
             }
         }
     }
@@ -1403,15 +1363,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         }
 
-
-        if (date_the_contract.visibility != View.GONE) {
-            if (date_the_contract.text.isEmpty()) {
-                date_the_contract.error = "Поле не должно быть пустым"
-                valid = false
-            } else {
-                date_the_contract.error = null
-            }
-        }
+//
+//        if (date_the_contract.visibility != View.GONE) {
+//            if (date_the_contract.text.isEmpty()) {
+//                date_the_contract.error = "Поле не должно быть пустым"
+//                valid = false
+//            } else {
+//                date_the_contract.error = null
+//            }
+//        }
 
         return valid
     }

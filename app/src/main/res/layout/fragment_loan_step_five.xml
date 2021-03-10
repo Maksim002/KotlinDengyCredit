@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_fire"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -23,7 +24,6 @@
             tools:ignore="MissingConstraints" />
 
         <LinearLayout
-            android:id="@+id/layout_fire"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -143,19 +143,24 @@
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/fire_additional_amount"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Сумма доп. дохода"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="@dimen/_50sdp"
+                    android:orientation="vertical">
 
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_additional_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Сумма доп. дохода"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp" />
+                </LinearLayout>
             </LinearLayout>
 
             <Button

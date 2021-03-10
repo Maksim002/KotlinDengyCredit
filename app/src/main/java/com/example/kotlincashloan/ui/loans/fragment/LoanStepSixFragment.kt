@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -27,7 +28,9 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
+import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -78,15 +81,25 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         bottom_loan_six.setOnClickListener {
-            initSaveLoan()
+            if (validate()) {
+                initSaveLoan()
+            }
         }
 
         technical_work.setOnClickListener {
-            initSaveLoan()
+            if (validate()) {
+                initSaveLoan()
+            }
         }
 
         not_found.setOnClickListener {
-            initSaveLoan()
+            if (validate()) {
+                initSaveLoan()
+            }
+        }
+
+        six_number_phone.addTextChangedListener {
+            initCleaningRoom()
         }
 
         four_cross_six.setOnClickListener {
@@ -235,7 +248,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveLoan() {
-        initCleaningRoom()
+        GetLoanActivity.alert.show()
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
@@ -247,29 +260,33 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         mapSave["type"] = family
         mapSave["phone"] = six_loan_phone.text.toString()
         mapSave["step"] = "4"
-        if (validate()) {
-            viewModel.saveLoan(mapSave)
-        }
 
-        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                layout_loan_six.visibility = View.VISIBLE
-                six_ste_technical_work.visibility = View.GONE
-                six_ste_no_connection.visibility = View.GONE
-                six_ste_access_restricted.visibility = View.GONE
-                six_ste_not_found.visibility = View.GONE
-                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
-            } else if (result.reject != null) {
-                initBottomSheet(result.reject!!.message.toString())
-            } else if (result.error != null) {
-                listResult(result.error.code!!)
+        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+            val data = result.data
+            val msg = result.msg
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        layout_loan_six.visibility = View.VISIBLE
+                        six_ste_technical_work.visibility = View.GONE
+                        six_ste_no_connection.visibility = View.GONE
+                        six_ste_access_restricted.visibility = View.GONE
+                        six_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+                    }else if (data.error.code != null) {
+                        listResult(data.error.code!!)
+                    }else if (data.reject != null) {
+                        initBottomSheet(data.reject.message.toString())
+                    }
+                }
+                Status.ERROR -> {
+                    errorList(msg!!)
+                }
+                Status.NETWORK -> {
+                    errorList(msg!!)
+                }
             }
-        })
-
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null) {
-                errorList(error)
-            }
+            GetLoanActivity.alert.hide()
         })
     }
 

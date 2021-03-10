@@ -22,6 +22,8 @@ import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -417,6 +419,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     //Сохронение на сервер данных
     private fun initSaveLoan() {
+        GetLoanActivity.alert.show()
         val mapSave = mutableMapOf<String, String>()
         mapSave.put("login", AppPreferences.login.toString())
         mapSave.put("token", AppPreferences.token.toString())
@@ -430,31 +433,36 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         mapSave.put("bank_card", cardId)
         mapSave.put("step", "2")
 
-        viewModel.saveLoan(mapSave)
-
-        viewModel.getSaveLoan.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                loans_step_layout.visibility = View.VISIBLE
-                loans_ste_technical_work.visibility = View.GONE
-                loans_ste_no_connection.visibility = View.GONE
-                loans_ste_access_restricted.visibility = View.GONE
-                loans_ste_not_found.visibility = View.GONE
-                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
-            } else if (result.reject != null) {
-                initBottomSheet(result.reject!!.message!!)
-                loans_step_layout.visibility = View.VISIBLE
-                loans_ste_technical_work.visibility = View.GONE
-                loans_ste_no_connection.visibility = View.GONE
-                loans_ste_not_found.visibility = View.GONE
-            } else if (result.result != null) {
-                listResult(result.error.code!!)
+        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+            val data = result.data
+            val msg = result.msg
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        loans_step_layout.visibility = View.VISIBLE
+                        loans_ste_technical_work.visibility = View.GONE
+                        loans_ste_no_connection.visibility = View.GONE
+                        loans_ste_access_restricted.visibility = View.GONE
+                        loans_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                    }else if (data.error.code != null) {
+                        listResult(data.error.code!!)
+                    }else if (data.reject != null) {
+                        initBottomSheet(data.reject.message!!)
+                        loans_step_layout.visibility = View.VISIBLE
+                        loans_ste_technical_work.visibility = View.GONE
+                        loans_ste_no_connection.visibility = View.GONE
+                        loans_ste_not_found.visibility = View.GONE
+                    }
+                }
+                Status.ERROR -> {
+                    errorList(msg!!)
+                }
+                Status.NETWORK -> {
+                    errorList(msg!!)
+                }
             }
-        })
-
-        viewModel.errorSaveLoan.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null) {
-                errorList(error)
-            }
+            GetLoanActivity.alert.hide()
         })
     }
 

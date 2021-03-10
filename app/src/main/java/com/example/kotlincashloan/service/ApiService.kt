@@ -5,6 +5,8 @@ import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel
+import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
@@ -242,5 +244,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("listTypeContract?token=oYyxhIFgJjAb")
     fun listTypeContract(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<TypeContractResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("saveLoan?token=oYyxhIFgJjAb")
+    suspend fun saveLoans(@FieldMap params: Map<String, String>): Response<CommonResponseReject<SaveLoanResultModel>>
 }
 

@@ -53,6 +53,11 @@
             android:layout_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLightGrey" />
+
         <Button
             android:id="@+id/home_enter"
             style="@style/RoundedOrangeBackground"

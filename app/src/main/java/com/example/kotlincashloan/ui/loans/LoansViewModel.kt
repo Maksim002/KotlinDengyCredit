@@ -1,15 +1,20 @@
 package com.example.kotlincashloan.ui.loans
 
 import android.os.Handler
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
+import com.example.kotlinscreenscanner.service.model.CommonResponseReject
+import com.example.kotlinscreenscanner.service.model.ResultPhoneModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.NetworkRepository
+import com.timelysoft.tsjdomcom.service.ResultStatus
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -449,9 +454,13 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorSaveLoan.postValue(response.code().toString())
                 }
-                GetLoanActivity.alert.hide()
+//                GetLoanActivity.alert.hide()
             }
         })
+    }
+
+    fun saveLoans(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponseReject<SaveLoanResultModel>>> {
+        return repository.saveLoans(phone)
     }
 
     //saveLoanImg Сохронение на сервер картинок

@@ -149,7 +149,7 @@
                                 <LinearLayout
                                     android:id="@+id/profile_bar_zero"
                                     android:layout_width="match_parent"
-                                    android:layout_height="82dp"
+                                    android:layout_height="90dp"
                                     android:visibility="gone"
                                     android:background="@drawable/top_bar_panel"
                                     android:layout_weight="1">
@@ -176,7 +176,7 @@
                                 <LinearLayout
                                     android:id="@+id/profile_bar_one"
                                     android:layout_width="match_parent"
-                                    android:layout_height="82dp"
+                                    android:layout_height="90dp"
                                     android:visibility="gone"
                                     android:background="@drawable/top_bar_panel"
                                     android:layout_weight="1">

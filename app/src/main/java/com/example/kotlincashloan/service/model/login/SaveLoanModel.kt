@@ -15,9 +15,9 @@ class SaveLoanModel (
 
     @SerializedName("result")
     @Expose
-    var result: SaveLoanResultModel? = null,
+    var result: SaveLoanResultModel,
 
     @SerializedName("reject")
     @Expose
-    var reject: SaveLoanRejectModel? = null
+    var reject: SaveLoanRejectModel
 )
