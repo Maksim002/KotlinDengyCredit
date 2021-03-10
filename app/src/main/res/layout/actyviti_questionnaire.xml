@@ -242,20 +242,20 @@
 
                 </LinearLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/questionnaire_found"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:ellipsize="end"
-                    android:focusable="false"
-                    android:hint="Откуда вы узнали о нас"
-                    android:maxLines="3"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+<!--                <AutoCompleteTextView-->
+<!--                    android:id="@+id/questionnaire_found"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:background="@drawable/circle_orange_background_edit"-->
+<!--                    android:drawableEnd="@drawable/ic_expend"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:focusable="false"-->
+<!--                    android:hint="Откуда вы узнали о нас"-->
+<!--                    android:maxLines="3"-->
+<!--                    android:padding="13dp"-->
+<!--                    android:textColor="@color/blackColor"-->
+<!--                    android:textSize="14dp" />-->
 
                 <include
                     android:id="@+id/questionnaire_owner"

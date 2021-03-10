@@ -52,7 +52,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var idSex: Int = 0
     private var listNationalityId: Int = 0
     private var listSecretQuestionId: Int = 0
-    private var listАoundId: Int = 0
     private var listNationalityCounterId: Int = 0
     private var included = false
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
@@ -66,14 +65,12 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     private var genderPosition = ""
     private var nationalityPosition = ""
-    private var sourcePosition = ""
     private var questionPosition = ""
     private var counterNationalPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listGender: ArrayList<ListGenderResultModel> = arrayListOf()
     private var listNationality: ArrayList<ListNationalityResultModel> = arrayListOf()
-    private var listTrafficSource: ArrayList<ListTrafficSource> = arrayListOf()
     private var listSecretQuestion: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
     private var listNationalityCounter: ArrayList<CounterResultModel> = arrayListOf()
 
@@ -90,7 +87,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         getListNationality()
         getIdSxs()
         getAutoOperation()
-        gitFound()
         getListCountry()
         initClock()
         initViews()
@@ -106,49 +102,45 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         no_connection_repeat.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
-                gitFound()
                 getListCountry()
             }
         }
 
         access_restricted.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
-                gitFound()
                 getListCountry()
             }
         }
 
         not_found.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
-                gitFound()
                 getListCountry()
             }
         }
 
         technical_work.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0 && listАoundId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
                 initResult()
             }else{
                 getIdSxs()
                 getAutoOperation()
                 getListNationality()
-                gitFound()
                 getListCountry()
             }
         }
@@ -183,7 +175,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 ""
             }
             map["question"] = listSecretQuestionId.toString()
-            map["traffic_source"] = listАoundId.toString()
             map["response"] = questionnaire_secret_response.text.toString()
             map["sms_code"] = AppPreferences.receivedSms.toString()
             map.put("uid", AppPreferences.pushNotificationsId.toString())
@@ -308,27 +299,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }
             if (itemDialog.size != 0) {
                 initBottomSheet(itemDialog, nationalityPosition, "Укажите гражданство")
-            }
-        }
-
-        questionnaire_found.setOnClickListener {
-            initClearList()
-            //Мутод заполняет список данными дя адапера
-            if (itemDialog.size == 0) {
-                for (i in 1..listTrafficSource.size) {
-                    if (i <= listTrafficSource.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listTrafficSource[i - 1].name.toString(),
-                                "listTrafficSource",
-                                i - 1
-                            , 0)
-                        )
-                    }
-                }
-            }
-            if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, sourcePosition, "Откуда вы о нас узнали")
             }
         }
 
@@ -463,75 +433,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
                         listGender = data.result
-                    }else{
-                        if (data.error.code == 403){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-
-                        }else if (data.error.code == 404){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_not_found.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-
-                        }else if (data.error.code == 401){
-                            initAuthorized()
-                        }else{
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_technical_work.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
-                        }
-                    }
-                }
-                Status.ERROR -> {
-                    if (msg == "404"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    }else if (msg == "403"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    }else if (msg == "401"){
-                        initAuthorized()
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }
-                }
-                Status.NETWORK -> {
-                    if (msg == "600"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.GONE
-                    }
-
-                }
-            }
-            HomeActivity.alert.hide()
-        })
-    }
-
-    // Получет места те о которых узнал пользхователь о нас
-    private fun gitFound() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        viewModel.listTrafficSource(map).observe(this, Observer { result->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        listTrafficSource = data.result
                     }else{
                         if (data.error.code == 403){
                             questionnaire_no_questionnaire.visibility = View.GONE
@@ -814,13 +715,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_id_nationality.error = null
         }
 
-        if (model.key == "listTrafficSource") {
-            questionnaire_found.setText(listTrafficSource[model.position].name)
-            sourcePosition = listTrafficSource[model.position].name.toString()
-            listАoundId = listTrafficSource[model.position].id!!.toInt()
-            questionnaire_found.error = null
-        }
-
         if (model.key == "listSecretQuestion") {
             questionnaire_id_secret.setText(listSecretQuestion[model.position].name)
             questionPosition = listSecretQuestion[model.position].name.toString()
@@ -918,13 +812,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_id_secret.error = null
         }
 
-        if (questionnaire_found.text.toString().isEmpty()) {
-            questionnaire_found.error = "Выберите ответ"
-            valid = false
-        } else {
-            questionnaire_found.error = null
-        }
-
         if (questionnaire_secret_response.text.toString().isEmpty()) {
             questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
@@ -952,9 +839,6 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             questionnaire_id_secret.error = null
         }
 
-        questionnaire_found.addTextChangedListener {
-            questionnaire_found.error = null
-        }
     }
 
 }
