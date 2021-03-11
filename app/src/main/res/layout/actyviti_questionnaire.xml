@@ -250,7 +250,7 @@
                     android:id="@+id/questionnaire_id_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
                     android:ellipsize="end"
