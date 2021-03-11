@@ -33,7 +33,7 @@ public class CookieBar {
     private final Activity context;
 
     public static Builder build(Activity activity) {
-        return new CookieBar.Builder(activity);
+        return new Builder(activity);
     }
 
     public static void dismiss(Activity activity) {

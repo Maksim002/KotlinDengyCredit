@@ -107,4 +107,16 @@ dependencies {
 
     //the frame for the date selection
     implementation project(path: ':SpinnerDatePickerLib')
+
+    //Regula
+    implementation 'com.regula.documentreader.full:core:+@aar'
+    implementation('com.regula.documentreader:api:5.4.+@aar') {
+        transitive = true;
+    }
+
+    //Native
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+
+    //anim to button
+    implementation 'com.github.koushikcse:LoadingButton:1.7'
 }

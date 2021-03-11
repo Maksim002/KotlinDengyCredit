@@ -19,6 +19,36 @@ object AppPreferences {
         editor.apply()
     }
 
+    var passwordRecovery: String?
+        get() = preferences.getString("passwordRecovery", "")
+        set(value) = preferences.edit {
+            it.putString("passwordRecovery", value)
+        }
+
+    var type: String?
+        get() = preferences.getString("type", "")
+        set(value) = preferences.edit {
+            it.putString("type", value)
+        }
+
+    var nationality: String?
+        get() = preferences.getString("nationality", "")
+        set(value) = preferences.edit {
+            it.putString("nationality", value)
+        }
+
+    var sum: String?
+        get() = preferences.getString("sum", "")
+        set(value) = preferences.edit {
+            it.putString("sum", value)
+        }
+
+    var loginRecovery: String?
+        get() = preferences.getString("loginRecovery", "")
+        set(value) = preferences.edit {
+            it.putString("loginRecovery", value)
+        }
+
     var token: String?
         get() = preferences.getString("token", "")
         set(value) = preferences.edit {
@@ -49,6 +79,12 @@ object AppPreferences {
             it.putString("password", value)
         }
 
+    var resultPassword: String?
+        get() = preferences.getString("resultPassword", "")
+        set(value) = preferences.edit {
+            it.putString("resultPassword", value)
+        }
+
     var dataKey: String?
         get() = preferences.getString("dataKey", "")
         set(value) = preferences.edit {
@@ -62,10 +98,10 @@ object AppPreferences {
         }
 
 
-    var errorCode: String?
-        get() = preferences.getString("errorCode", "")
+    var boleanCode: Boolean
+        get() = preferences.getBoolean("errorCode", false)
         set(value) = preferences.edit {
-            it.putString("errorCode", value)
+            it.putBoolean("errorCode", value)
         }
 
     var isFormatMask: String?
@@ -146,6 +182,13 @@ object AppPreferences {
             it.putInt("id", value)
         }
 
+    var isSeekBar: Int?
+        get() = preferences.getInt("isSeekBar", 0)
+        set(value) = preferences.edit {
+            if (value != null) {
+                it.putInt("isSeekBar", value)
+            }
+        }
 
     fun clear() {
         preferences.edit {

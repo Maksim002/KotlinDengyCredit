@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/four_cross_six"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="16dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_loan_six"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/questionnaire_owner"
+                    layout="@layout/item_focus" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Ваш дополнительный номер"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1.2"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:orientation="horizontal"
+                        android:padding="13dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:orientation="vertical">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/six_available_country"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@null"
+                                android:editable="true"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:textColor="@color/blackColor"
+                                android:textSize="14sp"
+                                android:windowSoftInputMode="adjustResize"
+                                tools:text="+996" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="0.3"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:orientation="horizontal"
+                        android:padding="13dp">
+
+                        <LinearLayout
+                            android:id="@+id/profile_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.santalu.maskedittext.MaskEditText
+                                    android:id="@+id/six_number_phone"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:digits="0123456789"
+                                    android:editable="false"
+                                    android:ellipsize="end"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="number"
+                                    android:textColor="@color/blackColor"
+                                    android:textSize="14sp"
+                                    android:windowSoftInputMode="adjustResize"
+                                    tools:text="700 700 540" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Доверенный контакт"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp" />
+
+                <EditText
+                    android:id="@+id/six_loan_surname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Фамилия контактного лица"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <EditText
+                    android:id="@+id/six_loan_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Имя контактного лица"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <EditText
+                    android:id="@+id/six_loan_middle_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:hint="Отчество контактного лица"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapWords"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/six_loan_family"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
+                    android:hint="Кем приходится"
+                    android:padding="13dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp" />
+
+                <com.santalu.maskedittext.MaskEditText
+                    android:id="@+id/six_loan_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/circle_orange_background_edit"
+                    android:digits="0123456789"
+                    android:ellipsize="end"
+                    android:hint="Номер телефона контактного лица"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:padding="14dp"
+                    android:scrollHorizontally="true"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14sp"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bottom_loan_six"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:paddingLeft="75dp"
+                android:paddingRight="75dp"
+                android:text="Далее"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/six_ste_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/six_ste_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/six_ste_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/six_ste_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
+</LinearLayout>

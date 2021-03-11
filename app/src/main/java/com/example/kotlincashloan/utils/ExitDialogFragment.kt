@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.still
+package com.example.kotlincashloan.utils
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -22,6 +22,9 @@ class ExitDialogFragment: DialogFragment() {
                     val intent = Intent(context, HomeActivity::class.java)
                     AppPreferences.isPinCode = false
                     AppPreferences.token = ""
+                    if (AppPreferences.resultPassword == ""){
+                        AppPreferences.password = ""
+                    }
                     MainActivity.timer.timeStop()
                     startActivity(intent)
                     dialog.cancel()

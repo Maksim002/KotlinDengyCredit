@@ -35,6 +35,7 @@ class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListO
     override fun operationClickListener(int: Int, item: ResultOperationModel) {
         val bundle = Bundle()
         bundle.putInt("operationId", item.id!!)
+        bundle.putString("title", item.title)
         AppPreferences.inputsAnim = 1
         findNavController().navigate(R.id.navigation_detail_profile, bundle)
     }

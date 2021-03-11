@@ -13,8 +13,8 @@
         android:fontFamily="@font/roboto_black"
         android:textStyle="bold"
         android:textColor="@color/blackColor"
-        android:layout_marginLeft="18dp"
-        android:layout_marginRight="18dp"
-        android:padding="16dp"
-        android:textSize="53sp"/>
+        android:layout_marginLeft="@dimen/_18sdp"
+        android:layout_marginRight="@dimen/_18sdp"
+        android:padding="18dp"
+        android:textSize="@dimen/_53sdp"/>
 </LinearLayout>

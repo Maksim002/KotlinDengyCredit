@@ -25,6 +25,7 @@ import java.util.HashMap
 
 class DetailNotificationFragment : Fragment() {
     private var notificationId = 0
+    private var title = ""
     private var viewModel = NotificationViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
@@ -73,6 +74,12 @@ class DetailNotificationFragment : Fragment() {
         } catch (e: Exception) {
             0
         }
+
+        title = try {
+            requireArguments().getString("title").toString()
+        } catch (e: Exception) {
+            ""
+        }
     }
 
 
@@ -88,7 +95,7 @@ class DetailNotificationFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listNoticeDetailDta.value == null) {
-                HomeActivity.alert.show()
+                MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNotice(map)
                     initRequest()
@@ -110,22 +117,22 @@ class DetailNotificationFragment : Fragment() {
         viewModel.listNoticeDetailDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null) {
-                    detail_notification_title.text = result.result.title
-                    detail_notification_data.text = result.result.date
-                    detail_notification_description.text = result.result.description
-                    detail_notification_text.loadMarkdown(result.result.text)
-                    layout_detail.visibility = View.VISIBLE
+                    if (!notificationAnimDetail) {
+                        TransitionAnimation(activity as AppCompatActivity).transitionRight(notification_anim)
+                        notificationAnimDetail = true
+                    }
                     d_notification_access_restricted.visibility = View.GONE
                     d_notification_no_connection.visibility = View.GONE
                     d_notification_technical_work.visibility = View.GONE
                     d_notification_not_found.visibility = View.GONE
-                    errorCode = result.code.toString()
-                    setTitle(result.result.title, resources.getColor(R.color.whiteColor))
+                    layout_detail.visibility = View.VISIBLE
+
+                    detail_notification_title.text = result.result.title
+                    detail_notification_data.text = result.result.date
+                    detail_notification_description.text = result.result.description
+                    detail_notification_text.loadMarkdown(result.result.text)
                     //notificationAnimDetail анимация для перехода с адного дествия в другое
-                    if (!notificationAnimDetail) {
-                            TransitionAnimation(activity as AppCompatActivity).transitionRight(notification_anim)
-                        notificationAnimDetail = true
-                    }
+                    errorCode = result.code.toString()
                 } else {
                     if (result.error.code != null) {
                         errorCode = result.error.code.toString()
@@ -222,6 +229,7 @@ class DetailNotificationFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setTitle(title, resources.getColor(R.color.whiteColor))
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).rollback()
     }

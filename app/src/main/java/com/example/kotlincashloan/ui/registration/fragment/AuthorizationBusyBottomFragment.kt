@@ -26,6 +26,10 @@ class AuthorizationBusyBottomFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         authorization_busy_esc.setOnClickListener {
             this.dismiss()

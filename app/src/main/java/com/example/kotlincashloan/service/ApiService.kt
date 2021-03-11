@@ -1,11 +1,12 @@
 package com.timelysoft.tsjdomcom.service
 
 
-import com.example.kotlincashloan.service.model.Loans.GetNewsResultModel
-import com.example.kotlincashloan.service.model.Loans.ListNewsResultModel
-import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
+import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel
+import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
@@ -136,6 +137,11 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
+    @POST("listAvailableCountry?token=oYyxhIFgJjAb")
+    fun listAvailableSix(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SixNumResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
     @POST("listSecretQuestion?token=oYyxhIFgJjAb")
     fun listSecretQuestion(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>
 
@@ -143,5 +149,105 @@ interface ApiService {
     @FormUrlEncoded
     @POST("saveProfile?token=oYyxhIFgJjAb")
     fun saveProfile(@FieldMap params: Map<String, String>):Call<CommonResponse<SaveProfileResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("checkPassword?token=oYyxhIFgJjAb")
+    fun checkPassword(@FieldMap params: Map<String, String>):Call<CommonResponse<CheckPasswordResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("getImg?token=oYyxhIFgJjAb")
+    fun getImg(@FieldMap params: Map<String, String>):Call<CommonResponse<GetImgResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("uploadImg?token=oYyxhIFgJjAb")
+    fun uploadImg(@FieldMap params: Map<String, String>):Call<CommonResponse<UploadImgResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("getLoanInfo?token=oYyxhIFgJjAb")
+    fun getLoanInfo(@FieldMap params: Map<String, String>):Call<CommonResponse<LoanInResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("defaultList?token=oYyxhIFgJjAb")
+    fun defaultList(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<DefaultListModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFamilyStatus?token=oYyxhIFgJjAb")
+    fun listFamilyStatus(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListFamilyStatusModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listIncome?token=oYyxhIFgJjAb")
+    fun listIncome(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListIncomeResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listNumbers?token=oYyxhIFgJjAb")
+    fun listNumbers(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListNumbersResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTypeIncome?token=oYyxhIFgJjAb")
+    fun listTypeIncome(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListTypeIncomeModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listYears?token=oYyxhIFgJjAb")
+    fun listYears(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListYearsResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listFamily?token=oYyxhIFgJjAb")
+    fun listFamily(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListFamilyResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listWork?token=oYyxhIFgJjAb")
+    fun listWork(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListWorkResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTypeWork?token=oYyxhIFgJjAb")
+    fun listTypeWork(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListTypeWorkModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listCity?token=oYyxhIFgJjAb")
+    fun listCity(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ListCityResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTrafficSource?token=oYyxhIFgJjAb")
+    suspend fun listTrafficSource(@FieldMap map: Map<String, Int>): Response<CommonResponse<ArrayList<ListTrafficSource>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("saveLoan?token=oYyxhIFgJjAb")
+    fun saveLoan(@FieldMap params: Map<String, String>):Call<SaveLoanModel>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("saveLoan?token=oYyxhIFgJjAb")
+    fun saveLoanImg(@FieldMap params: Map<String, String>):Call<SaveLoanModel>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listEntryGoal?token=oYyxhIFgJjAb")
+    fun listEntryGoal(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<EntryGoalResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listTypeContract?token=oYyxhIFgJjAb")
+    fun listTypeContract(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<TypeContractResultModel>>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("saveLoan?token=oYyxhIFgJjAb")
+    suspend fun saveLoans(@FieldMap params: Map<String, String>): Response<CommonResponseReject<SaveLoanResultModel>>
 }
 

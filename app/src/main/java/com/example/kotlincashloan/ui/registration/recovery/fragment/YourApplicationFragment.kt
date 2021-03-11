@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_your_application.*
 
-class YourApplicationFragment() : BottomSheetDialogFragment() {
+class YourApplicationFragment(var profNumber: String) : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,6 +25,17 @@ class YourApplicationFragment() : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
+    }
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (profNumber != "0"){
+            your_application_enter.text = "Назад"
+        }
     }
 
     private fun initClick() {

@@ -8,6 +8,7 @@ import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeM
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
+import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,7 +41,7 @@ class NotificationViewModel : ViewModel(){
                     errorNotice.postValue(response.code().toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },400)
             }
         })
@@ -70,7 +71,7 @@ class NotificationViewModel : ViewModel(){
                     errorDetailNotice.postValue(response.code().toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 },500)
             }
         })

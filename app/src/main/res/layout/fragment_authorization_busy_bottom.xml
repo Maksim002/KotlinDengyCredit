@@ -5,7 +5,6 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingLeft="16dp"
-    android:background="@color/whiteColor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,7 +22,7 @@
         android:textStyle="bold"
         android:textColor="@color/blackColor"
         android:textSize="20sp"
-        android:text="ФИО уже занят!"/>
+        android:text="ФИО уже занято!"/>
 
     <TextView
         android:layout_width="match_parent"

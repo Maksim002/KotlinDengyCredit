@@ -99,7 +99,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         } else {
             if (viewModel.listNoticeDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listNotice(map)
@@ -226,6 +226,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun notificationClickListener(position: Int, item: ResultListNoticeModel) {
         val bundle = Bundle()
         bundle.putInt("noticeId", item.id!!)
+        bundle.putString("title", item.title)
         notificationAnim = false
         findNavController().navigate(R.id.navigation_detail_notification, bundle)
     }
@@ -238,6 +239,18 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onStart() {
         super.onStart()
+    }
+
+    fun setTitle(title: String?, color: Int) {
+        val activity: Activity? = activity
+        if (activity is MainActivity) {
+            activity.setTitle(title, color)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         if (viewModel.listNoticeDta.value != null){
             if (errorCode == "200"){
                 initRecycler()
@@ -251,22 +264,11 @@ class NotificationFragment : Fragment(), NotificationListener {
             notificationAnim = true
             initRestart()
         }
-    }
-
-    fun setTitle(title: String?, color: Int) {
-        val activity: Activity? = activity
-        if (activity is MainActivity) {
-            activity.setTitle(title, color)
+        if (!notificationAnim) {
+            //notificationAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
+            notificationAnim = true
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        if (!notificationAnim) {
-//            //notificationAnim анимация для перехода с адного дествия в другое
-//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
-//            notificationAnim = true
-//        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

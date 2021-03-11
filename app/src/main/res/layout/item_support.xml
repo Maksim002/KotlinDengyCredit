@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:textSize="17dp"
             android:layout_height="wrap_content"
-            android:text="name"/>
+            android:text=""/>
 
         <ImageView
             android:id="@+id/support_image_anim"

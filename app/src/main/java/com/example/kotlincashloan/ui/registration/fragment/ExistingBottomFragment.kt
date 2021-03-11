@@ -25,8 +25,7 @@ import kotlinx.android.synthetic.main.fragment_existing_bottom.*
 import java.util.*
 
 
-class ExistingBottomFragment(private val listener: ExistingBottomListener) :
-    BottomSheetDialogFragment() {
+class ExistingBottomFragment(private val listener: ExistingBottomListener) : BottomSheetDialogFragment() {
     private var viewModel = LoginViewModel()
     var currentPinInput = ""
     var initpin = ""
@@ -44,6 +43,10 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
         HomeActivity.alert = LoadingAlert(requireActivity())
         initClick()
 
+    }
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
     }
 
     private fun initClick() {
@@ -100,6 +103,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) :
         existing_btn.setOnClickListener {
             listener.existingClockListener()
             this.dismiss()
+            AppPreferences.password = ""
             AppPreferences.savePin = null
         }
         existing_removal.setOnClickListener {

@@ -60,20 +60,6 @@ class SupportFragment : Fragment() {
         initRefresh()
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (viewModel.listFaqDta.value != null) {
-            if (errorCode == "200") {
-                initRecycler()
-            } else {
-                initRestart()
-            }
-        } else {
-            viewModel.refreshCode = false
-            initRestart()
-        }
-    }
-
     fun setTitle(title: String?, color: Int) {
         val activity: Activity? = activity
         if (activity is MainActivity) {
@@ -94,7 +80,7 @@ class SupportFragment : Fragment() {
         } else {
             if (viewModel.listFaqDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listFaq(map)
@@ -108,7 +94,6 @@ class SupportFragment : Fragment() {
                         viewModel.error.value = null
                     }
                     viewModel.listFaq(map)
-                    initRecycler()
                 }, 500)
             }
         }
@@ -188,9 +173,6 @@ class SupportFragment : Fragment() {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 support_swipe_layout.isRefreshing = false
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                HomeActivity.alert.hide()
-//            },600)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -250,6 +232,16 @@ class SupportFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (viewModel.listFaqDta.value != null) {
+            if (errorCode == "200") {
+                initRecycler()
+            } else {
+                initRestart()
+            }
+        } else {
+            viewModel.refreshCode = false
+            initRestart()
+        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

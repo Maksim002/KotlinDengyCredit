@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
+import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -22,6 +25,8 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -29,11 +34,18 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class NumberActivity : AppCompatActivity() {
+class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
+    private var repeatAnim = false
+    private var reNum = ""
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
+
+    private var сountryPosition = ""
+
+    private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
+    private var listAvailableCountry: ArrayList<CounterResultModel> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +63,7 @@ class NumberActivity : AppCompatActivity() {
             number_layout.visibility = View.GONE
         } else {
             val map = HashMap<String, String>()
-            map.put("phone", MyUtils.toFormatMask(number_phone.text.toString()))
+            map.put("phone", reNum)
             HomeActivity.alert.show()
             no_connection_repeat.isEnabled = false
             viewModel.numberPhones(map).observe(this, Observer { result ->
@@ -75,12 +87,12 @@ class NumberActivity : AppCompatActivity() {
                                 initVisibilities()
                             }
                         } else {
-                            AppPreferences.number = number_phone.text.toString()
+                            AppPreferences.number = number_list_country.text.toString() + number_phone.text.toString()
                             initBottomSheet(data.result.id!!)
                             initVisibilities()
                         }
                     }
-                    Status.ERROR ->{
+                    Status.ERROR -> {
                         if (msg == "500" || msg == "400" || msg == "404" || msg == "429") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
@@ -96,12 +108,12 @@ class NumberActivity : AppCompatActivity() {
                             number_layout.visibility = View.VISIBLE
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "600"){
+                    Status.NETWORK -> {
+                        if (msg == "600") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
-                        }else{
+                        } else {
                             number_no_connection.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
                         }
@@ -121,8 +133,8 @@ class NumberActivity : AppCompatActivity() {
     }
 
     private fun initBusyBottomSheet() {
-            bottomSheetDialogFragment.isCancelable = false;
-            bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -132,30 +144,36 @@ class NumberActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+//        number_phone.visibility = View.GONE
         number_focus_text.requestFocus()
         getListCountry()
     }
 
     private fun initClick() {
+
+        number_phone.addTextChangedListener {
+            initCleaningRoom()
+        }
+
         no_connection_repeat.setOnClickListener {
-            if (numberCharacters != 0){
+            if (numberCharacters != 0) {
                 initResult()
-            }else{
+            } else {
                 getListCountry()
             }
         }
 
-            access_restricted.setOnClickListener {
-                getListCountry()
-            }
+        access_restricted.setOnClickListener {
+            getListCountry()
+        }
 
-             not_found.setOnClickListener {
-                getListCountry()
-            }
+        not_found.setOnClickListener {
+            getListCountry()
+        }
 
-            technical_work.setOnClickListener {
-                getListCountry()
-            }
+        technical_work.setOnClickListener {
+            getListCountry()
+        }
 
         number_next.setOnClickListener {
             if (validate()) {
@@ -163,22 +181,50 @@ class NumberActivity : AppCompatActivity() {
                 initResult()
             }
         }
+
+        number_list_country.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listAvailableCountry.size) {
+                    if (i <= listAvailableCountry.size) {
+                        itemDialog.add(GeneralDialogModel(listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1,0, listAvailableCountry[i-1].name))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, сountryPosition, "Список доступных стран")
+            }
+        }
     }
 
     private fun initToolBar() {
-               setSupportActionBar(number_toolbar)
-               supportActionBar!!.setDisplayShowHomeEnabled(true)
-               supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-               supportActionBar!!.title = ""
-           }
+        setSupportActionBar(number_toolbar)
+        supportActionBar!!.setDisplayShowHomeEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.title = ""
+    }
 
-    fun initVisibilities(){
+    fun initVisibilities() {
         number_layout.visibility = View.VISIBLE
         number_no_connection.visibility = View.GONE
     }
 
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom(){
+        if (number_phone.text.toString() != "") {
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = number_list_country.text.toString() + number_phone.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
+            }
+        }else{
+            reNum = ""
+        }
+    }
+
+    // Регистрация. Список доступных стран
     private fun getListCountry() {
-        var list: ArrayList<CounterResultModel> = arrayListOf()
         val map = HashMap<String, Int>()
         map.put("id", 0)
         HomeActivity.alert.show()
@@ -188,25 +234,28 @@ class NumberActivity : AppCompatActivity() {
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
+                        number_phone.mask = ""
+                        number_phone.text = null
+                        number_list_country.setText("+" + result.data.result[0].phoneCode.toString())
+                        number_phone.mask = result.data.result[0].phoneMaskSmall
+                        numberCharacters = result.data.result[0].phoneLength!!.toInt()
+                        сountryPosition = result.data.result[0].name.toString()
+                        listAvailableCountry = data.result
                         initVisibilities()
-                        val adapterListCountry = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, data.result)
-                        number_list_country.setAdapter(adapterListCountry)
-                        list = data.result
-                        initVisibilities()
-                    }else{
-                        if (data.error.code == 403){
+                    } else {
+                        if (data.error.code == 403) {
                             number_no_connection.visibility = View.GONE
                             number_access_restricted.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
+                        } else if (data.error.code == 404) {
                             number_no_connection.visibility = View.GONE
                             number_not_found.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
+                        } else if (data.error.code == 401) {
                             initAuthorized()
-                        }else{
+                        } else {
                             number_no_connection.visibility = View.GONE
                             number_technical_work.visibility = View.VISIBLE
                             number_layout.visibility = View.GONE
@@ -214,35 +263,35 @@ class NumberActivity : AppCompatActivity() {
                     }
                 }
                 Status.ERROR -> {
-                    if (msg == "404"){
+                    if (msg == "404") {
                         number_no_connection.visibility = View.GONE
                         number_not_found.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 
-                    }else if (msg == "403"){
+                    } else if (msg == "403") {
                         number_no_connection.visibility = View.GONE
                         number_access_restricted.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
 
-                    }else if (msg == "401"){
+                    } else if (msg == "401") {
                         initAuthorized()
-                    } else{
+                    } else {
                         number_no_connection.visibility = View.GONE
                         number_technical_work.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
                     }
                 }
                 Status.NETWORK -> {
-                    if (msg == "601"){
+                    if (msg == "601") {
                         number_no_connection.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
                         number_access_restricted.visibility = View.GONE
                         number_not_found.visibility = View.GONE
                         number_technical_work.visibility = View.GONE
-                        if (bottomSheetDialogFragment.isResumed == true){
+                        if (bottomSheetDialogFragment.isResumed == true) {
                             bottomSheetDialogFragment.dismiss()
                         }
-                    }else{
+                    } else {
                         number_no_connection.visibility = View.GONE
                         number_technical_work.visibility = View.VISIBLE
                         number_layout.visibility = View.GONE
@@ -251,35 +300,37 @@ class NumberActivity : AppCompatActivity() {
             }
             HomeActivity.alert.hide()
         })
-        number_list_country.keyListener = null
-        number_list_country.setOnItemClickListener { adapterView, view, position, l ->
-            number_list_country.showDropDown()
-            AppPreferences.numberCharacters = list[position].phoneLength!!.toInt()
-            AppPreferences.isFormatMask = list[position].phoneMask
-            numberCharacters = list[position].phoneLength!!.toInt()
-            number_phone.setText("")
-            number_phone.mask = ""
-            number_phone.mask = list[position].phoneMask
-            if (number_list_country.text.toString() != "") {
-                number_phone.visibility = View.VISIBLE
-            }
+    }
 
-            number_list_country.clearFocus()
-        }
-        number_list_country.setOnClickListener {
-            number_list_country.showDropDown()
-        }
-        number_list_country.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
-            try {
-                if (hasFocus) {
-                    number_list_country.showDropDown()
-                }
-            } catch (e: Exception) {
-            }
+    // TODO: 21-2-12 Получает информацию из адаптера
+    override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listAvailableCountry") {
+            number_phone.error = null
+            //Очещает старую маску при выборе новой
+            number_phone.mask = ""
+            // Очещает поле
+            number_phone.text = null
+            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
+            number_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
+            сountryPosition = listAvailableCountry[model.position].name.toString()
+            numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            number_phone.mask = listAvailableCountry[model.position].phoneMaskSmall
         }
     }
 
-    private fun initAuthorized(){
+    //очещает список
+    private fun initClearList() {
+        itemDialog.clear()
+    }
+
+    //Вызов деалоговова окна с отоброжением получаемого списка.
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
+    }
+
+    private fun initAuthorized() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
@@ -293,22 +344,14 @@ class NumberActivity : AppCompatActivity() {
             number_phone.error = null
         }
 
-        if (numberCharacters != 11) {
-            if (number_phone.text!!.toString().length != 19) {
-                number_phone.error = "Введите валидный номер"
-                valid = false
-            } else {
-                number_phone.error = null
-            }
+        if (reNum.length != numberCharacters) {
+            number_phone.error = "Введите валидный номер"
+            valid = false
         } else {
-            if (number_phone.text!!.toString().toFullPhone().length != 20) {
-                number_phone.error = "Введите валидный номер"
-                valid = false
-            } else {
-                number_phone.error = null
-            }
+            number_phone.error = null
         }
-        if (!valid){
+
+        if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
@@ -316,7 +359,10 @@ class NumberActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        TransitionAnimation(this).transitionRightActivity(number_layout_anim)
+        if (!repeatAnim) {
+            TransitionAnimation(this).transitionRightActivity(number_layout_anim)
+            repeatAnim = true
+        }
     }
 
     private fun initViews() {

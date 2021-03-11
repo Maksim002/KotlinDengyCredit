@@ -29,9 +29,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Регистрация"
-            android:textStyle="bold"
-            android:textSize="20dp"
             android:textColor="@color/orangeColor"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/questionnaire_toolbar"
             app:layout_constraintTop_toTopOf="@+id/questionnaire_toolbar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -40,23 +40,23 @@
         android:id="@+id/questionnaire_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"
-            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/questionnaire_text_surnames"
@@ -65,9 +65,9 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Фамилия"
                     android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:textColor="@color/blackColor"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
 
@@ -79,9 +79,9 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Имя"
                     android:imeOptions="actionNext"
-                    android:textColor="@color/blackColor"
-                    android:inputType="textPersonName"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
                 <EditText
@@ -92,9 +92,9 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Отчество"
                     android:imeOptions="actionDone"
-                    android:textColor="@color/blackColor"
-                    android:inputType="text"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
 
@@ -105,16 +105,15 @@
                     android:layout_marginTop="20dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:focusable="false"
-                    android:textColor="@color/blackColor"
                     android:hint="Дата рождения"
-                    android:inputType="number"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
-            <com.ycuwq.datepicker.date.DatePicker
-                android:id="@+id/datePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                <com.ycuwq.datepicker.date.DatePicker
+                    android:id="@+id/datePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
 
                 <AutoCompleteTextView
@@ -124,12 +123,11 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
+                    android:focusable="false"
                     android:hint="Выберите пол"
-                    android:textColor="@color/blackColor"
-                    android:inputType="number"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
-
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_nationality"
@@ -138,10 +136,10 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:hint="Укажите гражданство"
-                    android:textColor="@color/blackColor"
-                    android:inputType="number"
+                    android:focusable="false"
+                    android:hint="Выберите гражданство"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
 
@@ -153,42 +151,114 @@
                     android:background="@drawable/circle_orange_background_edit"
                     android:clickable="false"
                     android:focusable="false"
-                    android:imeOptions="actionDone"
-                    android:textColor="@color/blackColor"
                     android:hint="Номер телефона"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:padding="14dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
-                <com.santalu.maskedittext.MaskEditText
-                    android:id="@+id/questionnaire_phone_additional"
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:padding="13dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:textSize="14dp"
-                    android:textColor="@color/blackColor"
-                    android:digits="0123456789"
-                    android:ellipsize="end"
-                    android:hint="Дополнительный номер телефона"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    android:scrollHorizontally="true"/>
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
+                        android:padding="13dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:orientation="vertical">
+
+                            <AutoCompleteTextView
+                                android:id="@+id/questionnaire_available_countries"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:editable="true"
+                                android:focusable="false"
+                                android:hint="Код"
+                                android:gravity="center"
+                                android:focusableInTouchMode="false"
+                                android:textColor="@color/blackColor"
+                                android:background="@null"
+                                android:windowSoftInputMode="adjustResize"
+                                android:inputType="number"
+                                android:textSize="14sp"
+                                tools:text="+996"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="13dp"
+                        android:layout_weight="0.3"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_edit"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/profile_phone_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.santalu.maskedittext.MaskEditText
+                                    android:id="@+id/questionnaire_phone_additional"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/blackColor"
+                                    android:editable="false"
+                                    android:ellipsize="end"
+                                    android:hint="Дополнительный номер"
+                                    android:layout_weight="1"
+                                    android:digits="0123456789"
+                                    android:imeOptions="actionDone"
+                                    android:background="@null"
+                                    android:windowSoftInputMode="adjustResize"
+                                    android:inputType="number"
+                                    android:textSize="14sp"
+                                    tools:text="700 700 540"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <include
+                    android:id="@+id/questionnaire_owner"
+                    layout="@layout/item_focus" />
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-                    android:textColor="@color/blackColor"
-                    android:inputType ="textMultiLine"
                     android:background="@drawable/circle_orange_background_edit"
                     android:drawableEnd="@drawable/ic_expend"
+                    android:ellipsize="end"
+                    android:focusable="false"
                     android:hint="Выберите секретный вопрос"
+                    android:maxLines="3"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
                 <AutoCompleteTextView
@@ -198,77 +268,76 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/circle_orange_background_edit"
                     android:hint="Ответ на секретный вопрос"
-                    android:inputType="text"
                     android:imeOptions="actionDone"
-                    android:textColor="@color/blackColor"
+                    android:inputType="textCapWords"
                     android:padding="13dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
-            <CheckBox
-                android:id="@+id/questionnaire_agreement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/blackColor"
-                android:text="Я согласен с условиями обработки персональных данных"
-                android:textSize="12sp" />
-
-            <LinearLayout
-                android:id="@+id/layout_check"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
+                <CheckBox
+                    android:id="@+id/questionnaire_agreement"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    app:cardCornerRadius="25dp">
+                    android:text="Я согласен с условиями обработки персональных данных"
+                    android:textColor="@color/blackColor"
+                    android:textSize="12sp" />
 
-                    <Button
-                        android:id="@+id/questionnaire_enter"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Зарегистрироваться"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/questionnaire_registration"
+                <LinearLayout
+                    android:id="@+id/layout_check"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:gravity="center"
-                    android:text="Уже зарегистрированы?"
-                    android:textColor="#FF9900"
-                    android:textSize="15sp" />
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        app:cardCornerRadius="25dp">
+
+                        <Button
+                            android:id="@+id/questionnaire_enter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Зарегистрироваться"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/questionnaire_registration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:gravity="center"
+                        android:text="Уже зарегистрированы?"
+                        android:textColor="#FF9900"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
             </LinearLayout>
-
-            <include
-                android:id="@+id/questionnaire_owner"
-                layout="@layout/item_focus" />
-
-        </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/questionnaire_no_questionnaire"
         layout="@layout/item_no_connection"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
-    <include layout="@layout/item_access_restricted"
+    <include
         android:id="@+id/questionnaire_access_restricted"
-        android:visibility="gone"/>
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_not_found"
+    <include
         android:id="@+id/questionnaire_not_found"
-        android:visibility="gone"/>
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_technical_work"
+    <include
         android:id="@+id/questionnaire_technical_work"
-        android:visibility="gone"/>
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
 </LinearLayout>

@@ -11,7 +11,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:id="@+id/support_swipe_layout"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView

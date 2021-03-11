@@ -35,9 +35,10 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/image_profile"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_proo"
+                    android:src="@drawable/profile_pic_ellipse"
                     app:civ_border_color="#fefefe"
                     app:civ_border_width="4dp"
                     app:civ_shadow="true"
@@ -148,7 +149,7 @@
                                 <LinearLayout
                                     android:id="@+id/profile_bar_zero"
                                     android:layout_width="match_parent"
-                                    android:layout_height="82dp"
+                                    android:layout_height="90dp"
                                     android:visibility="gone"
                                     android:background="@drawable/top_bar_panel"
                                     android:layout_weight="1">
@@ -175,7 +176,7 @@
                                 <LinearLayout
                                     android:id="@+id/profile_bar_one"
                                     android:layout_width="match_parent"
-                                    android:layout_height="82dp"
+                                    android:layout_height="90dp"
                                     android:visibility="gone"
                                     android:background="@drawable/top_bar_panel"
                                     android:layout_weight="1">

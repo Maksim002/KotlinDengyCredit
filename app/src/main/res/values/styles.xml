@@ -12,6 +12,23 @@
         <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
     </style>
 
+    //меняет стиль RadioBottom
+    <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/orangeColor</item>
+        <item name="android:textColorSecondary">@color/orangeColor</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
     <style name="RoundedOrangeBackground" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/circle_orange_backround</item>
     </style>
@@ -59,9 +76,12 @@
         <item name="actionMenuTextColor">@color/colorDrawer</item>
     </style>
 
-    <style name="DatePickerSpinner">
+    <style name="DatePickerSpinner" >
         <item name="android:textSize">22dp</item>
         <item name="android:textColorPrimary">@color/blackColor</item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/colorDrawer</item>
+        <item name="android:colorControlNormal">@color/colorDrawer</item>
     </style>
+
+
+
 </resources>

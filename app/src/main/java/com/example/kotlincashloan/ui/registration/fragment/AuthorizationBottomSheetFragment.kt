@@ -24,6 +24,10 @@ class AuthorizationBottomSheetFragment() : BottomSheetDialogFragment() {
         initClick()
     }
 
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
+    }
+
     private fun initClick() {
         authorization.setOnClickListener {
             val intent = Intent(context, HomeActivity::class.java)

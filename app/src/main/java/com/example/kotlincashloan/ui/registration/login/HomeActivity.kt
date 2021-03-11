@@ -181,10 +181,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 AppPreferences.isRemember = home_remember_username.isChecked
                                 AppPreferences.isTouchId = home_touch_id.isChecked
                                 AppPreferences.isLoginCode = home_login_code.isChecked
-                                viewModel.save(
-                                    home_text_login.text.toString(),
-                                    data.result.token
-                                )
+                                viewModel.save(home_text_login.text.toString(), data.result.token)
                                 AppPreferences.password = home_text_password.text.toString()
                             } else {
                                 AppPreferences.isRemember = false
@@ -242,23 +239,27 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         home_login_code.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
+                AppPreferences.resultPassword = "2"
                 home_touch_id.isChecked = false
                 home_remember_username.isChecked = true
                 home_remember_username.isClickable = false
             } else {
                 home_remember_username.isClickable = true
                 AppPreferences.isLoginCode = false
+                AppPreferences.resultPassword = "2"
             }
         }
 
         home_touch_id.setOnCheckedChangeListener { compoundButton, b ->
             if (b) {
+                AppPreferences.resultPassword = "1"
                 home_login_code.isChecked = false
                 home_remember_username.isChecked = true
                 home_remember_username.isClickable = false
             } else {
                 home_remember_username.isClickable = true
                 AppPreferences.isTouchId = false
+                AppPreferences.resultPassword = ""
             }
         }
     }
@@ -311,6 +312,17 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
+        if (AppPreferences.password == ""){
+            home_touch_id.isChecked = false
+            home_login_code.isChecked = false
+        }
+
+        //Очещает токен
+        if (home_login_code.isChecked){
+            AppPreferences.token = ""
+        }
+
+        // TODO: 21-2-26 Проверить нужен ли этот метод
         if (AppPreferences.token != "") {
             startMainActivity()
         } else {
@@ -331,12 +343,23 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onResume() {
         super.onResume()
+
+        //проверяет Checked включон или нет!
+        if (AppPreferences.passwordRecovery == "" && AppPreferences.loginRecovery == "") {
+            home_remember_username.isChecked = true
+            home_login_code.isChecked = true
+            AppPreferences.passwordRecovery = "1"
+            AppPreferences.loginRecovery == "1"
+        }
         if (inputsAnim) {
             TransitionAnimation(this).transitionLeft(home_layout_anim)
             inputsAnim = true
         }
-        if (home_touch_id.isChecked) {
-            iniTouchId()
+
+        if (AppPreferences.password != ""){
+            if (home_touch_id.isChecked) {
+                iniTouchId()
+            }
         }
     }
 
@@ -353,26 +376,15 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             BiometricManager.BIOMETRIC_SUCCESS ->
                 authUser(executor)
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_msg_no_biometric_hardware),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this, getString(R.string.error_msg_no_biometric_hardware), Toast.LENGTH_LONG).show()
                 AppPreferences.isTouchId = false
                 home_touch_id.isChecked = false
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_msg_biometric_hw_unavailable),
-                    Toast.LENGTH_LONG
+                Toast.makeText(this, getString(R.string.error_msg_biometric_hw_unavailable), Toast.LENGTH_LONG
                 ).show()
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_msg_biometric_not_setup),
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(this, getString(R.string.error_msg_biometric_not_setup), Toast.LENGTH_LONG).show()
                 AppPreferences.isTouchId = false
                 home_touch_id.isChecked = false
             }
@@ -401,9 +413,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 // 2
-                override fun onAuthenticationSucceeded(
-                    result: BiometricPrompt.AuthenticationResult
-                ) {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     val map = HashMap<String, String>()
                     map.put("password", AppPreferences.password.toString())
@@ -446,14 +456,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     })
                 }
 
-                // 3
+                // если я отключаю галочку
                 override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
                     super.onAuthenticationError(errorCode, errString)
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.error_msg_auth_error, errString),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    AppPreferences.password = ""
                     home_touch_id.isChecked = false
                 }
 

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:background="@color/whiteColor"
     android:orientation="vertical"
     tools:context=".ui.loans.LoansFragment">
@@ -13,8 +14,7 @@
         android:id="@+id/loans_layout"
         android:layout_width="match_parent"
         android:descendantFocusability="beforeDescendants"
-        android:focusableInTouchMode="false"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <androidx.core.widget.NestedScrollView

@@ -8,6 +8,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat.getSystemService
+import java.text.SimpleDateFormat
 import java.util.regex.Pattern
 
 
@@ -15,6 +16,16 @@ object MyUtils {
     fun toMyDate(date: String): String {
         return try {
             date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(0, 4)
+        } catch (e: Exception) {
+            ""
+        }
+
+    }
+
+
+    fun toServerDate(date: String): String {
+        return try {
+            date.substring(6, 10) + "." + date.substring(3,5) + "." + date.substring(0, 2)
         } catch (e: Exception) {
             ""
         }
@@ -133,7 +144,6 @@ object MyUtils {
         val matcher = pattern.matcher(fileName)
         return matcher.matches()
     }
-
 
     fun fileName(url: String): String {
         return try {

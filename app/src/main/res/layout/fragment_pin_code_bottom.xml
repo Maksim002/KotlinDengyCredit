@@ -7,7 +7,6 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="6dp"
-    android:background="@color/whiteColor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:text="Выберите пин-код"
         android:textSize="20sp"
-
         android:gravity="center"
         android:textStyle="bold"
         android:textColor="@color/blackColor"/>

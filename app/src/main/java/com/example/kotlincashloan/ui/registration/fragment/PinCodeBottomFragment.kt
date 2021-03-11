@@ -1,13 +1,11 @@
 package com.example.kotlinscreenscanner.ui.login.fragment
 
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -41,6 +39,10 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
         super.onViewCreated(view, savedInstanceState)
         HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         iniClick()
+    }
+
+    override fun getTheme(): Int {
+        return R.style.AppBottomSheetDialogTheme;
     }
 
     private fun iniClick() {

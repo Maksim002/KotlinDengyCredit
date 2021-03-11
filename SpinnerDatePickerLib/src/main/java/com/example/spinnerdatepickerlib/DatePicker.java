@@ -18,6 +18,9 @@ package com.example.spinnerdatepickerlib;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.InputType;
@@ -94,12 +97,11 @@ public class DatePicker extends FrameLayout {
         // initialization based on locale
         setCurrentLocale(Locale.getDefault());
 
-        LayoutInflater inflater = (LayoutInflater) new ContextThemeWrapper(mContext,
-                                                                           numberPickerStyle).getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) new ContextThemeWrapper(mContext, numberPickerStyle).getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.date_picker_container, this, true);
 
         mPickerContainer = findViewById(R.id.parent);
+
 
         OnValueChangeListener onChangeListener = new OnValueChangeListener() {
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
@@ -137,8 +139,7 @@ public class DatePicker extends FrameLayout {
         };
 
         // day
-        mDaySpinner = (NumberPicker) inflater.inflate(R.layout.number_picker_day_month,
-                                                      mPickerContainer, false);
+        mDaySpinner = (NumberPicker) inflater.inflate(R.layout.number_picker_day_month, mPickerContainer, false);
         mDaySpinner.setId(R.id.day);
         mDaySpinner.setFormatter(new TwoDigitFormatter());
         mDaySpinner.setOnLongPressUpdateInterval(100);
@@ -168,6 +169,11 @@ public class DatePicker extends FrameLayout {
         // initialize to current date
         mCurrentDate.setTimeInMillis(System.currentTimeMillis());
 
+        //Смена Цвета в NumberPicker
+        setDividerColor(mDaySpinner, Color.parseColor("#ffff8800"));
+        setDividerColor(mMonthSpinner, Color.parseColor("#ffff8800"));
+        setDividerColor(mYearSpinner, Color.parseColor("#ffff8800"));
+
         // re-order the number spinners to match the current date format
         reorderSpinners();
 
@@ -177,6 +183,28 @@ public class DatePicker extends FrameLayout {
         }
 
         root.addView(this);
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
     }
 
     void init(int year, int monthOfYear, int dayOfMonth,

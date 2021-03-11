@@ -28,6 +28,7 @@ import java.util.HashMap
 
 class DetailProfileFragment : Fragment() {
     private var operationId = 0
+    private var titlt = ""
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
@@ -75,6 +76,12 @@ class DetailProfileFragment : Fragment() {
         } catch (e: Exception) {
             0
         }
+
+        titlt = try {
+            requireArguments().getString("title").toString()
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     private fun initResult() {
@@ -85,17 +92,16 @@ class DetailProfileFragment : Fragment() {
                 d_profile_description.text = result.result.description
                 d_profile_text.loadMarkdown(result.result.text)
                 errorCode = result.code.toString()
-                d_profile_profile.visibility = View.VISIBLE
-                d_profile_access_restricted.visibility = View.GONE
-                d_profile_no_connection.visibility = View.GONE
-                d_profile_technical_work.visibility = View.GONE
-                d_profile_not_found.visibility = View.GONE
-                setTitle(result.result.title, resources.getColor(R.color.whiteColor))
                 if (!detailProfileAnim) {
                     //detailProfileAnim анимация для перехода с адного дествия в другое
                     TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
                     detailProfileAnim = true
                 }
+                d_profile_access_restricted.visibility = View.GONE
+                d_profile_no_connection.visibility = View.GONE
+                d_profile_technical_work.visibility = View.GONE
+                d_profile_not_found.visibility = View.GONE
+                d_profile_profile.visibility = View.VISIBLE
             } else {
                 if (result.error.code != null) {
                     errorCode = result.error.code.toString()
@@ -174,7 +180,7 @@ class DetailProfileFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetOperationDta.value == null) {
-                HomeActivity.alert.show()
+                MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getOperation(map)
                     initResult()
@@ -221,6 +227,7 @@ class DetailProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        setTitle(titlt, resources.getColor(R.color.whiteColor))
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).rollback()
     }

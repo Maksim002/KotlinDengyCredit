@@ -22,6 +22,8 @@
     <string name="click">Нажмите “Начать”, чтобы получить кредит</string>
     <string name="_3_637">Ежемесячная сумма платежа:</string>
     <string name="cancelled">Cancelled!</string>
+    <string name="_24">В течение 24 часов Вам придет \n уведомление о решении</string>
+    <string name="uoy">Спасибо! Вы успешно заполнили заявку на заем</string>
 
     <string-array name="stepLabels">
         <item>Шаг 1</item>
@@ -29,5 +31,7 @@
         <item>Шаг 3</item>
         <item>Шаг 4</item>
         <item>Шаг 5</item>
+        <item>Шаг 6</item>
+        <item>Шаг 7</item>
     </string-array>
 </resources>
