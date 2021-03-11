@@ -96,6 +96,11 @@ class LoanStepTwoFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        bottom_step_two.text = "Далее"
+    }
+
     private fun initСounter() {
         //Если запрос счётчика прошол успешно
         viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result->

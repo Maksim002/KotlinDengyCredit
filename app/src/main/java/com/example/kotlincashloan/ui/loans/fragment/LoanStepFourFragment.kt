@@ -428,7 +428,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         mapSave.put("address", loans_step_four_residence.text.toString())
         mapSave.put("family_status", statusId)
         mapSave.put("count_family", familyId)
-        mapSave.put("count_children", childrenId)
+        mapSave.put("count_family_work", childrenId)
         mapSave.put("live_in_ru", liveId)
         mapSave.put("bank_card", cardId)
         mapSave.put("step", "2")
