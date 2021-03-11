@@ -73,7 +73,7 @@
                         android:layout_weight="1"
                         android:layout_marginRight="3dp"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
 
                     <ImageView
@@ -84,7 +84,7 @@
                         android:layout_marginLeft="3dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
                 </LinearLayout>
 
@@ -108,7 +108,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:hint="Дата окончания срока регистрации"
                 android:padding="13dp"
                 android:textColor="@color/blackColor"
@@ -143,7 +143,7 @@
                     android:layout_weight="1"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="3dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:src="@drawable/id" />
 
                 <ImageView
@@ -155,7 +155,7 @@
                     android:layout_weight="1"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:src="@drawable/id" />
             </LinearLayout>
 
@@ -179,7 +179,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:drawableEnd="@drawable/ic_expend"
                 android:focusable="false"
                 android:hint="Цель въезда"
@@ -195,7 +195,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:hint="Дата въезда"
                 android:imeOptions="actionNext"
                 android:padding="13dp"
@@ -233,7 +233,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
                         android:layout_marginRight="3dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
 
                     <ImageView
@@ -245,7 +245,7 @@
                         android:layout_weight="1"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="30dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
                 </LinearLayout>
 
@@ -287,7 +287,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:src="@drawable/id" />
 
                 <TextView
@@ -335,7 +335,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_weight="1"
                         android:layout_marginRight="3dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
 
                     <ImageView
@@ -347,7 +347,7 @@
                         android:layout_weight="1"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="30dp"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
                 </LinearLayout>
 
@@ -389,7 +389,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:src="@drawable/id" />
 
                 <TextView
@@ -413,7 +413,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:drawableEnd="@drawable/ic_expend"
                 android:focusable="false"
                 android:hint="Тип договора"
@@ -450,7 +450,7 @@
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="3dp"
                         android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
 
                     <ImageView
@@ -462,7 +462,7 @@
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_edit"
+                        android:background="@drawable/circle_orange_background_grey"
                         android:src="@drawable/id" />
                 </LinearLayout>
 
@@ -511,7 +511,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:src="@drawable/id" />
 
             <TextView
@@ -532,7 +532,7 @@
                 android:layout_marginLeft="30dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_edit"
+                android:background="@drawable/circle_orange_background_grey"
                 android:src="@drawable/id" />
 
             <Button

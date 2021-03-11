@@ -58,38 +58,81 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/questionnaire_text_surnames"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:hint="Фамилия"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content">
 
+                    <EditText
+                        android:id="@+id/questionnaire_text_surnames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Фамилия"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/questionnaire_text_name"
+                    <TextView
+                        android:id="@+id/questionnaire_surnames_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:hint="Имя"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/questionnaire_text_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Имя"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/questionnaire_name_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
                     android:id="@+id/questionnaire_text_patronymics"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:hint="Отчество"
                     android:imeOptions="actionDone"
                     android:inputType="textCapWords"
@@ -97,18 +140,39 @@
                     android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
-
-                <EditText
-                    android:id="@+id/questionnaire_date_birth"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:focusable="false"
-                    android:hint="Дата рождения"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <EditText
+                        android:id="@+id/questionnaire_date_birth"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:focusable="false"
+                        android:hint="Дата рождения"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/questionnaire_birth_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.ycuwq.datepicker.date.DatePicker
                     android:id="@+id/datePicker"
@@ -116,39 +180,82 @@
                     android:layout_height="wrap_content" />
 
 
-                <AutoCompleteTextView
-                    android:id="@+id/questionnaire_id_sxs"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Выберите пол"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
 
-                <AutoCompleteTextView
-                    android:id="@+id/questionnaire_id_nationality"
+                    <AutoCompleteTextView
+                        android:id="@+id/questionnaire_id_sxs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Выберите пол"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/questionnaire_sxs_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Выберите гражданство"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
+                    <AutoCompleteTextView
+                        android:id="@+id/questionnaire_id_nationality"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Выберите гражданство"
+                        android:padding="13dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/questionnaire_nationality_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
                     android:id="@+id/questionnaire_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:clickable="false"
                     android:focusable="false"
                     android:hint="Номер телефона"
@@ -167,12 +274,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:padding="13dp"
-                        android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1.2"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:orientation="horizontal"
+                        android:padding="13dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -184,29 +291,38 @@
                                 android:id="@+id/questionnaire_available_countries"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@null"
                                 android:editable="true"
                                 android:focusable="false"
-                                android:hint="Код"
-                                android:gravity="center"
                                 android:focusableInTouchMode="false"
-                                android:textColor="@color/blackColor"
-                                android:background="@null"
-                                android:windowSoftInputMode="adjustResize"
+                                android:gravity="center"
+                                android:hint="Код"
                                 android:inputType="number"
+                                android:textColor="@color/blackColor"
                                 android:textSize="14sp"
-                                tools:text="+996"/>
+                                android:windowSoftInputMode="adjustResize"
+                                tools:text="+996" />
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="13dp"
-                        android:layout_weight="0.3"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/circle_orange_background_edit"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.3">
+
+                    <LinearLayout
+                        android:id="@+id/questionnaire_layout_additional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:orientation="horizontal"
+                        android:padding="13dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" >
 
                         <LinearLayout
                             android:id="@+id/profile_phone_number"
@@ -224,21 +340,35 @@
                                     android:id="@+id/questionnaire_phone_additional"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/blackColor"
+                                    android:layout_weight="1"
+                                    android:background="@null"
+                                    android:digits="0123456789"
                                     android:editable="false"
                                     android:ellipsize="end"
                                     android:hint="Дополнительный номер"
-                                    android:layout_weight="1"
-                                    android:digits="0123456789"
                                     android:imeOptions="actionDone"
-                                    android:background="@null"
-                                    android:windowSoftInputMode="adjustResize"
                                     android:inputType="number"
+                                    android:textColor="@color/blackColor"
                                     android:textSize="14sp"
-                                    tools:text="700 700 540"/>
+                                    android:windowSoftInputMode="adjustResize"
+                                    tools:text="700 700 540" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/questionnaire_additional_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
 
@@ -246,12 +376,16 @@
                     android:id="@+id/questionnaire_owner"
                     layout="@layout/item_focus" />
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_id_secret"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:drawableEnd="@drawable/ic_expend"
                     android:ellipsize="end"
                     android:focusable="false"
@@ -259,20 +393,60 @@
                     android:maxLines="3"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                        android:id="@+id/questionnaire_secret_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/questionnaire_secret_response"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_edit"
+                    android:background="@drawable/circle_orange_background_grey"
                     android:hint="Ответ на секретный вопрос"
                     android:imeOptions="actionDone"
                     android:inputType="textCapWords"
                     android:padding="13dp"
                     android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                        android:id="@+id/questionnaire_sresponse_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_10sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <CheckBox
                     android:id="@+id/questionnaire_agreement"

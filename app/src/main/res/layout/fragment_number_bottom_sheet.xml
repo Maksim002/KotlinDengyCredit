@@ -19,7 +19,7 @@
             android:id="@+id/number_text_sms"
             android:layout_width="match_parent"
             android:layout_marginTop="12dp"
-            android:background="@drawable/circle_orange_background_edit"
+            android:background="@drawable/circle_orange_background_grey"
             android:hint="Код из смс-сообщения"
             android:padding="13dp"
             android:textColor="@color/blackColor"

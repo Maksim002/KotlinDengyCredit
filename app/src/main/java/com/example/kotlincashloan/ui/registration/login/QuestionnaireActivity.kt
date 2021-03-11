@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.Loans.ListTrafficSource
@@ -248,6 +249,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun initClock() {
 
         questionnaire_phone_additional.addTextChangedListener {
+            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Видите правильный номер", true)
             initCleaningRoom()
         }
 
@@ -767,53 +769,55 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun validate(): Boolean {
         var valid = true
         if (questionnaire_text_surnames.text.toString().isEmpty()) {
-            questionnaire_text_surnames.error = "Введите фамилию"
+            editUtils(questionnaire_text_surnames, questionnaire_surnames_error, "Заполните поле", true)
+//            questionnaire_text_surnames.error = "Введите фамилию"
             valid = false
         }
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()){
             if (reNum.length != nationalityCounter) {
-                questionnaire_phone_additional.error = "Введите валидный номер"
+                editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Видите правильный номер", true)
+//                questionnaire_phone_additional.error = "Введите валидный номер"
                 valid = false
             }
         }
 
 
         if (questionnaire_text_name.text.toString().isEmpty()) {
-            questionnaire_text_name.error = "Введите имя"
+            editUtils(questionnaire_text_name, questionnaire_name_error, "Заполните поле", true)
+//            questionnaire_text_name.error = "Введите имя"
             valid = false
         }
 
         if (questionnaire_date_birth.text!!.toString().isEmpty()) {
-            questionnaire_date_birth.error = "Выберите дату"
+            editUtils(questionnaire_date_birth, questionnaire_birth_error, "Выберите дату", true)
+//            questionnaire_date_birth.error = "Выберите дату"
             valid = false
-        } else {
-            questionnaire_date_birth.error = null
         }
 
         if (questionnaire_id_sxs.text!!.toString().isEmpty()) {
-            questionnaire_id_sxs.error = "Выберите пол"
+            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите вариант из списка", true)
+//            questionnaire_id_sxs.error = "Выберите пол"
             valid = false
-        } else {
-            questionnaire_id_sxs.error = null
         }
 
         if (questionnaire_id_nationality.text.toString().isEmpty()) {
-            questionnaire_id_nationality.error = "Выберите гражданство"
+            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите вариант из списка", true)
+//            questionnaire_id_nationality.error = "Выберите гражданство"
             valid = false
-        } else {
-            questionnaire_id_nationality.error = null
         }
 
         if (questionnaire_id_secret.text.toString().isEmpty()) {
-            questionnaire_id_secret.error = "Выберите секретный вопрос"
+            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите вариант из списка", true)
+//            questionnaire_id_secret.error = "Выберите секретный вопрос"
             valid = false
         } else {
             questionnaire_id_secret.error = null
         }
 
         if (questionnaire_secret_response.text.toString().isEmpty()) {
-            questionnaire_secret_response.error = "Поле не должно быть пустым"
+            editUtils(questionnaire_secret_response, questionnaire_sresponse_error, "Заполните поле", true)
+//            questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
         }
         if (!valid){
@@ -823,20 +827,32 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     private fun initViews() {
+        questionnaire_text_surnames.addTextChangedListener {
+            editUtils(questionnaire_text_surnames, questionnaire_surnames_error, "Заполните поле", false)
+        }
+
+        questionnaire_text_name.addTextChangedListener {
+            editUtils(questionnaire_text_name, questionnaire_name_error, "Заполните поле", false)
+        }
+
         questionnaire_date_birth.addTextChangedListener {
-            questionnaire_date_birth.error = null
+            editUtils(questionnaire_date_birth, questionnaire_birth_error, "Выберите дату", false)
         }
 
         questionnaire_id_sxs.addTextChangedListener {
-            questionnaire_id_sxs.error = null
+            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите вариант из списка", false)
         }
 
         questionnaire_id_nationality.addTextChangedListener {
-            questionnaire_id_nationality.error = null
+            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите вариант из списка", false)
         }
 
         questionnaire_id_secret.addTextChangedListener {
-            questionnaire_id_secret.error = null
+            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите вариант из списка", false)
+        }
+
+        questionnaire_secret_response.addTextChangedListener {
+            editUtils(questionnaire_secret_response, questionnaire_sresponse_error, "Заполните поле", false)
         }
 
     }
