@@ -70,6 +70,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         six_loan_phone.mask = "+7 (###)-###-##-##"
         initRestart()
         initClick()
+        initView()
     }
 
     private fun initClick() {
@@ -408,10 +409,8 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     private fun validate(): Boolean {
         var valid = true
         if (six_loan_surname.text.isEmpty()) {
-            six_loan_surname.error = "Поле не должно быть пустым"
+            editUtils(six_loan_surname, six_loan_surname_error, "Заполните поле", true)
             valid = false
-        } else {
-            six_loan_surname.error = null
         }
 
         if (six_loan_name.text.isEmpty()) {
@@ -452,5 +451,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             }
         }
         return valid
+    }
+
+    private fun initView(){
+        six_loan_surname.addTextChangedListener {
+            editUtils(six_loan_surname, six_loan_surname_error, "", false)
+        }
     }
 }
