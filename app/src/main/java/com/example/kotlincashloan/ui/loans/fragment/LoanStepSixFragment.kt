@@ -15,6 +15,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
 import com.example.kotlincashloan.service.model.Loans.ListWorkResultModel
 import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
@@ -29,6 +30,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
@@ -99,6 +101,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         six_number_phone.addTextChangedListener {
+            editUtils(six_number_phone, six_number_phone_error, "", false)
             initCleaningRoom()
         }
 
@@ -444,10 +447,8 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
         if (six_number_phone.text!!.isNotEmpty()){
             if (phoneLength != reNum.length.toString()) {
-                six_number_phone.error = "Введите валидный номер"
+                editUtils(six_number_phone, six_number_phone_error, "Заполните поле", true)
                 valid = false
-            } else {
-                six_number_phone.error = null
             }
         }
         return valid

@@ -67,7 +67,7 @@
                         android:layout_weight="1.2"
                         android:background="@drawable/circle_orange_background_grey"
                         android:orientation="horizontal"
-                        android:padding="13dp">
+                        android:padding="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -93,45 +93,67 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:layout_weight="0.3"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:orientation="horizontal"
-                        android:padding="13dp">
+                        android:layout_weight="0.3">
 
                         <LinearLayout
-                            android:id="@+id/profile_phone_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
+                            android:background="@drawable/circle_orange_background_grey"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <LinearLayout
+                                android:id="@+id/profile_phone_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_weight="0.1"
+                                android:orientation="vertical">
 
-                                <com.santalu.maskedittext.MaskEditText
-                                    android:id="@+id/six_number_phone"
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:background="@null"
-                                    android:digits="0123456789"
-                                    android:editable="false"
-                                    android:ellipsize="end"
-                                    android:imeOptions="actionDone"
-                                    android:inputType="number"
-                                    android:textColor="@color/blackColor"
-                                    android:textSize="14sp"
-                                    android:windowSoftInputMode="adjustResize"
-                                    tools:text="700 700 540" />
+                                    android:orientation="horizontal">
+
+                                    <com.santalu.maskedittext.MaskEditText
+                                        android:id="@+id/six_number_phone"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@null"
+                                        android:digits="0123456789"
+                                        android:editable="false"
+                                        android:ellipsize="end"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="number"
+                                        android:textColor="@color/blackColor"
+                                        android:textSize="14sp"
+                                        android:windowSoftInputMode="adjustResize"
+                                        tools:text="700 700 540" />
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/six_number_phone_error"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:gravity="right"
+                            android:text="error"
+                            android:textSize="@dimen/_8sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
 
@@ -144,74 +166,186 @@
                     android:textColor="@color/blackColor"
                     android:textSize="18dp" />
 
-                <EditText
-                    android:id="@+id/six_loan_surname"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Фамилия контактного лица"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_marginTop="10dp">
 
-                <EditText
-                    android:id="@+id/six_loan_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Имя контактного лица"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    <EditText
+                        android:id="@+id/six_loan_surname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Фамилия контактного лица"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/six_loan_middle_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Отчество контактного лица"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    <TextView
+                        android:id="@+id/six_loan_surname_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <AutoCompleteTextView
-                    android:id="@+id/six_loan_family"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Кем приходится"
-                    android:padding="13dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp" />
+                    android:layout_marginTop="10dp">
 
-                <com.santalu.maskedittext.MaskEditText
-                    android:id="@+id/six_loan_phone"
+                    <EditText
+                        android:id="@+id/six_loan_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Имя контактного лица"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/six_loan_name_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:digits="0123456789"
-                    android:ellipsize="end"
-                    android:hint="Номер телефона контактного лица"
-                    android:imeOptions="actionDone"
-                    android:inputType="phone"
-                    android:padding="14dp"
-                    android:scrollHorizontally="true"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
+                    android:layout_marginTop="10dp">
+
+                    <EditText
+                        android:id="@+id/six_loan_middle_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Отчество контактного лица"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/six_loan_middle_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/six_loan_family"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Кем приходится"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/six_loan_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <com.santalu.maskedittext.MaskEditText
+                        android:id="@+id/six_loan_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:digits="0123456789"
+                        android:ellipsize="end"
+                        android:hint="Номер телефона контактного лица"
+                        android:imeOptions="actionDone"
+                        android:inputType="phone"
+                        android:padding="16dp"
+                        android:scrollHorizontally="true"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14sp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/six_loan_phone_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 

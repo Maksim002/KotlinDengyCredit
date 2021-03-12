@@ -60,7 +60,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
+class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private val IMAGE_PICK_CODE = 10
     val CAMERA_PERM_CODE = 101
     private var viewModel = ProfileViewModel()
@@ -91,7 +91,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private var textPasswordOne = ""
     private var textPasswordTwo = ""
 
-    private var imageString :String = ""
+    private var imageString: String = ""
     private lateinit var currentPhotoPath: String
     private var questionPosition = ""
     private var countriesPosition = ""
@@ -125,7 +125,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     }
 
-    private fun initPreloader(){
+    private fun initPreloader() {
         val builder = AlertDialog.Builder(requireContext())
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.alert_loading, null)
@@ -138,7 +138,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private fun initArgument() {
         val sendPicture = try {
             requireArguments().getString("sendPicture")
-        }catch (e: Exception){
+        } catch (e: Exception) {
             ""
         }
 
@@ -151,7 +151,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
         listClientInfo = try {
             requireArguments().getSerializable("client") as ClientInfoResultModel
-        }catch (e: Exception){
+        } catch (e: Exception) {
             listClientInfo
         }
     }
@@ -167,16 +167,16 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
 
         val mapRegistration = HashMap<String, String>()
-        if (phoneSecondId != ""){
+        if (phoneSecondId != "") {
             mapRegistration.put("id", phoneSecondId)
-        }else{
+        } else {
             mapRegistration.put("id", listClientInfo.phoneSecond.toString())
         }
 
         val mapQuestion = HashMap<String, String>()
-        if (questionId != ""){
+        if (questionId != "") {
             mapQuestion.put("id", questionId)
-        }else{
+        } else {
             mapQuestion.put("id", listClientInfo.question.toString())
         }
 
@@ -259,14 +259,14 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     //получение полов
     private fun gettingFloors() {
         viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
-                if (result.result != null) {
-                    profile_setting_gender.setText(result.result.first { it.id == clientResult.gender!!.toInt()}.name)
-                    errorCodeGender = result.code.toString()
-                    resultSuccessfully()
-                } else {
-                    listListResult(result.error.code!!)
-                }
-            })
+            if (result.result != null) {
+                profile_setting_gender.setText(result.result.first { it.id == clientResult.gender!!.toInt() }.name)
+                errorCodeGender = result.code.toString()
+                resultSuccessfully()
+            } else {
+                listListResult(result.error.code!!)
+            }
+        })
 
         viewModel.errorListGender.observe(
             viewLifecycleOwner,
@@ -285,7 +285,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
-                        profile_s_nationality.setText(result.result.first { it.id == clientResult.nationality!!.toInt()}.name)
+                        profile_s_nationality.setText(result.result.first { it.id == clientResult.nationality!!.toInt() }.name)
                         errorCodeNationality = result.code.toString()
                         resultSuccessfully()
                     } else {
@@ -312,7 +312,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     // TODO: 21-2-12  Список доступных стран
     private fun listCountries() {
-        viewModel.listAvailableCountryDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+        viewModel.listAvailableCountryDta.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { result ->
                 try {
                     // первый номер
                     if (result.result != null) {
@@ -323,8 +325,15 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
                             val firstNationality = clientResult.phoneFirst!!.toInt()
                             numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
-                            profile_setting_first.mask = result.result.first { it.id ==  firstNationality}.phoneMask
-                            profile_setting_first.setText(MyUtils.toMask(clientResult.firstPhone.toString(), result.result.first { it.id == firstNationality}.phoneCode!!.length, result.result.first { it.id == firstNationality}.phoneLength!!.toInt()))
+                            profile_setting_first.mask =
+                                result.result.first { it.id == firstNationality }.phoneMask
+                            profile_setting_first.setText(
+                                MyUtils.toMask(
+                                    clientResult.firstPhone.toString(),
+                                    result.result.first { it.id == firstNationality }.phoneCode!!.length,
+                                    result.result.first { it.id == firstNationality }.phoneLength!!.toInt()
+                                )
+                            )
 
                             list = result.result
 
@@ -349,11 +358,19 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
                             countriesPosition = result.result[position].name.toString()
 
-                            codeMack = result.result.first { it.id == secondNationality}.phoneCode.toString()
+                            codeMack =
+                                result.result.first { it.id == secondNationality }.phoneCode.toString()
 
-                            profile_setting_second_phone.mask = result.result.first { it.id == secondNationality}.phoneMaskSmall
-                            profile_setting_second_phone.setText(MyUtils.toMask(clientResult.secondPhone.toString(), result.result.first { it.id == secondNationality}.phoneCode!!.length, result.result.first { it.id == secondNationality}.phoneLength!!.toInt()))
-                            profile_s_mask.setText("+" + result.result.first { it.id == secondNationality}.phoneCode)
+                            profile_setting_second_phone.mask =
+                                result.result.first { it.id == secondNationality }.phoneMaskSmall
+                            profile_setting_second_phone.setText(
+                                MyUtils.toMask(
+                                    clientResult.secondPhone.toString(),
+                                    result.result.first { it.id == secondNationality }.phoneCode!!.length,
+                                    result.result.first { it.id == secondNationality }.phoneLength!!.toInt()
+                                )
+                            )
+                            profile_s_mask.setText("+" + result.result.first { it.id == secondNationality }.phoneCode)
                         } else {
                             profile_setting_second_phone.text = null
                             codeMack = result.result[codeNationality].phoneCode.toString()
@@ -391,7 +408,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 try {
                     if (result.result != null) {
                         question = result.result
-                        profile_s_question.setText(result.result.first { it.id == clientResult.question!!.toInt()}.name)
+                        profile_s_question.setText(result.result.first { it.id == clientResult.question!!.toInt() }.name)
                         var numberPosition = 0
                         if (questionId == "") {
                             numberPosition = clientResult.question!!.toInt()
@@ -405,7 +422,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                                     position = i
                                 }
                             }
-                            questionPosition =  result.result[position].name.toString()
+                            questionPosition = result.result[position].name.toString()
                         }
 
                         errorListSecretQuestion = result.code.toString()
@@ -420,7 +437,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
                 profile_s_swipe.isRefreshing = false
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     dialog.dismiss()
-                },500)
+                }, 500)
             })
 
         viewModel.errorListSecretQuestion.observe(
@@ -463,26 +480,28 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     // данные для сохролнения
     private fun initPassword() {
         reView = true
-        if (textPasswordOne == textPasswordTwo) {
-            if (textPasswordOne != "") {
-                AppPreferences.password = textPasswordOne
-            }
-        }
-        val mapProfile = HashMap<String, String>()
-        mapProfile.put("login", AppPreferences.login.toString())
-        mapProfile.put("token", AppPreferences.token.toString())
-        mapProfile.put("password", AppPreferences.password.toString())
-        mapProfile.put("second_phone", reNum)
-        mapProfile.put("question", questionId)
-        mapProfile.put("response", profile_s_response.text.toString())
         if (isValid()) {
+            if (textPasswordOne == textPasswordTwo) {
+                if (textPasswordOne != "") {
+                    AppPreferences.password = textPasswordOne
+                }
+            }
+            val mapProfile = HashMap<String, String>()
+            mapProfile.put("login", AppPreferences.login.toString())
+            mapProfile.put("token", AppPreferences.token.toString())
+            mapProfile.put("password", AppPreferences.password.toString())
+            mapProfile.put("second_phone", reNum)
+            mapProfile.put("question", questionId)
+            mapProfile.put("response", profile_s_response.text.toString())
             viewModel.saveProfile(mapProfile)
         }
     }
 
     private fun initResult() {
         //если все успешно получает информацию о пользователе
-        viewModel.listClientInfoDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+        viewModel.listClientInfoDta.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { result ->
                 try {
                     if (result.result != null) {
                         clientResult = result.result
@@ -578,35 +597,37 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             // now assign the system
             // service to InputMethodManager
             try {
-                val manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                val manager =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                 manager!!.hideSoftInputFromWindow(view.windowToken, 0)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
     //метод удаляет все символы из строки
-    private fun initCleaningRoom(){
+    private fun initCleaningRoom() {
         if (profile_setting_second_phone.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = codeMack + profile_setting_second_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
             }
-        }else{
+        } else {
             reNum = ""
         }
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
-        if (model.key == "listQuestions"){
+        if (model.key == "listQuestions") {
             profile_s_question.setText(question[model.position].name)
             questionPosition = question[model.position].name.toString()
             questionId = question[model.position].id.toString()
 
-        }else if (model.key == "listCountries"){
+        } else if (model.key == "listCountries") {
             profile_setting_second_phone.mask = null
             profile_s_mask.setText("+" + countries[model.position].phoneCode)
             countriesPosition = countries[model.position].name.toString()
@@ -620,7 +641,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     //очещает список
-    private fun initClearList(){
+    private fun initClearList() {
         itemDialog.clear()
     }
 
@@ -633,7 +654,15 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             if (itemDialog.size == 0) {
                 for (i in 1..question.size) {
                     if (i <= question.size) {
-                        itemDialog.add(GeneralDialogModel(question[i-1].name.toString(), "listQuestions", i-1, question[i-1].id, question[i-1].name.toString()))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                question[i - 1].name.toString(),
+                                "listQuestions",
+                                i - 1,
+                                question[i - 1].id,
+                                question[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
@@ -649,24 +678,35 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             if (itemDialog.size == 0) {
                 for (i in 1..countries.size) {
                     if (i <= countries.size) {
-                        itemDialog.add(GeneralDialogModel(countries[i-1].name.toString(), "listCountries", i-1, 0, countries[i-1].name.toString()))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                countries[i - 1].name.toString(),
+                                "listCountries",
+                                i - 1,
+                                0,
+                                countries[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
-            if (itemDialog.size != 0){
+            if (itemDialog.size != 0) {
                 initBottomSheet(itemDialog, countriesPosition, "Список доступных стран")
             }
         }
 
 
         profile_s_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 profile_s_one_password.text = null
                 profile_s_two_password.text = null
                 initRestart()
-                if (imageString != ""){
+                if (imageString != "") {
                     gitImage()
                 }
             }, 500)
@@ -816,8 +856,19 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
         //метод удаляет все символы из строки
         profile_setting_second_phone.addTextChangedListener {
-            editUtils(layout_profile_setting_second, profile_setting_second_phone, profile_setting_second_error, "Видите правильный номер", false)
-            profile_optional_number.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+            editUtils(
+                layout_profile_setting_second,
+                profile_setting_second_phone,
+                profile_setting_second_error,
+                "Видите правильный номер",
+                false
+            )
+            profile_optional_number.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                )
+            )
             initCleaningRoom()
         }
 
@@ -936,7 +987,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
         click_s_second.setOnClickListener {
             profile_setting_second_phone.requestFocus()
-            val img = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val img =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             img.showSoftInput(profile_setting_second_phone, 0)
         }
     }
@@ -996,7 +1048,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     // отправка картинки на сервер
-    private fun gitImage(){
+    private fun gitImage() {
         val mapUploadImg = HashMap<String, String>()
         mapUploadImg.put("login", AppPreferences.login.toString())
         mapUploadImg.put("token", AppPreferences.token.toString())
@@ -1011,11 +1063,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     //если картинка на сервер добавилась успешно
     private fun iniImageToServer() {
-        viewModel.listUploadImgDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result->
-            if (result.result != null){
-                MainActivity.alert.hide()
-            }
-        })
+        viewModel.listUploadImgDta.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { result ->
+                if (result.result != null) {
+                    MainActivity.alert.hide()
+                }
+            })
     }
 
     // проверка если errorCode и errorCodeClient == 200
@@ -1027,7 +1081,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
             if (profileSettingAnimR) {
-                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+                TransitionAnimation(activity as AppCompatActivity).transitionLeft(
+                    profile_setting_anim
+                )
                 profileSettingAnimR = false
             }
         }
@@ -1036,8 +1092,16 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERM_CODE
+                )
             } else {
                 getMyFile()
             }
@@ -1046,7 +1110,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             getMyFile()
         } else {
@@ -1056,11 +1124,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
     private fun getMyFile() {
         val file = "photo"
-        val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val dtoregDirectiry: File? =
+            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri =  FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
+            val imagUri: Uri =
+                FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
 
             val takePictureIntent = Intent(ACTION_IMAGE_CAPTURE)
             val pickIntent = Intent(Intent.ACTION_PICK)
@@ -1070,7 +1140,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
             chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(takePictureIntent))
             startActivityForResult(chooser, IMAGE_PICK_CODE)
 
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
         }
     }
@@ -1079,15 +1149,17 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            if (data == null){
+            if (data == null) {
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 imageConverter(scaled)
                 profile_setting_image.setImageBitmap(scaled)
                 MainActivity.alert.show()
-            }else{
-                val bm : Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+            } else {
+                val bm: Bitmap = MediaStore.Images.Media.getBitmap(
+                    requireActivity().getApplicationContext().getContentResolver(), data.getData()
+                );
                 val nh = (bm.height * (512.0 / bm.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
                 imageConverter(scaled)
@@ -1098,7 +1170,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     //encode image to base64 string
-    private fun imageConverter(bitmap: Bitmap){
+    private fun imageConverter(bitmap: Bitmap) {
         myThread = Thread() {
             val baos = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
@@ -1123,8 +1195,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this,list, selectionPosition, title)
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String
+    ) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -1178,39 +1254,102 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private fun isValid(): Boolean {
         var valid = true
         if (profile_s_response.text!!.toString().isEmpty()) {
-            editUtils(layout_profile_s_response, profile_s_response, profile_s_response_error, "Заполните поле", true)
+            editUtils(
+                layout_profile_s_response,
+                profile_s_response,
+                profile_s_response_error,
+                "Заполните поле",
+                true
+            )
             text_answer.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
             valid = false
         }
 
         if (profile_setting_second_phone.text.toString() != "") {
             if (reNum.length != list[codeNationality].phoneLength!!.toInt()) {
-                editUtils(layout_profile_setting_second, profile_setting_second_phone, profile_setting_second_error, "Видите правильный номер", true)
-                profile_optional_number.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                editUtils(
+                    layout_profile_setting_second,
+                    profile_setting_second_phone,
+                    profile_setting_second_error,
+                    "Видите правильный номер",
+                    true
+                )
+                profile_optional_number.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorRed
+                    )
+                )
                 valid = false
             }
         }
 
 
-        if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
-            if (profile_s_one_password.text.toString().toFullPhone() != profile_s_two_password.text.toString().toFullPhone()) {
-                editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Пароль должны совпадать", true)
+        if (profile_s_one_password.text.toString()
+                .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+        ) {
+            if (profile_s_one_password.text.toString()
+                    .toFullPhone() != profile_s_two_password.text.toString().toFullPhone()
+            ) {
+                editUtils(
+                    layout_profile_s_two,
+                    profile_s_two_password,
+                    profile_s_two_error,
+                    "Пароль должны совпадать",
+                    true
+                )
                 text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
-                profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
+                profile_s_two_password_show.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorRed
+                    ), PorterDuff.Mode.SRC_IN
+                );
                 valid = false
             }
         } else {
-            if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isEmpty()) {
-                editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Заполните поле", true)
+            if (profile_s_one_password.text.toString()
+                    .isNotEmpty() && profile_s_two_password.text.toString().isEmpty()
+            ) {
+                editUtils(
+                    layout_profile_s_two,
+                    profile_s_two_password,
+                    profile_s_two_error,
+                    "Заполните поле",
+                    true
+                )
                 text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
-                profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
+                profile_s_two_password_show.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorRed
+                    ), PorterDuff.Mode.SRC_IN
+                );
                 valid = false
             }
 
-            if (profile_s_one_password.text.toString().isEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
-                editUtils(layout_profile_s_one, profile_s_one_password, profile_s_one_error, "Заполните поле", true)
-                text_new_phone.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
-                profile_s_one_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
+            if (profile_s_one_password.text.toString()
+                    .isEmpty() && profile_s_two_password.text.toString().isNotEmpty()
+            ) {
+                editUtils(
+                    layout_profile_s_one,
+                    profile_s_one_password,
+                    profile_s_one_error,
+                    "Заполните поле",
+                    true
+                )
+                text_new_phone.setTextColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorRed
+                    )
+                )
+                profile_s_one_password_show.setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.colorRed
+                    ), PorterDuff.Mode.SRC_IN
+                );
                 valid = false
             }
         }
@@ -1221,41 +1360,107 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private fun isValidPassword(): Boolean {
         var valid = true
         if (profile_s_old_password.text.toString().isEmpty()) {
-            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Заполните поле", true)
+            editUtils(
+                layout_profile_s_old,
+                profile_s_old_password,
+                profile_s_old_error,
+                "Заполните поле",
+                true
+            )
             text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
-            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
+            profile_s_old_password_image.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorRed
+                ), PorterDuff.Mode.SRC_IN
+            );
             valid = false
         } else if (profile_s_old_password.text.toString() != AppPreferences.password) {
-            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Пароль введен неверно", true)
+            editUtils(
+                layout_profile_s_old,
+                profile_s_old_password,
+                profile_s_old_error,
+                "Пароль введен неверно",
+                true
+            )
             text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
-            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
+            profile_s_old_password_image.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.colorRed
+                ), PorterDuff.Mode.SRC_IN
+            );
             valid = false
         }
         return valid
     }
 
-    private fun initView(){
+    private fun initView() {
         profile_s_response.addTextChangedListener {
-            editUtils(layout_profile_s_response, profile_s_response, profile_s_response_error, "Заполните поле", false)
+            editUtils(
+                layout_profile_s_response,
+                profile_s_response,
+                profile_s_response_error,
+                "Заполните поле",
+                false
+            )
             text_answer.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
         }
 
         profile_s_old_password.addTextChangedListener {
-            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Заполните поле", false)
+            editUtils(
+                layout_profile_s_old,
+                profile_s_old_password,
+                profile_s_old_error,
+                "Заполните поле",
+                false
+            )
             text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
-            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+            profile_s_old_password_image.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                ), PorterDuff.Mode.SRC_IN
+            );
         }
 
         profile_s_one_password.addTextChangedListener {
-            editUtils(layout_profile_s_one, profile_s_one_password, profile_s_one_error, "Заполните поле", false)
-            text_new_phone.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
-            profile_s_one_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+            editUtils(
+                layout_profile_s_one,
+                profile_s_one_password,
+                profile_s_one_error,
+                "Заполните поле",
+                false
+            )
+            text_new_phone.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                )
+            )
+            profile_s_one_password_show.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                ), PorterDuff.Mode.SRC_IN
+            );
         }
 
         profile_s_two_password.addTextChangedListener {
-            editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Заполните поле", false)
+            editUtils(
+                layout_profile_s_two,
+                profile_s_two_password,
+                profile_s_two_error,
+                "Заполните поле",
+                false
+            )
             text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
-            profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+            profile_s_two_password_show.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                ), PorterDuff.Mode.SRC_IN
+            );
         }
     }
 

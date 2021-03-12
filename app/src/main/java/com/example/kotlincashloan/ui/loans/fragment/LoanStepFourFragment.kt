@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.Loans.ListCityResultModel
 import com.example.kotlincashloan.service.model.Loans.ListFamilyStatusModel
 import com.example.kotlincashloan.service.model.Loans.ListNumbersResultModel
@@ -23,6 +25,7 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -73,6 +76,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
+        initView()
     }
 
     private fun initClick() {
@@ -567,55 +571,65 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private fun validate(): Boolean {
         var valid = true
         if (loans_step_four_residence.text.isEmpty()) {
-            loans_step_four_residence.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_residence, loans_step_four_error, "Заполните поле", true)
             valid = false
-        }else {
-            loans_step_four_residence.error = null
         }
 
         if (loans_step_four_city.text.isEmpty()) {
-            loans_step_four_city.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_city, step_four_city_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_city.error = null
         }
 
         if (loans_step_four_status.text.isEmpty()) {
-            loans_step_four_status.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_status, step_four_status_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_status.error = null
         }
 
         if (loans_step_four_family.text.isEmpty()) {
-            loans_step_four_family.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_family, step_four_family_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_family.error = null
         }
 
         if (loans_step_four_children.text.isEmpty()) {
-            loans_step_four_children.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_children, step_four_children_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_children.error = null
         }
 
         if (loans_step_four_federation.text.isEmpty()) {
-            loans_step_four_federation.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_federation, step_four_federation_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_federation.error = null
         }
 
         if (loans_step_four_card.text.isEmpty()) {
-            loans_step_four_card.error = "Поле не должно быть пустым"
+            editUtils(loans_step_four_card, step_four_card_error, "Выберите из списка", true)
             valid = false
-        }else {
-            loans_step_four_card.error = null
         }
 
         return valid
+    }
+
+    private fun initView(){
+        loans_step_four_residence.addTextChangedListener {
+            editUtils(loans_step_four_residence, loans_step_four_error, "", false)
+        }
+        loans_step_four_city.addTextChangedListener {
+            editUtils(loans_step_four_city, step_four_city_error, "", false)
+        }
+        loans_step_four_status.addTextChangedListener {
+            editUtils(loans_step_four_status, step_four_status_error, "", false)
+        }
+        loans_step_four_family.addTextChangedListener {
+            editUtils(loans_step_four_family, step_four_family_error, "", false)
+        }
+        loans_step_four_children.addTextChangedListener {
+            editUtils(loans_step_four_children, step_four_children_error, "", false)
+        }
+        loans_step_four_federation.addTextChangedListener {
+            editUtils(loans_step_four_federation, step_four_federation_error, "", false)
+        }
+        loans_step_four_card.addTextChangedListener {
+            editUtils(loans_step_four_card, step_four_card_error, "Выберите из списка", false)
+        }
     }
 
     override fun onClickStepListener() {

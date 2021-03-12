@@ -1,7 +1,6 @@
 package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
@@ -10,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
@@ -19,7 +17,6 @@ import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
-import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation

@@ -16,7 +16,6 @@ import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.service.model.Loans.ListTrafficSource
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet

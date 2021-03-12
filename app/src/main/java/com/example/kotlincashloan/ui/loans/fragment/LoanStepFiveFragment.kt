@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
@@ -16,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
@@ -28,6 +30,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
@@ -85,6 +88,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         super.onViewCreated(view, savedInstanceState)
         initRestart()
         initClick()
+        initView()
     }
 
     private fun initRestart() {
@@ -727,63 +731,67 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private fun validate(): Boolean {
         var valid = true
         if (fire_step_four_residence.text.isEmpty()) {
-            fire_step_four_residence.error = "Поле не должно быть пустым"
+            editUtils(fire_step_four_residence, step_four_residence_error, "Заполните поле", true)
             valid = false
-        } else {
-            fire_step_four_residence.error = null
         }
-
         if (fire_type_employment.text.isEmpty()) {
-            fire_type_employment.error = "Поле не должно быть пустым"
+            editUtils(fire_type_employment, type_employment_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_type_employment.error = null
         }
-
         if (fire_post.text.isEmpty()) {
-            fire_post.error = "Поле не должно быть пустым"
+            editUtils(fire_post, fire_post_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_post.error = null
         }
-
         if (fire_work_experience_r_f.text.isEmpty()) {
-            fire_work_experience_r_f.error = "Поле не должно быть пустым"
+            editUtils(fire_work_experience_r_f, work_experience_r_f_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_work_experience_r_f.error = null
         }
-
         if (fire_work_experience.text.isEmpty()) {
-            fire_work_experience.error = "Поле не должно быть пустым"
+            editUtils(fire_work_experience, work_experience_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_work_experience.error = null
         }
-
         if (fire_list_income.text.isEmpty()) {
-            fire_list_income.error = "Поле не должно быть пустым"
+            editUtils(fire_list_income, list_income_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_list_income.error = null
         }
-
         if (fire_additional_income.text.isEmpty()) {
-            fire_additional_income.error = "Поле не должно быть пустым"
+            editUtils(fire_additional_income, additional_income_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_additional_income.error = null
         }
-
         if (fire_additional_amount.visibility != View.GONE) {
             if (fire_additional_amount.text.isEmpty()) {
-                fire_additional_amount.error = "Поле не должно быть пустым"
+                editUtils(fire_additional_amount, additional_amount_error, "Выберите из списка", true)
                 valid = false
-            } else {
-                fire_additional_amount.error = null
             }
         }
         return valid
+    }
+
+    private fun initView(){
+        fire_step_four_residence.addTextChangedListener {
+            editUtils(fire_step_four_residence, step_four_residence_error, "", false)
+        }
+        fire_type_employment.addTextChangedListener {
+            editUtils(fire_type_employment, type_employment_error, "", false)
+        }
+        fire_post.addTextChangedListener {
+            editUtils(fire_post, fire_post_error, "", false)
+        }
+        fire_work_experience_r_f.addTextChangedListener {
+            editUtils(fire_work_experience_r_f, work_experience_r_f_error, "", false)
+        }
+        fire_work_experience.addTextChangedListener {
+            editUtils(fire_work_experience, work_experience_error, "", false)
+        }
+        fire_list_income.addTextChangedListener {
+            editUtils(fire_list_income, list_income_error, "", false)
+        }
+        fire_additional_income.addTextChangedListener {
+            editUtils(fire_additional_income, additional_income_error, "", false)
+        }
+        fire_additional_amount.addTextChangedListener {
+            editUtils(fire_additional_amount, additional_amount_error, "", false)
+        }
     }
 
     override fun onClickStepListener() {
