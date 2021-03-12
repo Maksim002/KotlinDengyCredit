@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -20,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_pin_code_bottom.*
 import java.util.HashMap
 
@@ -39,7 +42,9 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
         super.onViewCreated(view, savedInstanceState)
         HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         iniClick()
+        initView()
     }
+
 
     override fun getTheme(): Int {
         return R.style.AppBottomSheetDialogTheme;
@@ -137,24 +142,33 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
     private fun isValid(): Boolean {
         var valid = true
         if (bottom_sheet_pin_code.text.toString() != bottom_sheet_repeat_code.text.toString()) {
-            bottom_sheet_repeat_code.error = "Поля должны совпадать"
-            bottom_sheet_pin_code.error = "Поля должны совпадать"
+            editUtils(bottom_sheet_repeat_code, bottom_sheet_repeat_error, "Поля должны совпадать", true)
+            editUtils(bottom_sheet_pin_code, bottom_sheet_pin_error, "Поля должны совпадать", true)
             valid = false
         } else if (bottom_sheet_repeat_code.text!!.toString().length != 4 && bottom_sheet_repeat_code.text!!.toString().length != 4) {
-            bottom_sheet_pin_code.error = "Поле должно содержать 4 символа"
-            bottom_sheet_repeat_code.error = "Поле должно содержать 4 символа"
+            editUtils(bottom_sheet_pin_code, bottom_sheet_pin_error, "Поле должно содержать 4 символа", true)
+            editUtils(bottom_sheet_repeat_code, bottom_sheet_repeat_error, "Поле должно содержать 4 символа", true)
             valid = false
         } else if (AppPreferences.savePin!!.isNotEmpty()) {
             if (bottom_sheet_pin_code.text.toString() != AppPreferences.savePin && bottom_sheet_repeat_code.text.toString() != AppPreferences.savePin) {
-                bottom_sheet_pin_code.error = "Пин код неверный"
-                bottom_sheet_repeat_code.error = "Пин код неверный"
+                editUtils(bottom_sheet_pin_code, bottom_sheet_pin_error, "Пин код неверный", true)
+                editUtils(bottom_sheet_repeat_code, bottom_sheet_repeat_error, "Пин код неверный", true)
                 valid = false
             }
-        } else {
-            bottom_sheet_repeat_code.error = null
-            bottom_sheet_pin_code.error = null
         }
 
         return valid
+    }
+
+    private fun initView() {
+        bottom_sheet_pin_code.addTextChangedListener {
+            editUtils(bottom_sheet_repeat_code, bottom_sheet_repeat_error, "Пин код неверный", false)
+            editUtils(bottom_sheet_pin_code, bottom_sheet_pin_error, "Пин код неверный", false)
+        }
+
+        bottom_sheet_repeat_code.addTextChangedListener {
+            editUtils(bottom_sheet_repeat_code, bottom_sheet_repeat_error, "Пин код неверный", false)
+            editUtils(bottom_sheet_pin_code, bottom_sheet_pin_error, "Пин код неверный", false)
+        }
     }
 }

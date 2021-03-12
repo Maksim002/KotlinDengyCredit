@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contacts_layout_anim"
-    android:background="@color/whiteColor"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/whiteColor"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -24,9 +25,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,32 +42,75 @@
                     android:textColor="@color/blackColor"
                     android:textSize="20sp" />
 
-                <EditText
-                    android:id="@+id/questionnaire_phone_surnames"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Фамилия"
-                    android:imeOptions="actionNext"
-                    android:textColor="@color/blackColor"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textSize="14dp" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
+                    <EditText
+                        android:id="@+id/questionnaire_phone_surnames"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Фамилия"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/questionnaire_phone_name"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Имя"
-                    android:imeOptions="actionNext"
-                    android:textColor="@color/blackColor"
-                    android:inputType="textCapWords"
-                    android:padding="13dp"
-                    android:textSize="14dp" />
+                    <TextView
+                        android:id="@+id/questionnaire_phone_surnames_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/questionnaire_phone_name"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Имя"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/questionnaire_phone_name_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
                     android:id="@+id/questionnaire_phone_patronymics"
@@ -76,9 +120,9 @@
                     android:background="@drawable/circle_orange_background_grey"
                     android:hint="Отчество"
                     android:imeOptions="actionDone"
-                    android:textColor="@color/blackColor"
                     android:inputType="textCapWords"
-                    android:padding="13dp"
+                    android:padding="16dp"
+                    android:textColor="@color/blackColor"
                     android:textSize="14dp" />
 
 
@@ -90,12 +134,12 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.2"
-                        android:padding="13dp"
-                        android:layout_marginRight="5dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1.2"
                         android:background="@drawable/circle_orange_background_grey"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -106,77 +150,122 @@
                                 android:id="@+id/questionnaire_phone_list_country"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:background="@null"
                                 android:editable="true"
                                 android:focusable="false"
-                                android:hint="код"
-                                android:gravity="center"
                                 android:focusableInTouchMode="false"
-                                android:textColor="@color/blackColor"
-                                android:background="@null"
-                                android:windowSoftInputMode="adjustResize"
+                                android:gravity="center"
+                                android:hint="код"
                                 android:inputType="number"
+                                android:textColor="@color/blackColor"
                                 android:textSize="14sp"
-                                tools:text="+996"/>
+                                android:windowSoftInputMode="adjustResize"
+                                tools:text="+996" />
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="13dp"
-                        android:layout_weight="0.3"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:orientation="horizontal">
+                        android:layout_weight="0.3">
 
                         <LinearLayout
-                            android:id="@+id/profile_phone_number"
+                            android:id="@+id/layout_phone_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.1"
-                            android:orientation="vertical">
+                            android:background="@drawable/circle_orange_background_grey"
+                            android:orientation="horizontal"
+                            android:padding="16dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <LinearLayout
+                                android:id="@+id/profile_phone_number"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_weight="0.1"
+                                android:orientation="vertical">
 
-                                <com.santalu.maskedittext.MaskEditText
-                                    android:id="@+id/questionnaire_phone_additional"
+                                <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/blackColor"
-                                    android:editable="false"
-                                    android:ellipsize="end"
-                                    android:layout_weight="1"
-                                    android:hint="Номер телефона"
-                                    android:digits="0123456789"
-                                    android:imeOptions="actionDone"
-                                    android:background="@null"
-                                    android:windowSoftInputMode="adjustResize"
-                                    android:inputType="number"
-                                    android:textSize="14sp"
-                                    tools:text="700 700 540"/>
+                                    android:orientation="horizontal">
 
+                                    <com.santalu.maskedittext.MaskEditText
+                                        android:id="@+id/questionnaire_phone_additional"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="@null"
+                                        android:digits="0123456789"
+                                        android:editable="false"
+                                        android:ellipsize="end"
+                                        android:hint="Номер телефона"
+                                        android:imeOptions="actionDone"
+                                        android:inputType="number"
+                                        android:textColor="@color/blackColor"
+                                        android:textSize="14sp"
+                                        android:windowSoftInputMode="adjustResize"
+                                        tools:text="700 700 540" />
+
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/questionnaire_phone_additional_error"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_marginRight="@dimen/_10sdp"
+                            android:layout_marginBottom="@dimen/_3sdp"
+                            android:gravity="right"
+                            android:text="error"
+                            android:textSize="@dimen/_8sdp"
+                            android:visibility="gone"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
                     android:id="@+id/password_recovery_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:focusable="false"
                     android:background="@drawable/circle_orange_background_grey"
                     android:drawableEnd="@drawable/ic_expend"
-                    android:textColor="@color/blackColor"
+                    android:focusable="false"
                     android:hint="Выберите тему обращения"
-                    android:padding="13dp"
-                    android:textSize="14dp" />
+                    android:padding="16dp"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                        android:id="@+id/questionnaire_type_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
                     android:id="@+id/password_recovery_comments"
@@ -186,12 +275,12 @@
                     android:background="@drawable/circle_orange_background_grey"
                     android:gravity="left|center"
                     android:hint="Ваш комментарий(не обязательно)"
-                    android:inputType="textMultiLine"
-                    android:minLines="1"
-                    android:maxLines="3"
                     android:imeOptions="actionGo"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:minLines="1"
+                    android:padding="16dp"
                     android:textColor="@color/blackColor"
-                    android:padding="13dp"
                     android:textSize="14dp" />
 
                 <Button
@@ -199,9 +288,9 @@
                     style="@style/RoundedOrangeBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="3dp"
-                    android:layout_marginLeft="3dp"
                     android:layout_marginBottom="10dp"
                     android:text="Отправить"
                     android:textColor="#FFFFFF"

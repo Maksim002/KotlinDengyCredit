@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -18,6 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_number_bottom_sheet.number_next
 
@@ -36,6 +39,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         super.onViewCreated(view, savedInstanceState)
         HomeActivity.alert = LoadingAlert(activity as AppCompatActivity)
         initClick()
+        initView()
     }
 
     override fun getTheme(): Int {
@@ -118,14 +122,22 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
         number_incorrect.visibility = View.GONE
     }
 
+    //Мето проверяет заполнения полей
     private fun validate(): Boolean {
         var valid = true
         if (number_text_sms.text.toString().isEmpty()) {
-            number_text_sms.error = "Заполните поле"
+            editUtils(number_text_sms, number_sms_error, "Заполните поле", true)
             number_incorrect.visibility = View.GONE
             valid = false
         }
         return valid
 
+    }
+
+    //Мето прослушивает поля на изменение
+    private fun initView() {
+        number_text_sms.addTextChangedListener {
+            editUtils(number_text_sms, number_sms_error, "Заполните поле", false)
+        }
     }
 }

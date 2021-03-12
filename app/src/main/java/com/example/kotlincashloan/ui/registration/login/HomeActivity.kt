@@ -1,6 +1,8 @@
 package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
@@ -10,9 +12,11 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -33,6 +37,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.home_forget_password
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
@@ -74,6 +79,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         AppPreferences.init(application)
         iniClick()
         initCheck()
+        initView()
         alert = LoadingAlert(this)
         timer = TimerListener(this)
     }
@@ -287,13 +293,14 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private fun validate(): Boolean {
         var valid = true
         if (home_text_login.text.toString().isEmpty()) {
-            home_text_login.error = "Введите логин"
+            editUtils(home_text_login, home_login_error, "Заполните поле", true)
             home_incorrect.visibility = View.GONE
             valid = false
         }
 
         if (home_text_password.text.toString().isEmpty()) {
-            home_text_password.error = "Введите пароль"
+            editUtils(home_text_password, home_show_error, "Заполните поле", true)
+            home_show.setColorFilter(ContextCompat.getColor(this, R.color.colorRed), PorterDuff.Mode.SRC_IN);
             home_incorrect.visibility = View.GONE
             valid = false
         }
@@ -302,6 +309,18 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         }
 
         return valid
+
+    }
+
+    private fun initView() {
+        home_text_password.addTextChangedListener {
+            editUtils(home_text_password, home_show_error, "Заполните поле", false)
+            home_show.setColorFilter(ContextCompat.getColor(this, R.color.blackColor), PorterDuff.Mode.SRC_IN);
+        }
+
+        home_text_login.addTextChangedListener {
+            editUtils(home_text_login, home_login_error, "Заполните поле", false)
+        }
 
     }
 

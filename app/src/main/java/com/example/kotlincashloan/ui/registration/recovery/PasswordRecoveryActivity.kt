@@ -3,7 +3,6 @@ package com.example.kotlincashloan.ui.registration.recovery
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -11,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
@@ -22,16 +22,12 @@ import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryErrorFr
 import com.example.kotlinscreenscanner.ui.login.fragment.PasswordRecoveryFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.activity_contacting_service.*
-import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_password_recovery.*
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_additional
 import kotlinx.android.synthetic.main.activity_password_recovery.questionnaire_phone_list_country
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -56,6 +52,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         setContentView(R.layout.activity_password_recovery)
         HomeActivity.alert = LoadingAlert(this)
         iniClick()
+        initView()
         initToolBar()
         getListCountry()
     }
@@ -63,6 +60,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun iniClick() {
 
         questionnaire_phone_additional.addTextChangedListener {
+            editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Заполните поле", false)
             initCleaningRoom()
         }
 
@@ -348,23 +346,20 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
 
     private fun validate(): Boolean {
         var valid = true
-        if (questionnaire_phone_list_country.text.isEmpty()) {
-            questionnaire_phone_list_country.error = "Выберите страну"
-            valid = false
-        } else {
-            questionnaire_phone_list_country.error = null
-        }
 
-        if (reNum.length != availableCountry) {
-            questionnaire_phone_additional.error = "Введите валидный номер"
+        if (questionnaire_phone_additional.text!!.isNotEmpty()) {
+            if (reNum.length != availableCountry) {
+                editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Видите правильный номер", true)
+                valid = false
+            }
+        }else{
+            editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Заполните поле", true)
             valid = false
-        } else {
-            questionnaire_phone_additional.error = null
         }
 
 
         if (password_recovery_word.text.toString().isEmpty()) {
-            password_recovery_word.error = "Введите кодовое слово"
+            editUtils(password_recovery_word, recovery_word_error, "Заполните поле", true)
             valid = false
         }
 
@@ -372,5 +367,11 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
+    }
+
+    private fun initView(){
+        password_recovery_word.addTextChangedListener {
+            editUtils(password_recovery_word, recovery_word_error, "Заполните поле", false)
+        }
     }
 }

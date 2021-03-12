@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
@@ -72,6 +73,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         initToolBar()
         getListCountry()
         getType()
+        initView()
         iniClick()
     }
 
@@ -84,6 +86,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun iniClick() {
 
         questionnaire_phone_additional.addTextChangedListener {
+            editUtils(layout_phone_number,questionnaire_phone_additional, questionnaire_phone_additional_error, "Видите правильный номер", false)
             initCleaningRoom()
         }
 
@@ -483,48 +486,50 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun validate(): Boolean {
         var valid = true
         if (questionnaire_phone_surnames.text.toString().isEmpty()) {
-            questionnaire_phone_surnames.error = "Введите фамилию"
+            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", true)
             valid = false
         }
 
         if (questionnaire_phone_name.text.toString().isEmpty()) {
-            questionnaire_phone_name.error = "Введите имя"
+            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", true)
             valid = false
-        }
-
-        if (questionnaire_phone_patronymics.text.toString().isEmpty()) {
-            questionnaire_phone_patronymics.error = "Введите отчество"
-            valid = false
-        }
-
-        if (questionnaire_phone_list_country.text.isEmpty()) {
-            questionnaire_phone_list_country.error = "Выберите страну"
-            valid = false
-        } else {
-            questionnaire_phone_list_country.error = null
         }
 
         if (password_recovery_type.text.isEmpty()) {
-            password_recovery_type.error = "Выберите тип оброщения"
+            editUtils(password_recovery_type, questionnaire_type_error, "Выберите из списка", true)
             valid = false
-        } else {
-            password_recovery_type.error = null
         }
 
-
-        if (reNum.length != numberCharacters) {
-            questionnaire_phone_additional.error = "Введите валидный номер"
+        if (questionnaire_phone_additional.text!!.isNotEmpty()) {
+            if (reNum.length != numberCharacters) {
+                editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Видите правильный номер", true)
+                valid = false
+            }
+        }else{
+            editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Заполните поле", true)
             valid = false
-        } else {
-            questionnaire_phone_additional.error = null
         }
-
 
         if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
 
         return valid
+    }
+
+    //Метод слушает изменение в полях
+    private fun initView() {
+        questionnaire_phone_surnames.addTextChangedListener {
+            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", false)
+        }
+
+        questionnaire_phone_name.addTextChangedListener {
+            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", false)
+        }
+
+        password_recovery_type.addTextChangedListener {
+            editUtils(password_recovery_type, questionnaire_type_error, "Выберите из списка", false)
+        }
     }
 
     override fun onResume() {

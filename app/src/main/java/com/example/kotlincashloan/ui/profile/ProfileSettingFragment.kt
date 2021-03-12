@@ -32,6 +32,7 @@ import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
@@ -45,7 +46,10 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.home_forget_password
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -115,6 +119,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initClick()
+        initView()
         initArgument()
         iniImageToServer()
 
@@ -811,6 +816,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
 
         //метод удаляет все символы из строки
         profile_setting_second_phone.addTextChangedListener {
+            editUtils(layout_profile_setting_second, profile_setting_second_phone, profile_setting_second_error, "Видите правильный номер", false)
+            profile_optional_number.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
             initCleaningRoom()
         }
 
@@ -1171,50 +1178,40 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private fun isValid(): Boolean {
         var valid = true
         if (profile_s_response.text!!.toString().isEmpty()) {
-            profile_s_response.error = "Ответ не должно быть пустым"
+            editUtils(layout_profile_s_response, profile_s_response, profile_s_response_error, "Заполните поле", true)
+            text_answer.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
             valid = false
-        } else {
-            profile_s_response.error = null
         }
 
         if (profile_setting_second_phone.text.toString() != "") {
             if (reNum.length != list[codeNationality].phoneLength!!.toInt()) {
-                profile_setting_second_phone.error = "Введите валидный номер"
+                editUtils(layout_profile_setting_second, profile_setting_second_phone, profile_setting_second_error, "Видите правильный номер", true)
+                profile_optional_number.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
                 valid = false
-            } else {
-                profile_setting_second_phone.error = null
             }
         }
 
 
-        if (profile_s_one_password.text.toString()
-                .isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()
-        ) {
-            if (profile_s_one_password.text.toString()
-                    .toFullPhone() != profile_s_two_password.text.toString().toFullPhone()
-            ) {
-                profile_s_two_password.error = "Пароль должны совпадать"
+        if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
+            if (profile_s_one_password.text.toString().toFullPhone() != profile_s_two_password.text.toString().toFullPhone()) {
+                editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Пароль должны совпадать", true)
+                text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
                 valid = false
-            } else {
-                profile_s_two_password.error = null
             }
         } else {
-            if (profile_s_one_password.text.toString()
-                    .isNotEmpty() && profile_s_two_password.text.toString().isEmpty()
-            ) {
-                profile_s_two_password.error = "Поле не должно быть пустым"
+            if (profile_s_one_password.text.toString().isNotEmpty() && profile_s_two_password.text.toString().isEmpty()) {
+                editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Заполните поле", true)
+                text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
                 valid = false
-            } else {
-                profile_s_two_password.error = null
             }
 
-            if (profile_s_one_password.text.toString()
-                    .isEmpty() && profile_s_two_password.text.toString().isNotEmpty()
-            ) {
-                profile_s_one_password.error = "Поле не должно быть пустым"
+            if (profile_s_one_password.text.toString().isEmpty() && profile_s_two_password.text.toString().isNotEmpty()) {
+                editUtils(layout_profile_s_one, profile_s_one_password, profile_s_one_error, "Заполните поле", true)
+                text_new_phone.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+                profile_s_one_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
                 valid = false
-            } else {
-                profile_s_one_password.error = null
             }
         }
 
@@ -1224,15 +1221,42 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult{
     private fun isValidPassword(): Boolean {
         var valid = true
         if (profile_s_old_password.text.toString().isEmpty()) {
-            profile_s_old_password.error = "Поле не должно быть пустым"
+            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Заполните поле", true)
+            text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
             valid = false
         } else if (profile_s_old_password.text.toString() != AppPreferences.password) {
-            profile_s_old_password.error = "Пароли введен неверно!"
+            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Пароль введен неверно", true)
+            text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
+            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.colorRed), PorterDuff.Mode.SRC_IN);
             valid = false
-        } else {
-            profile_s_old_password.error = null
         }
         return valid
+    }
+
+    private fun initView(){
+        profile_s_response.addTextChangedListener {
+            editUtils(layout_profile_s_response, profile_s_response, profile_s_response_error, "Заполните поле", false)
+            text_answer.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+        }
+
+        profile_s_old_password.addTextChangedListener {
+            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "Заполните поле", false)
+            text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+            profile_s_old_password_image.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+        }
+
+        profile_s_one_password.addTextChangedListener {
+            editUtils(layout_profile_s_one, profile_s_one_password, profile_s_one_error, "Заполните поле", false)
+            text_new_phone.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+            profile_s_one_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+        }
+
+        profile_s_two_password.addTextChangedListener {
+            editUtils(layout_profile_s_two, profile_s_two_password, profile_s_two_error, "Заполните поле", false)
+            text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+            profile_s_two_password_show.setColorFilter(ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN);
+        }
     }
 
     override fun onStart() {

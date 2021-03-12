@@ -770,14 +770,12 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         var valid = true
         if (questionnaire_text_surnames.text.toString().isEmpty()) {
             editUtils(questionnaire_text_surnames, questionnaire_surnames_error, "Заполните поле", true)
-//            questionnaire_text_surnames.error = "Введите фамилию"
             valid = false
         }
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()){
             if (reNum.length != nationalityCounter) {
                 editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Видите правильный номер", true)
-//                questionnaire_phone_additional.error = "Введите валидный номер"
                 valid = false
             }
         }
@@ -785,39 +783,31 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
         if (questionnaire_text_name.text.toString().isEmpty()) {
             editUtils(questionnaire_text_name, questionnaire_name_error, "Заполните поле", true)
-//            questionnaire_text_name.error = "Введите имя"
             valid = false
         }
 
         if (questionnaire_date_birth.text!!.toString().isEmpty()) {
             editUtils(questionnaire_date_birth, questionnaire_birth_error, "Выберите дату", true)
-//            questionnaire_date_birth.error = "Выберите дату"
             valid = false
         }
 
         if (questionnaire_id_sxs.text!!.toString().isEmpty()) {
-            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите вариант из списка", true)
-//            questionnaire_id_sxs.error = "Выберите пол"
+            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите из списка", true)
             valid = false
         }
 
         if (questionnaire_id_nationality.text.toString().isEmpty()) {
-            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите вариант из списка", true)
-//            questionnaire_id_nationality.error = "Выберите гражданство"
+            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите из списка", true)
             valid = false
         }
 
         if (questionnaire_id_secret.text.toString().isEmpty()) {
-            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите вариант из списка", true)
-//            questionnaire_id_secret.error = "Выберите секретный вопрос"
+            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите из списка", true)
             valid = false
-        } else {
-            questionnaire_id_secret.error = null
         }
 
         if (questionnaire_secret_response.text.toString().isEmpty()) {
             editUtils(questionnaire_secret_response, questionnaire_sresponse_error, "Заполните поле", true)
-//            questionnaire_secret_response.error = "Поле не должно быть пустым"
             valid = false
         }
         if (!valid){
@@ -840,15 +830,15 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_id_sxs.addTextChangedListener {
-            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите вариант из списка", false)
+            editUtils(questionnaire_id_sxs, questionnaire_sxs_error, "Выберите из списка", false)
         }
 
         questionnaire_id_nationality.addTextChangedListener {
-            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите вариант из списка", false)
+            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите из списка", false)
         }
 
         questionnaire_id_secret.addTextChangedListener {
-            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите вариант из списка", false)
+            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите из списка", false)
         }
 
         questionnaire_secret_response.addTextChangedListener {

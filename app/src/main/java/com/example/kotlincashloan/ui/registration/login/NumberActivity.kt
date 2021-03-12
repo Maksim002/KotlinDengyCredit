@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -25,6 +26,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -87,7 +89,8 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                 initVisibilities()
                             }
                         } else {
-                            AppPreferences.number = number_list_country.text.toString() + number_phone.text.toString()
+                            AppPreferences.number =
+                                number_list_country.text.toString() + number_phone.text.toString()
                             initBottomSheet(data.result.id!!)
                             initVisibilities()
                         }
@@ -152,6 +155,13 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun initClick() {
 
         number_phone.addTextChangedListener {
+            editUtils(
+                number_layout_phone,
+                number_phone,
+                number_phone_error,
+                "Видите правильный номер",
+                false
+            )
             initCleaningRoom()
         }
 
@@ -188,7 +198,15 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             if (itemDialog.size == 0) {
                 for (i in 1..listAvailableCountry.size) {
                     if (i <= listAvailableCountry.size) {
-                        itemDialog.add(GeneralDialogModel(listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1,0, listAvailableCountry[i-1].name))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listAvailableCountry[i - 1].name.toString(),
+                                "listAvailableCountry",
+                                i - 1,
+                                0,
+                                listAvailableCountry[i - 1].name
+                            )
+                        )
                     }
                 }
             }
@@ -211,14 +229,15 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //метод удаляет все символы из строки
-    private fun initCleaningRoom(){
+    private fun initCleaningRoom() {
         if (number_phone.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = number_list_country.text.toString() + number_phone.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = number_list_country.text.toString() + number_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
             }
-        }else{
+        } else {
             reNum = ""
         }
     }
@@ -310,7 +329,8 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             number_phone.mask = ""
             // Очещает поле
             number_phone.text = null
-            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.numberCharacters =
+                listAvailableCountry[model.position].phoneLength!!.toInt()
             AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMask
             number_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
             сountryPosition = listAvailableCountry[model.position].name.toString()
@@ -325,7 +345,11 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
@@ -341,14 +365,17 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
             number_list_country.error = "Выберите страну"
             valid = false
         } else {
-            number_phone.error = null
+            number_list_country.error = null
         }
 
-        if (reNum.length != numberCharacters) {
-            number_phone.error = "Введите валидный номер"
+        if (number_phone.text!!.isNotEmpty()) {
+            if (reNum.length != numberCharacters) {
+                editUtils(number_layout_phone, number_phone, number_phone_error, "Видите правильный номер", true)
+                valid = false
+            }
+        }else{
+            editUtils(number_layout_phone, number_phone, number_phone_error, "Заполните поле", true)
             valid = false
-        } else {
-            number_phone.error = null
         }
 
         if (!valid) {
@@ -368,7 +395,6 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun initViews() {
         number_list_country.addTextChangedListener {
             number_list_country.error = null
-            number_phone.error = null
         }
     }
 }
