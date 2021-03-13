@@ -62,6 +62,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var codeMack = ""
     private var reNum = ""
     private var nationalityCounter = 0
+    private var inputsAnim = true
 
     private var genderPosition = ""
     private var nationalityPosition = ""
@@ -762,7 +763,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     override fun onResume() {
         super.onResume()
-        TransitionAnimation(this).transitionRight(question_layout_anim)
+        if (inputsAnim) {
+            TransitionAnimation(this).transitionRight(question_layout_anim)
+            inputsAnim = false
+        }
     }
 
     private fun validate(): Boolean {

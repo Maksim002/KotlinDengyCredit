@@ -367,9 +367,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             AppPreferences.passwordRecovery = "1"
             AppPreferences.loginRecovery == "1"
         }
+        //Анимация перехода
         if (inputsAnim) {
             TransitionAnimation(this).transitionLeft(home_layout_anim)
-            inputsAnim = true
+            inputsAnim = false
         }
 
         if (AppPreferences.password != ""){
@@ -424,10 +425,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt = BiometricPrompt(
-            this,
-            executor,
-            object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
