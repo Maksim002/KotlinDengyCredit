@@ -20,8 +20,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.bumptech.glide.Glide
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.extension.bitmapToFile
+import com.example.kotlincashloan.extension.sendPicture
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -31,6 +34,7 @@ import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -48,7 +52,6 @@ class ProfileFragment : Fragment() {
     private val mapImg = HashMap<String, String>()
     val handler = Handler()
     private var list: ArrayList<ResultOperationModel> = arrayListOf()
-    private var listClientInfo: ArrayList<ClientInfoResultModel> = arrayListOf()
     private var errorCode = ""
     private var errorCodeClient = ""
     private var errorGetImg = ""
@@ -56,7 +59,6 @@ class ProfileFragment : Fragment() {
     private val bundle = Bundle()
     private var profAnim = false
     private var inputsAnim = 0
-    private var sendPicture = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -121,29 +123,6 @@ class ProfileFragment : Fragment() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
         startActivity(intent)
-    }
-
-    // Method to save an bitmap to a file
-    private fun bitmapToFile(bitmap: Bitmap): Uri {
-        // Get the context wrapper
-        val wrapper = ContextWrapper(requireContext())
-        // Initialize a new file instance to save bitmap object
-        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
-        file = File(file,"${UUID.randomUUID()}.jpg")
-
-        try{
-            // Compress the bitmap and save in jpg format
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
-            stream.flush()
-            stream.close()
-        }catch (e: IOException){
-            e.printStackTrace()
-        }
-
-        // Return the saved bitmap uri
-        sendPicture = file.absolutePath
-        return Uri.parse(file.absolutePath)
     }
 
     private fun initRecycler() {
@@ -235,8 +214,10 @@ class ProfileFragment : Fragment() {
                     errorGetImg = result.code.toString()
                     var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                    image_profile.setImageBitmap(decodedImage)
-                    bitmapToFile(decodedImage)
+                    val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                    val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                    image_profile.setImageBitmap(scaled)
+                    bitmapToFile(decodedImage, requireContext())
                 }else{
                     //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                     if (result.error.code != 404){
@@ -306,6 +287,7 @@ class ProfileFragment : Fragment() {
         } else if (result == 401) {
             initAuthorized()
         }
+        MainActivity.alert.hide()
     }
 
     private fun errorList(error: String) {
@@ -336,6 +318,7 @@ class ProfileFragment : Fragment() {
         } else if (error == "401") {
             initAuthorized()
         }
+        MainActivity.alert.hide()
     }
 
     private fun initPager() {

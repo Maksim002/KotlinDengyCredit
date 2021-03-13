@@ -513,13 +513,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                         profile_s_response.setText(clientResult.response)
                         errorClientInfo = result.code.toString()
                         resultSuccessfully()
-                        if (!profileSettingAnim) {
-                            //profileAnim анимация для перехода с адного дествия в другое
-                            TransitionAnimation(activity as AppCompatActivity).transitionRight(
-                                profile_setting_anim
-                            )
-                            profileSettingAnim = true
-                        }
+//                        if (!profileSettingAnim) {
+//                            //profileAnim анимация для перехода с адного дествия в другое
+//                            TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+//                            profileSettingAnim = true
+//                        }
 
                         //получение полов
                         gettingFloors()
@@ -1080,10 +1078,16 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+
+            if (!profileSettingAnim) {
+                //profileAnim анимация для перехода с адного дествия в другое
+                TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+                profileSettingAnim = true
+            }
+
             if (profileSettingAnimR) {
-                TransitionAnimation(activity as AppCompatActivity).transitionLeft(
-                    profile_setting_anim
-                )
+                //profileAnim анимация для перехода с адного дествия в другое
+                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
                 profileSettingAnimR = false
             }
         }
@@ -1151,22 +1155,20 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null) {
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
-                val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
-                imageConverter(scaled)
-                profile_setting_image.setImageBitmap(scaled)
-                MainActivity.alert.show()
+                imageBitmap(imageBitmap)
             } else {
-                val bm: Bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().getApplicationContext().getContentResolver(), data.getData()
-                );
-                val nh = (bm.height * (512.0 / bm.width)).toInt()
-                val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
-                imageConverter(scaled)
-                profile_setting_image.setImageBitmap(scaled)
-                MainActivity.alert.show()
+                val bm: Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+                imageBitmap(bm)
             }
         }
+    }
+
+    private fun imageBitmap(bm: Bitmap){
+        val nh = (bm.height * (512.0 / bm.width)).toInt()
+        val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
+        imageConverter(scaled)
+        profile_setting_image.setImageBitmap(scaled)
+        MainActivity.alert.show()
     }
 
     //encode image to base64 string
