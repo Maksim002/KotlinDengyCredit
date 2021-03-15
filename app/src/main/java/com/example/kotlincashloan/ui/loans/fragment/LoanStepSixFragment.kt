@@ -102,7 +102,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         six_number_phone.addTextChangedListener {
-            editUtils(six_number_phone, six_number_phone_error, "", false)
+            editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
             initCleaningRoom()
         }
 
@@ -414,39 +414,33 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         if (six_loan_name.text.isEmpty()) {
-            six_loan_name.error = "Поле не должно быть пустым"
+            editUtils(six_loan_name, six_loan_name_error, "Заполните поле", true)
             valid = false
-        } else {
-            six_loan_name.error = null
         }
 
-        if (six_loan_name.text.isEmpty()) {
-            six_loan_name.error = "Поле не должно быть пустым"
-            valid = false
-        } else {
-            six_loan_name.error = null
-        }
+//        if (six_loan_name.text.isEmpty()) {
+//            six_loan_name.error = "Поле не должно быть пустым"
+//            valid = false
+//        } else {
+//            six_loan_name.error = null
+//        }
 
         if (six_loan_family.text.isEmpty()) {
-            six_loan_family.error = "Поле не должно быть пустым"
+            editUtils(six_loan_family, six_loan_error, "Выберите из списка", true)
             valid = false
-        } else {
-            six_loan_family.error = null
         }
 
         if (six_loan_phone.text!!.isEmpty()) {
-            six_loan_phone.error = "Поле не должно быть пустым"
+            editUtils(six_loan_phone, six_loan_phone_error, "Заполните поле", true)
             valid = false
         } else if (six_loan_phone.text.toString().toFullPhone().length != 20) {
-            six_loan_phone.error = "Введите валидный номер"
+            editUtils(six_loan_phone, six_loan_phone_error, "Видите правильный номер", true)
             valid = false
-        } else {
-            six_loan_phone.error = null
         }
 
         if (six_number_phone.text!!.isNotEmpty()){
             if (phoneLength != reNum.length.toString()) {
-                editUtils(six_number_phone, six_number_phone_error, "Заполните поле", true)
+                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Видите правильный номер", true)
                 valid = false
             }
         }
@@ -456,6 +450,18 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     private fun initView(){
         six_loan_surname.addTextChangedListener {
             editUtils(six_loan_surname, six_loan_surname_error, "", false)
+        }
+
+        six_loan_name.addTextChangedListener {
+            editUtils(six_loan_name, six_loan_name_error, "", false)
+        }
+
+        six_loan_family.addTextChangedListener {
+            editUtils(six_loan_family, six_loan_error, "", false)
+        }
+
+        six_loan_phone.addTextChangedListener {
+            editUtils(six_loan_phone, six_loan_phone_error, "", false)
         }
     }
 }

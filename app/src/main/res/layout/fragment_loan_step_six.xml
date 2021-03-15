@@ -94,6 +94,7 @@
                     </LinearLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -358,7 +359,7 @@
                 android:layout_marginBottom="10dp"
                 android:paddingLeft="75dp"
                 android:paddingRight="75dp"
-                android:text="Далее"
+                android:text="Следующий шаг"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
         </LinearLayout>

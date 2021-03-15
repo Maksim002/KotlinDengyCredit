@@ -28,6 +28,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
@@ -51,6 +52,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
+import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -131,6 +133,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         iniData()
         initHidingFields()
         initTextValidation()
+        initView()
     }
 
     private fun initRestart(){
@@ -1273,10 +1276,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (fifth_goal_name.text.isEmpty()) {
-            fifth_goal_name.error = "Выберите дату"
+            editUtils(fifth_goal_name, fifth_goal_name_error, "Заполните поле", true)
             valid = false
-        } else {
-            fifth_goal_name.error = null
         }
 
         if (!migrationCardA || !migrationCardB) {
@@ -1288,17 +1289,13 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (list_countries.text.isEmpty()) {
-            list_countries.error = "Поле не должно быть пустым"
+            editUtils(list_countries, list_countries_error, "Выберите из списка", true)
             valid = false
-        } else {
-            list_countries.error = null
         }
 
         if (date_entry.text.isEmpty()) {
-            date_entry.error = "Выберите дату"
+            editUtils(date_entry, date_entry_error, "Выберите дату", true)
             valid = false
-        } else {
-            date_entry.error = null
         }
 
 
@@ -1345,10 +1342,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         if (contract_type.visibility != View.GONE) {
             if (contract_type.text.length == 0) {
                 if (contract_type.text.isEmpty()) {
-                    contract_type.error = "Поле не должно быть пустым"
+                    editUtils(contract_type, contract_type_error, "Выберите из списка", true)
                     valid = false
-                } else {
-                    contract_type.error = null
                 }
             }
         }
@@ -1363,17 +1358,24 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         }
 
-//
-//        if (date_the_contract.visibility != View.GONE) {
-//            if (date_the_contract.text.isEmpty()) {
-//                date_the_contract.error = "Поле не должно быть пустым"
-//                valid = false
-//            } else {
-//                date_the_contract.error = null
-//            }
-//        }
-
         return valid
+    }
+
+    private fun initView(){
+        fifth_goal_name.addTextChangedListener {
+            editUtils(fifth_goal_name, fifth_goal_name_error, "", false)
+        }
+
+        list_countries.addTextChangedListener {
+            editUtils(list_countries, list_countries_error, "", false)
+        }
+
+        date_entry.addTextChangedListener {
+            editUtils(date_entry, date_entry_error, "", false)
+        }
+        contract_type.addTextChangedListener {
+            editUtils(contract_type, contract_type_error, "", false)
+        }
     }
 
     override fun onClickStepListener() {

@@ -94,11 +94,12 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textSize="16sp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="10dp"
-                android:text="Сканировать документ"
+                android:text="Сканировать паспорт"
                 android:textColor="@color/whiteColor" />
 
         </LinearLayout>

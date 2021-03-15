@@ -98,7 +98,7 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        bottom_step_two.text = "Далее"
+        bottom_step_two.text = "Следующий шаг"
     }
 
     private fun initСounter() {

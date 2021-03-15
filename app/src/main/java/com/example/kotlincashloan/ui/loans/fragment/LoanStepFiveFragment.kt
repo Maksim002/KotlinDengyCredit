@@ -50,7 +50,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var getListTypeIncomeDta = ""
     private var getListAdditionalDta = ""
 
-    private var workId = ""
     private var typeId = ""
     private var yearsRfId = ""
     private var yearsId = ""
@@ -58,7 +57,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var typeIncomeId = ""
     private var additionalId = ""
 
-    private var workPosition = ""
     private var typeWorkPosition = ""
     private var yearsPosition = ""
     private var experiencePosition = ""
@@ -151,29 +149,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
         five_cross_back.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(3)
-        }
-
-        fire_type_employment.setOnClickListener {
-            initClearList()
-            //Мутод заполняет список данными дя адапера
-            if (itemDialog.size == 0) {
-                for (i in 1..listWork.size) {
-                    if (i <= listWork.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listWork[i - 1].name.toString(),
-                                "listWork",
-                                i - 1,
-                                0,
-                                listWork[i - 1].name.toString()
-                            )
-                        )
-                    }
-                }
-            }
-            if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, workPosition, "Вид занятости")
-            }
         }
 
         fire_post.setOnClickListener {
@@ -326,12 +301,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
-        if (model.key == "listWork") {
-            fire_type_employment.error = null
-            fire_type_employment.setText(listWork[model.position].name)
-            workPosition = listWork[model.position].name.toString()
-            workId = listWork[model.position].id!!
-        }
 
         if (model.key == "listTypeWork") {
             fire_post.error = null
@@ -581,7 +550,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.sum.toString()
-        mapSave["work"] = workId
         mapSave["type_work"] = typeId
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId
@@ -734,10 +702,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             editUtils(fire_step_four_residence, step_four_residence_error, "Заполните поле", true)
             valid = false
         }
-        if (fire_type_employment.text.isEmpty()) {
-            editUtils(fire_type_employment, type_employment_error, "Выберите из списка", true)
-            valid = false
-        }
         if (fire_post.text.isEmpty()) {
             editUtils(fire_post, fire_post_error, "Выберите из списка", true)
             valid = false
@@ -770,9 +734,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private fun initView(){
         fire_step_four_residence.addTextChangedListener {
             editUtils(fire_step_four_residence, step_four_residence_error, "", false)
-        }
-        fire_type_employment.addTextChangedListener {
-            editUtils(fire_type_employment, type_employment_error, "", false)
         }
         fire_post.addTextChangedListener {
             editUtils(fire_post, fire_post_error, "", false)
