@@ -202,16 +202,30 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listWorkExperience.size) {
-                    if (i <= listWorkExperience.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listWorkExperience[i - 1].name.toString(),
-                                "listWorkExperience",
-                                i - 1,
-                                0,
-                                listWorkExperience[i - 1].name.toString()
+                    if (yearsRfId != "") {
+                        if (yearsRfId.toInt() >= listWorkExperience[i - 1].id!!.toInt()) {
+                            itemDialog.add(
+                                GeneralDialogModel(
+                                    listWorkExperience[i - 1].name.toString(),
+                                    "listWorkExperience",
+                                    i - 1,
+                                    0,
+                                    listWorkExperience[i - 1].name.toString()
+                                )
                             )
-                        )
+                        }
+                    } else {
+                        if (i <= listWorkExperience.size) {
+                            itemDialog.add(
+                                GeneralDialogModel(
+                                    listWorkExperience[i - 1].name.toString(),
+                                    "listWorkExperience",
+                                    i - 1,
+                                    0,
+                                    listWorkExperience[i - 1].name.toString()
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -314,10 +328,25 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
             yearsRfId = listYears[model.position].id!!
+            if (yearsId != "") {
+                if (yearsId.toInt() >= yearsRfId.toInt()) {
+                    for (position in 0..listWorkExperience.size) {
+                        val pos = listWorkExperience[position].id.toString()
+                        if (pos == yearsRfId) {
+                            yearsId = listWorkExperience[position].id!!
+                            experiencePosition = listWorkExperience[position].name.toString()
+                            val l = listWorkExperience[position].name.toString()
+                            fire_work_experience.setText(l)
+                            break
+                        }
+                    }
+                }
+            }
         }
 
         if (model.key == "listWorkExperience") {
             fire_work_experience.error = null
+            fire_work_experience.hint = ""
             fire_work_experience.setText(listWorkExperience[model.position].name)
             experiencePosition = listWorkExperience[model.position].name.toString()
             yearsId = listWorkExperience[model.position].id!!
@@ -575,9 +604,9 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
                         (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
-                    }else if (data.error.code != null) {
+                    } else if (data.error.code != null) {
                         listResult(data.error.code!!)
-                    }else if (data.reject != null) {
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message.toString())
                     }
                 }
@@ -707,7 +736,12 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             valid = false
         }
         if (fire_work_experience_r_f.text.isEmpty()) {
-            editUtils(fire_work_experience_r_f, work_experience_r_f_error, "Выберите из списка", true)
+            editUtils(
+                fire_work_experience_r_f,
+                work_experience_r_f_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
         }
         if (fire_work_experience.text.isEmpty()) {
@@ -724,14 +758,19 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
         if (fire_additional_amount.visibility != View.GONE) {
             if (fire_additional_amount.text.isEmpty()) {
-                editUtils(fire_additional_amount, additional_amount_error, "Выберите из списка", true)
+                editUtils(
+                    fire_additional_amount,
+                    additional_amount_error,
+                    "Выберите из списка",
+                    true
+                )
                 valid = false
             }
         }
         return valid
     }
 
-    private fun initView(){
+    private fun initView() {
         fire_step_four_residence.addTextChangedListener {
             editUtils(fire_step_four_residence, step_four_residence_error, "", false)
         }
