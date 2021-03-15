@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/_35sdp"
             android:gravity="center"
-            android:text="Заявка на займ"
+            android:text="Сфотографируйте документы"
             android:textColor="@color/blackColor"
             android:textSize="18dp" />
     </LinearLayout>
@@ -50,7 +50,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="14dp"
-                android:text="Фото регистрации в РФ:"
+                android:text="Сфотографируйте бланк регистрации в РФ с двух сторон"
                 android:textColor="@color/blackColor" />
 
             <LinearLayout
@@ -113,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Дата окончания срока регистрации"
+                    android:hint="Укажите дату окончания срока регистрации"
                     android:padding="16dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp"
@@ -148,7 +148,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="14dp"
-                android:text="Фото миграционной карты:"
+                android:text="Сфотографируйте миграционную карту с двух"
                 android:textColor="@color/blackColor" />
 
             <LinearLayout
@@ -208,7 +208,7 @@
                     android:background="@drawable/circle_orange_background_grey"
                     android:drawableEnd="@drawable/ic_expend"
                     android:focusable="false"
-                    android:hint="Цель въезда"
+                    android:hint="Укажите цель въезда"
                     android:padding="16dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp"
@@ -244,7 +244,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Дата въезда"
+                    android:hint="Укажите дату въезда"
                     android:imeOptions="actionNext"
                     android:padding="16dp"
                     android:textColor="@color/blackColor"
@@ -486,7 +486,7 @@
                     android:background="@drawable/circle_orange_background_grey"
                     android:drawableEnd="@drawable/ic_expend"
                     android:focusable="false"
-                    android:hint="Тип договора"
+                    android:hint="Выберите тип вашего трудового договора"
                     android:padding="16dp"
                     android:textColor="@color/blackColor"
                     android:textSize="14dp"
@@ -522,7 +522,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
                     android:paddingLeft="14dp"
-                    android:text="Фото договор - 1 и последняя страница:"
+                    android:text="Сфотографируйте первую и последнюю страницы договора"
                     android:textColor="@color/blackColor" />
 
                 <LinearLayout
@@ -567,20 +567,6 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <!--            <TextView-->
-            <!--                android:id="@+id/date_the_contract"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="16dp"-->
-            <!--                android:layout_marginTop="10dp"-->
-            <!--                android:layout_marginRight="16dp"-->
-            <!--                android:background="@drawable/circle_orange_background_edit"-->
-            <!--                android:hint="Дата окончания договора"-->
-            <!--                android:imeOptions="actionNext"-->
-            <!--                android:padding="13dp"-->
-            <!--                android:textColor="@color/blackColor"-->
-            <!--                android:textSize="14dp" />-->
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -588,7 +574,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="14dp"
-                android:text="Фото РВП:"
+                android:text="Сфотографируйте РВП"
                 android:textColor="@color/blackColor" />
 
             <ImageView
@@ -609,7 +595,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:paddingLeft="14dp"
-                android:text="Фото ВНЖ:"
+                android:text="Сфотографируйте ВНЖ"
                 android:textColor="@color/blackColor" />
 
             <ImageView
