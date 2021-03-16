@@ -5,6 +5,8 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -17,6 +19,7 @@ import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -74,6 +77,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         AppPreferences.init(application)
+
         iniClick()
         initCheck()
         initView()
@@ -297,7 +301,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         if (home_text_password.text.toString().isEmpty()) {
             editUtils(home_text_password, home_show_error, "Заполните поле", true)
-            home_show.setColorFilter(ContextCompat.getColor(this, R.color.colorRed), PorterDuff.Mode.SRC_IN);
+            home_show.setColorFilter(
+                ContextCompat.getColor(this, R.color.colorRed),
+                PorterDuff.Mode.SRC_IN
+            );
             home_incorrect.visibility = View.GONE
             valid = false
         }
@@ -312,7 +319,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private fun initView() {
         home_text_password.addTextChangedListener {
             editUtils(home_text_password, home_show_error, "Заполните поле", false)
-            home_show.setColorFilter(ContextCompat.getColor(this, R.color.blackColor), PorterDuff.Mode.SRC_IN);
+            home_show.setColorFilter(
+                ContextCompat.getColor(this, R.color.blackColor),
+                PorterDuff.Mode.SRC_IN
+            );
         }
 
         home_text_login.addTextChangedListener {
@@ -328,13 +338,15 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun onStart() {
         super.onStart()
-        if (AppPreferences.password == ""){
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
+        if (AppPreferences.password == "") {
             home_touch_id.isChecked = false
             home_login_code.isChecked = false
         }
 
         //Очещает токен
-        if (home_login_code.isChecked){
+        if (home_login_code.isChecked) {
             AppPreferences.token = ""
         }
 
@@ -373,7 +385,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             inputsAnim = false
         }
 
-        if (AppPreferences.password != ""){
+        if (AppPreferences.password != "") {
             if (home_touch_id.isChecked) {
                 iniTouchId()
             }
@@ -393,15 +405,24 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             BiometricManager.BIOMETRIC_SUCCESS ->
                 authUser(executor)
             BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Toast.makeText(this, getString(R.string.error_msg_no_biometric_hardware), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_msg_no_biometric_hardware),
+                    Toast.LENGTH_LONG
+                ).show()
                 AppPreferences.isTouchId = false
                 home_touch_id.isChecked = false
             }
             BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                Toast.makeText(this, getString(R.string.error_msg_biometric_hw_unavailable), Toast.LENGTH_LONG
+                Toast.makeText(
+                    this, getString(R.string.error_msg_biometric_hw_unavailable), Toast.LENGTH_LONG
                 ).show()
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Toast.makeText(this, getString(R.string.error_msg_biometric_not_setup), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_msg_biometric_not_setup),
+                    Toast.LENGTH_LONG
+                ).show()
                 AppPreferences.isTouchId = false
                 home_touch_id.isChecked = false
             }
@@ -425,7 +446,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt = BiometricPrompt(
+            this,
+            executor,
+            object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)

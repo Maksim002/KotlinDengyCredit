@@ -19,6 +19,7 @@ import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -32,9 +33,6 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -63,6 +61,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
         HomeActivity.alert = LoadingAlert(this)
         MainActivity.timer = TimerListener(this)
 

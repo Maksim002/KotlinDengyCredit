@@ -10,6 +10,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
 import com.example.kotlincashloan.ui.loans.fragment.*
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
@@ -31,6 +32,8 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
         timer = TimerListenerLoan(this)
         alert = LoadingAlert(this)
 

@@ -15,6 +15,7 @@ import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
@@ -224,6 +225,8 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
 
     override fun onStart() {
         super.onStart()
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
 //        questionnaire_phone_additional.mask = AppPreferences.isFormatMask
         password_focus_text.requestFocus()
 //        getListCountry()
