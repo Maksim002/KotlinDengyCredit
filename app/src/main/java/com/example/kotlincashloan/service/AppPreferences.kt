@@ -43,6 +43,13 @@ object AppPreferences {
             it.putString("sum", value)
         }
 
+    var idApplications: String?
+        get() = preferences.getString("idApplications", "")
+        set(value) = preferences.edit {
+            it.putString("idApplications", value)
+        }
+
+
     var loginRecovery: String?
         get() = preferences.getString("loginRecovery", "")
         set(value) = preferences.edit {

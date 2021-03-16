@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Вы успешно прошли регистрацию. Введите код из смс в поле ниже и нажмите “Продолжить”."
+        android:text="Ура! Вы успешно прошли регистрацию. Введите код из СМС в поле ниже и нажмите “Продолжить”."
         android:textColor="@color/blackColor"
         android:textSize="14sp" />
 
@@ -57,7 +57,7 @@
         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
         android:drawablePadding="10dp"
         android:gravity="center"
-        android:text="Неверный смс код"
+        android:text="Неверный код из СМС"
         android:textColor="@color/colorRed"
         android:visibility="visible" />
 

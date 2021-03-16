@@ -14,7 +14,7 @@
         android:id="@+id/loans_layout"
         android:layout_width="match_parent"
         android:descendantFocusability="beforeDescendants"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <androidx.core.widget.NestedScrollView

@@ -405,7 +405,6 @@ class ProfileFragment : Fragment() {
                     }, 500)
                 }
             } else {
-                MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     if (viewModel.errorListOperation.value != null) {
                         viewModel.listListOperationDta.postValue(null)

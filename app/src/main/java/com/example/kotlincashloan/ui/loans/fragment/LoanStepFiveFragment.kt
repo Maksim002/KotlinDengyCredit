@@ -578,7 +578,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.sum.toString()
+        mapSave["id"] = AppPreferences.idApplications.toString()
         mapSave["type_work"] = typeId
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId

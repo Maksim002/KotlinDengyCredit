@@ -169,7 +169,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         val mapImage = mutableMapOf<String, String>()
         mapImage["login"] = AppPreferences.login.toString()
         mapImage["token"] = AppPreferences.token.toString()
-        mapImage["id"] = AppPreferences.sum.toString()
+        mapImage["id"] = AppPreferences.idApplications.toString()
         mapImage["step"] = "0"
         mapImage["patent_img_1"] = textImA
         mapImage["patent_img_2"] = textImB
@@ -253,7 +253,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.sum.toString()
+        mapSave["id"] = AppPreferences.idApplications.toString()
         mapSave["reg_date"] = countriesPhone
         mapSave["entry_date"] = goalPhone
 

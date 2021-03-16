@@ -46,14 +46,9 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     private var getListFamilyDta = ""
 
     private var family = ""
-    private var phoneLength = ""
-    private var reNum = ""
-
-    private var sixPosition = ""
     private var familyPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
-    private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
     private var listFamily: ArrayList<ListFamilyResultModel> = arrayListOf()
 
     override fun onCreateView(
@@ -101,32 +96,9 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             }
         }
 
-        six_number_phone.addTextChangedListener {
-            editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
-            initCleaningRoom()
-        }
-
         four_cross_six.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
         }
-
-        six_available_country.setOnClickListener {
-            initClearList()
-            //Мутод заполняет список данными дя адапера
-            if (itemDialog.size == 0) {
-                for (i in 1..listAvailableSix.size) {
-                    if (i <= listAvailableSix.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
-                    }
-                }
-            }
-            if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, sixPosition, "Список доступных стран")
-            }
-        }
-
 
         six_loan_family.setOnClickListener {
             initClearList()
@@ -162,7 +134,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }else{
             viewModel.errorSaveLoan.value = null
             initListFamily()
-            initAvailableCountry()
+//            initAvailableCountry()
         }
     }
 
@@ -173,18 +145,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
-        if (model.key == "listAvailableSix") {
-            six_number_phone.error = null
-            //Очещает старую маску при выборе новой
-            six_number_phone.mask = ""
-            // Очещает поле
-            six_number_phone.text = null
-            sixPosition = listAvailableSix[model.position].name.toString()
-            phoneLength = listAvailableSix[model.position].phoneLength.toString()
-            six_available_country.setText("+" + listAvailableSix[model.position].phoneCode)
-            six_number_phone.mask = listAvailableSix[model.position].phoneMaskSmall
-        }
-
         if (model.key == "listFamily") {
             six_loan_family.setText(listFamily[model.position].name)
             familyPosition = listFamily[model.position].name.toString()
@@ -193,35 +153,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
     }
 
-    // TODO: 21-2-8 Список доступных стран
-    private fun initAvailableCountry() {
-        val mapCountry = mutableMapOf<String, String>()
-        mapCountry["id"] = ""
-        viewModel.listAvailableSix(mapCountry)
-
-        viewModel.listAvailableSixDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                listAvailableCountryDta = result.code.toString()
-                getResultOk()
-                listAvailableSix = result.result
-                six_number_phone.mask = ""
-                six_number_phone.text = null
-                sixPosition = result.result[0].name.toString()
-                six_available_country.setText("+" + result.result[0].phoneCode)
-                six_number_phone.mask = result.result[0].phoneMaskSmall
-                phoneLength = result.result[0].phoneLength.toString()
-            } else {
-                listResult(result.error.code!!)
-            }
-        })
-
-        viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null) {
-                listAvailableCountryDta = error
-                errorList(error)
-            }
-        })
-    }
 
     // TODO: 21-2-8 Список кем приходится
     private fun initListFamily() {
@@ -256,8 +187,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.sum.toString()
-        mapSave["second_phone"] = reNum
+        mapSave["id"] = AppPreferences.idApplications.toString()
         mapSave["last_name"] = six_loan_surname.text.toString()
         mapSave["first_name"] = six_loan_name.text.toString()
         mapSave["second_name"] = six_loan_middle_name.text.toString()
@@ -308,19 +238,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
     override fun onClickStepListener() {
         requireActivity().finish()
-    }
-
-    //метод удаляет все символы из строки
-    private fun initCleaningRoom() {
-        if (six_number_phone.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = six_available_country.text.toString() + six_number_phone.text.toString())
-            val result = StringBuilder()
-            for (matchedText in matchedResults) {
-                reNum = result.append(matchedText.value).toString()
-            }
-        } else {
-            reNum = ""
-        }
     }
 
     private fun getResultOk() {
@@ -418,13 +335,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             valid = false
         }
 
-//        if (six_loan_name.text.isEmpty()) {
-//            six_loan_name.error = "Поле не должно быть пустым"
-//            valid = false
-//        } else {
-//            six_loan_name.error = null
-//        }
-
         if (six_loan_family.text.isEmpty()) {
             editUtils(six_loan_family, six_loan_error, "Выберите из списка", true)
             valid = false
@@ -436,13 +346,6 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         } else if (six_loan_phone.text.toString().toFullPhone().length != 20) {
             editUtils(six_loan_phone, six_loan_phone_error, "Видите правильный номер", true)
             valid = false
-        }
-
-        if (six_number_phone.text!!.isNotEmpty()){
-            if (phoneLength != reNum.length.toString()) {
-                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Видите правильный номер", true)
-                valid = false
-            }
         }
         return valid
     }

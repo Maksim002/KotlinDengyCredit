@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем"
+            android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем."
             android:textColor="#373435"
             android:textSize="14sp" />
 

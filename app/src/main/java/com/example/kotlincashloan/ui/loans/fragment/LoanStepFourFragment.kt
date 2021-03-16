@@ -13,10 +13,7 @@ import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.service.model.Loans.ListCityResultModel
-import com.example.kotlincashloan.service.model.Loans.ListFamilyStatusModel
-import com.example.kotlincashloan.service.model.Loans.ListNumbersResultModel
-import com.example.kotlincashloan.service.model.Loans.ListYearsResultModel
+import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
@@ -40,6 +37,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var getListFamilyStatusDta = ""
     private var getListNumbersDta = ""
     private var getListYearsDta = ""
+    private var listAvailableCountryDta = ""
 
     private var cityId = ""
     private var statusId = ""
@@ -47,6 +45,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var childrenId = ""
     private var liveId = ""
     private var cardId = ""
+    private var reNum = ""
+    private var phoneLength = ""
 
     private var cityPosition = ""
     private var familyPosition = ""
@@ -54,6 +54,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var childrenPosition = ""
     private var yearsPosition = ""
     private var catsNamesPosition = ""
+    private var sixPosition = ""
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listCity: ArrayList<ListCityResultModel> = arrayListOf()
@@ -61,6 +62,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var listNumbers: ArrayList<ListNumbersResultModel> = arrayListOf()
     private var listNumbersChildren: ArrayList<ListNumbersResultModel> = arrayListOf()
     private var listYears: ArrayList<ListYearsResultModel> = arrayListOf()
+    private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
     //Наличие банковской карты
     private var listCatsNames = arrayOf("Нет", "Да")
 
@@ -80,6 +82,11 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     }
 
     private fun initClick() {
+        six_number_phone.addTextChangedListener {
+            editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
+            initCleaningRoom()
+        }
+
         access_restricted.setOnClickListener {
             initInternet()
 
@@ -105,6 +112,23 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
         four_cross_back.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
+        }
+
+        six_available_country.setOnClickListener {
+            initClearList()
+            //Мутод заполняет список данными дя адапера
+            if (itemDialog.size == 0) {
+                for (i in 1..listAvailableSix.size) {
+                    if (i <= listAvailableSix.size) {
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
+                    }
+                }
+            }
+            if (itemDialog.size != 0) {
+                initBottomSheet(itemDialog, sixPosition, "Список доступных стран")
+            }
         }
 
         loans_step_four_city.setOnClickListener {
@@ -217,6 +241,19 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
     }
 
+    //метод удаляет все символы из строки
+    private fun initCleaningRoom() {
+        if (six_number_phone.text.toString() != "") {
+            val matchedResults = Regex(pattern = """\d+""").findAll(input = six_available_country.text.toString() + six_number_phone.text.toString())
+            val result = StringBuilder()
+            for (matchedText in matchedResults) {
+                reNum = result.append(matchedText.value).toString()
+            }
+        } else {
+            reNum = ""
+        }
+    }
+
     //очещает список
     private fun initClearList(){
         itemDialog.clear()
@@ -224,6 +261,18 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
+        if (model.key == "listAvailableSix") {
+            six_number_phone.error = null
+            //Очещает старую маску при выборе новой
+            six_number_phone.mask = ""
+            // Очещает поле
+            six_number_phone.text = null
+            sixPosition = listAvailableSix[model.position].name.toString()
+            phoneLength = listAvailableSix[model.position].phoneLength.toString()
+            six_available_country.setText("+" + listAvailableSix[model.position].phoneCode)
+            six_number_phone.mask = listAvailableSix[model.position].phoneMaskSmall
+        }
+
         if (model.key == "listCity") {
             loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
@@ -282,7 +331,38 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
             initListNumbers()
             initListNumbersChildren()
             initListYears()
+            initAvailableCountry()
         }
+    }
+
+    // TODO: 21-2-8 Список доступных стран
+    private fun initAvailableCountry() {
+        val mapCountry = mutableMapOf<String, String>()
+        mapCountry["id"] = ""
+        viewModel.listAvailableSix(mapCountry)
+
+        viewModel.listAvailableSixDta.observe(viewLifecycleOwner, Observer { result ->
+            if (result.result != null) {
+                listAvailableCountryDta = result.code.toString()
+                getResultOk()
+                listAvailableSix = result.result
+                six_number_phone.mask = ""
+                six_number_phone.text = null
+                sixPosition = result.result[0].name.toString()
+                six_available_country.setText("+" + result.result[0].phoneCode)
+                six_number_phone.mask = result.result[0].phoneMaskSmall
+                phoneLength = result.result[0].phoneLength.toString()
+            } else {
+                listResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
+                listAvailableCountryDta = error
+                errorList(error)
+            }
+        })
     }
 
     // TODO: 21-2-12  выберите город
@@ -427,8 +507,9 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         val mapSave = mutableMapOf<String, String>()
         mapSave.put("login", AppPreferences.login.toString())
         mapSave.put("token", AppPreferences.token.toString())
-        mapSave.put("id", AppPreferences.sum.toString())
+        mapSave.put("id", AppPreferences.idApplications.toString())
         mapSave.put("city", cityId)
+        mapSave["second_phone"] = reNum
         mapSave.put("address", loans_step_four_residence.text.toString())
         mapSave.put("family_status", statusId)
         mapSave.put("count_family", familyId)
@@ -563,6 +644,12 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         startActivity(intent)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // TODO: 16.03.21 Когда заработает сканер удолить
+        AppPreferences.idApplications = "3"
+    }
+
     override fun onStart() {
         super.onStart()
         initInternet()
@@ -605,6 +692,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
             valid = false
         }
 
+        if (six_number_phone.text!!.isNotEmpty()){
+            if (phoneLength != reNum.length.toString()) {
+                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Видите правильный номер", true)
+                valid = false
+            }
+        }
+
         return valid
     }
 
@@ -628,7 +722,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
             editUtils(loans_step_four_federation, step_four_federation_error, "", false)
         }
         loans_step_four_card.addTextChangedListener {
-            editUtils(loans_step_four_card, step_four_card_error, "Выберите из списка", false)
+            editUtils(loans_step_four_card, step_four_card_error, "", false)
         }
     }
 

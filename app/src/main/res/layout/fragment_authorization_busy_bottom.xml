@@ -22,7 +22,7 @@
         android:textStyle="bold"
         android:textColor="@color/blackColor"
         android:textSize="20sp"
-        android:text="ФИО уже занято!"/>
+        android:text="Ой, пользователь с такими данными уже зарегистрирован!"/>
 
     <TextView
         android:layout_width="match_parent"

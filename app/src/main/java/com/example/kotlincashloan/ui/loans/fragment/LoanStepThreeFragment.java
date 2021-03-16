@@ -189,7 +189,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                               status_not_found.setVisibility(View.GONE);
                               docImageIv.setImageBitmap(documentImage);
                               portraitIv.setImageBitmap(portrait);
-                              AppPreferences.INSTANCE.setSum(result.getData().getResult().getId().toString());
+                              AppPreferences.INSTANCE.setIdApplications(result.getData().getResult().getId().toString());
                               ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
                           }
                       }else if (result.getData().getError() != null) {

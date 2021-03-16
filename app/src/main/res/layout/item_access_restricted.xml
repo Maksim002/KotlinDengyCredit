@@ -32,7 +32,7 @@
         android:layout_gravity="center"
         android:textSize="14sp"
         android:layout_marginTop="10dp"
-        android:text="Попробуйте позже."/>
+        android:text="Попробуйте немного позже."/>
 
     <Button
         android:id="@+id/access_restricted"

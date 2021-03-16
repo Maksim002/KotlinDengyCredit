@@ -7,6 +7,39 @@
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Трудовая деятельность"
+            android:textColor="@color/blackColor"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/five_cross_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_fire"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -22,196 +55,228 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical">
+                    android:layout_marginTop="12dp">
+
+                    <EditText
+                        android:id="@+id/fire_step_four_residence"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Где вы работаете?"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        android:id="@+id/step_four_residence_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_post"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Трудовая деятельность"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Кем вы работаете?"
+                        android:padding="16dp"
                         android:textColor="@color/blackColor"
-                        android:textSize="18dp" />
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <TextView
+                        android:id="@+id/fire_post_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_work_experience_r_f"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp">
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Сколько вы работаете в России?"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <EditText
-                            android:id="@+id/fire_step_four_residence"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_orange_background_grey"
-                            android:hint="Где вы работаете?"
-                            android:imeOptions="actionDone"
-                            android:inputType="textCapWords"
-                            android:padding="16dp"
-                            android:textColor="@color/blackColor"
-                            android:textSize="14dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/work_experience_r_f_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/step_four_residence_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:gravity="right"
-                            android:text="error"
-                            android:textSize="@dimen/_8sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_work_experience"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:drawablePadding="5dp"
+                        android:focusable="false"
+                        android:hint="Сколько вы работаете на последнем месте работы в России?"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <AutoCompleteTextView
-                            android:id="@+id/fire_post"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_orange_background_grey"
-                            android:drawableEnd="@drawable/ic_expend"
-                            android:focusable="false"
-                            android:hint="Кем вы работаете?"
-                            android:padding="16dp"
-                            android:textColor="@color/blackColor"
-                            android:textSize="14dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/work_experience_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/fire_post_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:gravity="right"
-                            android:text="error"
-                            android:textSize="@dimen/_8sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_list_income"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Ежемесячный доход"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <AutoCompleteTextView
-                            android:id="@+id/fire_work_experience_r_f"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_orange_background_grey"
-                            android:drawableEnd="@drawable/ic_expend"
-                            android:focusable="false"
-                            android:hint="Сколько вы работаете в России?"
-                            android:padding="16dp"
-                            android:textColor="@color/blackColor"
-                            android:textSize="14dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/list_income_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <TextView
-                            android:id="@+id/work_experience_r_f_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:gravity="right"
-                            android:text="error"
-                            android:textSize="@dimen/_8sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <AutoCompleteTextView
+                        android:id="@+id/fire_additional_income"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Дополнительный доход"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <AutoCompleteTextView
-                            android:id="@+id/fire_work_experience"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="5dp"
-                            android:background="@drawable/circle_orange_background_grey"
-                            android:drawableEnd="@drawable/ic_expend"
-                            android:focusable="false"
-                            android:hint="Сколько вы работаете на последнем месте работы в России?"
-                            android:padding="16dp"
-                            android:textColor="@color/blackColor"
-                            android:textSize="14dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/work_experience_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:gravity="right"
-                            android:text="error"
-                            android:textSize="@dimen/_8sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <TextView
+                        android:id="@+id/additional_income_error"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <AutoCompleteTextView
-                            android:id="@+id/fire_list_income"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/circle_orange_background_grey"
-                            android:drawableEnd="@drawable/ic_expend"
-                            android:focusable="false"
-                            android:hint="Ежемесячный доход"
-                            android:padding="16dp"
-                            android:textColor="@color/blackColor"
-                            android:textSize="14dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/list_income_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginRight="@dimen/_10sdp"
-                            android:layout_marginBottom="@dimen/_3sdp"
-                            android:gravity="right"
-                            android:text="error"
-                            android:textSize="@dimen/_8sdp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_50sdp"
+                    android:orientation="vertical">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -219,13 +284,13 @@
                         android:layout_marginTop="10dp">
 
                         <AutoCompleteTextView
-                            android:id="@+id/fire_additional_income"
+                            android:id="@+id/fire_additional_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="@drawable/circle_orange_background_grey"
                             android:drawableEnd="@drawable/ic_expend"
                             android:focusable="false"
-                            android:hint="Дополнительный доход"
+                            android:hint="Сумма доп. дохода"
                             android:padding="16dp"
                             android:textColor="@color/blackColor"
                             android:textSize="14dp"
@@ -235,7 +300,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/additional_income_error"
+                            android:id="@+id/additional_amount_error"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_marginRight="@dimen/_10sdp"
@@ -247,75 +312,23 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintRight_toRightOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_50sdp"
-                        android:orientation="vertical">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp">
-
-                            <AutoCompleteTextView
-                                android:id="@+id/fire_additional_amount"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/circle_orange_background_grey"
-                                android:drawableEnd="@drawable/ic_expend"
-                                android:focusable="false"
-                                android:hint="Сумма доп. дохода"
-                                android:padding="16dp"
-                                android:textColor="@color/blackColor"
-                                android:textSize="14dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/additional_amount_error"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:layout_marginRight="@dimen/_10sdp"
-                                android:layout_marginBottom="@dimen/_3sdp"
-                                android:gravity="right"
-                                android:text="error"
-                                android:textSize="@dimen/_8sdp"
-                                android:visibility="gone"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintRight_toRightOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/bottom_loan_fire"
-                        style="@style/RoundedOrangeBackground"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="20dp"
-                        android:paddingLeft="75dp"
-                        android:paddingRight="75dp"
-                        android:layout_marginBottom="10dp"
-                        android:text="Следующий шаг"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp" />
                 </LinearLayout>
-        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/five_cross_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="3dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+                <Button
+                    android:id="@+id/bottom_loan_fire"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingLeft="75dp"
+                    android:paddingRight="75dp"
+                    android:text="Следующий шаг"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

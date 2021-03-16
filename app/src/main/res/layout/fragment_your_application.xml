@@ -33,7 +33,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
-        android:text="Вернуться на главный экран"
+        android:text="Отлично!"
         android:textColor="#FFFFFF"
         android:textSize="16sp" />
 
