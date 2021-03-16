@@ -59,6 +59,7 @@ class ProfileFragment : Fragment() {
     private val bundle = Bundle()
     private var profAnim = false
     private var inputsAnim = 0
+    private var errorNull = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -129,14 +130,21 @@ class ProfileFragment : Fragment() {
         //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
             try {
-                errorCode = error
+                if (error != "404"){
+                    errorCode = error
+                    if (error != null) {
+                        errorList(error)
+                    }
+                }else{
+                    resultTrue()
+                    errorNull = error
+                    initPager()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            if (error != null) {
-                errorList(error)
-            }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
         })
 
         //listClientInfoDta Проверка на ошибки
@@ -157,17 +165,24 @@ class ProfileFragment : Fragment() {
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null) {
+                    errorNull = ""
                     list = result.result
                     initPager()
                     errorCode = result.code.toString()
 
                 } else {
-                    if (result.error.code != null) {
-                        errorCode = result.error.code.toString()
-                    } else if (result.code != null) {
-                        errorCode = result.code.toString()
+                    if (result.error.code != 404) {
+                        if (result.error.code != null) {
+                            errorCode = result.error.code.toString()
+                        } else if (result.code != null) {
+                            errorCode = result.code.toString()
+                        }
+                        listListResult(result.error.code!!)
+                    }else{
+                        resultTrue()
+                        errorNull = result.error.code.toString()
+                        initPager()
                     }
-                    listListResult(result.error.code!!)
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_swipe.isRefreshing = false
@@ -265,6 +280,14 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun resultTrue(){
+        profile_swipe.visibility = View.VISIBLE
+        profile_technical_work.visibility = View.GONE
+        profile_no_connection.visibility = View.GONE
+        profile_access_restricted.visibility = View.GONE
+        profile_not_found.visibility = View.GONE
+    }
+
     private fun listListResult(result: Int) {
         if (result == 400 || result == 500 || result == 409 || result == 429) {
             profile_technical_work.visibility = View.VISIBLE
@@ -323,7 +346,7 @@ class ProfileFragment : Fragment() {
 
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(list), "Мои операции")
+        adapter.addFragment(MyOperationFragment(list, errorNull), "Мои операции")
         adapter.addFragment(MyApplicationFragment(), "Мои заявки")
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()

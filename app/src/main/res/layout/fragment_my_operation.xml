@@ -8,6 +8,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.MyOperationFragment">
 
+    <include
+        android:id="@+id/profile_my_operation_null"
+        layout="@layout/item_my_operation_null"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/operation_recycler"
         android:layout_width="match_parent"

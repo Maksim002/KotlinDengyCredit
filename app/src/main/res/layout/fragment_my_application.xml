@@ -8,6 +8,11 @@
     android:background="@color/whiteColor"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/profile_aplication_null"
+        layout="@layout/item_my_aplication_null"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/application_recycler"
         android:layout_width="match_parent"

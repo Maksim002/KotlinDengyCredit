@@ -400,8 +400,13 @@ class LoansFragment : Fragment(), LoansListener {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.error != null) {
-                    listNewsId = result.error.toString()
-                    initErrorResult(result.error.code!!)
+                    if (result.error.code != 404){
+                        listNewsId = result.error.toString()
+                        initErrorResult(result.error.code!!)
+                    }else{
+                        loans_loans_null.visibility = View.VISIBLE
+                        loans_recycler.visibility = View.GONE
+                    }
                 } else {
                     if (result.result != null) {
                         initCode()
@@ -410,6 +415,8 @@ class LoansFragment : Fragment(), LoansListener {
                             loans_recycler.adapter = myAdapter
                             loans_layout.visibility = View.VISIBLE
                             loans_no_connection.visibility = View.GONE
+                            loans_loans_null.visibility = View.GONE
+                            loans_recycler.visibility = View.VISIBLE
                         } else {
                             initResult()
                         }
@@ -423,7 +430,7 @@ class LoansFragment : Fragment(), LoansListener {
                         alertValid = true
                     }, 650)
                 } else {
-                    MainActivity.alert.hide()
+//                    MainActivity.alert.hide()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -432,10 +439,15 @@ class LoansFragment : Fragment(), LoansListener {
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
-                initError(error)
-                listNewsId = error
+                if (error.toString() != "404"){
+                    initError(error)
+                    listNewsId = error
+                }else{
+                    loans_loans_null.visibility = View.VISIBLE
+                    loans_recycler.visibility = View.GONE
+                }
             }
-            MainActivity.alert.hide()
+//            MainActivity.alert.hide()
         })
     }
 

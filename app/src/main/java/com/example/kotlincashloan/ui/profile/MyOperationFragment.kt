@@ -14,7 +14,7 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 
-class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf()) : Fragment(), OperationListener {
+class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf(), var error: String) : Fragment(), OperationListener {
     private var myAdapter = MyOperationAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,8 +28,15 @@ class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListO
     }
 
     private fun initRecycler() {
-        myAdapter.update(list)
-        operation_recycler.adapter = myAdapter
+        if (error == "404"){
+            profile_my_operation_null.visibility = View.VISIBLE
+            operation_recycler.visibility = View.GONE
+        }else{
+            profile_my_operation_null.visibility = View.GONE
+            operation_recycler.visibility = View.VISIBLE
+            myAdapter.update(list)
+            operation_recycler.adapter = myAdapter
+        }
     }
 
     override fun operationClickListener(int: Int, item: ResultOperationModel) {
