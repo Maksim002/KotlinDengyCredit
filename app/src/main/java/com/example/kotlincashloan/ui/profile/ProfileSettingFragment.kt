@@ -595,8 +595,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             // now assign the system
             // service to InputMethodManager
             try {
-                val manager =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                val manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                 manager!!.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1013,6 +1012,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         } else if (result == 401) {
             initAuthorized()
         }
+        MainActivity.alert.hide()
     }
 
     private fun errorList(error: String) {
@@ -1043,6 +1043,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         } else if (error == "401") {
             initAuthorized()
         }
+        MainActivity.alert.hide()
     }
 
     // отправка картинки на сервер

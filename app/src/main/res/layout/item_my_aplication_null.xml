@@ -8,13 +8,14 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="140dp"
         android:src="@drawable/ic_my_aplication_null"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Новых заявок нет"
+        android:layout_marginBottom="@dimen/_25sdp"
         android:textSize="17sp"
         android:textStyle="bold"
         android:textColor="@color/blackColor"/>

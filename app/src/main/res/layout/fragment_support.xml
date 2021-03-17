@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/whiteColor"
     android:orientation="vertical"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.support.SupportFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/support_swipe_layout"
-        android:visibility="visible"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profile_recycler"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/layout_support_null"
+                layout="@layout/item_my_support_null"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/profile_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/item_access_restricted"
+    <include
         android:id="@+id/layout_access_restricted"
-        android:visibility="gone"/>
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_no_connection"
+    <include
         android:id="@+id/support_no_connection"
-        android:visibility="gone"/>
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_technical_work"
+    <include
         android:id="@+id/support_technical_work"
-        android:visibility="gone"/>
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_not_found"
+    <include
         android:id="@+id/support_not_found"
-        android:visibility="gone"/>
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 
 </LinearLayout>
