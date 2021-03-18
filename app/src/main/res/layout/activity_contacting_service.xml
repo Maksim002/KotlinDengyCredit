@@ -136,7 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
-                        android:layout_weight="1.2"
+                        android:layout_weight="1.1"
                         android:background="@drawable/circle_orange_background_grey"
                         android:orientation="horizontal"
                         android:padding="16dp">

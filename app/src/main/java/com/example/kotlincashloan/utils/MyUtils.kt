@@ -36,6 +36,7 @@ object MyUtils {
         return date.substring(phoneCode, phoneLength)
     }
 
+
     fun toMyDateTime(date: String): String {
         return try {
             date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(

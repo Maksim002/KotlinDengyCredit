@@ -325,15 +325,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
                             val firstNationality = clientResult.phoneFirst!!.toInt()
                             numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
-                            profile_setting_first.mask =
-                                result.result.first { it.id == firstNationality }.phoneMask
-                            profile_setting_first.setText(
-                                MyUtils.toMask(
-                                    clientResult.firstPhone.toString(),
-                                    result.result.first { it.id == firstNationality }.phoneCode!!.length,
-                                    result.result.first { it.id == firstNationality }.phoneLength!!.toInt()
-                                )
-                            )
+                            profile_setting_first.mask = result.result.first { it.id == firstNationality }.phoneMask
+                            MyUtils.toMask(clientResult.firstPhone.toString(), result.result.first
+                            { it.id == firstNationality }.phoneCode!!.length,
+                                result.result.first { it.id == firstNationality }.phoneLength!!.toInt())
+
+                            profile_setting_first.setText(clientResult.firstPhone.toString())
 
                             list = result.result
 
@@ -506,9 +503,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     if (result.result != null) {
                         clientResult = result.result
                         profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
-                        profile_setting_second_name.setText(clientResult.secondName)
+                        profile_setting_second_name.setText(clientResult.lastName)
                         profile_setting_first_name.setText(clientResult.firstName)
-                        profile_setting_last_name.setText(clientResult.lastName)
+                        profile_setting_last_name.setText(clientResult.secondName)
                         profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
                         profile_s_response.setText(clientResult.response)
                         errorClientInfo = result.code.toString()
