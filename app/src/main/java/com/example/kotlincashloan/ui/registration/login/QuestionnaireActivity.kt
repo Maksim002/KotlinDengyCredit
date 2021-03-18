@@ -250,7 +250,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun initClock() {
 
         questionnaire_phone_additional.addTextChangedListener {
-            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Видите правильный номер", true)
+            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Видите правильный номер", false)
             initCleaningRoom()
         }
 

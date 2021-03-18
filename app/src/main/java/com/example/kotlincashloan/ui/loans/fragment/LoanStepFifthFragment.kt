@@ -918,25 +918,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                                 text.setText("Загрузка базы данных: $progress%")
                             }
 
-                            override fun onPrepareCompleted(
-                                p0: Boolean,
-                                p1: DocumentReaderException?
-                            ) {
+                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
                                 //Initializing the reader
-                                DocumentReader.Instance().initializeReader(
-                                    requireContext(),
-                                    license
-                                ) { success, error_initializeReader ->
+                                DocumentReader.Instance().initializeReader(requireContext(), license) { success, error_initializeReader ->
+                                    //добавил трай что бы непадал
+                                    try {
                                     text.setText("Фото патента РФ:")
                                     fifth_potent.isClickable = true
-                                    DocumentReader.Instance().customization().edit()
-                                        .setShowHelpAnimation(
-                                            false
-                                        ).apply()
-                                    DocumentReader.Instance().functionality().edit()
-                                        .setShowSkipNextPageButton(
-                                            false
-                                        ).apply()
+                                    }catch (e: Exception){
+                                        e.printStackTrace()
+                                    }
+                                    DocumentReader.Instance().customization().edit().setShowHelpAnimation(false).apply()
+                                    DocumentReader.Instance().functionality().edit().setShowSkipNextPageButton(false).apply()
                                     if (success) {
                                         //initialization successful
                                         fifth_potent.setOnClickListener(View.OnClickListener {
@@ -965,12 +958,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                                         }
 
                                     } else {
-                                        //Initialization was not successful
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Init failed:$p1",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        //добавил трай что бы непадал
+                                        try {
+                                            //Initialization was not successful
+                                            Toast.makeText(requireContext(), "Init failed:$p1", Toast.LENGTH_LONG).show()
+                                        }catch (e: Exception){
+                                            e.printStackTrace()
+                                        }
+
                                     }
                                 }
                             }

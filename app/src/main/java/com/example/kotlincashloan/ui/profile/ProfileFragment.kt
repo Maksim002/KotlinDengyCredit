@@ -244,11 +244,11 @@ class ProfileFragment : Fragment() {
                             //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                             if (result.error.code != 404) {
                                 listListResult(result.error.code!!)
+                                errorGetImg = result.error.code.toString()
                             }else{
                                 errorGetImg = "200"
                             }
                         }
-                        errorGetImg = result.error.code.toString()
                     }
                 }
                 if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
