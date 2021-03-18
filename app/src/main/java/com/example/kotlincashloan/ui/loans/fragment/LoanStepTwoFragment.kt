@@ -92,7 +92,8 @@ class LoanStepTwoFragment : Fragment() {
             AppPreferences.type = totalCounter.toString()
             AppPreferences.sum = loan_step_sum.text.toString()
 
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+//            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
         }
     }
 

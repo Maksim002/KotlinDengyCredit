@@ -98,6 +98,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
         four_cross_six.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+            hidingErrors()
         }
 
         six_loan_family.setOnClickListener {
@@ -366,5 +367,13 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         six_loan_phone.addTextChangedListener {
             editUtils(six_loan_phone, six_loan_phone_error, "", false)
         }
+    }
+
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors(){
+        editUtils(six_loan_surname, six_loan_surname_error, "", false)
+        editUtils(six_loan_name, six_loan_name_error, "", false)
+        editUtils(six_loan_family, six_loan_error, "", false)
+        editUtils(six_loan_phone, six_loan_phone_error, "", false)
     }
 }

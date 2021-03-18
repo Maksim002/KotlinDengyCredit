@@ -27,10 +27,12 @@ import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
+import com.google.android.gms.dynamic.IFragmentWrapper
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
@@ -119,6 +121,10 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         if (additionalId == "-1") {
             fire_additional_amount.visibility = View.GONE
         }
+        //В поле длинная строка. Если поле непустое удоляет hide
+        if (fire_work_experience.text.isNotEmpty()){
+            fire_work_experience.hint = null
+        }
     }
 
     private fun initClick() {
@@ -149,6 +155,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
         five_cross_back.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(3)
+            hidingErrors()
         }
 
         fire_post.setOnClickListener {
@@ -794,7 +801,19 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
     }
 
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors(){
+        editUtils(fire_step_four_residence, step_four_residence_error, "", false)
+        editUtils(fire_post, fire_post_error, "", false)
+        editUtils(fire_work_experience_r_f, work_experience_r_f_error, "", false)
+        editUtils(fire_work_experience, work_experience_error, "", false)
+        editUtils(fire_list_income, list_income_error, "", false)
+        editUtils(fire_additional_income, additional_income_error, "", false)
+        editUtils(fire_additional_amount, additional_amount_error, "", false)
+    }
+
     override fun onClickStepListener() {
         requireActivity().finish()
     }
+
 }

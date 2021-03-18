@@ -367,7 +367,11 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                 }
                                 //Initialization was not successful
                                 else {
-                                    Toast.makeText(requireContext(), "Init failed:" + e, Toast.LENGTH_LONG).show();
+                                    try {
+                                        Toast.makeText(requireContext(), "Init failed:" + e, Toast.LENGTH_LONG).show();
+                                    }catch (Exception el){
+                                       el.printStackTrace();
+                                    }
                                 }
                             }
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.changeImage
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
@@ -161,6 +163,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     override fun onStart() {
         super.onStart()
+        if (fifth_goal_name.text.isNotEmpty()){
+            fifth_goal_name.hint = null
+        }
+        if (contract_type.text.isNotEmpty()){
+            contract_type.hint = null
+        }
         initRestart()
     }
 
@@ -298,21 +306,22 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     //Скрытие полей
     private fun initHidingFields() {
-        hidingLayout = AppPreferences.nationality.toString()
+//        hidingLayout = AppPreferences.nationality.toString()
+        hidingLayout = "KGZ"
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {
             fifth_potent.visibility = View.VISIBLE
             fifth_receipt.visibility = View.VISIBLE
             fifth_permission.visibility = View.VISIBLE
             fifth_2n.visibility = View.GONE
-            contract_type.visibility = View.GONE
+            layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
             fifth_potent.visibility = View.VISIBLE
             fifth_receipt.visibility = View.VISIBLE
             fifth_permission.visibility = View.VISIBLE
-            contract_type.visibility = View.GONE
+            layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "KGZ") {
             contract_type.visibility = View.VISIBLE
@@ -403,6 +412,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         fifth_cross_six.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+            hidingErrors()
         }
 
         list_countries.setOnClickListener {
@@ -522,6 +532,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             contractPosition = listTypeContract[model.position].name.toString()
             contractTypeId = model.id!!
             contract_type.error = null
+            contract_type.hint = null
         }
     }
 
@@ -611,30 +622,36 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 imageConverter(scaled)
                 if (imageKey == "russian_federationA") {
+                    changeImage(federationA_add_im, true, requireActivity())
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
                     russian_federationA.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
+                    changeImage(federationB_add_im, true, requireActivity())
                     fifth_incorrectA.visibility = View.GONE
                     russian_federationB.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
+                    changeImage(cardA_add_im, true, requireActivity())
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
                     migration_cardA.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
+                    changeImage(cardB_add_im, true, requireActivity())
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
                     migration_cardB.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
+                    changeImage(patent_add_im, true, requireActivity())
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
                     receipt_patent.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
+                    changeImage(permitA_add_im, true, requireActivity())
                     workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
                     work_permitA.setImageBitmap(scaled)
@@ -642,6 +659,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     fifth_receipt.visibility = View.GONE
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
+                    changeImage(permitB_add_im, true, requireActivity())
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
                     work_permitB.setImageBitmap(scaled)
@@ -649,23 +667,28 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     fifth_receipt.visibility = View.GONE
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
+                    changeImage(NDFL_add_im, true, requireActivity())
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
                     photo_2NDFL.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
+                    changeImage(page_one_add_im, true, requireActivity())
                     last_page_one.setImageBitmap(scaled)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
+                    changeImage(page_two_add_im, true, requireActivity())
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
                     last_page_two.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
+                    changeImage(RVP_add_im, true, requireActivity())
                     photo_RVP.setImageBitmap(scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
+                    changeImage(VNJ_add_im, true, requireActivity())
                     photo_VNJ.setImageBitmap(scaled)
                     imageKey = ""
                 }
@@ -767,6 +790,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 fifth_goal_name.setText(MyUtils.toMyDate(goal))
                 countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
             }
+            fifth_goal_name.hint = null
         } else if (keyData == "date_entry") {
             if (goalList.size != 0) {
                 for (i in 1..goalList.size) {
@@ -1169,6 +1193,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     fifth_incorrect_patent.visibility = View.GONE
                     fifth_permission.visibility = View.GONE
                     russianPatentA = true
+                    changeImage(patentA_add_im, true, requireActivity())
                     russian_patentA.setImageBitmap(documentImage)
                     gotImageString(documentImage!!)
                 }
@@ -1186,6 +1211,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         documentImageTwo!!, (1200 * aspectRatio).toInt(), 1200, false
                     )
                     russianPatentB = true
+                    changeImage(patentB_add_im, true, requireActivity())
                     russian_patentB.setImageBitmap(documentImageTwo)
                     gotImageString(documentImageTwo!!)
                 }
@@ -1276,7 +1302,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (fifth_goal_name.text.isEmpty()) {
-            editUtils(fifth_goal_name, fifth_goal_name_error, "Заполните поле", true)
+            editUtils(fifth_goal_name, fifth_goal_name_error, "Заполните поле", true, null)
             valid = false
         }
 
@@ -1289,12 +1315,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (list_countries.text.isEmpty()) {
-            editUtils(list_countries, list_countries_error, "Выберите из списка", true)
+            editUtils(list_countries, list_countries_error, "Выберите из списка", true, null)
             valid = false
         }
 
         if (date_entry.text.isEmpty()) {
-            editUtils(date_entry, date_entry_error, "Выберите дату", true)
+            editUtils(date_entry, date_entry_error, "Выберите дату", true, null)
             valid = false
         }
 
@@ -1342,7 +1368,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         if (contract_type.visibility != View.GONE) {
             if (contract_type.text.length == 0) {
                 if (contract_type.text.isEmpty()) {
-                    editUtils(contract_type, contract_type_error, "Выберите из списка", true)
+                    editUtils(contract_type, contract_type_error, "Выберите из списка", true, null)
                     valid = false
                 }
             }
@@ -1363,22 +1389,42 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     private fun initView(){
         fifth_goal_name.addTextChangedListener {
-            editUtils(fifth_goal_name, fifth_goal_name_error, "", false)
+            editUtils(fifth_goal_name, fifth_goal_name_error, "", false, null)
         }
 
         list_countries.addTextChangedListener {
-            editUtils(list_countries, list_countries_error, "", false)
+            editUtils(list_countries, list_countries_error, "", false, null)
         }
 
         date_entry.addTextChangedListener {
-            editUtils(date_entry, date_entry_error, "", false)
+            editUtils(date_entry, date_entry_error, "", false, null)
         }
         contract_type.addTextChangedListener {
-            editUtils(contract_type, contract_type_error, "", false)
+            editUtils(contract_type, contract_type_error, "", false, null)
         }
     }
 
     override fun onClickStepListener() {
         requireActivity().finish()
+    }
+
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors(){
+        editUtils(fifth_goal_name, fifth_goal_name_error, "", false, null)
+        editUtils(list_countries, list_countries_error, "", false, null)
+        editUtils(date_entry, date_entry_error, "", false, null)
+        editUtils(contract_type, contract_type_error, "", false, null)
+        fifth_incorrectA.visibility = View.GONE
+        fifth_incorrect_card.visibility = View.GONE
+        fifth_incorrect_patent.visibility = View.GONE
+        fifth_incorrect_receipt.visibility = View.GONE
+        fifth_incorrect_work.visibility = View.GONE
+        fifth_incorrect_2NDFL.visibility = View.GONE
+        fifth_incorrect_page.visibility = View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initTextValidation()
     }
 }

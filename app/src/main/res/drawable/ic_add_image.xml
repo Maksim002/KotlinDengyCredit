@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="21dp"
+    android:height="21dp"
+    android:viewportWidth="21"
+    android:viewportHeight="21">
+
+    <path
+        android:fillColor="#FFA800"
+        android:strokeColor="#ffffff"
+        android:strokeWidth="0.5"
+        android:pathData="M 11 2.75 C 15.0040644363 2.75 18.25 5.99593556373 18.25 10 C 18.25 14.0040644363 15.0040644363 17.25 11 17.25 C 6.99593556373 17.25 3.75 14.0040644363 3.75 10 C 3.75 5.99593556373 6.99593556373 2.75 11 2.75 Z" />
+    <path
+        android:fillColor="#ffffff"
+        android:fillType="evenOdd"
+        android:pathData="M12.1667 8.83331V5.33331H9.83337V8.83331H6.33331V11.1666H9.83337V14.6666H12.1667V11.1666H15.6666V8.83331H12.1667Z" />
+</vector>

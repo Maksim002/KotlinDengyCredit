@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,7 +29,8 @@
             android:gravity="center"
             android:text="Сфотографируйте документы"
             android:textColor="@color/blackColor"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -43,50 +43,155 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:paddingLeft="14dp"
-                android:text="Сфотографируйте бланк регистрации в РФ с двух сторон"
-                android:textColor="@color/blackColor" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:orientation="vertical">
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Сфотографируйте бланк регистрации в РФ с двух сторон"
+                    android:textColor="@color/blackColor"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/russian_federationA"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/russian_federationB"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                        <LinearLayout
+                            android:id="@+id/linearLayout2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_marginLeft="@dimen/_16sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/russian_federationA"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/federationA_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/russian_federationB"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/federationB_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/fifth_incorrectA"
@@ -99,275 +204,580 @@
                     android:text="Неверный логин или пароль"
                     android:textColor="@color/colorRed"
                     android:visibility="gone" />
-            </LinearLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="16dp">
 
-                <TextView
-                    android:id="@+id/fifth_goal_name"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Укажите дату окончания срока регистрации"
-                    android:padding="16dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginTop="20dp">
 
-                <TextView
-                    android:id="@+id/fifth_goal_name_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:gravity="right"
-                    android:text="error"
-                    android:textSize="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/fifth_goal_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:hint="Укажите дату окончания срока регистрации"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <com.ycuwq.datepicker.date.DatePicker
-                android:id="@+id/fifth__datePicker"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/fifth_goal_name_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:paddingLeft="14dp"
-                android:text="Сфотографируйте миграционную карту с двух"
-                android:textColor="@color/blackColor" />
+
+            <!--            <com.ycuwq.datepicker.date.DatePicker-->
+            <!--                android:id="@+id/fifth__datePicker"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content" />-->
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <ImageView
-                    android:id="@+id/migration_cardA"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:src="@drawable/id" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Сфотографируйте миграционную карту с двух сторон"
+                    android:textColor="@color/blackColor"
+                    android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/migration_cardB"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginLeft="@dimen/_16sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:background="@drawable/circle_orange_background_layout_im"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="97dp"
+                                android:layout_height="130dp"
+                                android:layout_margin="1dp"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_image_document"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageView
+                                    android:id="@+id/migration_cardA"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:scaleType="fitXY" />
+
+                                <ImageView
+                                    android:id="@+id/cardA_add_im"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/ic_add_image" />
+                            </androidx.cardview.widget.CardView>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+                    <!--                <ImageView-->
+                    <!--                    android:id="@+id/migration_cardA"-->
+                    <!--                    android:layout_width="200dp"-->
+                    <!--                    android:layout_height="120dp"-->
+                    <!--                    android:layout_gravity="center"-->
+                    <!--                    android:layout_marginLeft="30dp"-->
+                    <!--                    android:layout_marginTop="5dp"-->
+                    <!--                    android:layout_marginRight="3dp"-->
+                    <!--                    android:layout_weight="1"-->
+                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
+                    <!--                    android:src="@drawable/id" />-->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="@dimen/_16sdp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:background="@drawable/circle_orange_background_layout_im"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="97dp"
+                                android:layout_height="130dp"
+                                android:layout_margin="1dp"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_image_document"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageView
+                                    android:id="@+id/migration_cardB"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:scaleType="fitXY" />
+
+                                <ImageView
+                                    android:id="@+id/cardB_add_im"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/ic_add_image" />
+                            </androidx.cardview.widget.CardView>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+                    <!--                <ImageView-->
+                    <!--                    android:id="@+id/migration_cardB"-->
+                    <!--                    android:layout_width="200dp"-->
+                    <!--                    android:layout_height="120dp"-->
+                    <!--                    android:layout_gravity="center"-->
+                    <!--                    android:layout_marginLeft="3dp"-->
+                    <!--                    android:layout_marginTop="5dp"-->
+                    <!--                    android:layout_marginRight="30dp"-->
+                    <!--                    android:layout_weight="1"-->
+                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
+                    <!--                    android:src="@drawable/id" />-->
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/fifth_incorrect_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:src="@drawable/id" />
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/list_countries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Укажите цель въезда"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/list_countries_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:id="@+id/date_entry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:hint="Укажите дату въезда"
+                        android:imeOptions="actionNext"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/date_entry_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/fifth_incorrect_card"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                android:drawablePadding="10dp"
-                android:text="Неверный логин или пароль"
-                android:textColor="@color/colorRed"
-                android:visibility="gone" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="16dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/list_countries"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Укажите цель въезда"
-                    android:padding="16dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/list_countries_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:gravity="right"
-                    android:text="error"
-                    android:textSize="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp">
-
-                <TextView
-                    android:id="@+id/date_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:hint="Укажите дату въезда"
-                    android:imeOptions="actionNext"
-                    android:padding="16dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/date_entry_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:gravity="right"
-                    android:text="error"
-                    android:textSize="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/fifth_potent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingLeft="14dp"
-                    android:text="Фото патента РФ:"
-                    android:textColor="@color/blackColor" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/russian_patentA"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Фото патента РФ:"
+                        android:textColor="@color/blackColor"
+                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/russian_patentB"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="@dimen/_16sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/russian_patentA"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/patentA_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+                        <!--                        <ImageView-->
+                        <!--                            android:id="@+id/russian_patentA"-->
+                        <!--                            android:layout_width="200dp"-->
+                        <!--                            android:layout_height="120dp"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:layout_marginLeft="30dp"-->
+                        <!--                            android:layout_marginTop="5dp"-->
+                        <!--                            android:layout_marginRight="3dp"-->
+                        <!--                            android:layout_weight="1"-->
+                        <!--                            android:background="@drawable/circle_orange_background_grey"-->
+                        <!--                            android:src="@drawable/id" />-->
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/russian_patentB"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/patentB_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+                        <!--                        <ImageView-->
+                        <!--                            android:id="@+id/russian_patentB"-->
+                        <!--                            android:layout_width="200dp"-->
+                        <!--                            android:layout_height="120dp"-->
+                        <!--                            android:layout_gravity="center"-->
+                        <!--                            android:layout_marginLeft="3dp"-->
+                        <!--                            android:layout_marginTop="5dp"-->
+                        <!--                            android:layout_marginRight="30dp"-->
+                        <!--                            android:layout_weight="1"-->
+                        <!--                            android:background="@drawable/circle_orange_background_grey"-->
+                        <!--                            android:src="@drawable/id" />-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/fifth_incorrect_patent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                        android:layout_marginTop="8dp"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Неверный логин или пароль"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/fifth_incorrect_patent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
-            </LinearLayout>
 
-
-            <LinearLayout
-                android:id="@+id/fifth_receipt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/fifth_receipt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingLeft="14dp"
-                    android:text="Фото квитанции об оплате патента:"
-                    android:textColor="@color/blackColor" />
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/receipt_patent"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="30dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:src="@drawable/id" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="Фото квитанции об оплате патента:"
+                        android:textColor="@color/blackColor"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/fifth_incorrect_receipt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:background="@drawable/circle_orange_background_layout_im"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="97dp"
+                                android:layout_height="130dp"
+                                android:layout_margin="1dp"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_image_document"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageView
+                                    android:id="@+id/receipt_patent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:scaleType="fitXY" />
+
+                                <ImageView
+                                    android:id="@+id/patent_add_im"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/ic_add_image" />
+                            </androidx.cardview.widget.CardView>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+                    <!--                    <ImageView-->
+                    <!--                        android:id="@+id/receipt_patent"-->
+                    <!--                        android:layout_width="200dp"-->
+                    <!--                        android:layout_height="120dp"-->
+                    <!--                        android:layout_gravity="center"-->
+                    <!--                        android:layout_marginLeft="30dp"-->
+                    <!--                        android:layout_marginTop="5dp"-->
+                    <!--                        android:layout_marginRight="30dp"-->
+                    <!--                        android:background="@drawable/circle_orange_background_grey"-->
+                    <!--                        android:src="@drawable/id" />-->
+
+                    <TextView
+                        android:id="@+id/fifth_incorrect_receipt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Неверный логин или пароль"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
+
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -375,239 +785,704 @@
                 android:id="@+id/fifth_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:padding="16dp"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingLeft="14dp"
-                    android:text="Фото разрешение на работу:"
-                    android:textColor="@color/blackColor" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/work_permitA"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:gravity="center"
+                        android:text="Фото разрешение на работу:"
+                        android:textColor="@color/blackColor"
+                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/work_permitB"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="@dimen/_16sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/work_permitA"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/permitA_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+                        <!--                    <ImageView-->
+                        <!--                        android:id="@+id/work_permitA"-->
+                        <!--                        android:layout_width="200dp"-->
+                        <!--                        android:layout_height="120dp"-->
+                        <!--                        android:layout_gravity="center"-->
+                        <!--                        android:layout_marginLeft="30dp"-->
+                        <!--                        android:layout_marginTop="5dp"-->
+                        <!--                        android:layout_marginRight="3dp"-->
+                        <!--                        android:layout_weight="1"-->
+                        <!--                        android:background="@drawable/circle_orange_background_grey"-->
+                        <!--                        android:src="@drawable/id" />-->
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/work_permitB"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/permitB_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+                        <!--                    <ImageView-->
+                        <!--                        android:id="@+id/work_permitB"-->
+                        <!--                        android:layout_width="200dp"-->
+                        <!--                        android:layout_height="120dp"-->
+                        <!--                        android:layout_gravity="center"-->
+                        <!--                        android:layout_marginLeft="3dp"-->
+                        <!--                        android:layout_marginTop="5dp"-->
+                        <!--                        android:layout_marginRight="30dp"-->
+                        <!--                        android:layout_weight="1"-->
+                        <!--                        android:background="@drawable/circle_orange_background_grey"-->
+                        <!--                        android:src="@drawable/id" />-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/fifth_incorrect_work"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                        android:layout_marginTop="8dp"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Неверный логин или пароль"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/fifth_incorrect_work"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/fifth_2n"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingLeft="14dp"
-                    android:text="Фото 2НДФЛ:"
-                    android:textColor="@color/blackColor" />
-
-                <ImageView
-                    android:id="@+id/photo_2NDFL"
-                    android:layout_width="200dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="30dp"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:src="@drawable/id" />
-
-                <TextView
-                    android:id="@+id/fifth_incorrect_2NDFL"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
-                android:layout_height="wrap_content">
-
-                <AutoCompleteTextView
-                    android:id="@+id/contract_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/circle_orange_background_grey"
-                    android:drawableEnd="@drawable/ic_expend"
-                    android:focusable="false"
-                    android:hint="Выберите тип вашего трудового договора"
-                    android:padding="16dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/contract_type_error"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_3sdp"
-                    android:gravity="right"
-                    android:text="error"
-                    android:textSize="@dimen/_8sdp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/fifth_contract"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:background="@drawable/circle_orange_background_layout"
+                android:layout_marginTop="10dp"
+                android:padding="16dp"
                 android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:paddingLeft="14dp"
-                    android:text="Сфотографируйте первую и последнюю страницы договора"
-                    android:textColor="@color/blackColor" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/last_page_one"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:gravity="center"
+                        android:text="Фото 2НДФЛ:"
+                        android:textColor="@color/blackColor"
+                        android:textStyle="bold" />
 
-                    <ImageView
-                        android:id="@+id/last_page_two"
-                        android:layout_width="200dp"
-                        android:layout_height="120dp"
-                        android:layout_marginLeft="3dp"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_marginTop="10dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/circle_orange_background_grey"
-                        android:src="@drawable/id" />
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:layout_weight="1"
+                            android:background="@drawable/circle_orange_background_layout_im"
+                            android:orientation="vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="97dp"
+                                android:layout_height="130dp"
+                                android:layout_margin="1dp"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:layout_width="55dp"
+                                    android:layout_height="55dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/ic_image_document"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <ImageView
+                                    android:id="@+id/photo_2NDFL"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:scaleType="fitXY" />
+
+                                <ImageView
+                                    android:id="@+id/NDFL_add_im"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_marginRight="@dimen/_5sdp"
+                                    android:src="@drawable/ic_add_image" />
+                            </androidx.cardview.widget.CardView>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+
+                    <!--                <ImageView-->
+                    <!--                    android:id="@+id/photo_2NDFL"-->
+                    <!--                    android:layout_width="200dp"-->
+                    <!--                    android:layout_height="120dp"-->
+                    <!--                    android:layout_gravity="center"-->
+                    <!--                    android:layout_marginLeft="30dp"-->
+                    <!--                    android:layout_marginTop="5dp"-->
+                    <!--                    android:layout_marginRight="30dp"-->
+                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
+                    <!--                    android:src="@drawable/id" />-->
+
+                    <TextView
+                        android:id="@+id/fifth_incorrect_2NDFL"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Неверный логин или пароль"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/layout_contract_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:padding="16dp"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/contract_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:drawableEnd="@drawable/ic_expend"
+                        android:focusable="false"
+                        android:hint="Выберите тип вашего трудового договора"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/contract_type_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/fifth_contract"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:text="Сфотографируйте первую и последнюю страницы договора"
+                        android:textColor="@color/blackColor" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="@dimen/_16sdp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/last_page_one"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/page_one_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/last_page_one"-->
+<!--                            android:layout_width="200dp"-->
+<!--                            android:layout_height="120dp"-->
+<!--                            android:layout_marginLeft="30dp"-->
+<!--                            android:layout_marginTop="10dp"-->
+<!--                            android:layout_marginRight="3dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:background="@drawable/circle_orange_background_grey"-->
+<!--                            android:src="@drawable/id" />-->
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="@dimen/_16sdp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:background="@drawable/circle_orange_background_layout_im"
+                                android:orientation="vertical">
+
+                                <androidx.cardview.widget.CardView
+                                    android:layout_width="97dp"
+                                    android:layout_height="130dp"
+                                    android:layout_margin="1dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:layout_width="55dp"
+                                        android:layout_height="55dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_image_document"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent" />
+
+                                    <ImageView
+                                        android:id="@+id/last_page_two"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_gravity="center"
+                                        android:layout_weight="1"
+                                        android:scaleType="fitXY" />
+
+                                    <ImageView
+                                        android:id="@+id/page_two_add_im"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:layout_marginTop="@dimen/_5sdp"
+                                        android:layout_marginRight="@dimen/_5sdp"
+                                        android:src="@drawable/ic_add_image" />
+                                </androidx.cardview.widget.CardView>
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </LinearLayout>
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/last_page_two"-->
+<!--                            android:layout_width="200dp"-->
+<!--                            android:layout_height="120dp"-->
+<!--                            android:layout_marginLeft="3dp"-->
+<!--                            android:layout_marginTop="10dp"-->
+<!--                            android:layout_marginRight="30dp"-->
+<!--                            android:layout_marginBottom="10dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:background="@drawable/circle_orange_background_grey"-->
+<!--                            android:src="@drawable/id" />-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/fifth_incorrect_page"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="8dp"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Неверный логин или пароль"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/fifth_incorrect_page"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:padding="16dp"
+                android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textStyle="bold"
                 android:layout_marginRight="16dp"
-                android:paddingLeft="14dp"
                 android:text="Сфотографируйте РВП"
                 android:textColor="@color/blackColor" />
 
-            <ImageView
-                android:id="@+id/photo_RVP"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_grey"
-                android:src="@drawable/id" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="97dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="1dp"
+                            app:cardCornerRadius="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="55dp"
+                                android:layout_height="55dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_image_document"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/photo_RVP"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:scaleType="fitXY" />
+
+                            <ImageView
+                                android:id="@+id/RVP_add_im"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/ic_add_image" />
+                        </androidx.cardview.widget.CardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+<!--            <ImageView-->
+<!--                android:id="@+id/photo_RVP"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="120dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginLeft="30dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginRight="30dp"-->
+<!--                android:background="@drawable/circle_orange_background_grey"-->
+<!--                android:src="@drawable/id" />-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/circle_orange_background_layout"
+                android:padding="16dp"
+                android:orientation="vertical">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:paddingLeft="14dp"
+                android:gravity="center"
+                android:textStyle="bold"
                 android:text="Сфотографируйте ВНЖ"
                 android:textColor="@color/blackColor" />
 
-            <ImageView
-                android:id="@+id/photo_VNJ"
-                android:layout_width="200dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/circle_orange_background_grey"
-                android:src="@drawable/id" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_orange_background_layout_im"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="97dp"
+                            android:layout_height="130dp"
+                            android:layout_margin="1dp"
+                            app:cardCornerRadius="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="55dp"
+                                android:layout_height="55dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_image_document"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/photo_VNJ"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:scaleType="fitXY" />
+
+                            <ImageView
+                                android:id="@+id/VNJ_add_im"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_marginRight="@dimen/_5sdp"
+                                android:src="@drawable/ic_add_image" />
+                        </androidx.cardview.widget.CardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+<!--            <ImageView-->
+<!--                android:id="@+id/photo_VNJ"-->
+<!--                android:layout_width="200dp"-->
+<!--                android:layout_height="120dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginLeft="30dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginRight="30dp"-->
+<!--                android:background="@drawable/circle_orange_background_grey"-->
+<!--                android:src="@drawable/id" />-->
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/bottom_loan_fifth"

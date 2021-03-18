@@ -111,7 +111,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         four_cross_back.setOnClickListener {
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
+            hidingErrors()
         }
 
         six_available_country.setOnClickListener {
@@ -724,6 +725,18 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         loans_step_four_card.addTextChangedListener {
             editUtils(loans_step_four_card, step_four_card_error, "", false)
         }
+    }
+
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors(){
+        editUtils(loans_step_four_residence, loans_step_four_error, "", false)
+        editUtils(loans_step_four_city, step_four_city_error, "", false)
+        editUtils(loans_step_four_status, step_four_status_error, "", false)
+        editUtils(loans_step_four_family, step_four_family_error, "", false)
+        editUtils(loans_step_four_children, step_four_children_error, "", false)
+        editUtils(loans_step_four_federation, step_four_federation_error, "", false)
+        editUtils(loans_step_four_card, step_four_card_error, "", false)
+        editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
     }
 
     override fun onClickStepListener() {

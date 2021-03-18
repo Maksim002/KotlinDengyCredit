@@ -421,9 +421,7 @@ class ProfileFragment : Fragment() {
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
             errorValue()
-            viewModel.errorListOperation.value = null
-            viewModel.errorClientInfo.value = null
-            viewModel.errorGetImg.value = null
+            clearError()
         } else {
             if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null
                 && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null
@@ -440,11 +438,19 @@ class ProfileFragment : Fragment() {
                     }, 500)
                 }
             } else {
+                clearError()
                 viewModel.listOperation(map)
                 viewModel.clientInfo(map)
                 viewModel.getImg(mapImg)
             }
         }
+    }
+
+    //Очещает в запросе данные
+    private fun clearError(){
+        viewModel.errorListOperation.value = null
+        viewModel.errorClientInfo.value = null
+        viewModel.errorGetImg.value = null
     }
 
     fun setTitle(title: String?, color: Int) {
