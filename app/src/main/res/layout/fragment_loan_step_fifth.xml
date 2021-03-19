@@ -198,7 +198,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                     android:drawablePadding="10dp"
                     android:text="Неверный логин или пароль"
@@ -209,7 +209,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/fifth_goal_name"
@@ -417,7 +417,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                     android:drawablePadding="10dp"
                     android:text="Неверный логин или пароль"
@@ -427,7 +427,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp">
+                    android:layout_marginTop="10dp">
 
                     <AutoCompleteTextView
                         android:id="@+id/list_countries"
@@ -672,7 +672,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                         android:drawablePadding="10dp"
                         android:text="Неверный логин или пароль"
@@ -690,7 +690,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:text="Фото квитанции об оплате патента:"
                         android:textColor="@color/blackColor"
@@ -770,7 +770,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                         android:drawablePadding="10dp"
                         android:text="Неверный логин или пароль"
@@ -958,7 +958,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                         android:drawablePadding="10dp"
                         android:text="Неверный логин или пароль"
@@ -1068,7 +1068,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                         android:drawablePadding="10dp"
                         android:text="Неверный логин или пароль"
@@ -1291,7 +1291,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="10dp"
                         android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                         android:drawablePadding="10dp"
                         android:text="Неверный логин или пароль"

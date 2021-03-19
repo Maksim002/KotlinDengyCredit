@@ -144,7 +144,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, cityPosition, "Выберите город")
+                initBottomSheet(itemDialog, cityPosition, "В каком городе России вы живете?")
             }
         }
 
@@ -198,7 +198,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, childrenPosition, "Количество детей")
+                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у вас в семье?")
             }
         }
 
@@ -695,7 +695,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
         if (six_number_phone.text!!.isNotEmpty()){
             if (phoneLength != reNum.length.toString()) {
-                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Видите правильный номер", true)
+                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Ввидите правильный номер", true)
                 valid = false
             }
         }

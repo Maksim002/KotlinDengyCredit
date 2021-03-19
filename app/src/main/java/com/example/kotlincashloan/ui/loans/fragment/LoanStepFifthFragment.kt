@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -54,7 +53,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -119,7 +117,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var saveValidate = false
     private val mapSave = mutableMapOf<String, String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_fifth, container, false)
     }
@@ -238,7 +240,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 initBottomSheetError(result.reject!!.message.toString())
             } else {
                 if (result.error.code == 409) {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно",Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Отсканируйте документ повторно",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     listResult(result.error.code!!)
                 }
@@ -248,7 +254,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 if (error == "409") {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Отсканируйте документ повторно",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     errorList(error)
                 }
@@ -287,9 +297,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                         }
-                    }else if (data.error.code != null) {
+                    } else if (data.error.code != null) {
                         listResult(data.error.code!!)
-                    }else if (data.reject != null) {
+                    } else if (data.reject != null) {
                         initBottomSheetError(data.reject.message.toString())
                     }
                 }
@@ -424,12 +434,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listEntryGoal.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1 , listEntryGoal[i-1].id!!.toInt(), listEntryGoal[i - 1].name.toString()))
+                                listEntryGoal[i - 1].name.toString(),
+                                "listEntryGoal",
+                                i - 1,
+                                listEntryGoal[i - 1].id!!.toInt(),
+                                listEntryGoal[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, goalPosition, "Цель въезда")
+                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда")
             }
         }
 
@@ -447,12 +463,22 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listTypeContract.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listTypeContract[i - 1].name.toString(), "listTypeContract", i - 1, listTypeContract[i - 1].id!!.toInt(), listTypeContract[i - 1].name.toString()))
+                                listTypeContract[i - 1].name.toString(),
+                                "listTypeContract",
+                                i - 1,
+                                listTypeContract[i - 1].id!!.toInt(),
+                                listTypeContract[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, contractPosition, "Тип договора")
+                initBottomSheet(
+                    itemDialog,
+                    contractPosition,
+                    "Выберите тип вашего трудового договора"
+                )
             }
         }
 
@@ -555,7 +581,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -563,11 +593,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.CAMERA),
@@ -595,8 +621,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     private fun getMyFile() {
         val file = "photo"
-        val dtoregDirectiry: File? =
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
@@ -616,6 +641,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
+            val fOut: OutputStream? = null
             if (data == null) {
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
@@ -721,7 +747,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private fun iniData() {
         if (countriesList.size != 0) {
             if (countriesList[0].key == "fifth_goal_name") {
-                val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
+                val calendarDta = GregorianCalendar(
+                    countriesList[0].year,
+                    countriesList[0].monthOfYear,
+                    countriesList[0].dayOfMonth
+                )
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 fifth_goal_name.setText(MyUtils.toMyDate(calendar))
                 countriesPhone = calendar
@@ -733,7 +763,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
             if (countriesList.size != 0) {
-                showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
+                showDate(
+                    countriesList[0].year,
+                    countriesList[0].monthOfYear,
+                    countriesList[0].dayOfMonth,
+                    R.style.DatePickerSpinner
+                )
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -744,7 +779,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         if (goalList.size != 0) {
             if (goalList[0].key == "date_entry") {
-                val calendarDta = GregorianCalendar(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth)
+                val calendarDta = GregorianCalendar(
+                    goalList[0].year,
+                    goalList[0].monthOfYear,
+                    goalList[0].dayOfMonth
+                )
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 date_entry.setText(MyUtils.toMyDate(calendar))
                 goalPhone = calendar
@@ -755,7 +794,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             date_entry.error = null
             keyData = "date_entry"
             if (goalList.size != 0) {
-                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
+                showDate(
+                    goalList[0].year,
+                    goalList[0].monthOfYear,
+                    goalList[0].dayOfMonth,
+                    R.style.DatePickerSpinner
+                )
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -781,7 +825,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         fifth_goal_name.setText(MyUtils.toMyDate(goal))
                         countriesPhone = goal
                         //доболяет новый элемент в список
-                        countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
+                        countriesList.add(
+                            MyDataListModel(
+                                "fifth_goal_name",
+                                year,
+                                monthOfYear,
+                                dayOfMonth
+                            )
+                        )
                         break
                     }
                 }
@@ -918,18 +969,30 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                                 text.setText("Загрузка базы данных: $progress%")
                             }
 
-                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
+                            override fun onPrepareCompleted(
+                                p0: Boolean,
+                                p1: DocumentReaderException?
+                            ) {
                                 //Initializing the reader
-                                DocumentReader.Instance().initializeReader(requireContext(), license) { success, error_initializeReader ->
+                                DocumentReader.Instance().initializeReader(
+                                    requireContext(),
+                                    license
+                                ) { success, error_initializeReader ->
                                     //добавил трай что бы непадал
                                     try {
-                                    text.setText("Фото патента РФ:")
-                                    fifth_potent.isClickable = true
-                                    }catch (e: Exception){
+                                        text.setText("Фото патента РФ:")
+                                        fifth_potent.isClickable = true
+                                    } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
-                                    DocumentReader.Instance().customization().edit().setShowHelpAnimation(false).apply()
-                                    DocumentReader.Instance().functionality().edit().setShowSkipNextPageButton(false).apply()
+                                    DocumentReader.Instance().customization().edit()
+                                        .setShowHelpAnimation(
+                                            false
+                                        ).apply()
+                                    DocumentReader.Instance().functionality().edit()
+                                        .setShowSkipNextPageButton(
+                                            false
+                                        ).apply()
                                     if (success) {
                                         //initialization successful
                                         fifth_potent.setOnClickListener(View.OnClickListener {
@@ -961,8 +1024,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                                         //добавил трай что бы непадал
                                         try {
                                             //Initialization was not successful
-                                            Toast.makeText(requireContext(), "Init failed:$p1", Toast.LENGTH_LONG).show()
-                                        }catch (e: Exception){
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Init failed:$p1",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
 
@@ -1184,7 +1251,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 if (documentImage != null) {
                     imageScanId = "imageA"
                     val aspectRatio = documentImage!!.width.toDouble() / documentImage!!.height.toDouble()
-                    documentImage = Bitmap.createScaledBitmap(documentImage!!, (1200 * aspectRatio).toInt(), 1200, false)
+                    documentImage = Bitmap.createScaledBitmap(
+                        documentImage!!,
+                        (1200 * aspectRatio).toInt(),
+                        1200,
+                        false
+                    )
                     fifth_incorrect_patent.visibility = View.GONE
                     fifth_permission.visibility = View.GONE
                     russianPatentA = true

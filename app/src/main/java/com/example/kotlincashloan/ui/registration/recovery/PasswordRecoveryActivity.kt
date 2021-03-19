@@ -352,7 +352,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()) {
             if (reNum.length != availableCountry) {
-                editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Видите правильный номер", true)
+                editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Ввидите правильный номер", true)
                 valid = false
             }
         }else{

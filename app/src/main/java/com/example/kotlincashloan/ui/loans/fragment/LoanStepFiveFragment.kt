@@ -177,7 +177,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition, "Должность")
+                initBottomSheet(itemDialog, typeWorkPosition, "Кем вы работаете?")
             }
         }
 
@@ -200,7 +200,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Стаж работы в РФ")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько вы работаете в России?")
             }
         }
 
@@ -240,7 +240,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 initBottomSheet(
                     itemDialog,
                     experiencePosition,
-                    "Стаж работы в последнем месте в РФ"
+                    "Сколько вы работаете на последнем месте работы в России?"
                 )
             }
         }

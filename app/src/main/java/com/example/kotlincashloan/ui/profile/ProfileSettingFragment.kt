@@ -854,7 +854,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 layout_profile_setting_second,
                 profile_setting_second_phone,
                 profile_setting_second_error,
-                "Видите правильный номер",
+                "Ввидите правильный номер",
                 false
             )
             profile_optional_number.setTextColor(
@@ -1131,8 +1131,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri =
-                FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
+            val imagUri: Uri = FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
 
             val takePictureIntent = Intent(ACTION_IMAGE_CAPTURE)
             val pickIntent = Intent(Intent.ACTION_PICK)
@@ -1271,7 +1270,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     layout_profile_setting_second,
                     profile_setting_second_phone,
                     profile_setting_second_error,
-                    "Видите правильный номер",
+                    "Ввидите правильный номер",
                     true
                 )
                 profile_optional_number.setTextColor(
@@ -1295,7 +1294,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     layout_profile_s_two,
                     profile_s_two_password,
                     profile_s_two_error,
-                    "Пароль должны совпадать",
+                    "Пароль должн совпадать",
                     true
                 )
                 text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
