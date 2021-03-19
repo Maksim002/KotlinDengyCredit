@@ -641,7 +641,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-            val fOut: OutputStream? = null
             if (data == null) {
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
