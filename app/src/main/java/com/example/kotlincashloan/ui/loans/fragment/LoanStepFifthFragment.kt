@@ -246,11 +246,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 initBottomSheetError(result.reject!!.message.toString())
             } else {
                 if (result.error.code == 409) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Отсканируйте документ повторно",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
                     listResult(result.error.code!!)
                 }
@@ -260,11 +256,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 if (error == "409") {
-                    Toast.makeText(
-                        requireContext(),
-                        "Отсканируйте документ повторно",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
                     errorList(error)
                 }
@@ -600,11 +592,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.CAMERA),
-                    CAMERA_PERM_CODE
-                )
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
             } else {
                 getMyFile()
             }
@@ -719,7 +707,9 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
+                    //Приниет ключ для проверки
                     imagViewModel.updateKey(imageKey)
+                    // Принимает ключ и зоброжения и картинку
                     imageMap.put(imageKey, scaled)
                     imageKey = ""
                 }
@@ -746,6 +736,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         imagViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
             russian_federationA.setImageBitmap(images["russian_federationA"])
             if (images.containsKey("russian_federationA")){
+                //Метод при немает id и сравнивет прикреплтно ли изоброжение true , false
                 changeImage(federationA_add_im, true, requireActivity())
             }
             russian_federationB.setImageBitmap(images["russian_federationB"])
