@@ -37,6 +37,7 @@ import com.example.kotlincashloan.service.model.Loans.TypeContractResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -62,9 +63,12 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
     private var viewModel = LoansViewModel()
+    private var imagViewModel = SharedViewModel()
+    private var imageMap = HashMap<String, Bitmap>()
     private val IMAGE_PICK_CODE = 10
     private val CAMERA_PERM_CODE = 101
     private val REQUEST_BROWSE_PICTURE = 11
@@ -138,6 +142,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         initHidingFields()
         initTextValidation()
         initView()
+        dataImage()
+
     }
 
     private fun initRestart(){
@@ -647,77 +653,78 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 imageConverter(scaled)
                 if (imageKey == "russian_federationA") {
-                    changeImage(federationA_add_im, true, requireActivity())
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
-                    russian_federationA.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
-                    changeImage(federationB_add_im, true, requireActivity())
                     fifth_incorrectA.visibility = View.GONE
-                    russian_federationB.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
-                    changeImage(cardA_add_im, true, requireActivity())
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
-                    migration_cardA.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
-                    changeImage(cardB_add_im, true, requireActivity())
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
-                    migration_cardB.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
-                    changeImage(patent_add_im, true, requireActivity())
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
-                    receipt_patent.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
-                    changeImage(permitA_add_im, true, requireActivity())
                     workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
-                    work_permitA.setImageBitmap(scaled)
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
-                    changeImage(permitB_add_im, true, requireActivity())
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
-                    work_permitB.setImageBitmap(scaled)
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
-                    changeImage(NDFL_add_im, true, requireActivity())
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
-                    photo_2NDFL.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
-                    changeImage(page_one_add_im, true, requireActivity())
-                    last_page_one.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
-                    changeImage(page_two_add_im, true, requireActivity())
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
-                    last_page_two.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
-                    changeImage(RVP_add_im, true, requireActivity())
-                    photo_RVP.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
-                    changeImage(VNJ_add_im, true, requireActivity())
-                    photo_VNJ.setImageBitmap(scaled)
+                    imagViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, scaled)
                     imageKey = ""
                 }
                 initSaveImage()
+                imagViewModel.updateBitmaps(imageMap)
             }
         }
 
@@ -732,6 +739,60 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 }
             }
         }
+    }
+
+    //Сохроняте картинки во ViewModel
+    private fun dataImage(){
+        imagViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
+            russian_federationA.setImageBitmap(images["russian_federationA"])
+            if (images.containsKey("russian_federationA")){
+                changeImage(federationA_add_im, true, requireActivity())
+            }
+            russian_federationB.setImageBitmap(images["russian_federationB"])
+            if (images.containsKey("russian_federationB")){
+                changeImage(federationB_add_im, true, requireActivity())
+            }
+            migration_cardA.setImageBitmap(images["migration_cardA"])
+            if (images.containsKey("migration_cardA")){
+                changeImage(cardA_add_im, true, requireActivity())
+            }
+            migration_cardB.setImageBitmap(images["migration_cardB"])
+            if (images.containsKey("migration_cardB")){
+                changeImage(cardB_add_im, true, requireActivity())
+            }
+            receipt_patent.setImageBitmap(images["receipt_patent"])
+            if (images.containsKey("receipt_patent")){
+                changeImage(patent_add_im, true, requireActivity())
+            }
+            work_permitA.setImageBitmap(images["work_permitA"])
+            if (images.containsKey("work_permitA")){
+                changeImage(permitA_add_im, true, requireActivity())
+            }
+            work_permitB.setImageBitmap(images["work_permitB"])
+            if (images.containsKey("work_permitB")){
+                changeImage(permitB_add_im, true, requireActivity())
+            }
+            photo_2NDFL.setImageBitmap(images["photo_2NDFL"])
+            if (images.containsKey("photo_2NDFL")){
+                changeImage(NDFL_add_im, true, requireActivity())
+            }
+            last_page_one.setImageBitmap(images["last_page_one"])
+            if (images.containsKey("last_page_one")){
+                changeImage(page_one_add_im, true, requireActivity())
+            }
+            last_page_two.setImageBitmap(images["last_page_two"])
+            if (images.containsKey("last_page_two")){
+                changeImage(page_two_add_im, true, requireActivity())
+            }
+            photo_RVP.setImageBitmap(images["photo_RVP"])
+            if (images.containsKey("photo_RVP")){
+                changeImage(RVP_add_im, true, requireActivity())
+            }
+            photo_VNJ.setImageBitmap(images["photo_VNJ"])
+            if (images.containsKey("photo_VNJ")){
+                changeImage(VNJ_add_im, true, requireActivity())
+            }
+        })
     }
 
     //encode image to base64 string
