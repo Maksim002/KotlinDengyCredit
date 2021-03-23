@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -246,7 +248,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 initBottomSheetError(result.reject!!.message.toString())
             } else {
                 if (result.error.code == 409) {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Отсканируйте документ повторно",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     listResult(result.error.code!!)
                 }
@@ -256,7 +262,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 if (error == "409") {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Отсканируйте документ повторно",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     errorList(error)
                 }
@@ -592,7 +602,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERM_CODE
+                )
             } else {
                 getMyFile()
             }
@@ -636,38 +650,48 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null) {
+                var rotatedBitmap: Bitmap? = null
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
-                imageConverter(scaled)
+                val ei = ExifInterface(currentPhotoPath)
+                val orientation: Int = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+                when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(scaled, 90F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(scaled, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(scaled, 270F)
+                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = scaled
+                    else -> rotatedBitmap = scaled
+                }
+                imageConverter(rotatedBitmap!!)
                 if (imageKey == "russian_federationA") {
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
                     fifth_incorrectA.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
                     workPermitA = true
@@ -675,7 +699,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
                     workPermitB = true
@@ -683,34 +707,34 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
                     imagViewModel.updateKey(imageKey)
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
                     //Приниет ключ для проверки
                     imagViewModel.updateKey(imageKey)
                     // Принимает ключ и зоброжения и картинку
-                    imageMap.put(imageKey, scaled)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 }
                 initSaveImage()
@@ -731,56 +755,63 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
     }
 
+    //Делает картинку с камеры вертикальной
+    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
     //Сохроняте картинки во ViewModel
     private fun dataImage(){
         imagViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
             russian_federationA.setImageBitmap(images["russian_federationA"])
-            if (images.containsKey("russian_federationA")){
+            if (images.containsKey("russian_federationA")) {
                 //Метод при немает id и сравнивет прикреплтно ли изоброжение true , false
                 changeImage(federationA_add_im, true, requireActivity())
             }
             russian_federationB.setImageBitmap(images["russian_federationB"])
-            if (images.containsKey("russian_federationB")){
+            if (images.containsKey("russian_federationB")) {
                 changeImage(federationB_add_im, true, requireActivity())
             }
             migration_cardA.setImageBitmap(images["migration_cardA"])
-            if (images.containsKey("migration_cardA")){
+            if (images.containsKey("migration_cardA")) {
                 changeImage(cardA_add_im, true, requireActivity())
             }
             migration_cardB.setImageBitmap(images["migration_cardB"])
-            if (images.containsKey("migration_cardB")){
+            if (images.containsKey("migration_cardB")) {
                 changeImage(cardB_add_im, true, requireActivity())
             }
             receipt_patent.setImageBitmap(images["receipt_patent"])
-            if (images.containsKey("receipt_patent")){
+            if (images.containsKey("receipt_patent")) {
                 changeImage(patent_add_im, true, requireActivity())
             }
             work_permitA.setImageBitmap(images["work_permitA"])
-            if (images.containsKey("work_permitA")){
+            if (images.containsKey("work_permitA")) {
                 changeImage(permitA_add_im, true, requireActivity())
             }
             work_permitB.setImageBitmap(images["work_permitB"])
-            if (images.containsKey("work_permitB")){
+            if (images.containsKey("work_permitB")) {
                 changeImage(permitB_add_im, true, requireActivity())
             }
             photo_2NDFL.setImageBitmap(images["photo_2NDFL"])
-            if (images.containsKey("photo_2NDFL")){
+            if (images.containsKey("photo_2NDFL")) {
                 changeImage(NDFL_add_im, true, requireActivity())
             }
             last_page_one.setImageBitmap(images["last_page_one"])
-            if (images.containsKey("last_page_one")){
+            if (images.containsKey("last_page_one")) {
                 changeImage(page_one_add_im, true, requireActivity())
             }
             last_page_two.setImageBitmap(images["last_page_two"])
-            if (images.containsKey("last_page_two")){
+            if (images.containsKey("last_page_two")) {
                 changeImage(page_two_add_im, true, requireActivity())
             }
             photo_RVP.setImageBitmap(images["photo_RVP"])
-            if (images.containsKey("photo_RVP")){
+            if (images.containsKey("photo_RVP")) {
                 changeImage(RVP_add_im, true, requireActivity())
             }
             photo_VNJ.setImageBitmap(images["photo_VNJ"])
-            if (images.containsKey("photo_VNJ")){
+            if (images.containsKey("photo_VNJ")) {
                 changeImage(VNJ_add_im, true, requireActivity())
             }
         })
