@@ -337,6 +337,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                         }
                         // второй номер
                         if (clientResult.secondPhone != "") {
+                            profile_s_mask.isClickable = false
                             profile_setting_second_phone.mask = null
 
                             val secondNationality = clientResult.phoneSecond!!.toInt()
@@ -617,11 +618,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listQuestions") {
+            profile_s_question.isClickable = true
             profile_s_question.setText(question[model.position].name)
             questionPosition = question[model.position].name.toString()
             questionId = question[model.position].id.toString()
 
         } else if (model.key == "listCountries") {
+            profile_s_mask.isClickable = true
             profile_setting_second_phone.mask = null
             profile_s_mask.setText("+" + countries[model.position].phoneCode)
             countriesPosition = countries[model.position].name.toString()
@@ -643,6 +646,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         //Click Список секретных вопросов
         profile_s_question.setOnClickListener {
+            profile_s_question.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {

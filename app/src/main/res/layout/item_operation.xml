@@ -43,7 +43,7 @@
                     android:layout_weight="0.4"
                     android:text="Погашение по займу"
                     android:textColor="@color/blackColor"
-                    android:textSize="17dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/operation_data"

@@ -159,6 +159,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_post.setOnClickListener {
+            fire_post.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -182,6 +183,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_work_experience_r_f.setOnClickListener {
+            fire_work_experience_r_f.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -205,6 +207,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_work_experience.setOnClickListener {
+            fire_work_experience.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -246,6 +249,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_list_income.setOnClickListener {
+            fire_list_income.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -269,6 +273,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_additional_income.setOnClickListener {
+            fire_additional_income.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -292,6 +297,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_additional_amount.setOnClickListener {
+            fire_additional_amount.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -324,6 +330,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     override fun listenerClickResult(model: GeneralDialogModel) {
 
         if (model.key == "listTypeWork") {
+            fire_post.isClickable = true
             fire_post.error = null
             fire_post.setText(listTypeWork[model.position].name)
             typeWorkPosition = listTypeWork[model.position].name.toString()
@@ -331,6 +338,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listYears") {
+            fire_work_experience_r_f.isClickable = true
             fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -352,6 +360,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listWorkExperience") {
+            fire_work_experience.isClickable = true
             fire_work_experience.error = null
             fire_work_experience.hint = ""
             fire_work_experience.setText(listWorkExperience[model.position].name)
@@ -360,6 +369,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listIncome") {
+            fire_list_income.isClickable = true
             fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
             incomePosition = listIncome[model.position].name.toString()
@@ -367,6 +377,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listTypeIncome") {
+            fire_additional_income.isClickable = true
             fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
             typeIncomePosition = listTypeIncome[model.position].name.toString()
@@ -380,6 +391,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listIncomeAdditional") {
+            fire_additional_amount.isClickable = true
             fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
             incomeAdditionalPosition = listIncomeAdditional[model.position].name.toString()

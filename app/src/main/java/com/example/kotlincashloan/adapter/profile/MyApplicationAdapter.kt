@@ -22,7 +22,7 @@ class MyApplicationAdapter (var listener: ApplicationListener,item: ArrayList<Re
         holder.itemView.app_title.text = item.name
         holder.itemView.application_status.text = item.status
 
-        if (AppPreferences.reviewCode == 1) {
+        if (AppPreferences.reviewCodeAp == 1) {
             if (item.review == false) {
                 holder.itemView.application_review.visibility = View.VISIBLE
             } else {

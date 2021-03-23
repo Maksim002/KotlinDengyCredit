@@ -66,6 +66,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         questionnaire_phone_list_country.setOnClickListener {
+            questionnaire_phone_list_country.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -112,6 +113,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listTypeWork") {
+            questionnaire_phone_list_country.isClickable = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.error = null
             password_recovery_word.error = null

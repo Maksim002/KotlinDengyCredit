@@ -196,6 +196,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         number_list_country.setOnClickListener {
+            number_list_country.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -327,6 +328,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
+            number_list_country.isClickable = true
             number_phone.error = null
             //Очещает старую маску при выборе новой
             number_phone.mask = ""

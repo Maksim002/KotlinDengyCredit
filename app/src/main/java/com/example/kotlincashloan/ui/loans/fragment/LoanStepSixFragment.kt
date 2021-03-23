@@ -102,6 +102,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
 
         six_loan_family.setOnClickListener {
+            six_loan_family.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -147,6 +148,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listFamily") {
+            six_loan_family.isClickable = true
             six_loan_family.setText(listFamily[model.position].name)
             familyPosition = listFamily[model.position].name.toString()
             family = listFamily[model.position].id.toString()

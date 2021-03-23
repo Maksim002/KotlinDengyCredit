@@ -27,7 +27,7 @@
             android:layout_marginLeft="6dp"
             android:text="Выгодная сторона"
             android:textColor="@color/blackColor"
-            android:textSize="17dp" />
+            android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"

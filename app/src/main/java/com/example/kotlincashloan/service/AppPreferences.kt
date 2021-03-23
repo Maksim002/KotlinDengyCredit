@@ -222,6 +222,14 @@ object AppPreferences {
             }
         }
 
+    var reviewCodeAp: Int?
+        get() = preferences.getInt("reviewCodeAp", 0)
+        set(value) = preferences.edit {
+            if (value != null) {
+                it.putInt("reviewCodeAp", value)
+            }
+        }
+
     fun String.toFullPhone(): String {
         return "996" + this.replace(" ", "")
     }

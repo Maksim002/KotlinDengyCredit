@@ -531,6 +531,7 @@ class ProfileFragment : Fragment() {
         ) {
             if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
                 AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
                 if (inputsAnim != 0) {
                     profAnim = true
                 }
@@ -540,6 +541,7 @@ class ProfileFragment : Fragment() {
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 1
+                AppPreferences.reviewCodeAp = 1
 //                initRestart()
                 viewModel.listGetImgDta.postValue(null)
                 viewModel.getImg(mapImg)
@@ -548,6 +550,7 @@ class ProfileFragment : Fragment() {
             }
         } else {
             AppPreferences.reviewCode = 1
+            AppPreferences.reviewCodeAp = 1
             viewModel.refreshCode = false
             initRestart()
         }

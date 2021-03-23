@@ -116,6 +116,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         six_available_country.setOnClickListener {
+            six_available_country.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -133,6 +134,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_city.setOnClickListener {
+            loans_step_four_city.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -149,6 +151,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_status.setOnClickListener {
+            loans_step_four_status.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -165,6 +168,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_family.setOnClickListener {
+            loans_step_four_family.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -181,6 +185,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_children.setOnClickListener {
+            loans_step_four_children.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -203,6 +208,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_federation.setOnClickListener {
+            loans_step_four_federation.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -225,6 +231,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         loans_step_four_card.setOnClickListener {
+            loans_step_four_card.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -263,6 +270,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableSix") {
+            six_available_country.isClickable = true
             six_number_phone.error = null
             //Очещает старую маску при выборе новой
             six_number_phone.mask = ""
@@ -275,12 +283,14 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listCity") {
+            loans_step_four_city.isClickable = true
             loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
             cityPosition = listCity[model.position].name.toString()
             cityId = listCity[model.position].id!!
         }
         if (model.key == "listFamilyStatus") {
+            loans_step_four_status.isClickable = true
             loans_step_four_status.error = null
             loans_step_four_status.setText(listFamilyStatus[model.position].name)
             familyPosition = listFamilyStatus[model.position].name.toString()
@@ -288,6 +298,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listNumbers") {
+            loans_step_four_family.isClickable = true
             loans_step_four_family.error = null
             loans_step_four_family.setText(listNumbers[model.position].name)
             numbersPosition = listNumbers[model.position].name.toString()
@@ -295,6 +306,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listNumbersChildren") {
+            loans_step_four_children.isClickable = true
             loans_step_four_children.error = null
             loans_step_four_children.setText(listNumbersChildren[model.position].name)
             childrenPosition = listNumbersChildren[model.position].name.toString()
@@ -302,6 +314,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listYears") {
+            loans_step_four_federation.isClickable = true
             loans_step_four_federation.error = null
             loans_step_four_federation.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -309,6 +322,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listCatsNames") {
+            loans_step_four_card.isClickable = true
             loans_step_four_card.error = null
             loans_step_four_card.setText(listCatsNames[model.position])
             catsNamesPosition = listCatsNames[model.position]
