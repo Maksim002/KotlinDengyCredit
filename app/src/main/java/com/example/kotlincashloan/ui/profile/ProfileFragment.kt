@@ -21,6 +21,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.extension.bitmapToFile
 import com.example.kotlincashloan.extension.sendPicture
+import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -41,8 +42,10 @@ class ProfileFragment : Fragment() {
     private val map = HashMap<String, String>()
     private val mapImg = HashMap<String, String>()
     val handler = Handler()
-    private var list: ArrayList<ResultOperationModel> = arrayListOf()
+    private var listOperation: ArrayList<ResultOperationModel> = arrayListOf()
+    private var listApplication: ArrayList<ResultApplicationModel> = arrayListOf()
     private var errorCode = ""
+    private var errorCodeAp = ""
     private var errorCodeClient = ""
     private var errorGetImg = ""
     private var numberBar = 0
@@ -50,6 +53,7 @@ class ProfileFragment : Fragment() {
     private var profAnim = false
     private var inputsAnim = 0
     private var errorNull = ""
+    private var errorNullAp = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,11 +126,11 @@ class ProfileFragment : Fragment() {
             try {
                 if (result.result != null) {
                     errorNull = ""
-                    list = result.result
+                    listOperation = result.result
                     initPager()
                     errorCode = result.code.toString()
                 } else if (result.error != null) {
-                    if (errorCodeClient != result.error.code.toString()){
+                    if (errorCode != result.error.code.toString()){
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
                                 listListResult(result.error.code!!)
@@ -139,7 +143,7 @@ class ProfileFragment : Fragment() {
                     }
                     errorCode = result.error.code.toString()
                 }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                     resultSuccessfully()
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -149,6 +153,64 @@ class ProfileFragment : Fragment() {
                 e.printStackTrace()
             }
         })
+
+
+        //Маи заявки если все успешно
+        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result->
+            try {
+                if (result.result != null){
+                    errorNullAp = ""
+                    listApplication = result.result
+                    initPager()
+                    errorCodeAp = result.code.toString()
+                }else if (result.error != null){
+                    if (errorCodeAp != result.error.code.toString()){
+                        if (result.error.code != 404) {
+                            if (result.error.code != null) {
+                                listListResult(result.error.code!!)
+                            }
+                        } else {
+                            resultTrue()
+                            errorNullAp = result.error.code.toString()
+                            initPager()
+                        }
+                    }
+                    errorCodeAp = result.error.code.toString()
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                    resultSuccessfully()
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                profile_swipe.isRefreshing = false
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        })
+
+        //Маи заявки если ошибка
+        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error->
+            try {
+                if (errorCodeAp != error){
+                    if (error != "404") {
+                        errorCodeAp = error
+                        if (error != null) {
+                            errorList(error)
+                        }
+                    } else {
+                        resultTrue()
+                        errorNullAp = error
+                        initPager()
+                    }
+                }
+                errorCodeAp = error
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
+        })
+
+
 
         //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
@@ -189,7 +251,7 @@ class ProfileFragment : Fragment() {
                         errorCodeClient = result.error.code.toString()
                     }
                 }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                     resultSuccessfully()
                 }
             } catch (e: Exception) {
@@ -241,7 +303,7 @@ class ProfileFragment : Fragment() {
                         }
                     }
                 }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                     resultSuccessfully()
                 }
             } catch (e: Exception) {
@@ -348,8 +410,8 @@ class ProfileFragment : Fragment() {
 
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(list, errorNull), "Мои операции")
-        adapter.addFragment(MyApplicationFragment(), "Мои заявки")
+        adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
+        adapter.addFragment(MyApplicationFragment(listApplication, errorNullAp), "Мои заявки")
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()
 
@@ -413,8 +475,8 @@ class ProfileFragment : Fragment() {
             errorValue()
             clearError()
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null
-                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null
+                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null && viewModel.errorListApplication.value == null
             ) {
                 if (!viewModel.refreshCode) {
                     MainActivity.alert.show()
@@ -423,6 +485,7 @@ class ProfileFragment : Fragment() {
                         viewModel.listOperation(map)
                         viewModel.clientInfo(map)
                         viewModel.getImg(mapImg)
+                        viewModel.listApplication(map)
                         initRecycler()
                         initGetImgDta()
                     }, 500)
@@ -430,6 +493,7 @@ class ProfileFragment : Fragment() {
             } else {
                 clearError()
                 viewModel.listOperation(map)
+                viewModel.listApplication(map)
                 viewModel.clientInfo(map)
                 viewModel.getImg(mapImg)
             }
@@ -462,10 +526,10 @@ class ProfileFragment : Fragment() {
         if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
         }
-        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null ||
-            viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null
+        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null
+            || viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null || viewModel.errorListApplication.value != null
         ) {
-            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200") {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
                 AppPreferences.reviewCode = 0
                 if (inputsAnim != 0) {
                     profAnim = true
@@ -504,6 +568,7 @@ class ProfileFragment : Fragment() {
     private fun errorValue(){
         errorCode = ""
         errorCodeClient = ""
+        errorCodeAp = ""
         errorGetImg = ""
     }
 }

@@ -249,5 +249,10 @@ interface ApiService {
     @FormUrlEncoded
     @POST("saveLoan?token=oYyxhIFgJjAb")
     suspend fun saveLoans(@FieldMap params: Map<String, String>): Response<CommonResponseReject<SaveLoanResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listLoan?token=oYyxhIFgJjAb")
+    fun listLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ResultApplicationModel>>>
 }
 

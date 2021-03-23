@@ -39,12 +39,37 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListOperation.postValue(response.raw().code.toString())
                 }
-//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                    HomeActivity.alert.hide()
-//                },550)
             }
         })
     }
+
+
+    val errorListApplication = MutableLiveData<String>()
+    var listListApplicationDta = MutableLiveData<CommonResponse<ArrayList<ResultApplicationModel>>>()
+
+    fun listApplication(map: Map<String, String>){
+        RetrofitService.apiService().listLoan(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultApplicationModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListApplication.postValue( "601")
+                }else{
+                    errorListApplication.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, response: Response<CommonResponse<ArrayList<ResultApplicationModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listListApplicationDta.postValue(response.body())
+                    }else{
+                        errorListApplication.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListApplication.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
+
 
     val errorGetOperation = MutableLiveData<String>()
     var listGetOperationDta = MutableLiveData<CommonResponse<GetResultOperationModel>>()

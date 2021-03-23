@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.MyApplicationAdapter
-import com.example.kotlincashloan.adapter.profile.MyOperationModel
+import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
+import com.example.kotlinscreenscanner.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_my_application.*
 
-class MyApplicationFragment : Fragment() {
-    private var myAdapter = MyApplicationAdapter()
+class MyApplicationFragment(var list: ArrayList<ResultApplicationModel> = arrayListOf(), var error: String) : Fragment(), ApplicationListener {
+    private var myAdapter = MyApplicationAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,18 +25,30 @@ class MyApplicationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRecycler()
 
-        val list: ArrayList<MyOperationModel> = arrayListOf()
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
-        list.add(MyOperationModel(""))
 
-        myAdapter.update(list)
-        application_recycler.adapter = myAdapter
+    }
+
+    private fun initRecycler() {
+        if (error == "404"){
+            profile_aplication_null.visibility = View.VISIBLE
+            application_recycler.visibility = View.GONE
+        }else{
+            application_recycler.visibility = View.VISIBLE
+            profile_aplication_null.visibility = View.GONE
+            myAdapter.update(list)
+            application_recycler.adapter = myAdapter
+        }
+
+    }
+
+    override fun applicationListener(int: Int, item: ResultApplicationModel) {
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MainActivity.timer.timeStop()
     }
 }
