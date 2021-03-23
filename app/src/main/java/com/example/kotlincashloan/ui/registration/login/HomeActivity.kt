@@ -2,11 +2,13 @@ package com.example.kotlincashloan.ui.registration.login
 
 import android.content.Intent
 import android.graphics.PorterDuff
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -43,13 +45,13 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
+
 class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
     private var inputsAnim = false
-    private var waiting = 0
 
     companion object {
         var repeatedClick = 0
@@ -77,7 +79,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         AppPreferences.init(application)
-
         iniClick()
         initCheck()
         initView()
