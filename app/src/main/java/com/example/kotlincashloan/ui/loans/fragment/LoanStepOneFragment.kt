@@ -32,7 +32,7 @@ class LoanStepOneFragment() : Fragment() {
     private fun initClick() {
 
         bottom_step_one.setOnClickListener {
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
+           (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
         }
     }
 

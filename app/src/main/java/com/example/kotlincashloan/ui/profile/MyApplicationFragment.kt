@@ -12,7 +12,7 @@ import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import kotlinx.android.synthetic.main.fragment_my_application.*
 
-class MyApplicationFragment(var list: ArrayList<ResultApplicationModel> = arrayListOf(), var error: String) : Fragment(), ApplicationListener {
+class MyApplicationFragment(var listener: ApplicationListener, var list: ArrayList<ResultApplicationModel> = arrayListOf(), var error: String) : Fragment(), ApplicationListener {
     private var myAdapter = MyApplicationAdapter(this)
 
     override fun onCreateView(
@@ -44,7 +44,7 @@ class MyApplicationFragment(var list: ArrayList<ResultApplicationModel> = arrayL
     }
 
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
-
+        listener.applicationListener(int, item)
     }
 
     override fun onResume() {

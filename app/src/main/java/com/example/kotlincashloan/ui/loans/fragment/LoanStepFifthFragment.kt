@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.location.Address
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
@@ -32,11 +33,13 @@ import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.changeImage
 import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.getListsFifth
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
 import com.example.kotlincashloan.service.model.Loans.TypeContractResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.SharedViewModel
@@ -67,9 +70,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
     private var viewModel = LoansViewModel()
-    private var imagViewModel = SharedViewModel()
+    private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
     private val IMAGE_PICK_CODE = 10
     private val CAMERA_PERM_CODE = 101
@@ -81,7 +84,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var documentImageTwo: Bitmap? = null
     private var portrait: Bitmap? = null
     private var documentImage: Bitmap? = null
-
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var data: String = ""
@@ -93,19 +95,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private lateinit var calendar: GregorianCalendar
     private var hidingLayout = ""
     private var thread: Thread? = null
-
     private var listEntryError = ""
     private var listContractError = ""
-
     private var goalPosition = ""
     private var goalId = 0
     private var contractPosition = ""
     private var contractTypeId = 0
-
     private var imageScanId = ""
     private var textImA = ""
     private var textImB = ""
-
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listEntryGoal: ArrayList<EntryGoalResultModel> = arrayListOf()
     private var listTypeContract: ArrayList<TypeContractResultModel> = arrayListOf()
@@ -144,11 +142,10 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         initHidingFields()
         initTextValidation()
         initView()
-        dataImage()
-
+        getLists()
     }
 
-    private fun initRestart(){
+    private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             six_ste_no_connection.visibility = View.VISIBLE
@@ -156,7 +153,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             six_ste_technical_work.visibility = View.GONE
             six_ste_access_restricted.visibility = View.GONE
             six_ste_not_found.visibility = View.GONE
-        }else{
+        } else {
             viewModel.errorSaveLoan.value = null
             initListEntryGoal()
             initTypeContract()
@@ -171,23 +168,81 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (fifth_goal_name.text.isNotEmpty()){
-            fifth_goal_name.hint = null
+    private fun getLists() {
+        if (statusValue) {
+            fifth_cross_six.visibility = View.GONE
+            if (mitmap.values != null) {
+                russianFederationA = true
+                migrationCardA = true
+                migrationCardB = true
+                russianPatentA = true
+                russianPatentB = true
+                receiptPatent = true
+                workPermitA = true
+                workPermitB = true
+                photo2NDFL = true
+                lastPageOne = true
+                lastPageTwo = true
+                getListsFifth(mitmap, russian_federationA, federationA_add_im,  imageViewModel,requireActivity(),"russian_federationA","reg_img_1")
+                getListsFifth(mitmap, russian_federationB, federationB_add_im,  imageViewModel,requireActivity(),"russian_federationB","reg_img_2")
+                getListsFifth(mitmap, migration_cardA, cardA_add_im,  imageViewModel,requireActivity(),"migration_cardA","entry_img_1")
+                getListsFifth(mitmap, migration_cardB, cardB_add_im,  imageViewModel,requireActivity(),"migration_cardB","entry_img_2")
+                getListsFifth(mitmap, receipt_patent, receipt_patent,  imageViewModel,requireActivity(),"receipt_patent","patent_invoice_img")
+                getListsFifth(mitmap, work_permitA, permitA_add_im,  imageViewModel,requireActivity(),"work_permitA","work_permit_img_1")
+                getListsFifth(mitmap, work_permitB, permitB_add_im,  imageViewModel,requireActivity(),"work_permitB","work_permit_img_2")
+                getListsFifth(mitmap, photo_2NDFL, NDFL_add_im,  imageViewModel,requireActivity(),"photo_2NDFL","ndfl2_img")
+                getListsFifth(mitmap, last_page_one, page_one_add_im,  imageViewModel,requireActivity(),"last_page_one","contract_img_1")
+                getListsFifth(mitmap, last_page_two, page_two_add_im,  imageViewModel,requireActivity(),"last_page_two","contract_img_2")
+                getListsFifth(mitmap, photo_RVP, RVP_add_im, imageViewModel,requireActivity(),"photo_RVP","rvp_img")
+                getListsFifth(mitmap, photo_VNJ, VNJ_add_im, imageViewModel,requireActivity(),"photo_VNJ","vnzh_img")
+                getListsText()
+                imageViewModel.updateBitmaps(mitmap)
+                mitmap.clear()
+            }
+        } else {
+            dataImage()
         }
-        if (contract_type.text.isNotEmpty()){
-            contract_type.hint = null
-        }
-        initRestart()
     }
+
+    //Метод получает текствоые данные
+    private fun getListsText() {
+        if (statusValue){
+        try {
+            fifth_goal_name.text = listLoan.regDate
+            list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
+            goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
+            date_entry.text = listLoan.entryDate
+            contract_type.setText(listTypeContract.first { it.id == listLoan.typeContract }.name.toString())
+            contractPosition = listTypeContract.first { it.id == listLoan.typeContract }.name.toString()
+            contract_type.hint = null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+override fun onStart() {
+    super.onStart()
+    if (fifth_goal_name.text.isNotEmpty()) {
+        fifth_goal_name.hint = null
+    }
+    if (contract_type.text.isNotEmpty()) {
+        contract_type.hint = null
+    }
+    initRestart()
+}
 
     //Сохронение картинки на сервер
     private fun initSaveImage() {
         val mapImage = mutableMapOf<String, String>()
         mapImage["login"] = AppPreferences.login.toString()
         mapImage["token"] = AppPreferences.token.toString()
-        mapImage["id"] = AppPreferences.idApplications.toString()
+
+        if (statusValue == true){
+            mapImage["id"] = listLoan.id.toString()
+        }else{
+            mapImage["id"] = AppPreferences.idApplications.toString()
+        }
         mapImage["step"] = "0"
         mapImage["patent_img_1"] = textImA
         mapImage["patent_img_2"] = textImB
@@ -364,6 +419,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 listEntryError = result.code.toString()
                 getResultOk()
                 listEntryGoal = result.result
+                getListsText()
             } else {
                 listResult(result.error.code!!)
             }
@@ -390,6 +446,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 listContractError = result.code.toString()
                 getResultOk()
                 listTypeContract = result.result
+                getListsText()
             } else {
                 listResult(result.error.code!!)
             }
@@ -669,80 +726,92 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 }
                 imageConverter(rotatedBitmap!!)
                 if (imageKey == "russian_federationA") {
+                    russian_federationA.setImageBitmap(rotatedBitmap)
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
+                    russian_federationB.setImageBitmap(rotatedBitmap)
                     fifth_incorrectA.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
+                    migration_cardA.setImageBitmap(rotatedBitmap)
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
+                    migration_cardB.setImageBitmap(rotatedBitmap)
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
+                    receipt_patent.setImageBitmap(rotatedBitmap)
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
+                    work_permitA.setImageBitmap(rotatedBitmap)
                     workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
+                    work_permitB.setImageBitmap(rotatedBitmap)
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
+                    photo_2NDFL.setImageBitmap(rotatedBitmap)
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
-                    imagViewModel.updateKey(imageKey)
+                    last_page_one.setImageBitmap(rotatedBitmap)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
+                    last_page_two.setImageBitmap(rotatedBitmap)
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
-                    imagViewModel.updateKey(imageKey)
+                    photo_RVP.setImageBitmap(rotatedBitmap)
+                    imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
+                    photo_VNJ.setImageBitmap(rotatedBitmap)
                     //Приниет ключ для проверки
-                    imagViewModel.updateKey(imageKey)
+                    imageViewModel.updateKey(imageKey)
                     // Принимает ключ и зоброжения и картинку
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 }
+                imageViewModel.updateBitmaps(imageMap)
                 initSaveImage()
-                imagViewModel.updateBitmaps(imageMap)
             }
         }
 
@@ -768,7 +837,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     //Сохроняте картинки во ViewModel
     private fun dataImage(){
-        imagViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
+        imageViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
             russian_federationA.setImageBitmap(images["russian_federationA"])
             if (images.containsKey("russian_federationA")) {
                 //Метод при немает id и сравнивет прикреплтно ли изоброжение true , false
@@ -1581,3 +1650,4 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         initTextValidation()
     }
 }
+

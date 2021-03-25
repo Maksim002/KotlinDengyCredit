@@ -1,10 +1,14 @@
 package com.example.kotlincashloan.ui.profile
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
+import android.util.Base64
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
 import com.example.kotlincashloan.service.model.profile.*
+import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.kotlinscreenscanner.ui.MainActivity
@@ -16,6 +20,7 @@ import retrofit2.Response
 class ProfileViewModel : ViewModel(){
     val handler = Handler()
     var refreshCode = false
+    var mitmap = HashMap<String, Bitmap>()
 
     val errorListOperation = MutableLiveData<String>()
     var listListOperationDta = MutableLiveData<CommonResponse<ArrayList<ResultOperationModel>>>()
@@ -304,6 +309,12 @@ class ProfileViewModel : ViewModel(){
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listGetImgDta.postValue(response.body())
+                        val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
+                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                        val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                        val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                        mitmap.put(map["type_id"].toString(), scaled)
+
                     }else{
                         errorGetImg.postValue(response.body()!!.code.toString())
                     }
@@ -338,6 +349,32 @@ class ProfileViewModel : ViewModel(){
                     }
                 }else{
                     errorUploadImg.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
+
+    val errorGetApplication = MutableLiveData<String>()
+    var listGetApplicationDta = MutableLiveData<CommonResponse<GetLoanModel>>()
+
+    fun getApplication(map: Map<String, String>){
+        RetrofitService.apiService().getLoan(map).enqueue(object : Callback<CommonResponse<GetLoanModel>> {
+            override fun onFailure(call: Call<CommonResponse<GetLoanModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetApplication.postValue( "601")
+                }else{
+                    errorGetApplication.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<GetLoanModel>>, response: Response<CommonResponse<GetLoanModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listGetApplicationDta.postValue(response.body())
+                    }else{
+                        errorGetApplication.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorGetApplication.postValue(response.raw().code.toString())
                 }
             }
         })

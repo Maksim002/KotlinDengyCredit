@@ -18,11 +18,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.extension.bitmapToFile
 import com.example.kotlincashloan.extension.sendPicture
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -37,7 +39,7 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), ApplicationListener {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     private val mapImg = HashMap<String, String>()
@@ -54,6 +56,7 @@ class ProfileFragment : Fragment() {
     private var inputsAnim = 0
     private var errorNull = ""
     private var errorNullAp = ""
+    private var countPosition = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +83,7 @@ class ProfileFragment : Fragment() {
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initRefresh()
         initClick()
+
     }
 
     private fun initArgument() {
@@ -408,21 +412,54 @@ class ProfileFragment : Fragment() {
         MainActivity.alert.hide()
     }
 
+    override fun applicationListener(int: Int, item: ResultApplicationModel) {
+        val mapLOan = HashMap<String, String>()
+        mapLOan.put("login", AppPreferences.login.toString())
+        mapLOan.put("token", AppPreferences.token.toString())
+        mapLOan.put("id", item.id.toString())
+
+        viewModel.getApplication(mapLOan)
+
+        viewModel.listGetApplicationDta.observe(viewLifecycleOwner, Observer { result->
+            if (result.result != null){
+                val intent = Intent(requireContext(), GetLoanActivity::class.java)
+                intent.putExtra("getLOan", result.result)
+                intent.putExtra("getBool", true)
+                startActivity(intent)
+            }else if (result.error != null){
+                listListResult(result.error.code!!)
+            }
+        })
+
+        viewModel.errorGetApplication.observe(viewLifecycleOwner, Observer { error->
+            if (error != null){
+                errorList(error)
+            }
+        })
+    }
+
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
         adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
-        adapter.addFragment(MyApplicationFragment(listApplication, errorNullAp), "Мои заявки")
+        adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()
 
         profile_pager.isEnabled = false
 
         v1.setOnClickListener {
+            countPosition = 0
             profile_pager.currentItem = 0
         }
 
         v2.setOnClickListener {
+            countPosition = 1
             profile_pager.currentItem = 1
+        }
+
+        //Сравнивает если после обновление countPosition имеет значение не равное -1
+        if (countPosition != -1){
+            profile_pager.currentItem = countPosition
         }
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {

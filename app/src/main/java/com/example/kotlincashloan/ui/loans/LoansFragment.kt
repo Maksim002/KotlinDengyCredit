@@ -17,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
+import com.example.kotlincashloan.ui.profile.MyApplicationFragment
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
