@@ -1,10 +1,7 @@
 package com.example.kotlincashloan.extension
 
 
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
 import com.example.kotlinscreenscanner.ui.login.fragment.ConnectionBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 
@@ -28,5 +25,4 @@ fun loadingConnection(activity: AppCompatActivity){
         println()
     }
 }
-
 

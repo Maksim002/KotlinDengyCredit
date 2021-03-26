@@ -1,5 +1,8 @@
 package com.timelysoft.tsjdomcom.service
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.lifecycle.liveData
 import kotlinx.coroutines.Dispatchers
 
@@ -311,5 +314,4 @@ class NetworkRepository {
             }
         }
     }
-
 }

@@ -12,12 +12,15 @@ import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.NetworkRepository
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileViewModel : ViewModel(){
+    private val repository = NetworkRepository()
+
     val handler = Handler()
     var refreshCode = false
     var mitmap = HashMap<String, Bitmap>()
@@ -309,12 +312,6 @@ class ProfileViewModel : ViewModel(){
                 if (response.isSuccessful) {
                     if (response.body()!!.code == 200){
                         listGetImgDta.postValue(response.body())
-                        val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
-                        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                        val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
-                        val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
-                        mitmap.put(map["type_id"].toString(), scaled)
-
                     }else{
                         errorGetImg.postValue(response.body()!!.code.toString())
                     }
@@ -327,6 +324,45 @@ class ProfileViewModel : ViewModel(){
             }
         })
     }
+
+    val errorGetImgLoan = MutableLiveData<String>()
+    var listGetImgDtaLoan = MutableLiveData<CommonResponse<GetImgResultModel>>()
+
+    fun getImgLoan(map: Map<String, String>){
+        RetrofitService.apiService().getImgLoan(map).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
+            override fun onFailure(call: Call<CommonResponse<GetImgResultModel>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorGetImgLoan.postValue( "601")
+                }else{
+                    errorGetImgLoan.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<GetImgResultModel>>, response: Response<CommonResponse<GetImgResultModel>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        try {
+                            listGetImgDtaLoan.postValue(response.body())
+                            val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
+                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                            val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                            mitmap.put(map["type_id"].toString(), scaled)
+                        }catch (e: Exception){
+                            e.printStackTrace()
+                        }
+                    }else{
+                        errorGetImgLoan.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorGetImgLoan.postValue(response.raw().code.toString())
+                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    MainActivity.alert.hide()
+                },500)
+            }
+        })
+    }
+
 
     val errorUploadImg = MutableLiveData<String>()
     var listUploadImgDta = MutableLiveData<CommonResponse<UploadImgResultModel>>()

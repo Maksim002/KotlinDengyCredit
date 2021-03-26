@@ -162,6 +162,11 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
+    @POST("getImg?token=oYyxhIFgJjAb")
+    fun getImgLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<GetImgResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
     @POST("uploadImg?token=oYyxhIFgJjAb")
     fun uploadImg(@FieldMap params: Map<String, String>):Call<CommonResponse<UploadImgResultModel>>
 

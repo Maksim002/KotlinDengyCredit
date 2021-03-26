@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.core.app.ActivityCompat
@@ -33,6 +34,7 @@ import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.changeImage
 import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.errorImageRus
 import com.example.kotlincashloan.extension.getListsFifth
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
@@ -120,6 +122,8 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private var lastPageTwo = false
     private var saveValidate = false
     private val mapSave = mutableMapOf<String, String>()
+    private lateinit var idImage: ImageView
+    private lateinit var idImageIc: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -208,12 +212,14 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private fun getListsText() {
         if (statusValue){
         try {
-            fifth_goal_name.text = listLoan.regDate
+            fifth_goal_name.text = MyUtils.toMyDate(listLoan.regDate!!)
             list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
             goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
-            date_entry.text = listLoan.entryDate
+            goalId = listLoan.entryGoal!!.toInt()
+            date_entry.text = MyUtils.toMyDate(listLoan.entryDate!!)
             contract_type.setText(listTypeContract.first { it.id == listLoan.typeContract }.name.toString())
             contractPosition = listTypeContract.first { it.id == listLoan.typeContract }.name.toString()
+            contractTypeId = listLoan.typeContract!!.toInt()
             contract_type.hint = null
         } catch (e: Exception) {
             e.printStackTrace()
@@ -296,36 +302,30 @@ override fun onStart() {
         viewModel.saveLoanImg(mapImage)
         viewModel.getSaveLoanImg.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-                imageString.clear()
                 textImA = ""
                 textImB = ""
             } else if (result.reject != null) {
-                initBottomSheetError(result.reject!!.message.toString())
+                initBottomSheetError(result.reject.message.toString())
             } else {
                 if (result.error.code == 409) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Отсканируйте документ повторно",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
                     listResult(result.error.code!!)
+                    errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
+            imageString.clear()
         })
 
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
-                if (error == "409") {
-                    Toast.makeText(
-                        requireContext(),
-                        "Отсканируйте документ повторно",
-                        Toast.LENGTH_LONG
-                    ).show()
+                if (error == "409") { Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
                     errorList(error)
+                    errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
+            imageString.clear()
         })
     }
 
@@ -335,8 +335,16 @@ override fun onStart() {
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.idApplications.toString()
-        mapSave["reg_date"] = countriesPhone
-        mapSave["entry_date"] = goalPhone
+        if (countriesPhone == ""){
+            mapSave["reg_date"] = fifth_goal_name.text.toString()
+        }else{
+            mapSave["reg_date"] = countriesPhone
+        }
+        if (goalPhone == ""){
+            mapSave["entry_date"] = date_entry.text.toString()
+        }else{
+            mapSave["entry_date"] = goalPhone
+        }
 
         if (goalPosition == ""){
             mapSave["entry_goal"] = ""
@@ -358,7 +366,11 @@ override fun onStart() {
                         fifth_ste_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                            if (statusValue == true){
+                                requireActivity().onBackPressed()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                            }
                         }
                     } else if (data.error.code != null) {
                         listResult(data.error.code!!)
@@ -727,6 +739,8 @@ override fun onStart() {
                 imageConverter(rotatedBitmap!!)
                 if (imageKey == "russian_federationA") {
                     russian_federationA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.russian_federationA)
+                    idImageIc = requireView().findViewById(R.id.federationA_add_im)
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -734,12 +748,16 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
                     russian_federationB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.russian_federationB)
+                    idImageIc = requireView().findViewById(R.id.federationB_add_im)
                     fifth_incorrectA.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
                     migration_cardA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.migration_cardA)
+                    idImageIc = requireView().findViewById(R.id.cardA_add_im)
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -747,6 +765,8 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
                     migration_cardB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.migration_cardB)
+                    idImageIc = requireView().findViewById(R.id.cardB_add_im)
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -754,6 +774,8 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
                     receipt_patent.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.receipt_patent)
+                    idImageIc = requireView().findViewById(R.id.patent_add_im)
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -761,6 +783,8 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
                     work_permitA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.work_permitA)
+                    idImageIc = requireView().findViewById(R.id.permitA_add_im)
                     workPermitA = true
                     fifth_incorrect_work.visibility = View.GONE
                     fifth_potent.visibility = View.GONE
@@ -770,6 +794,8 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
                     work_permitB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.work_permitB)
+                    idImageIc = requireView().findViewById(R.id.permitB_add_im)
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
                     fifth_potent.visibility = View.GONE
@@ -779,6 +805,8 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
                     photo_2NDFL.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_2NDFL)
+                    idImageIc = requireView().findViewById(R.id.NDFL_add_im)
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -786,12 +814,16 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
                     last_page_one.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.last_page_one)
+                    idImageIc = requireView().findViewById(R.id.page_one_add_im)
                     imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
                     last_page_two.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.last_page_two)
+                    idImageIc = requireView().findViewById(R.id.page_two_add_im)
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
                     imageViewModel.updateKey(imageKey)
@@ -799,11 +831,15 @@ override fun onStart() {
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
                     photo_RVP.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_RVP)
+                    idImageIc = requireView().findViewById(R.id.RVP_add_im)
                     imageViewModel.updateKey(imageKey)
                     imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
                     photo_VNJ.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_VNJ)
+                    idImageIc = requireView().findViewById(R.id.VNJ_add_im)
                     //Приниет ключ для проверки
                     imageViewModel.updateKey(imageKey)
                     // Принимает ключ и зоброжения и картинку

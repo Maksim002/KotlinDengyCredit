@@ -22,10 +22,11 @@ object MyUtils {
 
     }
 
+//    1990-01-01
 
     fun toServerDate(date: String): String {
         return try {
-            date.substring(6, 10) + "." + date.substring(3,5) + "." + date.substring(0, 2)
+            date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(0, 4)
         } catch (e: Exception) {
             ""
         }
