@@ -172,6 +172,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         }
     }
 
+    //Получает данные на редактирование заёма
     private fun getLists() {
         if (statusValue) {
             fifth_cross_six.visibility = View.GONE

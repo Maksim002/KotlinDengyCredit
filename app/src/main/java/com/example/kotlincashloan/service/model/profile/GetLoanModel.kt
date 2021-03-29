@@ -153,6 +153,14 @@ class GetLoanModel(
     @Expose
     var typeContract: String? = null,
 
+    @SerializedName("first_phone_country_id")
+    @Expose
+    var first_phone_country_id: String? = null,
+
+    @SerializedName("second_phone_country_id")
+    @Expose
+    var second_phone_country_id: String? = null,
+
     @SerializedName("docs")
     @Expose
     var docs: ArrayList<String>? = null

@@ -24,13 +24,20 @@ object MyUtils {
 
 //    1990-01-01
 
-    fun toServerDate(date: String): String {
-        return try {
-            date.substring(8, 10) + "." + date.substring(5, 7) + "." + date.substring(0, 4)
-        } catch (e: Exception) {
-            ""
+    fun toServerDate(date: String, int: Int): String {
+        if (int == 11){
+            return try {
+                date.substring(1, 11)
+            } catch (e: Exception) {
+                ""
+            }
+        }else{
+            return try {
+                date.substring(3, 12)
+            } catch (e: Exception) {
+                ""
+            }
         }
-
     }
 
     fun toMask(date: String, phoneCode: Int, phoneLength: Int): String{

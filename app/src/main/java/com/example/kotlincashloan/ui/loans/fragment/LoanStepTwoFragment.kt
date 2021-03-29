@@ -14,12 +14,14 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -36,7 +38,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fragment() {
+class LoanStepTwoFragment(var status: Boolean) : Fragment() {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -67,10 +69,8 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fra
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initClick()
         initRestart()
-        getLists()
     }
 
     private fun initClick() {
@@ -102,13 +102,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fra
     override fun onResume() {
         super.onResume()
         bottom_step_two.text = "Следующий шаг"
-    }
-
-    //Получает данные на редактирование заёма
-    private fun getLists() {
-        if (status == true){
-           listLoan
-        }
     }
 
     private fun initСounter() {
@@ -271,7 +264,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fra
         params.gravity = Gravity.CENTER
         val sum = monthMax
         val pairs = arrayOfNulls<ImageView>(sum)
-        var v = pairs.size - 1
+        val v = pairs.size - 1
 
         for (l in 0..v) {
             val p = pairs.size / 2
@@ -298,7 +291,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fra
         params.gravity = Gravity.CENTER
         val sum = sumMax / 1000
         val pairs = arrayOfNulls<ImageView>(sum)
-        var v = pairs.size - 1
+        val v = pairs.size - 1
 
         for (l in 0..v) {
             val p = pairs.size / 2

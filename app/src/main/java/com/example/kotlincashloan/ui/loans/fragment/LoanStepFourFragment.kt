@@ -15,6 +15,7 @@ import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -22,6 +23,7 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
@@ -30,7 +32,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -267,6 +269,49 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         itemDialog.clear()
     }
 
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (step == true){
+            //city
+            loans_step_four_city.setText(listCity.first { it.id == listLoan.city}.name)
+            cityPosition = listCity.first { it.id == listLoan.city}.name.toString()
+            cityId = listCity.first { it.id == listLoan.city}.id!!
+            //address
+            loans_step_four_residence.setText(listLoan.address.toString())
+            //familyStatus
+            loans_step_four_status.setText(listFamilyStatus.first { it.id == listLoan.familyStatus}.name)
+            familyPosition = listFamilyStatus.first { it.id == listLoan.familyStatus}.name.toString()
+            statusId = listFamilyStatus.first { it.id == listLoan.familyStatus}.id!!
+            //countFamily
+            loans_step_four_family.setText(listNumbers.first{ it.id == listLoan.countFamily}.name)
+            numbersPosition = listNumbers.first{ it.id == listLoan.countFamily}.name.toString()
+            familyId = listNumbers.first{ it.id == listLoan.countFamily}.id!!
+            //countFamilyWork
+            loans_step_four_children.setText(listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.name)
+            childrenPosition = listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.name.toString()
+            childrenId = listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.id!!
+            //liveInRu
+            loans_step_four_federation.setText(listYears.first{ it.id == listLoan.liveInRu}.name)
+            yearsPosition = listYears.first{ it.id == listLoan.liveInRu}.name.toString()
+            liveId = listYears.first{ it.id == listLoan.liveInRu}.id!!
+            //bankCard
+            loans_step_four_card.setText(listCatsNames[listLoan.bankCard!!.toInt()])
+            catsNamesPosition = listCatsNames[listLoan.bankCard!!.toInt()]
+            cardId = listLoan.bankCard.toString()
+            //second_phone_country_id
+            six_available_country.isClickable = true
+            six_number_phone.error = null
+            //Очещает старую маску при выборе новой
+            six_number_phone.mask = ""
+            sixPosition = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.name.toString()
+            phoneLength = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneLength.toString()
+            val l = MyUtils.toServerDate(listLoan.secondPhone.toString(), phoneLength.toInt())
+            six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
+            six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
+            six_number_phone.setText(l.toInt().toString())
+        }
+    }
+
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableSix") {
@@ -359,7 +404,6 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.listAvailableSixDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 listAvailableCountryDta = result.code.toString()
-                getResultOk()
                 listAvailableSix = result.result
                 six_number_phone.mask = ""
                 six_number_phone.text = null
@@ -367,6 +411,7 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 six_available_country.setText("+" + result.result[0].phoneCode)
                 six_number_phone.mask = result.result[0].phoneMaskSmall
                 phoneLength = result.result[0].phoneLength.toString()
+                getResultOk()
             } else {
                 listResult(result.error.code!!)
             }
@@ -391,8 +436,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListCityDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListCityDta = result.code.toString()
-                getResultOk()
                 listCity = result.result
+                getResultOk()
             } else {
                 getListCityDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -418,8 +463,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListFamilyStatusDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListFamilyStatusDta = result.code.toString()
-                getResultOk()
                 listFamilyStatus = result.result
+                getResultOk()
             } else {
                 getListFamilyStatusDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -445,8 +490,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListNumbersDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
-                getResultOk()
                 listNumbers = result.result
+                getResultOk()
             } else {
                 getListNumbersDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -472,8 +517,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListNumbersDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListNumbersDta = result.code.toString()
-                getResultOk()
                 listNumbersChildren = result.result
+                getResultOk()
 
             } else {
                 getListNumbersDta = result.error.code.toString()
@@ -500,8 +545,8 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
-                getResultOk()
                 listYears = result.result
+                getResultOk()
             } else {
                 getListYearsDta = result.error.code.toString()
                 listResult(result.error.code!!)
@@ -583,12 +628,13 @@ class LoanStepFourFragment : Fragment(), ListenerGeneralResult, StepClickListene
     }
 
     private fun getResultOk() {
-        if (getListCityDta == "200" && getListFamilyStatusDta == "200" && getListNumbersDta == "200" && getListYearsDta == "200") {
+        if (getListCityDta == "200" && getListFamilyStatusDta == "200" && getListNumbersDta == "200" && getListYearsDta == "200" && listAvailableCountryDta == "200") {
             loans_step_layout.visibility = View.VISIBLE
             loans_ste_technical_work.visibility = View.GONE
             loans_ste_no_connection.visibility = View.GONE
             loans_ste_access_restricted.visibility = View.GONE
             loans_ste_not_found.visibility = View.GONE
+            getLists()
         }
     }
 

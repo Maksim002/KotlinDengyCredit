@@ -193,19 +193,23 @@ class GetLoanActivity : AppCompatActivity() {
 
     //Срвнивает со степом на какой экран перети
     private fun transition() {
-        if (listLoan.step!!.toInt() == 5) {
-            get_loan_view_pagers.currentItem = 6
-        } else if (listLoan.step!!.toInt() == 4) {
-            get_loan_view_pagers.currentItem = 5
-        } else if (listLoan.step!!.toInt() == 3) {
-            get_loan_view_pagers.currentItem = 4
-        } else if (listLoan.step!!.toInt() == 2) {
+        if (listLoan.step!!.toInt() == 2) {
             get_loan_view_pagers.currentItem = 3
-        } else if (listLoan.step!!.toInt() == 1) {
-            get_loan_view_pagers.currentItem = 2
-        } else if (listLoan.step!!.toInt() == 0) {
-            get_loan_view_pagers.currentItem = 1
         }
+
+//        if (listLoan.step!!.toInt() == 5) {
+//            get_loan_view_pagers.currentItem = 6
+//        } else if (listLoan.step!!.toInt() == 4) {
+//            get_loan_view_pagers.currentItem = 5
+//        } else if (listLoan.step!!.toInt() == 3) {
+//            get_loan_view_pagers.currentItem = 4
+//        } else if (listLoan.step!!.toInt() == 2) {
+//            get_loan_view_pagers.currentItem = 3
+//        } else if (listLoan.step!!.toInt() == 1) {
+//            get_loan_view_pagers.currentItem = 2
+//        } else if (listLoan.step!!.toInt() == 0) {
+//            get_loan_view_pagers.currentItem = 1
+//        }
         alert.hide()
     }
 
@@ -213,9 +217,9 @@ class GetLoanActivity : AppCompatActivity() {
 //        list.add(LoansListModel(LoanStepFifthFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
-        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan)))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(LoanStepFourFragment()))
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan)))
         list.add(LoansListModel(LoanStepFiveFragment()))
         list.add(LoansListModel(LoanStepSixFragment()))
         list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan)))
