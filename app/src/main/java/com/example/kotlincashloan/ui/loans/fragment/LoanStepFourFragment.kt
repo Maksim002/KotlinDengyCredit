@@ -299,16 +299,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
             catsNamesPosition = listCatsNames[listLoan.bankCard!!.toInt()]
             cardId = listLoan.bankCard.toString()
             //second_phone_country_id
+            if (listLoan.second_phone_country_id != "0"){
             six_available_country.isClickable = true
             six_number_phone.error = null
             //Очещает старую маску при выборе новой
             six_number_phone.mask = ""
-            sixPosition = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.name.toString()
-            phoneLength = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneLength.toString()
-            val l = MyUtils.toServerDate(listLoan.secondPhone.toString(), phoneLength.toInt())
-            six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
-            six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
-            six_number_phone.setText(l.toInt().toString())
+                sixPosition = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.name.toString()
+                phoneLength = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneLength.toString()
+                val l = MyUtils.toServerDate(listLoan.secondPhone.toString(), phoneLength.toInt())
+                six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
+                six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
+                six_number_phone.setText(l)
+            }
         }
     }
 

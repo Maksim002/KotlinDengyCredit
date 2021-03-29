@@ -111,71 +111,86 @@ class GetLoanActivity : AppCompatActivity() {
             states = listLoan.docs!!
             statusValue = true
 
-            if (o <= states.size) {
-                if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
-                    val mapImg = HashMap<String, String>()
-                    mapImg.put("login", AppPreferences.login.toString())
-                    mapImg.put("token", AppPreferences.token.toString())
-                    mapImg.put("type", "doc")
-                    mapImg.put("doc_id", listLoan.id.toString())
-                    mapImg.put("type_id", states[o])
-                    getImList.add(o.toString())
+            if (listLoan.step == "5") {
+                if (o <= states.size) {
+                    if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
+                        val mapImg = HashMap<String, String>()
+                        mapImg.put("login", AppPreferences.login.toString())
+                        mapImg.put("token", AppPreferences.token.toString())
+                        mapImg.put("type", "doc")
+                        mapImg.put("doc_id", listLoan.id.toString())
+                        mapImg.put("type_id", states[o])
+                        getImList.add(o.toString())
 
-                    viewModel.getImgLoan(mapImg).observe(this, androidx.lifecycle.Observer { result ->
-                            val msg = result.msg
-                            val data = result.data
-                            when (result.status) {
-                                Status.SUCCESS -> {
-                                    if (data!!.result != null) {
-                                        errorCodeIm = data.code.toString()
-                                        if (getImList.size != states.size) {
-                                            o++
-                                            initGetLoan()
-                                        }else if (viewModel.repository.mitmap.size == states.size-1) {
-                                            LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan)
-                                            transition()
-                                            alert.hide()
-                                        }
-                                    }else{
-                                        if (data.error.code == 404) {
-                                            if (errorCodeIm != "404") {
-                                                Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
+                        viewModel.getImgLoan(mapImg)
+                            .observe(this, androidx.lifecycle.Observer { result ->
+                                val msg = result.msg
+                                val data = result.data
+                                when (result.status) {
+                                    Status.SUCCESS -> {
+                                        if (data!!.result != null) {
+                                            errorCodeIm = data.code.toString()
+                                            if (getImList.size != states.size) {
+                                                o++
+                                                initGetLoan()
+                                            } else if (viewModel.repository.mitmap.size == states.size - 1) {
+                                                LoanStepFifthFragment(
+                                                    statusValue,
+                                                    viewModel.repository.mitmap,
+                                                    listLoan
+                                                )
                                                 transition()
-                                                isClickableBottom()
-                                                errorCodeIm = "404"
                                                 alert.hide()
                                             }
                                         } else {
-                                            if (errorCodeIm != data.error.code.toString()) {
-                                                listListResult(data.error.code!!.toInt(), this)
+                                            if (data.error.code == 404) {
+                                                if (errorCodeIm != "404") {
+                                                    Toast.makeText(
+                                                        this,
+                                                        "Фото нет",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                    transition()
+                                                    isClickableBottom()
+                                                    errorCodeIm = "404"
+                                                    alert.hide()
+                                                }
+                                            } else {
+                                                if (errorCodeIm != data.error.code.toString()) {
+                                                    listListResult(data.error.code!!.toInt(), this)
+                                                    isClickableBottom()
+                                                    errorCodeIm = data.error.code.toString()
+                                                    alert.hide()
+                                                }
+                                            }
+                                            alert.hide()
+                                        }
+                                    }
+                                    Status.NETWORK, Status.ERROR -> {
+                                        if (msg!! == "404") {
+                                            if (errorCodeIm != "404") {
+                                                Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG)
+                                                    .show()
+                                                transition()
                                                 isClickableBottom()
-                                                errorCodeIm = data.error.code.toString()
-                                                alert.hide()
+                                                errorCodeIm = "404"
+                                            }
+                                        } else {
+                                            if (errorCodeIm != msg) {
+                                                listListResult(msg, this)
+                                                isClickableBottom()
+                                                errorCodeIm = msg
                                             }
                                         }
                                         alert.hide()
                                     }
                                 }
-                                Status.NETWORK, Status.ERROR ->{
-                                    if (msg!! == "404") {
-                                        if (errorCodeIm != "404") {
-                                            Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
-                                            transition()
-                                            isClickableBottom()
-                                            errorCodeIm = "404"
-                                        }
-                                    } else {
-                                        if (errorCodeIm != msg) {
-                                            listListResult(msg, this)
-                                            isClickableBottom()
-                                            errorCodeIm = msg
-                                        }
-                                    }
-                                    alert.hide()
-                                }
-                            }
-                        })
+                            })
+                    }
                 }
+            }else{
+                transition()
+                alert.hide()
             }
         } catch (e: Exception) {
             e.printStackTrace()
