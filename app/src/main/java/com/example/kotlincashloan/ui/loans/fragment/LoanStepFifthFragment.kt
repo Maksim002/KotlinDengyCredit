@@ -1152,18 +1152,15 @@ override fun onStart() {
 
 
                     //preparing database files, it will be downloaded from network only one time and stored on user device
-                    DocumentReader.Instance().prepareDatabase(
-                        requireContext(),
-                        "Full",
-                        object : IDocumentReaderPrepareCompletion {
+                    DocumentReader.Instance().prepareDatabase(requireContext(), "Full", object : IDocumentReaderPrepareCompletion {
                             override fun onPrepareProgressChanged(progress: Int) {
-                                text.setText("Загрузка базы данных: $progress%")
+                                try {
+                                    text.setText("Загрузка базы данных: $progress%")
+                                }catch (e:Exception){
+                                    e.printStackTrace()
+                                }
                             }
-
-                            override fun onPrepareCompleted(
-                                p0: Boolean,
-                                p1: DocumentReaderException?
-                            ) {
+                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
                                 //Initializing the reader
                                 DocumentReader.Instance().initializeReader(
                                     requireContext(),

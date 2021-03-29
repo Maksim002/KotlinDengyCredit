@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
@@ -18,6 +19,7 @@ import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.activity_number.*
@@ -39,6 +41,8 @@ class GetLoanActivity : AppCompatActivity() {
     private var statusValue = false
     private var errorCodeIm = ""
     private lateinit var thread: Thread
+    private var o: Int = 0
+    private val getImList: ArrayList<String> = arrayListOf()
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -106,75 +110,76 @@ class GetLoanActivity : AppCompatActivity() {
         try {
             states = listLoan.docs!!
             statusValue = true
-            thread = Thread() {
-                for (i in 1..states.size) {
-                    if (i <= states.size) {
-                        val mapImg = HashMap<String, String>()
-                        mapImg.put("login", AppPreferences.login.toString())
-                        mapImg.put("token", AppPreferences.token.toString())
-                        mapImg.put("type", "doc")
-                        mapImg.put("doc_id", listLoan.id.toString())
-                        mapImg.put("type_id", states[i - 1])
-                        viewModel.getImgLoan(mapImg)
 
-                    }
-                    if (i == states.size) {
-                        thread.interrupt()
-                    }
+            if (o <= states.size) {
+                if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
+                    val mapImg = HashMap<String, String>()
+                    mapImg.put("login", AppPreferences.login.toString())
+                    mapImg.put("token", AppPreferences.token.toString())
+                    mapImg.put("type", "doc")
+                    mapImg.put("doc_id", listLoan.id.toString())
+                    mapImg.put("type_id", states[o])
+                    getImList.add(o.toString())
+
+                    viewModel.getImgLoan(mapImg).observe(this, androidx.lifecycle.Observer { result ->
+                            val msg = result.msg
+                            val data = result.data
+                            when (result.status) {
+                                Status.SUCCESS -> {
+                                    if (data!!.result != null) {
+                                        errorCodeIm = data.code.toString()
+                                        if (getImList.size != states.size) {
+                                            o++
+                                            initGetLoan()
+                                        }else if (viewModel.repository.mitmap.size == states.size-1) {
+                                            LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan)
+                                            transition()
+                                            alert.hide()
+                                        }
+                                    }else{
+                                        if (data.error.code == 404) {
+                                            if (errorCodeIm != "404") {
+                                                Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
+                                                transition()
+                                                isClickableBottom()
+                                                errorCodeIm = "404"
+                                                alert.hide()
+                                            }
+                                        } else {
+                                            if (errorCodeIm != data.error.code.toString()) {
+                                                listListResult(data.error.code!!.toInt(), this)
+                                                isClickableBottom()
+                                                errorCodeIm = data.error.code.toString()
+                                                alert.hide()
+                                            }
+                                        }
+                                        alert.hide()
+                                    }
+                                }
+                                Status.NETWORK, Status.ERROR ->{
+                                    if (msg!! == "404") {
+                                        if (errorCodeIm != "404") {
+                                            Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
+                                            transition()
+                                            isClickableBottom()
+                                            errorCodeIm = "404"
+                                        }
+                                    } else {
+                                        if (errorCodeIm != msg) {
+                                            listListResult(msg, this)
+                                            isClickableBottom()
+                                            errorCodeIm = msg
+                                        }
+                                    }
+                                    alert.hide()
+                                }
+                            }
+                        })
                 }
             }
-            thread.start()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
-
-        viewModel.listGetImgDtaLoan.observe(this, androidx.lifecycle.Observer { result ->
-            if (result.result != null) {
-                if (viewModel.mitmap.size == states.size) {
-                    LoanStepFifthFragment(statusValue, viewModel.mitmap, listLoan)
-                    transition()
-                    errorCodeIm = result.code.toString()
-                }
-            } else {
-                if (result.error.code == 404) {
-                    if (errorCodeIm != "404") {
-                        Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
-                        transition()
-                        isClickableBottom()
-                        errorCodeIm = "404"
-                        alert.hide()
-                    }
-                } else {
-                    if (errorCodeIm != result.error.code.toString()) {
-                        listListResult(result.error.code!!.toInt(), this)
-                        isClickableBottom()
-                        errorCodeIm = result.error.code.toString()
-                        alert.hide()
-                    }
-                }
-            }
-        })
-
-        viewModel.errorGetImgLoan.observe(this, androidx.lifecycle.Observer { error ->
-            if (error != null) {
-                if (error == "404") {
-                    if (errorCodeIm != "404") {
-                        Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
-                        transition()
-                        isClickableBottom()
-                        errorCodeIm = "404"
-                    }
-                } else {
-                    if (errorCodeIm != error) {
-                        listListResult(error, this)
-                        isClickableBottom()
-                        errorCodeIm = error
-                    }
-                }
-            }
-            alert.hide()
-        })
     }
 
 
@@ -208,12 +213,12 @@ class GetLoanActivity : AppCompatActivity() {
 //        list.add(LoansListModel(LoanStepFifthFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
-        list.add(LoansListModel(LoanStepTwoFragment()))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan)))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment()))
         list.add(LoansListModel(LoanStepFiveFragment()))
         list.add(LoansListModel(LoanStepSixFragment()))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.mitmap, listLoan)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan)))
         list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true

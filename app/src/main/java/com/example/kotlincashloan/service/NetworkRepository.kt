@@ -314,4 +314,35 @@ class NetworkRepository {
             }
         }
     }
+
+    var mitmap = HashMap<String, Bitmap>()
+
+    fun getImgLoan(map: Map<String, String>) = liveData(Dispatchers.IO) {
+        try {
+            val response = RetrofitService.apiService().getImgLoan(map)
+            when {
+                response.isSuccessful -> {
+                    if (response.body() != null) {
+                        emit(ResultStatus.success(response.body()))
+                        val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
+                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                            val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                            mitmap.put(map["type_id"].toString(), scaled)
+                    } else {
+                        emit(ResultStatus.error("Запрос прошел успешно"))
+                    }
+                }
+                else -> {
+                    emit(ResultStatus.error(response.code().toString()))
+                }
+            }
+        } catch (e: Exception) {
+            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
+        }
+    }
 }

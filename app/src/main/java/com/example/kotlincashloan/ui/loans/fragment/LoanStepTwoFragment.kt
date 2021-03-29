@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -35,7 +36,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment : Fragment() {
+class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel) : Fragment() {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -69,6 +70,7 @@ class LoanStepTwoFragment : Fragment() {
 
         initClick()
         initRestart()
+        getLists()
     }
 
     private fun initClick() {
@@ -100,6 +102,13 @@ class LoanStepTwoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         bottom_step_two.text = "Следующий шаг"
+    }
+
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (status == true){
+           listLoan
+        }
     }
 
     private fun initСounter() {
