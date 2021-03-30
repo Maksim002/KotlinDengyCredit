@@ -5,14 +5,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.example.android.navigationadvancedsample.fragmentManagers
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -415,14 +419,16 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 phoneLength = result.result[0].phoneLength.toString()
                 getResultOk()
             } else {
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listAvailableCountryDta = error
-                errorList(error)
+//                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -442,14 +448,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListCityDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListCity.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListCityDta = error
-                errorList(error)
+//                errorList(error)
+
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -469,14 +479,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListFamilyStatusDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListFamilyStatus.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListFamilyStatusDta = error
-                errorList(error)
+//                errorList(error)
+
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -496,14 +510,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListNumbersDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListNumbers.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListNumbersDta = error
-                errorList(error)
+//                errorList(error)
+
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -524,14 +542,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
 
             } else {
                 getListNumbersDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListNumbers.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListNumbersDta = error
-                errorList(error)
+//                errorList(error)
+
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -551,14 +573,18 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListYearsDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListYearsDta = error
-                errorList(error)
+//                errorList(error)
+
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -593,7 +619,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                         loans_ste_not_found.visibility = View.GONE
                         (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
                     }else if (data.error.code != null) {
-                        listResult(data.error.code!!)
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                     }else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
                         loans_step_layout.visibility = View.VISIBLE
@@ -603,10 +629,10 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                     }
                 }
                 Status.ERROR -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
                 Status.NETWORK -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
             GetLoanActivity.alert.hide()
@@ -645,6 +671,13 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         getListFamilyStatusDta = ""
         getListNumbersDta = ""
         getListYearsDta = ""
+    }
+
+
+    private fun getErrorCode(error: Int){
+        listListResult(error,loans_ste_technical_work as LinearLayout,loans_ste_no_connection
+                as LinearLayout,loans_step_layout as LinearLayout,loans_ste_access_restricted
+                as LinearLayout,loans_ste_not_found as LinearLayout,requireActivity())
     }
 
     private fun listResult(result: Int) {

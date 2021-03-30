@@ -145,11 +145,7 @@ class GetLoanActivity : AppCompatActivity() {
                                         } else {
                                             if (data.error.code == 404) {
                                                 if (errorCodeIm != "404") {
-                                                    Toast.makeText(
-                                                        this,
-                                                        "Фото нет",
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
+                                                    Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
                                                     transition()
                                                     isClickableBottom()
                                                     errorCodeIm = "404"
@@ -189,8 +185,10 @@ class GetLoanActivity : AppCompatActivity() {
                     }
                 }
             }else{
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 transition()
                 alert.hide()
+                }, 2000)
             }
         } catch (e: Exception) {
             e.printStackTrace()
