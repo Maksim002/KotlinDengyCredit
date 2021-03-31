@@ -359,29 +359,36 @@ class ProfileViewModel : ViewModel(){
         })
     }
 
-    val errorGetApplication = MutableLiveData<String>()
-    var listGetApplicationDta = MutableLiveData<CommonResponse<GetLoanModel>>()
 
-    fun getApplication(map: Map<String, String>){
-        RetrofitService.apiService().getLoan(map).enqueue(object : Callback<CommonResponse<GetLoanModel>> {
-            override fun onFailure(call: Call<CommonResponse<GetLoanModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
-                    errorGetApplication.postValue( "601")
-                }else{
-                    errorGetApplication.postValue( "600")
-                }
-            }
-            override fun onResponse(call: Call<CommonResponse<GetLoanModel>>, response: Response<CommonResponse<GetLoanModel>>) {
-                if (response.isSuccessful) {
-                    if (response.body()!!.code == 200){
-                        listGetApplicationDta.postValue(response.body())
-                    }else{
-                        errorGetApplication.postValue(response.body()!!.code.toString())
-                    }
-                }else{
-                    errorGetApplication.postValue(response.raw().code.toString())
-                }
-            }
-        })
+
+    fun getApplication(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<GetLoanModel>>> {
+        return repository.getApplication(phone)
     }
+
+
+//    val errorGetApplication = MutableLiveData<String>()
+//    var listGetApplicationDta = MutableLiveData<CommonResponse<GetLoanModel>>()
+//
+//    fun getApplication(map: Map<String, String>){
+//        RetrofitService.apiService().getLoan(map).enqueue(object : Callback<CommonResponse<GetLoanModel>> {
+//            override fun onFailure(call: Call<CommonResponse<GetLoanModel>>, t: Throwable) {
+//                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+//                    errorGetApplication.postValue( "601")
+//                }else{
+//                    errorGetApplication.postValue( "600")
+//                }
+//            }
+//            override fun onResponse(call: Call<CommonResponse<GetLoanModel>>, response: Response<CommonResponse<GetLoanModel>>) {
+//                if (response.isSuccessful) {
+//                    if (response.body()!!.code == 200){
+//                        listGetApplicationDta.postValue(response.body())
+//                    }else{
+//                        errorGetApplication.postValue(response.body()!!.code.toString())
+//                    }
+//                }else{
+//                    errorGetApplication.postValue(response.raw().code.toString())
+//                }
+//            }
+//        })
+//    }
 }

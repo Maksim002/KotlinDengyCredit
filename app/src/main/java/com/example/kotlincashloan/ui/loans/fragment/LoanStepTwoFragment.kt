@@ -102,7 +102,11 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
 
     override fun onResume() {
         super.onResume()
-        bottom_step_two.text = "Следующий шаг"
+        if (status == true){
+            bottom_step_two.setText("Сохранить")
+        }else{
+            bottom_step_two.text = "Следующий шаг"
+        }
     }
 
     private fun initСounter() {

@@ -127,7 +127,7 @@ class GetLoanActivity : AppCompatActivity() {
             states = listLoan.docs!!
             statusValue = true
 
-            if (listLoan.step == "5") {
+            if (listLoan.step == "6") {
                 if (o <= states.size) {
                     if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
                         val mapImg = HashMap<String, String>()

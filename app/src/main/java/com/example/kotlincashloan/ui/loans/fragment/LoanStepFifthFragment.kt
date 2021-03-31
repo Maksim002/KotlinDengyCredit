@@ -28,6 +28,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.drawToBitmap
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -212,6 +213,15 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 imageViewModel.updateBitmaps(mitmap)
                 mitmap.clear()
                 alert.hide()
+            }
+            //при редактирование сравнивает спрятать поля или нет
+            if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
+                fifth_incorrect_work.visibility = View.GONE
+                fifth_potent.visibility = View.GONE
+                fifth_receipt.visibility = View.GONE
+            }else if(mitmap["migration_cardA"].toString() != "" && mitmap["migration_cardB"].toString() != ""){
+                fifth_incorrect_patent.visibility = View.GONE
+                fifth_permission.visibility = View.GONE
             }
         } else {
             dataImage()
@@ -401,7 +411,11 @@ override fun onStart() {
 
     //Скрытие полей
     private fun initHidingFields() {
-        hidingLayout = AppPreferences.nationality.toString()
+        if (statusValue == true){
+            hidingLayout = listLoan.nationality_ocr.toString()
+        }else{
+            hidingLayout = AppPreferences.nationality.toString()
+        }
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {
             fifth_potent.visibility = View.VISIBLE
@@ -860,6 +874,9 @@ override fun onStart() {
                 }
                 imageViewModel.updateBitmaps(imageMap)
                 initSaveImage()
+
+                // TODO: 31.03.21 Проверить ещё раз нужин ли он тут
+                dataImage()
             }
         }
 

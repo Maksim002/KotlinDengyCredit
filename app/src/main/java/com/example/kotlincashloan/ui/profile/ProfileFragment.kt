@@ -34,6 +34,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -60,7 +61,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var inputsAnim = 0
     private var errorNull = ""
     private var errorNullAp = ""
-    private var pagerPosition =-1
+    private var pagerPosition = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -120,12 +121,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
-//    private fun initAuthorized() {
-//        val intent = Intent(context, HomeActivity::class.java)
-//        AppPreferences.token = ""
-//        startActivity(intent)
-//    }
-
     private fun initRecycler() {
 
         //Маи операции если все успешно
@@ -137,7 +132,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     initPager()
                     errorCode = result.code.toString()
                 } else if (result.error != null) {
-                    if (errorCode != result.error.code.toString()){
+                    if (errorCode != result.error.code.toString()) {
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
 //                                listListResult(result.error.code!!)
@@ -162,11 +157,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
             }
         })
 
-        if (AppPreferences.status == true){
+        if (AppPreferences.status == true) {
             viewModel.listApplication(map)
             //Маи заявки если все успешно
             MyApplication()
-        }else{
+        } else {
             MyApplication()
         }
 
@@ -204,10 +199,10 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     errorCodeClient = result.code.toString()
                 } else {
                     if (result!!.error.code != null) {
-                       if (errorCodeClient != result.error.code.toString()){
+                        if (errorCodeClient != result.error.code.toString()) {
 //                           listListResult(result.error.code!!)
-                           getErrorCode(result.error.code!!)
-                       }
+                            getErrorCode(result.error.code!!)
+                        }
                         errorCodeClient = result.error.code.toString()
                     }
                 }
@@ -252,14 +247,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     image_profile.setImageBitmap(scaled)
                     bitmapToFile(decodedImage, requireContext())
                 } else {
-                    if (result.error != null){
+                    if (result.error != null) {
                         if (errorGetImg != result.error.code.toString()) {
                             //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                             if (result.error.code != 404) {
 //                                listListResult(result.error.code!!)
                                 getErrorCode(result.error.code!!)
                                 errorGetImg = result.error.code.toString()
-                            }else{
+                            } else {
                                 errorGetImg = "200"
                             }
                         }
@@ -290,18 +285,18 @@ class ProfileFragment : Fragment(), ApplicationListener {
         })
     }
 
-    private fun MyApplication(){
+    private fun MyApplication() {
         //Маи заявки если все успешно
-        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result->
+        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result ->
             try {
-                if (result.result != null){
+                if (result.result != null) {
                     errorNullAp = ""
                     listApplication = result.result
                     initPager()
                     AppPreferences.status = false
                     errorCodeAp = result.code.toString()
-                }else if (result.error != null){
-                    if (errorCodeAp != result.error.code.toString()){
+                } else if (result.error != null) {
+                    if (errorCodeAp != result.error.code.toString()) {
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
 //                                listListResult(result.error.code!!)
@@ -320,15 +315,15 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 profile_swipe.isRefreshing = false
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
 
         //Маи заявки если ошибка
-        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error->
+        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error ->
             try {
-                if (errorCodeAp != error){
+                if (errorCodeAp != error) {
                     if (error != "404") {
                         errorCodeAp = error
                         if (error != null) {
@@ -342,7 +337,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     }
                 }
                 errorCodeAp = error
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -376,95 +371,40 @@ class ProfileFragment : Fragment(), ApplicationListener {
         profile_not_found.visibility = View.GONE
     }
 
-//    private fun listListResult(result: Int) {
-//        if (result == 400 || result == 500 || result == 409 || result == 429) {
-//            profile_technical_work.visibility = View.VISIBLE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//            profile_access_restricted.visibility = View.GONE
-//            profile_not_found.visibility = View.GONE
-//        } else if (result == 403) {
-//            profile_access_restricted.visibility = View.VISIBLE
-//            profile_technical_work.visibility = View.GONE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//            profile_not_found.visibility = View.GONE
-//        } else if (result == 404) {
-//            profile_not_found.visibility = View.VISIBLE
-//            profile_access_restricted.visibility = View.GONE
-//            profile_technical_work.visibility = View.GONE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//        } else if (result == 401) {
-//            initAuthorized()
-//        }
-//        MainActivity.alert.hide()
-//    }
-
-    private fun getErrorCode(error: Int){
-        listListResult(error,profile_technical_work as LinearLayout,profile_no_connection as LinearLayout,
-            profile_swipe as SwipeRefreshLayout,profile_access_restricted as LinearLayout,
-            profile_not_found as LinearLayout,activity as AppCompatActivity)
+    private fun getErrorCode(error: Int) {
+        listListResult(
+            error, profile_technical_work as LinearLayout, profile_no_connection as LinearLayout,
+            profile_swipe as SwipeRefreshLayout, profile_access_restricted as LinearLayout,
+            profile_not_found as LinearLayout, activity as AppCompatActivity
+        )
         MainActivity.alert.hide()
     }
 
-//    private fun errorList(error: String) {
-//        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-//            profile_technical_work.visibility = View.VISIBLE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//            profile_access_restricted.visibility = View.GONE
-//            profile_not_found.visibility = View.GONE
-//        } else if (error == "403") {
-//            profile_access_restricted.visibility = View.VISIBLE
-//            profile_technical_work.visibility = View.GONE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//            profile_not_found.visibility = View.GONE
-//        } else if (error == "404") {
-//            profile_not_found.visibility = View.VISIBLE
-//            profile_access_restricted.visibility = View.GONE
-//            profile_technical_work.visibility = View.GONE
-//            profile_no_connection.visibility = View.GONE
-//            profile_swipe.visibility = View.GONE
-//        } else if (error == "601") {
-//            profile_no_connection.visibility = View.VISIBLE
-//            profile_swipe.visibility = View.GONE
-//            profile_technical_work.visibility = View.GONE
-//            profile_access_restricted.visibility = View.GONE
-//            profile_not_found.visibility = View.GONE
-//        } else if (error == "401") {
-//            initAuthorized()
-//        }
-//        MainActivity.alert.hide()
-//    }
-
+    //Запрос на получение масива заявки
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
         HomeActivity.alert.show()
         val mapLOan = HashMap<String, String>()
         mapLOan.put("login", AppPreferences.login.toString())
         mapLOan.put("token", AppPreferences.token.toString())
-        mapLOan.put("id", item.id.toString())
+        mapLOan.put("id", item.id!!)
 
-        viewModel.getApplication(mapLOan)
-
-        viewModel.listGetApplicationDta.observe(viewLifecycleOwner, Observer { result->
-            if (result.result != null){
-                val intent = Intent(requireContext(), GetLoanActivity::class.java)
-                intent.putExtra("getLOan", result.result)
-                intent.putExtra("getBool", true)
-                startActivity(intent)
-            }else if (result.error != null){
-//                listListResult(result.error.code!!)
-                getErrorCode(result.error.code!!)
-            }
-            HomeActivity.alert.hide()
-        })
-
-        viewModel.errorGetApplication.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
-//                errorList(error)
-                getErrorCode(error.toInt())
+        viewModel.getApplication(mapLOan).observe(viewLifecycleOwner, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        val intent = Intent(requireContext(), GetLoanActivity::class.java)
+                        intent.putExtra("getLOan", data.result)
+                        intent.putExtra("getBool", true)
+                        startActivity(intent)
+                    } else if (data.error != null) {
+                        getErrorCode(data.error.code!!)
+                    }
+                }
+                Status.NETWORK, Status.ERROR -> {
+                    getErrorCode(msg!!.toInt())
+                }
             }
             HomeActivity.alert.hide()
         })
@@ -490,11 +430,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
 
         //проверяет если пежер currentItem = 1 то выдемы нопредел)нные поля или на оборот
-        if (pagerPosition != -1){
-            if (pagerPosition == 1){
+        if (pagerPosition != -1) {
+            if (pagerPosition == 1) {
                 profile_bar_one.visibility = View.VISIBLE
                 profile_bar_zero.visibility = View.GONE
-            }else{
+            } else {
                 profile_bar_zero.visibility = View.VISIBLE
                 profile_bar_one.visibility = View.GONE
             }
@@ -528,7 +468,10 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 initRestart()
@@ -579,7 +522,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     }
 
     //Очещает в запросе данные
-    private fun clearError(){
+    private fun clearError() {
         viewModel.errorListOperation.value = null
         viewModel.errorClientInfo.value = null
         viewModel.errorGetImg.value = null
@@ -647,7 +590,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ColorWindows(activity as AppCompatActivity).noRollback()
     }
 
-    private fun errorValue(){
+    private fun errorValue() {
         errorCode = ""
         errorCodeClient = ""
         errorCodeAp = ""

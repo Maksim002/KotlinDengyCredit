@@ -161,6 +161,10 @@ class GetLoanModel(
     @Expose
     var second_phone_country_id: String? = null,
 
+    @SerializedName("nationality_ocr")
+    @Expose
+    var nationality_ocr: String? = null,
+
     @SerializedName("docs")
     @Expose
     var docs: ArrayList<String>? = null

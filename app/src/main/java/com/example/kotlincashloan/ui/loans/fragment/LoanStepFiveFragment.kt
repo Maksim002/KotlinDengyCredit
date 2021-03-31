@@ -624,6 +624,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getErrorCode(error.toInt())
             }
         })
+        alert.hide()
     }
 
 

@@ -260,9 +260,14 @@ interface ApiService {
     @POST("listLoan?token=oYyxhIFgJjAb")
     fun listLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ResultApplicationModel>>>
 
+//    @Headers("Content-Type: application/x-www-form-urlencoded")
+//    @FormUrlEncoded
+//    @POST("getLoan?token=oYyxhIFgJjAb")
+//    fun getLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<GetLoanModel>>
+
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("getLoan?token=oYyxhIFgJjAb")
-    fun getLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<GetLoanModel>>
+    suspend fun getLoan(@FieldMap params: Map<String, String>): Response<CommonResponse<GetLoanModel>>
 }
 
