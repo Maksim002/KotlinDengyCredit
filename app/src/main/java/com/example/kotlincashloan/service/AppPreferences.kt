@@ -37,10 +37,10 @@ object AppPreferences {
             it.putString("nationality", value)
         }
 
-    var sum: String?
-        get() = preferences.getString("sum", "")
+    var applicationId: String?
+        get() = preferences.getString("applicationId", "")
         set(value) = preferences.edit {
-            it.putString("sum", value)
+            it.putString("applicationId", value)
         }
 
     var idApplications: String?
@@ -109,6 +109,12 @@ object AppPreferences {
         get() = preferences.getBoolean("errorCode", false)
         set(value) = preferences.edit {
             it.putBoolean("errorCode", value)
+        }
+
+    var status: Boolean
+        get() = preferences.getBoolean("status", false)
+        set(value) = preferences.edit {
+            it.putBoolean("status", value)
         }
 
     var isFormatMask: String?

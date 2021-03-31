@@ -1,6 +1,5 @@
 package com.example.kotlincashloan.ui.loans
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
@@ -22,12 +21,10 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -40,9 +37,9 @@ class GetLoanActivity : AppCompatActivity() {
     var states = ArrayList<String>()
     private var statusValue = false
     private var errorCodeIm = ""
-    private lateinit var thread: Thread
     private var o: Int = 0
     private val getImList: ArrayList<String> = arrayListOf()
+    private var permission = 0
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -63,9 +60,12 @@ class GetLoanActivity : AppCompatActivity() {
             val valod = intent.extras!!.getBoolean("getBool")
             listLoan = intent.extras!!.getSerializable("getLOan") as GetLoanModel
             statusValue = valod
+            AppPreferences.status = valod
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        getPermission()
 
         if (savedInstanceState == null) {
             initViewPager()
@@ -101,6 +101,22 @@ class GetLoanActivity : AppCompatActivity() {
             not_found.isClickable = false
         }
     }
+    //проверяет какое деалог заработает
+    private fun getPermission(){
+        if (listLoan.step == "1"){
+            permission = 1
+        }else if (listLoan.step == "2"){
+            permission = 2
+        }else if (listLoan.step == "3"){
+            permission = 3
+        }else if (listLoan.step == "4"){
+            permission = 4
+        }else if (listLoan.step == "5"){
+            permission = 5
+        }else if (listLoan.step == "6"){
+            permission = 6
+        }
+    }
 
     private fun initGetLoan() {
         if (statusValue == true) {
@@ -134,11 +150,7 @@ class GetLoanActivity : AppCompatActivity() {
                                                 o++
                                                 initGetLoan()
                                             } else if (viewModel.repository.mitmap.size == states.size - 1) {
-                                                LoanStepFifthFragment(
-                                                    statusValue,
-                                                    viewModel.repository.mitmap,
-                                                    listLoan
-                                                )
+                                                LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)
                                                 transition()
                                                 alert.hide()
                                             }
@@ -187,8 +199,8 @@ class GetLoanActivity : AppCompatActivity() {
             }else{
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 transition()
-                alert.hide()
-                }, 2000)
+//                alert.hide()
+                }, 2500)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -206,36 +218,38 @@ class GetLoanActivity : AppCompatActivity() {
 
     //Срвнивает со степом на какой экран перети
     private fun transition() {
-        if (listLoan.step!!.toInt() == 2) {
-            get_loan_view_pagers.currentItem = 3
-        }
-
-//        if (listLoan.step!!.toInt() == 5) {
+//        if (listLoan.step!!.toInt() == 3) {
 //            get_loan_view_pagers.currentItem = 6
+//        }
+
+        get_loan_view_pagers.currentItem = listLoan.step!!.toInt()
+
+//        if (listLoan.step!!.toInt() == 1) {
+//            get_loan_view_pagers.currentItem = 1
+//        } else if (listLoan.step!!.toInt() == 2) {
+//            get_loan_view_pagers.currentItem = 2
+//        } else if (listLoan.step!!.toInt() == 3) {
+//            get_loan_view_pagers.currentItem = 3
 //        } else if (listLoan.step!!.toInt() == 4) {
 //            get_loan_view_pagers.currentItem = 5
-//        } else if (listLoan.step!!.toInt() == 3) {
-//            get_loan_view_pagers.currentItem = 4
-//        } else if (listLoan.step!!.toInt() == 2) {
-//            get_loan_view_pagers.currentItem = 3
-//        } else if (listLoan.step!!.toInt() == 1) {
-//            get_loan_view_pagers.currentItem = 2
-//        } else if (listLoan.step!!.toInt() == 0) {
-//            get_loan_view_pagers.currentItem = 1
+//        } else if (listLoan.step!!.toInt() == 5) {
+//            get_loan_view_pagers.currentItem = 5
+//        } else if (listLoan.step!!.toInt() == 6) {
+//            get_loan_view_pagers.currentItem = 7
 //        }
         alert.hide()
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFifthFragment()))
+//        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan)))
-        list.add(LoansListModel(LoanStepFiveFragment()))
-        list.add(LoansListModel(LoanStepSixFragment()))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan)))
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission)))
+        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
+        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
         list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true

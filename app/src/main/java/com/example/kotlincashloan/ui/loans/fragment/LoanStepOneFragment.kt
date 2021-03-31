@@ -39,7 +39,6 @@ class LoanStepOneFragment() : Fragment() {
     override fun onStart() {
         super.onStart()
         bottom_step_one.text = "Начать"
-        AppPreferences.sum = ""
         AppPreferences.nationality = ""
         initRequest()
     }

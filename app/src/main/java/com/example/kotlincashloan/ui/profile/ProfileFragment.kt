@@ -11,16 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.extension.bitmapToFile
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.extension.sendPicture
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
@@ -31,6 +34,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -56,7 +60,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var inputsAnim = 0
     private var errorNull = ""
     private var errorNullAp = ""
-    private var countPosition = -1
+    private var pagerPosition =-1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,7 +87,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initRefresh()
         initClick()
-
     }
 
     private fun initArgument() {
@@ -117,15 +120,15 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
-    }
+//    private fun initAuthorized() {
+//        val intent = Intent(context, HomeActivity::class.java)
+//        AppPreferences.token = ""
+//        startActivity(intent)
+//    }
 
     private fun initRecycler() {
 
-        //если все успешно
+        //Маи операции если все успешно
         viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null) {
@@ -137,7 +140,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode != result.error.code.toString()){
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
-                                listListResult(result.error.code!!)
+//                                listListResult(result.error.code!!)
+                                getErrorCode(result.error.code!!)
                             }
                         } else {
                             resultTrue()
@@ -158,63 +162,13 @@ class ProfileFragment : Fragment(), ApplicationListener {
             }
         })
 
-
-        //Маи заявки если все успешно
-        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result->
-            try {
-                if (result.result != null){
-                    errorNullAp = ""
-                    listApplication = result.result
-                    initPager()
-                    errorCodeAp = result.code.toString()
-                }else if (result.error != null){
-                    if (errorCodeAp != result.error.code.toString()){
-                        if (result.error.code != 404) {
-                            if (result.error.code != null) {
-                                listListResult(result.error.code!!)
-                            }
-                        } else {
-                            resultTrue()
-                            errorNullAp = result.error.code.toString()
-                            initPager()
-                        }
-                    }
-                    errorCodeAp = result.error.code.toString()
-                }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
-                    resultSuccessfully()
-                }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                profile_swipe.isRefreshing = false
-            }catch (e:Exception){
-                e.printStackTrace()
-            }
-        })
-
-        //Маи заявки если ошибка
-        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error->
-            try {
-                if (errorCodeAp != error){
-                    if (error != "404") {
-                        errorCodeAp = error
-                        if (error != null) {
-                            errorList(error)
-                        }
-                    } else {
-                        resultTrue()
-                        errorNullAp = error
-                        initPager()
-                    }
-                }
-                errorCodeAp = error
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            profile_swipe.isRefreshing = false
-        })
-
-
+        if (AppPreferences.status == true){
+            viewModel.listApplication(map)
+            //Маи заявки если все успешно
+            MyApplication()
+        }else{
+            MyApplication()
+        }
 
         //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
@@ -223,7 +177,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (error != "404") {
                         errorCode = error
                         if (error != null) {
-                            errorList(error)
+//                            errorList(error)
+                            getErrorCode(error.toInt())
                         }
                     } else {
                         resultTrue()
@@ -250,7 +205,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } else {
                     if (result!!.error.code != null) {
                        if (errorCodeClient != result.error.code.toString()){
-                           listListResult(result.error.code!!)
+//                           listListResult(result.error.code!!)
+                           getErrorCode(result.error.code!!)
                        }
                         errorCodeClient = result.error.code.toString()
                     }
@@ -268,7 +224,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
             try {
                 if (error != null) {
                     if (errorCodeClient != error) {
-                        errorList(error)
+//                        errorList(error)
+                        getErrorCode(error.toInt())
                     }
                 }
                 errorCodeClient = error
@@ -299,7 +256,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         if (errorGetImg != result.error.code.toString()) {
                             //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                             if (result.error.code != 404) {
-                                listListResult(result.error.code!!)
+//                                listListResult(result.error.code!!)
+                                getErrorCode(result.error.code!!)
                                 errorGetImg = result.error.code.toString()
                             }else{
                                 errorGetImg = "200"
@@ -320,7 +278,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
             try {
                 if (error != null) {
                     if (errorGetImg != error) {
-                        errorList(error)
+//                        errorList(error)
+                        getErrorCode(error.toInt())
                     }
                 }
                 errorGetImg = error
@@ -329,6 +288,67 @@ class ProfileFragment : Fragment(), ApplicationListener {
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         })
+    }
+
+    private fun MyApplication(){
+        //Маи заявки если все успешно
+        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result->
+            try {
+                if (result.result != null){
+                    errorNullAp = ""
+                    listApplication = result.result
+                    initPager()
+                    AppPreferences.status = false
+                    errorCodeAp = result.code.toString()
+                }else if (result.error != null){
+                    if (errorCodeAp != result.error.code.toString()){
+                        if (result.error.code != 404) {
+                            if (result.error.code != null) {
+//                                listListResult(result.error.code!!)
+                                getErrorCode(result.error.code!!)
+                            }
+                        } else {
+                            resultTrue()
+                            errorNullAp = result.error.code.toString()
+                            initPager()
+                        }
+                    }
+                    errorCodeAp = result.error.code.toString()
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                    resultSuccessfully()
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                profile_swipe.isRefreshing = false
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+        })
+
+        //Маи заявки если ошибка
+        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error->
+            try {
+                if (errorCodeAp != error){
+                    if (error != "404") {
+                        errorCodeAp = error
+                        if (error != null) {
+//                            errorList(error)
+                            getErrorCode(error.toInt())
+                        }
+                    } else {
+                        resultTrue()
+                        errorNullAp = error
+                        initPager()
+                    }
+                }
+                errorCodeAp = error
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
+        })
+
     }
 
     // проверка если errorCode и errorCodeClient == 200
@@ -356,63 +376,71 @@ class ProfileFragment : Fragment(), ApplicationListener {
         profile_not_found.visibility = View.GONE
     }
 
-    private fun listListResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            profile_technical_work.visibility = View.VISIBLE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            profile_access_restricted.visibility = View.VISIBLE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            profile_not_found.visibility = View.VISIBLE
-            profile_access_restricted.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
+//    private fun listListResult(result: Int) {
+//        if (result == 400 || result == 500 || result == 409 || result == 429) {
+//            profile_technical_work.visibility = View.VISIBLE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//            profile_access_restricted.visibility = View.GONE
+//            profile_not_found.visibility = View.GONE
+//        } else if (result == 403) {
+//            profile_access_restricted.visibility = View.VISIBLE
+//            profile_technical_work.visibility = View.GONE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//            profile_not_found.visibility = View.GONE
+//        } else if (result == 404) {
+//            profile_not_found.visibility = View.VISIBLE
+//            profile_access_restricted.visibility = View.GONE
+//            profile_technical_work.visibility = View.GONE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//        } else if (result == 401) {
+//            initAuthorized()
+//        }
+//        MainActivity.alert.hide()
+//    }
+
+    private fun getErrorCode(error: Int){
+        listListResult(error,profile_technical_work as LinearLayout,profile_no_connection as LinearLayout,
+            profile_swipe as SwipeRefreshLayout,profile_access_restricted as LinearLayout,
+            profile_not_found as LinearLayout,activity as AppCompatActivity)
         MainActivity.alert.hide()
     }
 
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            profile_technical_work.visibility = View.VISIBLE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            profile_access_restricted.visibility = View.VISIBLE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            profile_not_found.visibility = View.VISIBLE
-            profile_access_restricted.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-        } else if (error == "601") {
-            profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-        MainActivity.alert.hide()
-    }
+//    private fun errorList(error: String) {
+//        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
+//            profile_technical_work.visibility = View.VISIBLE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//            profile_access_restricted.visibility = View.GONE
+//            profile_not_found.visibility = View.GONE
+//        } else if (error == "403") {
+//            profile_access_restricted.visibility = View.VISIBLE
+//            profile_technical_work.visibility = View.GONE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//            profile_not_found.visibility = View.GONE
+//        } else if (error == "404") {
+//            profile_not_found.visibility = View.VISIBLE
+//            profile_access_restricted.visibility = View.GONE
+//            profile_technical_work.visibility = View.GONE
+//            profile_no_connection.visibility = View.GONE
+//            profile_swipe.visibility = View.GONE
+//        } else if (error == "601") {
+//            profile_no_connection.visibility = View.VISIBLE
+//            profile_swipe.visibility = View.GONE
+//            profile_technical_work.visibility = View.GONE
+//            profile_access_restricted.visibility = View.GONE
+//            profile_not_found.visibility = View.GONE
+//        } else if (error == "401") {
+//            initAuthorized()
+//        }
+//        MainActivity.alert.hide()
+//    }
 
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
+        HomeActivity.alert.show()
         val mapLOan = HashMap<String, String>()
         mapLOan.put("login", AppPreferences.login.toString())
         mapLOan.put("token", AppPreferences.token.toString())
@@ -427,14 +455,18 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 intent.putExtra("getBool", true)
                 startActivity(intent)
             }else if (result.error != null){
-                listListResult(result.error.code!!)
+//                listListResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
+            HomeActivity.alert.hide()
         })
 
         viewModel.errorGetApplication.observe(viewLifecycleOwner, Observer { error->
             if (error != null){
-                errorList(error)
+//                errorList(error)
+                getErrorCode(error.toInt())
             }
+            HomeActivity.alert.hide()
         })
     }
 
@@ -448,19 +480,28 @@ class ProfileFragment : Fragment(), ApplicationListener {
         profile_pager.isEnabled = false
 
         v1.setOnClickListener {
-            countPosition = 0
+            pagerPosition = 0
             profile_pager.currentItem = 0
         }
 
         v2.setOnClickListener {
-            countPosition = 1
+            pagerPosition = 1
             profile_pager.currentItem = 1
         }
 
-        //Сравнивает если после обновление countPosition имеет значение не равное -1
-        if (countPosition != -1){
-            profile_pager.currentItem = countPosition
+        //проверяет если пежер currentItem = 1 то выдемы нопредел)нные поля или на оборот
+        if (pagerPosition != -1){
+            if (pagerPosition == 1){
+                profile_bar_one.visibility = View.VISIBLE
+                profile_bar_zero.visibility = View.GONE
+            }else{
+                profile_bar_zero.visibility = View.VISIBLE
+                profile_bar_one.visibility = View.GONE
+            }
         }
+
+        profile_bar_zero.visibility = View.VISIBLE
+        profile_bar_one.visibility = View.GONE
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(
@@ -558,6 +599,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     override fun onResume() {
         super.onResume()
+
         initArgument()
         errorValue()
         if (AppPreferences.inputsAnim != 0) {
@@ -577,8 +619,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 initGetImgDta()
                 initRecycler()
             } else {
-                AppPreferences.reviewCode = 1
-                AppPreferences.reviewCodeAp = 1
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
 //                initRestart()
                 viewModel.listGetImgDta.postValue(null)
                 viewModel.getImg(mapImg)

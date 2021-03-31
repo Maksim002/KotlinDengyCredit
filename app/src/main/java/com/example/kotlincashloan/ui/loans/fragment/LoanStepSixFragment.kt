@@ -1,13 +1,13 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,33 +16,28 @@ import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
-import com.example.kotlincashloan.service.model.Loans.ListWorkResultModel
-import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
-import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.profile.ProfileViewModel
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(),
+    ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
-    private var listAvailableCountryDta = ""
     private var getListFamilyDta = ""
 
     private var family = ""
@@ -50,6 +45,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listFamily: ArrayList<ListFamilyResultModel> = arrayListOf()
+    private lateinit var alert: LoadingAlert
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +58,10 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        alert = LoadingAlert(requireActivity())
+        if (permission == 5){
+            alert.show()
+        }
         six_loan_phone.mask = "+7 (###)-###-##-##"
         initRestart()
         initClick()
@@ -108,7 +108,14 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             if (itemDialog.size == 0) {
                 for (i in 1..listFamily.size) {
                     if (i <= listFamily.size) {
-                        itemDialog.add(GeneralDialogModel(listFamily[i-1].name.toString(), "listFamily", i-1, 0, listFamily[i-1].name.toString())
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listFamily[i - 1].name.toString(),
+                                "listFamily",
+                                i - 1,
+                                0,
+                                listFamily[i - 1].name.toString()
+                            )
                         )
                     }
                 }
@@ -125,7 +132,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     }
 
 
-    private fun initRestart(){
+    private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             six_ste_no_connection.visibility = View.VISIBLE
@@ -133,7 +140,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
             six_ste_technical_work.visibility = View.GONE
             six_ste_access_restricted.visibility = View.GONE
             six_ste_not_found.visibility = View.GONE
-        }else{
+        } else {
             viewModel.errorSaveLoan.value = null
             initListFamily()
 //            initAvailableCountry()
@@ -156,6 +163,27 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         }
     }
 
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (status == true) {
+            bottom_loan_six.setText("Сохранить")
+            four_cross_six.visibility = View.GONE
+            //reLastName
+            six_loan_surname.setText(listLoan.reLastName)
+            //reFirstName
+            six_loan_name.setText(listLoan.reFirstName)
+            //reSecondName
+            six_loan_middle_name.setText(listLoan.reSecondName)
+            //reType
+            six_loan_family.setText(listFamily.first{ it.id == listLoan.reType }.name)
+            familyPosition = listFamily.first{ it.id == listLoan.reType }.name.toString()
+            family = listFamily.first{ it.id == listLoan.reType }.id.toString()
+            //rePhone
+            six_loan_phone.setText(listLoan.rePhone)
+            alert.hide()
+        }
+    }
+
 
     // TODO: 21-2-8 Список кем приходится
     private fun initListFamily() {
@@ -168,10 +196,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         viewModel.getListFamilyDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListFamilyDta = result.code.toString()
-                getResultOk()
                 listFamily = result.result
+                getResultOk()
             } else {
-                listResult(result.error.code!!)
+                getListFamilyDta = result.error.code!!.toString()
+                getErrorCode(result.error.code!!)
             }
         })
 
@@ -179,7 +208,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         viewModel.errorListFamily.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListFamilyDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -190,13 +219,13 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.idApplications.toString()
+        mapSave["id"] = AppPreferences.applicationId.toString()
         mapSave["last_name"] = six_loan_surname.text.toString()
         mapSave["first_name"] = six_loan_name.text.toString()
         mapSave["second_name"] = six_loan_middle_name.text.toString()
         mapSave["type"] = family
         mapSave["phone"] = six_loan_phone.text.toString()
-        mapSave["step"] = "4"
+        mapSave["step"] = "5"
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
@@ -209,18 +238,22 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
                         six_ste_no_connection.visibility = View.GONE
                         six_ste_access_restricted.visibility = View.GONE
                         six_ste_not_found.visibility = View.GONE
-                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
-                    }else if (data.error.code != null) {
-                        listResult(data.error.code!!)
-                    }else if (data.reject != null) {
+                        if (status == true){
+                            requireActivity().finish()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+                        }
+                    } else if (data.error.code != null) {
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message.toString())
                     }
                 }
                 Status.ERROR -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
                 Status.NETWORK -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
             GetLoanActivity.alert.hide()
@@ -228,7 +261,11 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -244,74 +281,22 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     }
 
     private fun getResultOk() {
-        if (listAvailableCountryDta == "200" && getListFamilyDta == "200") {
+        if (getListFamilyDta == "200") {
             layout_loan_six.visibility = View.VISIBLE
             six_ste_technical_work.visibility = View.GONE
             six_ste_no_connection.visibility = View.GONE
             six_ste_access_restricted.visibility = View.GONE
             six_ste_not_found.visibility = View.GONE
+            getLists()
         }
     }
 
-    private fun listResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            six_ste_technical_work.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            six_ste_access_restricted.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            six_ste_not_found.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
+    private fun getErrorCode(error: Int){
+        listListResult(error,six_ste_technical_work as LinearLayout,six_ste_no_connection
+                as LinearLayout,layout_loan_six as LinearLayout,six_ste_access_restricted
+                as LinearLayout,six_ste_not_found as LinearLayout,requireActivity())
     }
 
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            six_ste_technical_work.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            six_ste_access_restricted.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            six_ste_not_found.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_no_connection.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-        } else if (error == "601") {
-            six_ste_no_connection.visibility = View.VISIBLE
-            six_ste_not_found.visibility = View.GONE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
-    }
 
     //Метотд для скрытия клавиатуры
     private fun closeKeyboard() {
@@ -353,7 +338,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
         return valid
     }
 
-    private fun initView(){
+    private fun initView() {
         six_loan_surname.addTextChangedListener {
             editUtils(six_loan_surname, six_loan_surname_error, "", false)
         }
@@ -372,7 +357,7 @@ class LoanStepSixFragment : Fragment(), ListenerGeneralResult, StepClickListener
     }
 
     //проверяет если был откат назад отключает ошибки
-    private fun hidingErrors(){
+    private fun hidingErrors() {
         editUtils(six_loan_surname, six_loan_surname_error, "", false)
         editUtils(six_loan_name, six_loan_name_error, "", false)
         editUtils(six_loan_family, six_loan_error, "", false)

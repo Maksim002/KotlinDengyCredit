@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
 import com.example.kotlincashloan.ui.loans.SharedViewModel
@@ -31,6 +33,54 @@ fun errorImageRus(idKey: ImageView? = null, idImage: ImageView? = null ,imageStr
 
 
 fun listListResult(result: Int, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: LinearLayout, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity){
+    if (result == 400 || result == 500 || result == 409 || result == 429) {
+        technical_work.visibility = View.VISIBLE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        not_found.visibility = View.GONE
+    } else if (result == 403) {
+        access_restricted.visibility = View.VISIBLE
+        technical_work.visibility = View.GONE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+        not_found.visibility = View.GONE
+    } else if (result == 404) {
+        not_found.visibility = View.VISIBLE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+    } else if (result == 401) {
+        initAuthorized(activity)
+    }
+}
+
+fun listListResult(result: Int, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: SwipeRefreshLayout, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity){
+    if (result == 400 || result == 500 || result == 409 || result == 429) {
+        technical_work.visibility = View.VISIBLE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        not_found.visibility = View.GONE
+    } else if (result == 403) {
+        access_restricted.visibility = View.VISIBLE
+        technical_work.visibility = View.GONE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+        not_found.visibility = View.GONE
+    } else if (result == 404) {
+        not_found.visibility = View.VISIBLE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        no_connection.visibility = View.GONE
+        layout_res.visibility = View.GONE
+    } else if (result == 401) {
+        initAuthorized(activity)
+    }
+}
+
+fun listListResult(result: Int, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: NestedScrollView, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity){
     if (result == 400 || result == 500 || result == 409 || result == 429) {
         technical_work.visibility = View.VISIBLE
         no_connection.visibility = View.GONE

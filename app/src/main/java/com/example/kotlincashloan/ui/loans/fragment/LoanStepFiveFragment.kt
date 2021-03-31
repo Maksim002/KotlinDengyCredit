@@ -1,47 +1,40 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
-import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
-import com.google.android.gms.dynamic.IFragmentWrapper
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import kotlinx.android.synthetic.main.activity_number.*
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -74,6 +67,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var listIncome: ArrayList<ListIncomeResultModel> = arrayListOf()
     private var listTypeIncome: ArrayList<ListTypeIncomeModel> = arrayListOf()
     private var listIncomeAdditional: ArrayList<ListIncomeResultModel> = arrayListOf()
+    private lateinit var alert: LoadingAlert
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +80,10 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        alert = LoadingAlert(requireActivity())
+        if (permission == 4){
+            alert.show()
+        }
         initRestart()
         initClick()
         initView()
@@ -122,7 +120,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             fire_additional_amount.visibility = View.GONE
         }
         //В поле длинная строка. Если поле непустое удоляет hide
-        if (fire_work_experience.text.isNotEmpty()){
+        if (fire_work_experience.text.isNotEmpty()) {
             fire_work_experience.hint = null
         }
     }
@@ -399,6 +397,41 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
     }
 
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (status == true) {
+            bottom_loan_fire.setText("Сохранить")
+            five_cross_back.visibility = View.GONE
+
+            //place_work
+            fire_step_four_residence.setText(listLoan.placeWork)
+            //type_work
+            fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
+            typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
+            typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+            //work_exp_ru
+            fire_work_experience_r_f.setText(listYears.first { it.id == listLoan.workExpRu }.name)
+            yearsPosition = listYears.first { it.id == listLoan.workExpRu }.name.toString()
+            yearsRfId = listYears.first { it.id == listLoan.workExpRu }.id!!
+            //work_exp_last
+            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast}.name)
+            experiencePosition = listWorkExperience.first { it.id == listLoan.workExpLast}.name.toString()
+            yearsId = listWorkExperience.first{it.id == listLoan.workExpLast}.id!!
+            //income
+            fire_list_income.setText(listIncome.first { it.id == listLoan.income}.name)
+            incomePosition = listIncome.first { it.id == listLoan.income}.name.toString()
+            incomeId = listIncome.first { it.id == listLoan.income}.id!!
+            //sub_income_id
+            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId}.name)
+            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId}.name.toString()
+            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId}.id!!
+            //sub_income_sum
+            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name)
+            incomeAdditionalPosition = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name.toString()
+            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.id!!
+        }
+    }
+
     // TODO: 21-2-5  Вид занятости
     private fun initListWork() {
         val mapWork = mutableMapOf<String, String>()
@@ -410,18 +443,20 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListWorkDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListWorkDta = result.code.toString()
-                getResultOk()
                 listWork = result.result
+                getResultOk()
             } else {
                 getListWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListWork.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+//                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -437,18 +472,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListTypeWorkDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListTypeWorkDta = result.code.toString()
-                getResultOk()
                 listTypeWork = result.result
+                getResultOk()
             } else {
                 getListTypeWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListTypeWork.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -464,18 +499,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListYearsDtaF = result.code.toString()
-                getResultOk()
                 listYears = result.result
+                getResultOk()
             } else {
                 getListYearsDtaF = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListYearsDtaF = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -491,18 +526,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
-                getResultOk()
                 listWorkExperience = result.result
+                getResultOk()
             } else {
                 getListWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -519,18 +554,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListIncomeDta = result.code.toString()
-                getResultOk()
                 listIncome = result.result
+                getResultOk()
             } else {
                 getListIncomeDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListIncomeDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -547,18 +582,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListTypeIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListTypeIncomeDta = result.code.toString()
-                getResultOk()
                 listTypeIncome = result.result
+                getResultOk()
             } else {
                 getListTypeIncomeDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListTypeIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListTypeIncomeDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -575,17 +610,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListAdditionalDta = result.code.toString()
-                getResultOk()
                 listIncomeAdditional = result.result
+                getResultOk()
             } else {
                 getListAdditionalDta = result.error.code.toString()
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListAdditionalDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -597,7 +633,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.idApplications.toString()
+        mapSave["id"] = AppPreferences.applicationId.toString()
         mapSave["type_work"] = typeId
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId
@@ -609,7 +645,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             mapSave["sub_income_sum"] = additionalId
         }
         mapSave["place_work"] = fire_step_four_residence.text.toString()
-        mapSave["step"] = "3"
+        mapSave["step"] = "4"
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
@@ -622,23 +658,29 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                         fire_ste_no_connection.visibility = View.GONE
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
-                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                        if (status == true){
+                            requireActivity().onBackPressed()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                        }
+
                     } else if (data.error.code != null) {
-                        listResult(data.error.code!!)
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                     } else if (data.reject != null) {
                         initBottomSheet(data.reject.message.toString())
                     }
                 }
                 Status.ERROR -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
                 Status.NETWORK -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
             GetLoanActivity.alert.hide()
         })
     }
+
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
@@ -668,67 +710,14 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             fire_ste_no_connection.visibility = View.GONE
             fire_ste_access_restricted.visibility = View.GONE
             fire_ste_not_found.visibility = View.GONE
+            getLists()
         }
     }
 
-    private fun listResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            fire_ste_technical_work.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            fire_ste_access_restricted.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            fire_ste_not_found.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
-    }
-
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            fire_ste_technical_work.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            fire_ste_access_restricted.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            fire_ste_not_found.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (error == "601") {
-            fire_ste_no_connection.visibility = View.VISIBLE
-            fire_ste_not_found.visibility = View.GONE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
+    private fun getErrorCode(error: Int){
+        listListResult(error,fire_ste_technical_work as LinearLayout,fire_ste_no_connection
+                as LinearLayout,layout_fire as ConstraintLayout,fire_ste_access_restricted
+                as LinearLayout,fire_ste_not_found as LinearLayout,requireActivity())
     }
 
     //Метотд для скрытия клавиатуры
@@ -814,7 +803,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     }
 
     //проверяет если был откат назад отключает ошибки
-    private fun hidingErrors(){
+    private fun hidingErrors() {
         editUtils(fire_step_four_residence, step_four_residence_error, "", false)
         editUtils(fire_post, fire_post_error, "", false)
         editUtils(fire_work_experience_r_f, work_experience_r_f_error, "", false)

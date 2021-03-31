@@ -121,8 +121,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/federationA_add_im"
@@ -179,8 +178,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/federationB_add_im"
@@ -244,13 +242,6 @@
                         app:layout_constraintRight_toRightOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
-
-
-            <!--            <com.ycuwq.datepicker.date.DatePicker-->
-            <!--                android:id="@+id/fifth__datePicker"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content" />-->
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -318,8 +309,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_weight="1"
-                                    android:scaleType="fitXY" />
+                                    android:layout_weight="1" />
 
                                 <ImageView
                                     android:id="@+id/cardA_add_im"
@@ -333,18 +323,6 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
-
-                    <!--                <ImageView-->
-                    <!--                    android:id="@+id/migration_cardA"-->
-                    <!--                    android:layout_width="200dp"-->
-                    <!--                    android:layout_height="120dp"-->
-                    <!--                    android:layout_gravity="center"-->
-                    <!--                    android:layout_marginLeft="30dp"-->
-                    <!--                    android:layout_marginTop="5dp"-->
-                    <!--                    android:layout_marginRight="3dp"-->
-                    <!--                    android:layout_weight="1"-->
-                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
-                    <!--                    android:src="@drawable/id" />-->
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -387,8 +365,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_weight="1"
-                                    android:scaleType="fitXY" />
+                                    android:layout_weight="1" />
 
                                 <ImageView
                                     android:id="@+id/cardB_add_im"
@@ -402,18 +379,6 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
-
-                    <!--                <ImageView-->
-                    <!--                    android:id="@+id/migration_cardB"-->
-                    <!--                    android:layout_width="200dp"-->
-                    <!--                    android:layout_height="120dp"-->
-                    <!--                    android:layout_gravity="center"-->
-                    <!--                    android:layout_marginLeft="3dp"-->
-                    <!--                    android:layout_marginTop="5dp"-->
-                    <!--                    android:layout_marginRight="30dp"-->
-                    <!--                    android:layout_weight="1"-->
-                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
-                    <!--                    android:src="@drawable/id" />-->
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -574,8 +539,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1"/>
 
                                     <ImageView
                                         android:id="@+id/patentA_add_im"
@@ -589,18 +553,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-                        <!--                        <ImageView-->
-                        <!--                            android:id="@+id/russian_patentA"-->
-                        <!--                            android:layout_width="200dp"-->
-                        <!--                            android:layout_height="120dp"-->
-                        <!--                            android:layout_gravity="center"-->
-                        <!--                            android:layout_marginLeft="30dp"-->
-                        <!--                            android:layout_marginTop="5dp"-->
-                        <!--                            android:layout_marginRight="3dp"-->
-                        <!--                            android:layout_weight="1"-->
-                        <!--                            android:background="@drawable/circle_orange_background_grey"-->
-                        <!--                            android:src="@drawable/id" />-->
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -643,8 +595,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/patentB_add_im"
@@ -658,18 +609,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-                        <!--                        <ImageView-->
-                        <!--                            android:id="@+id/russian_patentB"-->
-                        <!--                            android:layout_width="200dp"-->
-                        <!--                            android:layout_height="120dp"-->
-                        <!--                            android:layout_gravity="center"-->
-                        <!--                            android:layout_marginLeft="3dp"-->
-                        <!--                            android:layout_marginTop="5dp"-->
-                        <!--                            android:layout_marginRight="30dp"-->
-                        <!--                            android:layout_weight="1"-->
-                        <!--                            android:background="@drawable/circle_orange_background_grey"-->
-                        <!--                            android:src="@drawable/id" />-->
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
@@ -743,8 +682,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_weight="1"
-                                    android:scaleType="fitXY" />
+                                    android:layout_weight="1"/>
 
                                 <ImageView
                                     android:id="@+id/patent_add_im"
@@ -758,17 +696,6 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
-
-                    <!--                    <ImageView-->
-                    <!--                        android:id="@+id/receipt_patent"-->
-                    <!--                        android:layout_width="200dp"-->
-                    <!--                        android:layout_height="120dp"-->
-                    <!--                        android:layout_gravity="center"-->
-                    <!--                        android:layout_marginLeft="30dp"-->
-                    <!--                        android:layout_marginTop="5dp"-->
-                    <!--                        android:layout_marginRight="30dp"-->
-                    <!--                        android:background="@drawable/circle_orange_background_grey"-->
-                    <!--                        android:src="@drawable/id" />-->
 
                     <TextView
                         android:id="@+id/fifth_incorrect_receipt"
@@ -860,8 +787,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/permitA_add_im"
@@ -875,18 +801,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-                        <!--                    <ImageView-->
-                        <!--                        android:id="@+id/work_permitA"-->
-                        <!--                        android:layout_width="200dp"-->
-                        <!--                        android:layout_height="120dp"-->
-                        <!--                        android:layout_gravity="center"-->
-                        <!--                        android:layout_marginLeft="30dp"-->
-                        <!--                        android:layout_marginTop="5dp"-->
-                        <!--                        android:layout_marginRight="3dp"-->
-                        <!--                        android:layout_weight="1"-->
-                        <!--                        android:background="@drawable/circle_orange_background_grey"-->
-                        <!--                        android:src="@drawable/id" />-->
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -929,8 +843,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/permitB_add_im"
@@ -944,18 +857,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-                        <!--                    <ImageView-->
-                        <!--                        android:id="@+id/work_permitB"-->
-                        <!--                        android:layout_width="200dp"-->
-                        <!--                        android:layout_height="120dp"-->
-                        <!--                        android:layout_gravity="center"-->
-                        <!--                        android:layout_marginLeft="3dp"-->
-                        <!--                        android:layout_marginTop="5dp"-->
-                        <!--                        android:layout_marginRight="30dp"-->
-                        <!--                        android:layout_weight="1"-->
-                        <!--                        android:background="@drawable/circle_orange_background_grey"-->
-                        <!--                        android:src="@drawable/id" />-->
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
@@ -1040,8 +941,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:layout_weight="1"
-                                    android:scaleType="fitXY" />
+                                    android:layout_weight="1" />
 
                                 <ImageView
                                     android:id="@+id/NDFL_add_im"
@@ -1055,18 +955,6 @@
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
-
-
-                    <!--                <ImageView-->
-                    <!--                    android:id="@+id/photo_2NDFL"-->
-                    <!--                    android:layout_width="200dp"-->
-                    <!--                    android:layout_height="120dp"-->
-                    <!--                    android:layout_gravity="center"-->
-                    <!--                    android:layout_marginLeft="30dp"-->
-                    <!--                    android:layout_marginTop="5dp"-->
-                    <!--                    android:layout_marginRight="30dp"-->
-                    <!--                    android:background="@drawable/circle_orange_background_grey"-->
-                    <!--                    android:src="@drawable/id" />-->
 
                     <TextView
                         android:id="@+id/fifth_incorrect_2NDFL"
@@ -1193,8 +1081,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/page_one_add_im"
@@ -1208,18 +1095,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/last_page_one"-->
-<!--                            android:layout_width="200dp"-->
-<!--                            android:layout_height="120dp"-->
-<!--                            android:layout_marginLeft="30dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginRight="3dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="@drawable/circle_orange_background_grey"-->
-<!--                            android:src="@drawable/id" />-->
-
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -1262,8 +1137,7 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_gravity="center"
-                                        android:layout_weight="1"
-                                        android:scaleType="fitXY" />
+                                        android:layout_weight="1" />
 
                                     <ImageView
                                         android:id="@+id/page_two_add_im"
@@ -1277,18 +1151,6 @@
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
                         </LinearLayout>
-
-<!--                        <ImageView-->
-<!--                            android:id="@+id/last_page_two"-->
-<!--                            android:layout_width="200dp"-->
-<!--                            android:layout_height="120dp"-->
-<!--                            android:layout_marginLeft="3dp"-->
-<!--                            android:layout_marginTop="10dp"-->
-<!--                            android:layout_marginRight="30dp"-->
-<!--                            android:layout_marginBottom="10dp"-->
-<!--                            android:layout_weight="1"-->
-<!--                            android:background="@drawable/circle_orange_background_grey"-->
-<!--                            android:src="@drawable/id" />-->
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
@@ -1368,8 +1230,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:scaleType="fitXY" />
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:id="@+id/RVP_add_im"
@@ -1383,17 +1244,6 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
-
-<!--            <ImageView-->
-<!--                android:id="@+id/photo_RVP"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:layout_height="120dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginLeft="30dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginRight="30dp"-->
-<!--                android:background="@drawable/circle_orange_background_grey"-->
-<!--                android:src="@drawable/id" />-->
 
             </LinearLayout>
 
@@ -1460,8 +1310,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:scaleType="fitXY" />
+                                android:layout_weight="1" />
 
                             <ImageView
                                 android:id="@+id/VNJ_add_im"
@@ -1475,17 +1324,6 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
-
-<!--            <ImageView-->
-<!--                android:id="@+id/photo_VNJ"-->
-<!--                android:layout_width="200dp"-->
-<!--                android:layout_height="120dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_marginLeft="30dp"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginRight="30dp"-->
-<!--                android:background="@drawable/circle_orange_background_grey"-->
-<!--                android:src="@drawable/id" />-->
 
             </LinearLayout>
 

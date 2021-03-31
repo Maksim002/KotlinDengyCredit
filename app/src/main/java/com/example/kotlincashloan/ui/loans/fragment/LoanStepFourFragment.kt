@@ -1,6 +1,5 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.example.android.navigationadvancedsample.fragmentManagers
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
@@ -27,8 +25,8 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -36,7 +34,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -69,6 +67,8 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
     private var listNumbersChildren: ArrayList<ListNumbersResultModel> = arrayListOf()
     private var listYears: ArrayList<ListYearsResultModel> = arrayListOf()
     private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
+    private lateinit var alert: LoadingAlert
+
     //Наличие банковской карты
     private var listCatsNames = arrayOf("Нет", "Да")
 
@@ -83,6 +83,11 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        alert = LoadingAlert(requireActivity())
+        if (permission == 3){
+            alert.show()
+        }
+
         initClick()
         initView()
     }
@@ -117,7 +122,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         }
 
         four_cross_back.setOnClickListener {
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
             hidingErrors()
         }
 
@@ -275,7 +280,9 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
 
     //Получает данные на редактирование заёма
     private fun getLists() {
-        if (step == true){
+        if (status == true){
+            bottom_loan_four.setText("Сохранить")
+            four_cross_back.visibility = View.GONE
             //city
             loans_step_four_city.setText(listCity.first { it.id == listLoan.city}.name)
             cityPosition = listCity.first { it.id == listLoan.city}.name.toString()
@@ -314,6 +321,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
                 six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
                 six_number_phone.setText(l)
+                alert.hide()
             }
         }
     }
@@ -411,15 +419,16 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
             if (result.result != null) {
                 listAvailableCountryDta = result.code.toString()
                 listAvailableSix = result.result
-                six_number_phone.mask = ""
-                six_number_phone.text = null
-                sixPosition = result.result[0].name.toString()
-                six_available_country.setText("+" + result.result[0].phoneCode)
-                six_number_phone.mask = result.result[0].phoneMaskSmall
-                phoneLength = result.result[0].phoneLength.toString()
+                if (six_number_phone.text!!.length == 0) {
+                    six_number_phone.mask = ""
+                    six_number_phone.text = null
+                    sixPosition = result.result[0].name.toString()
+                    six_available_country.setText("+" + result.result[0].phoneCode)
+                    six_number_phone.mask = result.result[0].phoneMaskSmall
+                    phoneLength = result.result[0].phoneLength.toString()
+                }
                 getResultOk()
             } else {
-//                listResult(result.error.code!!)
                 getErrorCode(result.error.code!!)
             }
         })
@@ -427,7 +436,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listAvailableCountryDta = error
-//                errorList(error)
                 getErrorCode(error.toInt())
             }
         })
@@ -448,7 +456,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListCityDta = result.error.code.toString()
-//                listResult(result.error.code!!)
 
                 getErrorCode(result.error.code!!)
             }
@@ -457,7 +464,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListCity.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListCityDta = error
-//                errorList(error)
 
                 getErrorCode(error.toInt())
             }
@@ -479,7 +485,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListFamilyStatusDta = result.error.code.toString()
-//                listResult(result.error.code!!)
 
                 getErrorCode(result.error.code!!)
             }
@@ -488,7 +493,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListFamilyStatus.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListFamilyStatusDta = error
-//                errorList(error)
 
                 getErrorCode(error.toInt())
             }
@@ -510,7 +514,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListNumbersDta = result.error.code.toString()
-//                listResult(result.error.code!!)
 
                 getErrorCode(result.error.code!!)
             }
@@ -519,7 +522,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListNumbers.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListNumbersDta = error
-//                errorList(error)
 
                 getErrorCode(error.toInt())
             }
@@ -542,7 +544,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
 
             } else {
                 getListNumbersDta = result.error.code.toString()
-//                listResult(result.error.code!!)
 
                 getErrorCode(result.error.code!!)
             }
@@ -551,7 +552,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListNumbers.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListNumbersDta = error
-//                errorList(error)
 
                 getErrorCode(error.toInt())
             }
@@ -573,7 +573,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                 getResultOk()
             } else {
                 getListYearsDta = result.error.code.toString()
-//                listResult(result.error.code!!)
 
                 getErrorCode(result.error.code!!)
             }
@@ -582,7 +581,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListYearsDta = error
-//                errorList(error)
 
                 getErrorCode(error.toInt())
             }
@@ -595,7 +593,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         val mapSave = mutableMapOf<String, String>()
         mapSave.put("login", AppPreferences.login.toString())
         mapSave.put("token", AppPreferences.token.toString())
-        mapSave.put("id", AppPreferences.idApplications.toString())
+        mapSave.put("id", AppPreferences.applicationId.toString())
         mapSave.put("city", cityId)
         mapSave["second_phone"] = reNum
         mapSave.put("address", loans_step_four_residence.text.toString())
@@ -604,7 +602,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         mapSave.put("count_family_work", childrenId)
         mapSave.put("live_in_ru", liveId)
         mapSave.put("bank_card", cardId)
-        mapSave.put("step", "2")
+        mapSave.put("step", "3")
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
@@ -617,7 +615,11 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
                         loans_ste_no_connection.visibility = View.GONE
                         loans_ste_access_restricted.visibility = View.GONE
                         loans_ste_not_found.visibility = View.GONE
-                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                        if (status == true){
+                            requireActivity().finish()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                        }
                     }else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                     }else if (data.reject != null) {
@@ -647,10 +649,7 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
     }
 
     private fun initBottomSheet(message: String) {
-        val stepBottomFragment =
-            StepBottomFragment(
-                this, message
-            )
+        val stepBottomFragment = StepBottomFragment(this, message)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -678,72 +677,6 @@ class LoanStepFourFragment(var step: Boolean, var listLoan: GetLoanModel) : Frag
         listListResult(error,loans_ste_technical_work as LinearLayout,loans_ste_no_connection
                 as LinearLayout,loans_step_layout as LinearLayout,loans_ste_access_restricted
                 as LinearLayout,loans_ste_not_found as LinearLayout,requireActivity())
-    }
-
-    private fun listResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            loans_ste_technical_work.visibility = View.VISIBLE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            loans_ste_access_restricted.visibility = View.VISIBLE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            loans_ste_not_found.visibility = View.VISIBLE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
-    }
-
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            loans_ste_technical_work.visibility = View.VISIBLE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            loans_ste_access_restricted.visibility = View.VISIBLE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            loans_ste_not_found.visibility = View.VISIBLE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_step_layout.visibility = View.GONE
-        } else if (error == "601") {
-            loans_ste_no_connection.visibility = View.VISIBLE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // TODO: 16.03.21 Когда заработает сканер удолить
-        AppPreferences.idApplications = "3"
     }
 
     override fun onStart() {

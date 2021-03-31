@@ -10,6 +10,7 @@ import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.MyApplicationAdapter
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_my_application.*
 
 class MyApplicationFragment(var listener: ApplicationListener, var list: ArrayList<ResultApplicationModel> = arrayListOf(), var error: String) : Fragment(), ApplicationListener {
@@ -50,5 +51,6 @@ class MyApplicationFragment(var listener: ApplicationListener, var list: ArrayLi
     override fun onResume() {
         super.onResume()
         MainActivity.timer.timeStop()
+
     }
 }

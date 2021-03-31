@@ -137,7 +137,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("errorCode403?token=oYyxhIFgJjAb")
+    @POST("listAvailableCountry?token=oYyxhIFgJjAb")
     fun listAvailableSix(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<SixNumResultModel>>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
@@ -252,7 +252,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
-    @POST("errorCode403?token=oYyxhIFgJjAb")
+    @POST("saveLoan?token=oYyxhIFgJjAb")
     suspend fun saveLoans(@FieldMap params: Map<String, String>): Response<CommonResponseReject<SaveLoanResultModel>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")

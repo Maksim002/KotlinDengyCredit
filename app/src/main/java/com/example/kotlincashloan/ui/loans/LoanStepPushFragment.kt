@@ -25,7 +25,6 @@ class LoanStepPushFragment : Fragment() {
 
         no_connection_repeat.setOnClickListener {
             requireActivity().finish()
-            AppPreferences.sum = ""
         }
     }
 }
