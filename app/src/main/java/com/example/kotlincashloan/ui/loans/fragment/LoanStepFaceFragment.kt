@@ -18,13 +18,10 @@ import com.example.kotlincashloan.utils.bitmapIm
 import com.regula.facesdk.Face.Instance
 import com.regula.facesdk.enums.eInputFaceType
 import com.regula.facesdk.results.LivenessResponse
-import com.regula.facesdk.results.MatchFacesResponse
 import com.regula.facesdk.structs.Image
 import com.regula.facesdk.structs.MatchFacesRequest
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
-import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
-import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 
 class LoanStepFaceFragment : Fragment() {
     private var viewModel = LoansViewModel()
@@ -40,6 +37,8 @@ class LoanStepFaceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Instance().setServiceUrl("https://faceapi.molbulak.com")
+
         initRestart()
         initClick()
     }
