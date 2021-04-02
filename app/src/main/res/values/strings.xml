@@ -27,6 +27,11 @@
     <string name="_24">В течение 24 часов Вам придет уведомление о принятом решении! </string>
     <string name="uoy">Спасибо! Вы успешно заполнили заявку на заем</string>
 
+    //после удолить
+    <string name="face_anigdot"><![CDATA[Итальянский мальчик спрашивает у отца:
+     Можешь сказать мне какие женщины самые верные? Брюнетки, рыжие или блондинки?
+     Седые, сыночек мой! Седые!]]></string>
+
     <string-array name="stepLabels">
         <item>Шаг 1</item>
         <item>Шаг 2</item>
@@ -35,5 +40,6 @@
         <item>Шаг 5</item>
         <item>Шаг 6</item>
         <item>Шаг 7</item>
+        <item>Шаг 8</item>
     </string-array>
 </resources>

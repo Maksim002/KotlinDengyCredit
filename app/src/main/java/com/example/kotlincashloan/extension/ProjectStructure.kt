@@ -235,3 +235,31 @@ fun listListResult(error: Int,  activity: AppCompatActivity){
         initAuthorized(activity)
     }
 }
+
+fun listListResultHome(error: String,  activity: AppCompatActivity){
+    if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
+        loadingMistake(activity)
+    } else if (error == "403") {
+        loadingMistake(activity)
+    } else if (error == "404") {
+        loadingMistake(activity)
+    } else if (error == "601") {
+        loadingConnection(activity)
+    } else if (error == "401") {
+        initAuthorized(activity)
+    }
+}
+
+fun listListResultHome(error: Int,  activity: AppCompatActivity){
+    if (error == 400 || error == 500 || error == 600 || error == 429 || error == 409) {
+        loadingMistake(activity)
+    } else if (error == 403) {
+        loadingMistake(activity)
+    } else if (error == 404) {
+        loadingMistake(activity)
+    } else if (error == 601) {
+        loadingConnection(activity)
+    } else if (error == 401) {
+        initAuthorized(activity)
+    }
+}

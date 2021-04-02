@@ -49,6 +49,9 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
+        // TODO: 02.04.21 Если мешает убратиь
+        AppPreferences.status = false
+
         //меняет цвет статус бара
         ColorWindows(this).statusBarTextColor()
         timer = TimerListenerLoan(this)
@@ -241,7 +244,7 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
+        list.add(LoansListModel(LoanStepFaceFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
@@ -277,7 +280,7 @@ class GetLoanActivity : AppCompatActivity() {
             get_loan_view_pagers, get_loan_view_pagers.getAdapter()!!.getCount() - 1
         ); //
         // or manual change
-        get_loan_stepper_indicator.setStepCount(7);
+        get_loan_stepper_indicator.setStepCount(8);
         get_loan_stepper_indicator.setCurrentStep(0);
     }
 

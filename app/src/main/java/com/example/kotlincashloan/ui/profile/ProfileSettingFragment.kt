@@ -33,6 +33,9 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.listListResultHome
+import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.loadingMistakeIm
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
@@ -91,6 +94,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private var textPasswordOne = ""
     private var textPasswordTwo = ""
 
+    private lateinit var bitmap: Bitmap
     private var imageString: String = ""
     private lateinit var currentPhotoPath: String
     private var questionPosition = ""
@@ -1067,9 +1071,20 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             viewLifecycleOwner,
             androidx.lifecycle.Observer { result ->
                 if (result.result != null) {
+                    profile_setting_image.setImageBitmap(bitmap)
+                    MainActivity.alert.hide()
+                }else if (result.error != null){
+                    listListResultHome(result.error.code!!.toInt(), activity as AppCompatActivity)
                     MainActivity.alert.hide()
                 }
             })
+
+        viewModel.errorUploadImg.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
+            if (error != null){
+                listListResultHome(error, activity as  AppCompatActivity)
+                MainActivity.alert.hide()
+            }
+        })
     }
 
     // проверка если errorCode и errorCodeClient == 200
@@ -1167,8 +1182,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private fun imageBitmap(bm: Bitmap){
         val nh = (bm.height * (512.0 / bm.width)).toInt()
         val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
+        bitmap = scaled
         imageConverter(scaled)
-        profile_setting_image.setImageBitmap(scaled)
         MainActivity.alert.show()
     }
 
