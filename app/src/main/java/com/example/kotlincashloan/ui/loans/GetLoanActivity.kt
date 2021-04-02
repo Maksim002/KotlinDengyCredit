@@ -250,6 +250,7 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
         list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission)))
         list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
+        list.add(LoansListModel(LoanStepFaceFragment()))
         list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true

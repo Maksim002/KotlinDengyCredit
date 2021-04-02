@@ -135,7 +135,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode != result.error.code.toString()) {
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
-//                                listListResult(result.error.code!!)
                                 getErrorCode(result.error.code!!)
                             }
                         } else {
@@ -172,7 +171,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (error != "404") {
                         errorCode = error
                         if (error != null) {
-//                            errorList(error)
                             getErrorCode(error.toInt())
                         }
                     } else {
@@ -200,7 +198,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } else {
                     if (result!!.error.code != null) {
                         if (errorCodeClient != result.error.code.toString()) {
-//                           listListResult(result.error.code!!)
                             getErrorCode(result.error.code!!)
                         }
                         errorCodeClient = result.error.code.toString()
@@ -219,7 +216,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
             try {
                 if (error != null) {
                     if (errorCodeClient != error) {
-//                        errorList(error)
                         getErrorCode(error.toInt())
                     }
                 }
@@ -251,7 +247,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         if (errorGetImg != result.error.code.toString()) {
                             //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                             if (result.error.code != 404) {
-//                                listListResult(result.error.code!!)
                                 getErrorCode(result.error.code!!)
                                 errorGetImg = result.error.code.toString()
                             } else {
@@ -273,7 +268,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
             try {
                 if (error != null) {
                     if (errorGetImg != error) {
-//                        errorList(error)
                         getErrorCode(error.toInt())
                     }
                 }
@@ -299,7 +293,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCodeAp != result.error.code.toString()) {
                         if (result.error.code != 404) {
                             if (result.error.code != null) {
-//                                listListResult(result.error.code!!)
                                 getErrorCode(result.error.code!!)
                             }
                         } else {
@@ -327,7 +320,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (error != "404") {
                         errorCodeAp = error
                         if (error != null) {
-//                            errorList(error)
                             getErrorCode(error.toInt())
                         }
                     } else {
