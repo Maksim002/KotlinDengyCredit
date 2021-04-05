@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.location.Address
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,11 +19,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.drawToBitmap
+import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -28,13 +37,16 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.Loans.EntryGoalResultModel
 import com.example.kotlincashloan.service.model.Loans.MyDataListModel
 import com.example.kotlincashloan.service.model.Loans.MyImageModel
 import com.example.kotlincashloan.service.model.Loans.TypeContractResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -49,6 +61,7 @@ import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
@@ -60,9 +73,12 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
-class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
     private var viewModel = LoansViewModel()
+    private var imageViewModel = SharedViewModel()
+    private var imageMap = HashMap<String, Bitmap>()
     private val IMAGE_PICK_CODE = 10
     private val CAMERA_PERM_CODE = 101
     private val REQUEST_BROWSE_PICTURE = 11
@@ -73,7 +89,6 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var documentImageTwo: Bitmap? = null
     private var portrait: Bitmap? = null
     private var documentImage: Bitmap? = null
-
     private val onCancel: DatePickerDialog.OnDateCancelListener? = null
     private lateinit var simpleDateFormat: SimpleDateFormat
     private var data: String = ""
@@ -85,19 +100,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private lateinit var calendar: GregorianCalendar
     private var hidingLayout = ""
     private var thread: Thread? = null
-
     private var listEntryError = ""
     private var listContractError = ""
-
     private var goalPosition = ""
     private var goalId = 0
     private var contractPosition = ""
     private var contractTypeId = 0
-
     private var imageScanId = ""
     private var textImA = ""
     private var textImB = ""
-
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var listEntryGoal: ArrayList<EntryGoalResultModel> = arrayListOf()
     private var listTypeContract: ArrayList<TypeContractResultModel> = arrayListOf()
@@ -114,15 +125,26 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private var lastPageTwo = false
     private var saveValidate = false
     private val mapSave = mutableMapOf<String, String>()
+    private lateinit var idImage: ImageView
+    private lateinit var idImageIc: ImageView
+    private lateinit var alert: LoadingAlert
+    private var visibilityIm = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_fifth, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        alert = LoadingAlert(requireActivity())
+        if (permission == 6){
+            alert.show()
+        }
         //формат даты
         simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -131,9 +153,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         iniData()
         initHidingFields()
         initTextValidation()
+        initView()
+        getLists()
     }
 
-    private fun initRestart(){
+    private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             six_ste_no_connection.visibility = View.VISIBLE
@@ -141,7 +165,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             six_ste_technical_work.visibility = View.GONE
             six_ste_access_restricted.visibility = View.GONE
             six_ste_not_found.visibility = View.GONE
-        }else{
+        } else {
             viewModel.errorSaveLoan.value = null
             initListEntryGoal()
             initTypeContract()
@@ -156,17 +180,95 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        initRestart()
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (statusValue) {
+            bottom_loan_fifth.setText("Сохранить")
+            fifth_cross_six.visibility = View.GONE
+            if (mitmap.values != null) {
+                russianFederationA = true
+                migrationCardA = true
+                migrationCardB = true
+                russianPatentA = true
+                russianPatentB = true
+                receiptPatent = true
+                workPermitA = true
+                workPermitB = true
+                photo2NDFL = true
+                lastPageOne = true
+                lastPageTwo = true
+                getListsFifth(mitmap, russian_federationA, federationA_add_im,  imageViewModel,requireActivity(),"russian_federationA","reg_img_1")
+                getListsFifth(mitmap, russian_federationB, federationB_add_im,  imageViewModel,requireActivity(),"russian_federationB","reg_img_2")
+                getListsFifth(mitmap, migration_cardA, cardA_add_im,  imageViewModel,requireActivity(),"migration_cardA","entry_img_1")
+                getListsFifth(mitmap, migration_cardB, cardB_add_im,  imageViewModel,requireActivity(),"migration_cardB","entry_img_2")
+                getListsFifth(mitmap, receipt_patent, receipt_patent,  imageViewModel,requireActivity(),"receipt_patent","patent_invoice_img")
+                getListsFifth(mitmap, work_permitA, permitA_add_im,  imageViewModel,requireActivity(),"work_permitA","work_permit_img_1")
+                getListsFifth(mitmap, work_permitB, permitB_add_im,  imageViewModel,requireActivity(),"work_permitB","work_permit_img_2")
+                getListsFifth(mitmap, photo_2NDFL, NDFL_add_im,  imageViewModel,requireActivity(),"photo_2NDFL","ndfl2_img")
+                getListsFifth(mitmap, last_page_one, page_one_add_im,  imageViewModel,requireActivity(),"last_page_one","contract_img_1")
+                getListsFifth(mitmap, last_page_two, page_two_add_im,  imageViewModel,requireActivity(),"last_page_two","contract_img_2")
+                getListsFifth(mitmap, photo_RVP, RVP_add_im, imageViewModel,requireActivity(),"photo_RVP","rvp_img")
+                getListsFifth(mitmap, photo_VNJ, VNJ_add_im, imageViewModel,requireActivity(),"photo_VNJ","vnzh_img")
+                getListsText()
+                imageViewModel.updateBitmaps(mitmap)
+                mitmap.clear()
+                alert.hide()
+            }
+            //при редактирование сравнивает спрятать поля или нет
+            if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
+                fifth_incorrect_work.visibility = View.GONE
+                fifth_potent.visibility = View.GONE
+                fifth_receipt.visibility = View.GONE
+            }else if(mitmap["migration_cardA"].toString() != "" && mitmap["migration_cardB"].toString() != ""){
+                fifth_incorrect_patent.visibility = View.GONE
+                fifth_permission.visibility = View.GONE
+            }
+        } else {
+            dataImage()
+        }
     }
+
+    //Метод получает текствоые данные
+    private fun getListsText() {
+        if (statusValue){
+        try {
+            fifth_goal_name.text = MyUtils.toMyDate(listLoan.regDate!!)
+            list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
+            goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
+            goalId = listLoan.entryGoal!!.toInt()
+            date_entry.text = MyUtils.toMyDate(listLoan.entryDate!!)
+            contract_type.setText(listTypeContract.first { it.id == listLoan.typeContract }.name.toString())
+            contractPosition = listTypeContract.first { it.id == listLoan.typeContract }.name.toString()
+            contractTypeId = listLoan.typeContract!!.toInt()
+            contract_type.hint = null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+override fun onStart() {
+    super.onStart()
+    if (fifth_goal_name.text.isNotEmpty()) {
+        fifth_goal_name.hint = null
+    }
+    if (contract_type.text.isNotEmpty()) {
+        contract_type.hint = null
+    }
+    initRestart()
+}
 
     //Сохронение картинки на сервер
     private fun initSaveImage() {
         val mapImage = mutableMapOf<String, String>()
         mapImage["login"] = AppPreferences.login.toString()
         mapImage["token"] = AppPreferences.token.toString()
-        mapImage["id"] = AppPreferences.sum.toString()
+
+        if (statusValue == true){
+            mapImage["id"] = listLoan.id.toString()
+        }else{
+            mapImage["id"] = AppPreferences.applicationId.toString()
+        }
         mapImage["step"] = "0"
         mapImage["patent_img_1"] = textImA
         mapImage["patent_img_2"] = textImB
@@ -220,28 +322,30 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         viewModel.saveLoanImg(mapImage)
         viewModel.getSaveLoanImg.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
-                imageString.clear()
                 textImA = ""
                 textImB = ""
             } else if (result.reject != null) {
-                initBottomSheetError(result.reject!!.message.toString())
+                initBottomSheetError(result.reject.message.toString())
             } else {
                 if (result.error.code == 409) {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно",Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    listResult(result.error.code!!)
+                    getErrorCode(result.error.code!!)
+                    errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
+            imageString.clear()
         })
 
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
-                if (error == "409") {
-                    Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
+                if (error == "409") { Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    errorList(error)
+                    getErrorCode(error.toInt())
+                    errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
+            imageString.clear()
         })
     }
 
@@ -250,16 +354,24 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.sum.toString()
-        mapSave["reg_date"] = countriesPhone
-        mapSave["entry_date"] = goalPhone
+        mapSave["id"] = AppPreferences.applicationId.toString()
+        if (countriesPhone == ""){
+            mapSave["reg_date"] = fifth_goal_name.text.toString()
+        }else{
+            mapSave["reg_date"] = countriesPhone
+        }
+        if (goalPhone == ""){
+            mapSave["entry_date"] = date_entry.text.toString()
+        }else{
+            mapSave["entry_date"] = goalPhone
+        }
 
         if (goalPosition == ""){
             mapSave["entry_goal"] = ""
         }else{
             mapSave["entry_goal"] = goalId.toString()
         }
-        mapSave["step"] = "5"
+        mapSave["step"] = "6"
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
@@ -274,19 +386,23 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         fifth_ste_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                            if (statusValue == true){
+                                requireActivity().onBackPressed()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                            }
                         }
-                    }else if (data.error.code != null) {
-                        listResult(data.error.code!!)
-                    }else if (data.reject != null) {
+                    } else if (data.error.code != null) {
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                    } else if (data.reject != null) {
                         initBottomSheetError(data.reject.message.toString())
                     }
                 }
                 Status.ERROR -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
                 Status.NETWORK -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
             GetLoanActivity.alert.hide()
@@ -295,21 +411,25 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     //Скрытие полей
     private fun initHidingFields() {
-        hidingLayout = AppPreferences.nationality.toString()
+        if (statusValue == true){
+            hidingLayout = listLoan.nationality_ocr.toString()
+        }else{
+            hidingLayout = AppPreferences.nationality.toString()
+        }
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {
             fifth_potent.visibility = View.VISIBLE
             fifth_receipt.visibility = View.VISIBLE
             fifth_permission.visibility = View.VISIBLE
             fifth_2n.visibility = View.GONE
-            contract_type.visibility = View.GONE
+            layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
             fifth_potent.visibility = View.VISIBLE
             fifth_receipt.visibility = View.VISIBLE
             fifth_permission.visibility = View.VISIBLE
-            contract_type.visibility = View.GONE
+            layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "KGZ") {
             contract_type.visibility = View.VISIBLE
@@ -332,17 +452,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         viewModel.listEntryGoal.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 listEntryError = result.code.toString()
-                getResultOk()
                 listEntryGoal = result.result
+                getResultOk()
+                getListsText()
             } else {
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListEntryGoal.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listEntryError = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -360,15 +481,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 listContractError = result.code.toString()
                 getResultOk()
                 listTypeContract = result.result
+                getListsText()
             } else {
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListTypeContract.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listContractError = error
-                errorList(error)
+//                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -400,9 +524,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         fifth_cross_six.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+            hidingErrors()
         }
 
         list_countries.setOnClickListener {
+            list_countries.isClickable = false
             list_countries.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -411,12 +537,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listEntryGoal.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listEntryGoal[i - 1].name.toString(), "listEntryGoal", i - 1 , listEntryGoal[i-1].id!!.toInt(), listEntryGoal[i - 1].name.toString()))
+                                listEntryGoal[i - 1].name.toString(),
+                                "listEntryGoal",
+                                i - 1,
+                                listEntryGoal[i - 1].id!!.toInt(),
+                                listEntryGoal[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, goalPosition, "Цель въезда")
+                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда")
             }
         }
 
@@ -426,6 +558,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
 
         contract_type.setOnClickListener {
+            contract_type.isClickable = false
             contract_type.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -434,12 +567,22 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     if (i <= listTypeContract.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listTypeContract[i - 1].name.toString(), "listTypeContract", i - 1, listTypeContract[i - 1].id!!.toInt(), listTypeContract[i - 1].name.toString()))
+                                listTypeContract[i - 1].name.toString(),
+                                "listTypeContract",
+                                i - 1,
+                                listTypeContract[i - 1].id!!.toInt(),
+                                listTypeContract[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, contractPosition, "Тип договора")
+                initBottomSheet(
+                    itemDialog,
+                    contractPosition,
+                    "Выберите тип вашего трудового договора"
+                )
             }
         }
 
@@ -508,6 +651,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listEntryGoal") {
+            list_countries.isClickable = true
             list_countries.setText(listEntryGoal[model.position].name)
             goalPosition = listEntryGoal[model.position].name.toString()
             goalId = model.id!!
@@ -515,10 +659,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (model.key == "listTypeContract") {
+            contract_type.isClickable = true
             contract_type.setText(listTypeContract[model.position].name)
             contractPosition = listTypeContract[model.position].name.toString()
             contractTypeId = model.id!!
             contract_type.error = null
+            contract_type.hint = null
         }
     }
 
@@ -541,7 +687,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
@@ -549,11 +699,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.CAMERA),
@@ -581,8 +727,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
     private fun getMyFile() {
         val file = "photo"
-        val dtoregDirectiry: File? =
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
@@ -603,70 +748,135 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null) {
+                var rotatedBitmap: Bitmap? = null
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
-                imageConverter(scaled)
+                val ei = ExifInterface(currentPhotoPath)
+                val orientation: Int = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+                when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(scaled, 90F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(scaled, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(scaled, 270F)
+                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = scaled
+                    else -> rotatedBitmap = scaled
+                }
+                imageConverter(rotatedBitmap!!)
                 if (imageKey == "russian_federationA") {
+                    russian_federationA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.russian_federationA)
+                    idImageIc = requireView().findViewById(R.id.federationA_add_im)
                     russianFederationA = true
                     fifth_incorrectA.visibility = View.GONE
-                    russian_federationA.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "russian_federationB") {
+                    russian_federationB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.russian_federationB)
+                    idImageIc = requireView().findViewById(R.id.federationB_add_im)
                     fifth_incorrectA.visibility = View.GONE
-                    russian_federationB.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardA") {
+                    migration_cardA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.migration_cardA)
+                    idImageIc = requireView().findViewById(R.id.cardA_add_im)
                     migrationCardA = true
                     fifth_incorrect_card.visibility = View.GONE
-                    migration_cardA.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "migration_cardB") {
+                    migration_cardB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.migration_cardB)
+                    idImageIc = requireView().findViewById(R.id.cardB_add_im)
                     migrationCardB = true
                     fifth_incorrect_card.visibility = View.GONE
-                    migration_cardB.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "receipt_patent") {
+                    receipt_patent.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.receipt_patent)
+                    idImageIc = requireView().findViewById(R.id.patent_add_im)
                     receiptPatent = true
                     fifth_incorrect_receipt.visibility = View.GONE
-                    receipt_patent.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitA") {
+                    work_permitA.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.work_permitA)
+                    idImageIc = requireView().findViewById(R.id.permitA_add_im)
                     workPermitA = true
+                    visibilityIm = 1
                     fifth_incorrect_work.visibility = View.GONE
-                    work_permitA.setImageBitmap(scaled)
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "work_permitB") {
+                    work_permitB.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.work_permitB)
+                    idImageIc = requireView().findViewById(R.id.permitB_add_im)
                     workPermitB = true
                     fifth_incorrect_work.visibility = View.GONE
-                    work_permitB.setImageBitmap(scaled)
                     fifth_potent.visibility = View.GONE
                     fifth_receipt.visibility = View.GONE
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_2NDFL") {
+                    photo_2NDFL.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_2NDFL)
+                    idImageIc = requireView().findViewById(R.id.NDFL_add_im)
                     photo2NDFL = true
                     fifth_incorrect_2NDFL.visibility = View.GONE
-                    photo_2NDFL.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "last_page_one") {
-                    last_page_one.setImageBitmap(scaled)
+                    last_page_one.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.last_page_one)
+                    idImageIc = requireView().findViewById(R.id.page_one_add_im)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                     fifth_incorrect_page.visibility = View.GONE
                 } else if (imageKey == "last_page_two") {
+                    last_page_two.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.last_page_two)
+                    idImageIc = requireView().findViewById(R.id.page_two_add_im)
                     lastPageTwo = true
                     fifth_incorrect_page.visibility = View.GONE
-                    last_page_two.setImageBitmap(scaled)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_RVP") {
-                    photo_RVP.setImageBitmap(scaled)
+                    photo_RVP.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_RVP)
+                    idImageIc = requireView().findViewById(R.id.RVP_add_im)
+                    imageViewModel.updateKey(imageKey)
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 } else if (imageKey == "photo_VNJ") {
-                    photo_VNJ.setImageBitmap(scaled)
+                    photo_VNJ.setImageBitmap(rotatedBitmap)
+                    idImage = requireView().findViewById(R.id.photo_VNJ)
+                    idImageIc = requireView().findViewById(R.id.VNJ_add_im)
+                    //Приниет ключ для проверки
+                    imageViewModel.updateKey(imageKey)
+                    // Принимает ключ и зоброжения и картинку
+                    imageMap.put(imageKey, rotatedBitmap)
                     imageKey = ""
                 }
+                imageViewModel.updateBitmaps(imageMap)
                 initSaveImage()
+
+                // TODO: 31.03.21 Проверить ещё раз нужин ли он тут
+                dataImage()
             }
         }
 
@@ -683,6 +893,77 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
     }
 
+    //Делает картинку с камеры вертикальной
+    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
+    //Сохроняте картинки во ViewModel
+    private fun dataImage(){
+        imageViewModel.getBitmaps().observe(viewLifecycleOwner, Observer { images ->
+            russian_federationA.setImageBitmap(images["russian_federationA"])
+            if (images.containsKey("russian_federationA")) {
+                //Метод при немает id и сравнивет прикреплтно ли изоброжение true , false
+                changeImage(federationA_add_im, true, requireActivity())
+            }
+            russian_federationB.setImageBitmap(images["russian_federationB"])
+            if (images.containsKey("russian_federationB")) {
+                changeImage(federationB_add_im, true, requireActivity())
+            }
+            migration_cardA.setImageBitmap(images["migration_cardA"])
+            if (images.containsKey("migration_cardA")) {
+                changeImage(cardA_add_im, true, requireActivity())
+            }
+            migration_cardB.setImageBitmap(images["migration_cardB"])
+            if (images.containsKey("migration_cardB")) {
+                changeImage(cardB_add_im, true, requireActivity())
+            }
+            receipt_patent.setImageBitmap(images["receipt_patent"])
+            if (images.containsKey("receipt_patent")) {
+                changeImage(patent_add_im, true, requireActivity())
+            }
+            work_permitA.setImageBitmap(images["work_permitA"])
+            if (images.containsKey("work_permitA")) {
+                changeImage(permitA_add_im, true, requireActivity())
+            }
+            work_permitB.setImageBitmap(images["work_permitB"])
+            if (images.containsKey("work_permitB")) {
+                changeImage(permitB_add_im, true, requireActivity())
+            }
+            photo_2NDFL.setImageBitmap(images["photo_2NDFL"])
+            if (images.containsKey("photo_2NDFL")) {
+                changeImage(NDFL_add_im, true, requireActivity())
+            }
+            last_page_one.setImageBitmap(images["last_page_one"])
+            if (images.containsKey("last_page_one")) {
+                changeImage(page_one_add_im, true, requireActivity())
+            }
+            last_page_two.setImageBitmap(images["last_page_two"])
+            if (images.containsKey("last_page_two")) {
+                changeImage(page_two_add_im, true, requireActivity())
+            }
+            photo_RVP.setImageBitmap(images["photo_RVP"])
+            if (images.containsKey("photo_RVP")) {
+                changeImage(RVP_add_im, true, requireActivity())
+            }
+            photo_VNJ.setImageBitmap(images["photo_VNJ"])
+            if (images.containsKey("photo_VNJ")) {
+                changeImage(VNJ_add_im, true, requireActivity())
+            }
+
+            russian_patentA.setImageBitmap(images["imageA"])
+            if (images.containsKey("imageA")){
+                changeImage(patentA_add_im, true, requireActivity())
+            }
+            russian_patentB.setImageBitmap(images["imageB"])
+            if (images.containsKey("imageB")){
+                changeImage(patentB_add_im, true, requireActivity())
+            }
+        })
+    }
+
     //encode image to base64 string
     private fun imageConverter(bitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
@@ -695,7 +976,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
     private fun iniData() {
         if (countriesList.size != 0) {
             if (countriesList[0].key == "fifth_goal_name") {
-                val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
+                val calendarDta = GregorianCalendar(
+                    countriesList[0].year,
+                    countriesList[0].monthOfYear,
+                    countriesList[0].dayOfMonth
+                )
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 fifth_goal_name.setText(MyUtils.toMyDate(calendar))
                 countriesPhone = calendar
@@ -707,7 +992,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
             if (countriesList.size != 0) {
-                showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
+                showDate(
+                    countriesList[0].year,
+                    countriesList[0].monthOfYear,
+                    countriesList[0].dayOfMonth,
+                    R.style.DatePickerSpinner
+                )
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -718,7 +1008,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
         if (goalList.size != 0) {
             if (goalList[0].key == "date_entry") {
-                val calendarDta = GregorianCalendar(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth)
+                val calendarDta = GregorianCalendar(
+                    goalList[0].year,
+                    goalList[0].monthOfYear,
+                    goalList[0].dayOfMonth
+                )
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 date_entry.setText(MyUtils.toMyDate(calendar))
                 goalPhone = calendar
@@ -729,7 +1023,12 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             date_entry.error = null
             keyData = "date_entry"
             if (goalList.size != 0) {
-                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
+                showDate(
+                    goalList[0].year,
+                    goalList[0].monthOfYear,
+                    goalList[0].dayOfMonth,
+                    R.style.DatePickerSpinner
+                )
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -755,7 +1054,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                         fifth_goal_name.setText(MyUtils.toMyDate(goal))
                         countriesPhone = goal
                         //доболяет новый элемент в список
-                        countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
+                        countriesList.add(
+                            MyDataListModel(
+                                "fifth_goal_name",
+                                year,
+                                monthOfYear,
+                                dayOfMonth
+                            )
+                        )
                         break
                     }
                 }
@@ -764,6 +1070,7 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 fifth_goal_name.setText(MyUtils.toMyDate(goal))
                 countriesList.add(MyDataListModel("fifth_goal_name", year, monthOfYear, dayOfMonth))
             }
+            fifth_goal_name.hint = null
         } else if (keyData == "date_entry") {
             if (goalList.size != 0) {
                 for (i in 1..goalList.size) {
@@ -806,64 +1113,10 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
     }
 
-    private fun listResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            fifth_ste_technical_work.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            fifth_ste_access_restricted.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            fifth_ste_not_found.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
-    }
-
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            fifth_ste_technical_work.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            fifth_ste_access_restricted.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            fifth_ste_not_found.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-        } else if (error == "601") {
-            fifth_ste_no_connection.visibility = View.VISIBLE
-            fifth_ste_not_found.visibility = View.GONE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
+    private fun getErrorCode(error: Int){
+        listListResult(error,fifth_ste_technical_work as LinearLayout,fifth_ste_no_connection
+                as LinearLayout,layout_fifth as NestedScrollView,fifth_ste_access_restricted
+                as LinearLayout,fifth_ste_not_found as LinearLayout,requireActivity())
     }
 
     private fun initDocumentReader() {
@@ -883,25 +1136,27 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
 
 
                     //preparing database files, it will be downloaded from network only one time and stored on user device
-                    DocumentReader.Instance().prepareDatabase(
-                        requireContext(),
-                        "Full",
-                        object : IDocumentReaderPrepareCompletion {
+                    DocumentReader.Instance().prepareDatabase(requireContext(), "Full", object : IDocumentReaderPrepareCompletion {
                             override fun onPrepareProgressChanged(progress: Int) {
-                                text.setText("Загрузка базы данных: $progress%")
+                                try {
+                                    text.setText("Загрузка базы данных: $progress%")
+                                }catch (e:Exception){
+                                    e.printStackTrace()
+                                }
                             }
-
-                            override fun onPrepareCompleted(
-                                p0: Boolean,
-                                p1: DocumentReaderException?
-                            ) {
+                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
                                 //Initializing the reader
                                 DocumentReader.Instance().initializeReader(
                                     requireContext(),
                                     license
                                 ) { success, error_initializeReader ->
-                                    text.setText("Фото патента РФ:")
-                                    fifth_potent.isClickable = true
+                                    //добавил трай что бы непадал
+                                    try {
+                                        text.setText("Фото патента РФ:")
+                                        fifth_potent.isClickable = true
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
                                     DocumentReader.Instance().customization().edit()
                                         .setShowHelpAnimation(
                                             false
@@ -938,12 +1193,18 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                                         }
 
                                     } else {
-                                        //Initialization was not successful
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Init failed:$p1",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        //добавил трай что бы непадал
+                                        try {
+                                            //Initialization was not successful
+                                            Toast.makeText(
+                                                requireContext(),
+                                                "Init failed:$p1",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+
                                     }
                                 }
                             }
@@ -1165,9 +1426,14 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                     documentImage = Bitmap.createScaledBitmap(documentImage!!, (1200 * aspectRatio).toInt(), 1200, false)
                     fifth_incorrect_patent.visibility = View.GONE
                     fifth_permission.visibility = View.GONE
+                    visibilityIm = 2
                     russianPatentA = true
+                    changeImage(patentA_add_im, true, requireActivity())
                     russian_patentA.setImageBitmap(documentImage)
                     gotImageString(documentImage!!)
+                    imageViewModel.updateKey(imageScanId)
+                    imageMap.put(imageScanId, documentImage!!)
+                    imageViewModel.updateBitmaps(imageMap)
                 }
 
                 documentImageTwo = results.getGraphicFieldImageByType(
@@ -1177,14 +1443,15 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
                 )
                 if (documentImageTwo != null) {
                     imageScanId = "imageB"
-                    val aspectRatio =
-                        documentImageTwo!!.width.toDouble() / documentImageTwo!!.height.toDouble()
-                    documentImageTwo = Bitmap.createScaledBitmap(
-                        documentImageTwo!!, (1200 * aspectRatio).toInt(), 1200, false
-                    )
+                    val aspectRatio = documentImageTwo!!.width.toDouble() / documentImageTwo!!.height.toDouble()
+                    documentImageTwo = Bitmap.createScaledBitmap(documentImageTwo!!, (1200 * aspectRatio).toInt(), 1200, false)
                     russianPatentB = true
+                    changeImage(patentB_add_im, true, requireActivity())
                     russian_patentB.setImageBitmap(documentImageTwo)
                     gotImageString(documentImageTwo!!)
+                    imageViewModel.updateKey(imageScanId)
+                    imageMap.put(imageScanId, documentImageTwo!!)
+                    imageViewModel.updateBitmaps(imageMap)
                 }
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
@@ -1273,10 +1540,8 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (fifth_goal_name.text.isEmpty()) {
-            fifth_goal_name.error = "Выберите дату"
+            editUtils(fifth_goal_name, fifth_goal_name_error, "Заполните поле", true, null)
             valid = false
-        } else {
-            fifth_goal_name.error = null
         }
 
         if (!migrationCardA || !migrationCardB) {
@@ -1288,17 +1553,13 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
         }
 
         if (list_countries.text.isEmpty()) {
-            list_countries.error = "Поле не должно быть пустым"
+            editUtils(list_countries, list_countries_error, "Выберите из списка", true, null)
             valid = false
-        } else {
-            list_countries.error = null
         }
 
         if (date_entry.text.isEmpty()) {
-            date_entry.error = "Выберите дату"
+            editUtils(date_entry, date_entry_error, "Выберите дату", true, null)
             valid = false
-        } else {
-            date_entry.error = null
         }
 
 
@@ -1342,13 +1603,11 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         }
 
-        if (contract_type.visibility != View.GONE) {
+        if (layout_contract_type.visibility != View.GONE) {
             if (contract_type.text.length == 0) {
                 if (contract_type.text.isEmpty()) {
-                    contract_type.error = "Поле не должно быть пустым"
+                    editUtils(contract_type, contract_type_error, "Выберите из списка", true, null)
                     valid = false
-                } else {
-                    contract_type.error = null
                 }
             }
         }
@@ -1363,20 +1622,58 @@ class LoanStepFifthFragment : Fragment(), ListenerGeneralResult, DatePickerDialo
             }
         }
 
-//
-//        if (date_the_contract.visibility != View.GONE) {
-//            if (date_the_contract.text.isEmpty()) {
-//                date_the_contract.error = "Поле не должно быть пустым"
-//                valid = false
-//            } else {
-//                date_the_contract.error = null
-//            }
-//        }
-
         return valid
+    }
+
+    private fun initView(){
+        fifth_goal_name.addTextChangedListener {
+            editUtils(fifth_goal_name, fifth_goal_name_error, "", false, null)
+        }
+
+        list_countries.addTextChangedListener {
+            editUtils(list_countries, list_countries_error, "", false, null)
+        }
+
+        date_entry.addTextChangedListener {
+            editUtils(date_entry, date_entry_error, "", false, null)
+        }
+        contract_type.addTextChangedListener {
+            editUtils(contract_type, contract_type_error, "", false, null)
+        }
+
+        //при повторном восзвращении в акно 6
+        if (visibilityIm == 1){
+            fifth_incorrect_work.visibility = View.GONE
+            fifth_potent.visibility = View.GONE
+            fifth_receipt.visibility = View.GONE
+        }else if (visibilityIm == 2){
+            fifth_incorrect_patent.visibility = View.GONE
+            fifth_permission.visibility = View.GONE
+        }
     }
 
     override fun onClickStepListener() {
         requireActivity().finish()
     }
+
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors(){
+        editUtils(fifth_goal_name, fifth_goal_name_error, "", false, null)
+        editUtils(list_countries, list_countries_error, "", false, null)
+        editUtils(date_entry, date_entry_error, "", false, null)
+        editUtils(contract_type, contract_type_error, "", false, null)
+        fifth_incorrectA.visibility = View.GONE
+        fifth_incorrect_card.visibility = View.GONE
+        fifth_incorrect_patent.visibility = View.GONE
+        fifth_incorrect_receipt.visibility = View.GONE
+        fifth_incorrect_work.visibility = View.GONE
+        fifth_incorrect_2NDFL.visibility = View.GONE
+        fifth_incorrect_page.visibility = View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initTextValidation()
+    }
 }
+

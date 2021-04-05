@@ -3,16 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/whiteColor"
     android:layout_height="match_parent"
     tools:context=".ui.profile.MyOperationFragment">
+
+    <include
+        android:id="@+id/profile_my_operation_null"
+        layout="@layout/item_my_operation_null"
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/operation_recycler"
         android:layout_width="match_parent"
         android:layout_marginRight="@dimen/_5sdp"
         android:layout_marginLeft="@dimen/_5sdp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>

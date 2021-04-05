@@ -97,9 +97,15 @@ class NotificationFragment : Fragment(), NotificationListener {
             errorCode = "601"
             viewModel.errorNotice.value = null
         } else {
-            if (viewModel.listNoticeDta.value == null) {
+            if (viewModel.listNoticeDta.value == null || viewModel.errorNotice.value == null) {
                 if (!viewModel.refreshCode) {
-                    MainActivity.alert.show()
+                    HomeActivity.alert.show()
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        viewModel.refreshCode = false
+                        viewModel.listNotice(map)
+                        initRecycler()
+                    }, 500)
+                }else{
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.listNotice(map)
@@ -121,10 +127,7 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initRefresh() {
         notification_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 initRestart()
             }, 500)
@@ -164,11 +167,12 @@ class NotificationFragment : Fragment(), NotificationListener {
                         notification_not_found.visibility = View.GONE
                         notification_swipe.visibility = View.GONE
                     } else if (result.error.code == 404) {
-                        notification_not_found.visibility = View.VISIBLE
+                        notification_notification_null.visibility = View.VISIBLE
+                        notification_recycler.visibility = View.GONE
+                        notification_not_found.visibility = View.GONE
                         notification_access_restricted.visibility = View.GONE
                         notification_technical_work.visibility = View.GONE
                         notification_no_connection.visibility = View.GONE
-                        notification_swipe.visibility = View.GONE
                     } else if (result.error.code == 401) {
                         initAuthorized()
                     }
@@ -201,11 +205,12 @@ class NotificationFragment : Fragment(), NotificationListener {
                 notification_not_found.visibility = View.GONE
                 notification_swipe.visibility = View.GONE
             } else if (error == "404") {
-                notification_not_found.visibility = View.VISIBLE
+                notification_notification_null.visibility = View.VISIBLE
+                notification_recycler.visibility = View.GONE
+                notification_not_found.visibility = View.GONE
                 notification_access_restricted.visibility = View.GONE
                 notification_technical_work.visibility = View.GONE
                 notification_no_connection.visibility = View.GONE
-                notification_swipe.visibility = View.GONE
             } else if (error == "401") {
                 initAuthorized()
             } else if (error == "601") {
@@ -251,14 +256,9 @@ class NotificationFragment : Fragment(), NotificationListener {
     override fun onResume() {
         super.onResume()
 
-        if (viewModel.listNoticeDta.value != null){
-            if (errorCode == "200"){
-                initRecycler()
-                myAdapter.numberResult(0)
-            }else{
-                initRestart()
-                myAdapter.numberResult(0)
-            }
+        if (viewModel.listNoticeDta.value != null || viewModel.errorNotice.value != null){
+            initRecycler()
+            myAdapter.numberResult(0)
         }else{
             viewModel.refreshCode = false
             notificationAnim = true

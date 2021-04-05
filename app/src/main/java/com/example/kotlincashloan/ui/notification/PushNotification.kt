@@ -27,11 +27,7 @@ class PushNotification : FirebaseMessagingService() {
         showNotification(p0.notification?.title.toString(), p0.notification?.body.toString(), questionTitle)
     }
 
-    private fun showNotification(
-        title: String,
-        message: String,
-        isData: String
-    ) {
+    private fun showNotification(title: String, message: String, isData: String) {
 
         FirebaseMessaging.getInstance().subscribeToTopic("testnotification")
 
@@ -41,12 +37,7 @@ class PushNotification : FirebaseMessagingService() {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val c =
-                NotificationChannel(
-                    notChannelId,
-                    "testnotification",
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+            val c = NotificationChannel(notChannelId, "testnotification", NotificationManager.IMPORTANCE_DEFAULT)
             c.description = "testnotification"
             c.enableLights(true)
             c.lightColor = Color.BLUE
@@ -54,7 +45,13 @@ class PushNotification : FirebaseMessagingService() {
         }
 
         // Create an Intent for the activity you want to start
-        val resultIntent = Intent(this, MainActivity::class.java)
+        val resultIntent: Intent
+        //Проверка если токин пустой открой главнй экран иначе переди на нужный экран
+        if (AppPreferences.token != ""){
+             resultIntent = Intent(this, MainActivity::class.java)
+        }else{
+             resultIntent = Intent(this, HomeActivity::class.java)
+        }
         AppPreferences.dataKey = isData
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             // Add the intent, which inflates the back stack

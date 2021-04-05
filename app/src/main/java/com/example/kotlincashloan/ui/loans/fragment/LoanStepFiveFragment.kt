@@ -1,42 +1,40 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.editUtils
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
-import com.example.kotlincashloan.service.model.login.SaveLoanModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import kotlinx.android.synthetic.main.activity_number.*
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -47,7 +45,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var getListTypeIncomeDta = ""
     private var getListAdditionalDta = ""
 
-    private var workId = ""
     private var typeId = ""
     private var yearsRfId = ""
     private var yearsId = ""
@@ -55,7 +52,6 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var typeIncomeId = ""
     private var additionalId = ""
 
-    private var workPosition = ""
     private var typeWorkPosition = ""
     private var yearsPosition = ""
     private var experiencePosition = ""
@@ -71,6 +67,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private var listIncome: ArrayList<ListIncomeResultModel> = arrayListOf()
     private var listTypeIncome: ArrayList<ListTypeIncomeModel> = arrayListOf()
     private var listIncomeAdditional: ArrayList<ListIncomeResultModel> = arrayListOf()
+    private lateinit var alert: LoadingAlert
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,8 +80,13 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        alert = LoadingAlert(requireActivity())
+        if (permission == 4){
+            alert.show()
+        }
         initRestart()
         initClick()
+        initView()
     }
 
     private fun initRestart() {
@@ -117,6 +119,10 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         if (additionalId == "-1") {
             fire_additional_amount.visibility = View.GONE
         }
+        //В поле длинная строка. Если поле непустое удоляет hide
+        if (fire_work_experience.text.isNotEmpty()) {
+            fire_work_experience.hint = null
+        }
     }
 
     private fun initClick() {
@@ -147,32 +153,11 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
         five_cross_back.setOnClickListener {
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(3)
-        }
-
-        fire_type_employment.setOnClickListener {
-            initClearList()
-            //Мутод заполняет список данными дя адапера
-            if (itemDialog.size == 0) {
-                for (i in 1..listWork.size) {
-                    if (i <= listWork.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listWork[i - 1].name.toString(),
-                                "listWork",
-                                i - 1,
-                                0,
-                                listWork[i - 1].name.toString()
-                            )
-                        )
-                    }
-                }
-            }
-            if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, workPosition, "Вид занятости")
-            }
+            hidingErrors()
         }
 
         fire_post.setOnClickListener {
+            fire_post.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -191,11 +176,12 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition, "Должность")
+                initBottomSheet(itemDialog, typeWorkPosition, "Кем вы работаете?")
             }
         }
 
         fire_work_experience_r_f.setOnClickListener {
+            fire_work_experience_r_f.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -214,25 +200,40 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Стаж работы в РФ")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько вы работаете в России?")
             }
         }
 
         fire_work_experience.setOnClickListener {
+            fire_work_experience.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listWorkExperience.size) {
-                    if (i <= listWorkExperience.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listWorkExperience[i - 1].name.toString(),
-                                "listWorkExperience",
-                                i - 1,
-                                0,
-                                listWorkExperience[i - 1].name.toString()
+                    if (yearsRfId != "") {
+                        if (yearsRfId.toInt() >= listWorkExperience[i - 1].id!!.toInt()) {
+                            itemDialog.add(
+                                GeneralDialogModel(
+                                    listWorkExperience[i - 1].name.toString(),
+                                    "listWorkExperience",
+                                    i - 1,
+                                    0,
+                                    listWorkExperience[i - 1].name.toString()
+                                )
                             )
-                        )
+                        }
+                    } else {
+                        if (i <= listWorkExperience.size) {
+                            itemDialog.add(
+                                GeneralDialogModel(
+                                    listWorkExperience[i - 1].name.toString(),
+                                    "listWorkExperience",
+                                    i - 1,
+                                    0,
+                                    listWorkExperience[i - 1].name.toString()
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -240,12 +241,13 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                 initBottomSheet(
                     itemDialog,
                     experiencePosition,
-                    "Стаж работы в последнем месте в РФ"
+                    "Сколько вы работаете на последнем месте работы в России?"
                 )
             }
         }
 
         fire_list_income.setOnClickListener {
+            fire_list_income.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -269,6 +271,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_additional_income.setOnClickListener {
+            fire_additional_income.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -292,6 +295,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         fire_additional_amount.setOnClickListener {
+            fire_additional_amount.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -322,14 +326,9 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
-        if (model.key == "listWork") {
-            fire_type_employment.error = null
-            fire_type_employment.setText(listWork[model.position].name)
-            workPosition = listWork[model.position].name.toString()
-            workId = listWork[model.position].id!!
-        }
 
         if (model.key == "listTypeWork") {
+            fire_post.isClickable = true
             fire_post.error = null
             fire_post.setText(listTypeWork[model.position].name)
             typeWorkPosition = listTypeWork[model.position].name.toString()
@@ -337,20 +336,38 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listYears") {
+            fire_work_experience_r_f.isClickable = true
             fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
             yearsRfId = listYears[model.position].id!!
+            if (yearsId != "") {
+                if (yearsId.toInt() >= yearsRfId.toInt()) {
+                    for (position in 0..listWorkExperience.size) {
+                        val pos = listWorkExperience[position].id.toString()
+                        if (pos == yearsRfId) {
+                            yearsId = listWorkExperience[position].id!!
+                            experiencePosition = listWorkExperience[position].name.toString()
+                            val l = listWorkExperience[position].name.toString()
+                            fire_work_experience.setText(l)
+                            break
+                        }
+                    }
+                }
+            }
         }
 
         if (model.key == "listWorkExperience") {
+            fire_work_experience.isClickable = true
             fire_work_experience.error = null
+            fire_work_experience.hint = ""
             fire_work_experience.setText(listWorkExperience[model.position].name)
             experiencePosition = listWorkExperience[model.position].name.toString()
             yearsId = listWorkExperience[model.position].id!!
         }
 
         if (model.key == "listIncome") {
+            fire_list_income.isClickable = true
             fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
             incomePosition = listIncome[model.position].name.toString()
@@ -358,6 +375,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listTypeIncome") {
+            fire_additional_income.isClickable = true
             fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
             typeIncomePosition = listTypeIncome[model.position].name.toString()
@@ -371,10 +389,46 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         }
 
         if (model.key == "listIncomeAdditional") {
+            fire_additional_amount.isClickable = true
             fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
             incomeAdditionalPosition = listIncomeAdditional[model.position].name.toString()
             additionalId = listIncomeAdditional[model.position].id!!
+        }
+    }
+
+    //Получает данные на редактирование заёма
+    private fun getLists() {
+        if (status == true) {
+            bottom_loan_fire.setText("Сохранить")
+            five_cross_back.visibility = View.GONE
+
+            //place_work
+            fire_step_four_residence.setText(listLoan.placeWork)
+            //type_work
+            fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
+            typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
+            typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+            //work_exp_ru
+            fire_work_experience_r_f.setText(listYears.first { it.id == listLoan.workExpRu }.name)
+            yearsPosition = listYears.first { it.id == listLoan.workExpRu }.name.toString()
+            yearsRfId = listYears.first { it.id == listLoan.workExpRu }.id!!
+            //work_exp_last
+            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast}.name)
+            experiencePosition = listWorkExperience.first { it.id == listLoan.workExpLast}.name.toString()
+            yearsId = listWorkExperience.first{it.id == listLoan.workExpLast}.id!!
+            //income
+            fire_list_income.setText(listIncome.first { it.id == listLoan.income}.name)
+            incomePosition = listIncome.first { it.id == listLoan.income}.name.toString()
+            incomeId = listIncome.first { it.id == listLoan.income}.id!!
+            //sub_income_id
+            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId}.name)
+            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId}.name.toString()
+            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId}.id!!
+            //sub_income_sum
+            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name)
+            incomeAdditionalPosition = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name.toString()
+            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.id!!
         }
     }
 
@@ -389,18 +443,20 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListWorkDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListWorkDta = result.code.toString()
-                getResultOk()
                 listWork = result.result
+                getResultOk()
             } else {
                 getListWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+//                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListWork.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+//                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -416,18 +472,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListTypeWorkDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListTypeWorkDta = result.code.toString()
-                getResultOk()
                 listTypeWork = result.result
+                getResultOk()
             } else {
                 getListTypeWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListTypeWork.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -443,18 +499,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListYearsDtaF = result.code.toString()
-                getResultOk()
                 listYears = result.result
+                getResultOk()
             } else {
                 getListYearsDtaF = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListYearsDtaF = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -470,18 +526,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListYearsDta = result.code.toString()
-                getResultOk()
                 listWorkExperience = result.result
+                getResultOk()
             } else {
                 getListWorkDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListYears.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -498,18 +554,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListIncomeDta = result.code.toString()
-                getResultOk()
                 listIncome = result.result
+                getResultOk()
             } else {
                 getListIncomeDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListIncomeDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -526,18 +582,18 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListTypeIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListTypeIncomeDta = result.code.toString()
-                getResultOk()
                 listTypeIncome = result.result
+                getResultOk()
             } else {
                 getListTypeIncomeDta = result.error.code.toString()
-                listResult(result.error.code!!)
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListTypeIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListTypeIncomeDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
     }
@@ -554,19 +610,21 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         viewModel.getListIncomeDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 getListAdditionalDta = result.code.toString()
-                getResultOk()
                 listIncomeAdditional = result.result
+                getResultOk()
             } else {
                 getListAdditionalDta = result.error.code.toString()
+                getErrorCode(result.error.code!!)
             }
         })
 
         viewModel.errorListIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListAdditionalDta = error
-                errorList(error)
+                getErrorCode(error.toInt())
             }
         })
+        alert.hide()
     }
 
 
@@ -576,8 +634,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.sum.toString()
-        mapSave["work"] = workId
+        mapSave["id"] = AppPreferences.applicationId.toString()
         mapSave["type_work"] = typeId
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId
@@ -589,7 +646,7 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             mapSave["sub_income_sum"] = additionalId
         }
         mapSave["place_work"] = fire_step_four_residence.text.toString()
-        mapSave["step"] = "3"
+        mapSave["step"] = "4"
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
@@ -602,23 +659,29 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
                         fire_ste_no_connection.visibility = View.GONE
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
-                        (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
-                    }else if (data.error.code != null) {
-                        listResult(data.error.code!!)
-                    }else if (data.reject != null) {
+                        if (status == true){
+                            requireActivity().onBackPressed()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                        }
+
+                    } else if (data.error.code != null) {
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message.toString())
                     }
                 }
                 Status.ERROR -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
                 Status.NETWORK -> {
-                    errorList(msg!!)
+                    listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
             GetLoanActivity.alert.hide()
         })
     }
+
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
@@ -648,67 +711,14 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
             fire_ste_no_connection.visibility = View.GONE
             fire_ste_access_restricted.visibility = View.GONE
             fire_ste_not_found.visibility = View.GONE
+            getLists()
         }
     }
 
-    private fun listResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            fire_ste_technical_work.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            fire_ste_access_restricted.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            fire_ste_not_found.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
-    }
-
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            fire_ste_technical_work.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            fire_ste_access_restricted.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            fire_ste_not_found.visibility = View.VISIBLE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_no_connection.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (error == "601") {
-            fire_ste_no_connection.visibility = View.VISIBLE
-            fire_ste_not_found.visibility = View.GONE
-            layout_fire.visibility = View.GONE
-            fire_ste_technical_work.visibility = View.GONE
-            fire_ste_access_restricted.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
-    }
-
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
+    private fun getErrorCode(error: Int){
+        listListResult(error,fire_ste_technical_work as LinearLayout,fire_ste_no_connection
+                as LinearLayout,layout_fire as ConstraintLayout,fire_ste_access_restricted
+                as LinearLayout,fire_ste_not_found as LinearLayout,requireActivity())
     }
 
     //Метотд для скрытия клавиатуры
@@ -727,66 +737,85 @@ class LoanStepFiveFragment : Fragment(), ListenerGeneralResult, StepClickListene
     private fun validate(): Boolean {
         var valid = true
         if (fire_step_four_residence.text.isEmpty()) {
-            fire_step_four_residence.error = "Поле не должно быть пустым"
+            editUtils(fire_step_four_residence, step_four_residence_error, "Заполните поле", true)
             valid = false
-        } else {
-            fire_step_four_residence.error = null
         }
-
-        if (fire_type_employment.text.isEmpty()) {
-            fire_type_employment.error = "Поле не должно быть пустым"
-            valid = false
-        } else {
-            fire_type_employment.error = null
-        }
-
         if (fire_post.text.isEmpty()) {
-            fire_post.error = "Поле не должно быть пустым"
+            editUtils(fire_post, fire_post_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_post.error = null
         }
-
         if (fire_work_experience_r_f.text.isEmpty()) {
-            fire_work_experience_r_f.error = "Поле не должно быть пустым"
+            editUtils(
+                fire_work_experience_r_f,
+                work_experience_r_f_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
-        } else {
-            fire_work_experience_r_f.error = null
         }
-
         if (fire_work_experience.text.isEmpty()) {
-            fire_work_experience.error = "Поле не должно быть пустым"
+            editUtils(fire_work_experience, work_experience_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_work_experience.error = null
         }
-
         if (fire_list_income.text.isEmpty()) {
-            fire_list_income.error = "Поле не должно быть пустым"
+            editUtils(fire_list_income, list_income_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_list_income.error = null
         }
-
         if (fire_additional_income.text.isEmpty()) {
-            fire_additional_income.error = "Поле не должно быть пустым"
+            editUtils(fire_additional_income, additional_income_error, "Выберите из списка", true)
             valid = false
-        } else {
-            fire_additional_income.error = null
         }
-
         if (fire_additional_amount.visibility != View.GONE) {
             if (fire_additional_amount.text.isEmpty()) {
-                fire_additional_amount.error = "Поле не должно быть пустым"
+                editUtils(
+                    fire_additional_amount,
+                    additional_amount_error,
+                    "Выберите из списка",
+                    true
+                )
                 valid = false
-            } else {
-                fire_additional_amount.error = null
             }
         }
         return valid
     }
 
+    private fun initView() {
+        fire_step_four_residence.addTextChangedListener {
+            editUtils(fire_step_four_residence, step_four_residence_error, "", false)
+        }
+        fire_post.addTextChangedListener {
+            editUtils(fire_post, fire_post_error, "", false)
+        }
+        fire_work_experience_r_f.addTextChangedListener {
+            editUtils(fire_work_experience_r_f, work_experience_r_f_error, "", false)
+        }
+        fire_work_experience.addTextChangedListener {
+            editUtils(fire_work_experience, work_experience_error, "", false)
+        }
+        fire_list_income.addTextChangedListener {
+            editUtils(fire_list_income, list_income_error, "", false)
+        }
+        fire_additional_income.addTextChangedListener {
+            editUtils(fire_additional_income, additional_income_error, "", false)
+        }
+        fire_additional_amount.addTextChangedListener {
+            editUtils(fire_additional_amount, additional_amount_error, "", false)
+        }
+    }
+
+    //проверяет если был откат назад отключает ошибки
+    private fun hidingErrors() {
+        editUtils(fire_step_four_residence, step_four_residence_error, "", false)
+        editUtils(fire_post, fire_post_error, "", false)
+        editUtils(fire_work_experience_r_f, work_experience_r_f_error, "", false)
+        editUtils(fire_work_experience, work_experience_error, "", false)
+        editUtils(fire_list_income, list_income_error, "", false)
+        editUtils(fire_additional_income, additional_income_error, "", false)
+        editUtils(fire_additional_amount, additional_amount_error, "", false)
+    }
+
     override fun onClickStepListener() {
         requireActivity().finish()
     }
+
 }

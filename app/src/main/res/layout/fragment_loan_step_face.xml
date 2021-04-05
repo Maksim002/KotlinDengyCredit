@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/whiteColor"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_face"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14dp"
+                android:textColor="@color/blackColor"
+                android:background="@drawable/circle_orange_background_layout"
+                android:text="@string/face_anigdot"
+                android:padding="16dp"/>
+
+            <Button
+                android:id="@+id/bottom_loan_face"
+                style="@style/RoundedOrangeBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingLeft="75dp"
+                android:paddingRight="75dp"
+                android:text="Сканировать"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/face_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/face_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/face_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/face_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
+</LinearLayout>

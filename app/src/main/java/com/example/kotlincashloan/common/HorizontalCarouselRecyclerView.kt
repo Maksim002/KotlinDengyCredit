@@ -24,15 +24,19 @@ class HorizontalCarouselRecyclerView(context: Context, attrs: AttributeSet) : Re
         newAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 post {
-                    val sidePadding = (width / 2) - (getChildAt(0).width / 2)
-                    setPadding(sidePadding, 0, sidePadding, 0)
-                    scrollToPosition(0)
-                    addOnScrollListener(object : OnScrollListener() {
-                        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                            super.onScrolled(recyclerView, dx, dy)
-                            onScrollChanged()
-                        }
-                    })
+                    try {
+                        val sidePadding = (width / 2) - (getChildAt(0).width / 2)
+                        setPadding(sidePadding, 0, sidePadding, 0)
+                        scrollToPosition(0)
+                        addOnScrollListener(object : OnScrollListener() {
+                            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                                super.onScrolled(recyclerView, dx, dy)
+                                onScrollChanged()
+                            }
+                        })
+                    }catch (e: Exception){
+                        e.printStackTrace()
+                    }
                 }
             }
         })

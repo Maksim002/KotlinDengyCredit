@@ -27,8 +27,7 @@ class GcmBroadcastReceiver : WakefulBroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         init(context)
         // Explicitly specify that GcmIntentService will handle the intent.
-        val comp =
-            ComponentName(context.packageName, PushNotification::class.java.name)
+        val comp = ComponentName(context.packageName, PushNotification::class.java.name)
         // Start the service, keeping the device awake while it is launching.=
         ctx = context
         postNotification(Objects.requireNonNull(intent.extras)!!)

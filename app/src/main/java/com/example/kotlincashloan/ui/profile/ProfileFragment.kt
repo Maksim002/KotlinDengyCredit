@@ -1,12 +1,9 @@
 package com.example.kotlincashloan.ui.profile
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Base64
@@ -14,49 +11,57 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
-import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
+import com.example.kotlincashloan.extension.bitmapToFile
+import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.sendPicture
+import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), ApplicationListener {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     private val mapImg = HashMap<String, String>()
     val handler = Handler()
-    private var list: ArrayList<ResultOperationModel> = arrayListOf()
-    private var listClientInfo: ArrayList<ClientInfoResultModel> = arrayListOf()
+    private var listOperation: ArrayList<ResultOperationModel> = arrayListOf()
+    private var listApplication: ArrayList<ResultApplicationModel> = arrayListOf()
     private var errorCode = ""
+    private var errorCodeAp = ""
     private var errorCodeClient = ""
     private var errorGetImg = ""
     private var numberBar = 0
     private val bundle = Bundle()
     private var profAnim = false
     private var inputsAnim = 0
-    private var sendPicture = ""
+    private var errorNull = ""
+    private var errorNullAp = ""
+    private var pagerPosition = -1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,7 +86,6 @@ class ProfileFragment : Fragment() {
         mapImg.put("type_id", "0")
 
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
-
         initRefresh()
         initClick()
     }
@@ -93,7 +97,7 @@ class ProfileFragment : Fragment() {
     private fun initClick() {
 
         profile_your.setOnClickListener {
-            if (sendPicture != ""){
+            if (sendPicture != "") {
                 bundle.putString("sendPicture", sendPicture)
             }
             inputsAnim = 1
@@ -117,87 +121,70 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun initAuthorized() {
-        val intent = Intent(context, HomeActivity::class.java)
-        AppPreferences.token = ""
-        startActivity(intent)
-    }
+    private fun initRecycler() {
 
-    // Method to save an bitmap to a file
-    private fun bitmapToFile(bitmap: Bitmap): Uri {
-        // Get the context wrapper
-        val wrapper = ContextWrapper(requireContext())
-        // Initialize a new file instance to save bitmap object
-        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
-        file = File(file,"${UUID.randomUUID()}.jpg")
+        //Маи операции если все успешно
+        viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
+            try {
+                if (result.result != null) {
+                    errorNull = ""
+                    listOperation = result.result
+                    initPager()
+                    errorCode = result.code.toString()
+                } else if (result.error != null) {
+                    if (errorCode != result.error.code.toString()) {
+                        if (result.error.code != 404) {
+                            if (result.error.code != null) {
+                                getErrorCode(result.error.code!!)
+                            }
+                        } else {
+                            resultTrue()
+                            errorNull = result.error.code.toString()
+                            initPager()
+                        }
+                    }
+                    errorCode = result.error.code.toString()
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                    resultSuccessfully()
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                profile_swipe.isRefreshing = false
 
-        try{
-            // Compress the bitmap and save in jpg format
-            val stream: OutputStream = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream)
-            stream.flush()
-            stream.close()
-        }catch (e: IOException){
-            e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
+        if (AppPreferences.status == true) {
+            viewModel.listApplication(map)
+            //Маи заявки если все успешно
+            MyApplication()
+        } else {
+            MyApplication()
         }
 
-        // Return the saved bitmap uri
-        sendPicture = file.absolutePath
-        return Uri.parse(file.absolutePath)
-    }
-
-    private fun initRecycler() {
         //listListOperationDta Проверка на ошибки
         viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
             try {
+                if (errorCode != error) {
+                    if (error != "404") {
+                        errorCode = error
+                        if (error != null) {
+                            getErrorCode(error.toInt())
+                        }
+                    } else {
+                        resultTrue()
+                        errorNull = error
+                        initPager()
+                    }
+                }
                 errorCode = error
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            if (error != null) {
-                errorList(error)
-            }
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        })
-
-        //listClientInfoDta Проверка на ошибки
-        viewModel.errorClientInfo.observe(viewLifecycleOwner, Observer { error ->
-            try {
-                errorCodeClient = error
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            if (error != null) {
-                errorList(error)
-            }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             profile_swipe.isRefreshing = false
-        })
-
-        //если все успешно
-        viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
-            try {
-                if (result.result != null) {
-                    list = result.result
-                    initPager()
-                    errorCode = result.code.toString()
-
-                } else {
-                    if (result.error.code != null) {
-                        errorCode = result.error.code.toString()
-                    } else if (result.code != null) {
-                        errorCode = result.code.toString()
-                    }
-                    listListResult(result.error.code!!)
-                }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                profile_swipe.isRefreshing = false
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
-                    resultSuccessfully()
-                }
-            }catch (e: Exception){
-                e.printStackTrace()
-            }
         })
 
 
@@ -210,45 +197,68 @@ class ProfileFragment : Fragment() {
                     errorCodeClient = result.code.toString()
                 } else {
                     if (result!!.error.code != null) {
+                        if (errorCodeClient != result.error.code.toString()) {
+                            getErrorCode(result.error.code!!)
+                        }
                         errorCodeClient = result.error.code.toString()
-                    } else if (result.code != null) {
-                        errorCodeClient = result.code.toString()
                     }
-                    listListResult(result.error.code!!)
                 }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                     resultSuccessfully()
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
-//        // запрос для выгрузки изоброжение с сервира
-//        initGetImgDta()
+
+        //listClientInfoDta Проверка на ошибки
+        viewModel.errorClientInfo.observe(viewLifecycleOwner, Observer { error ->
+            try {
+                if (error != null) {
+                    if (errorCodeClient != error) {
+                        getErrorCode(error.toInt())
+                    }
+                }
+                errorCodeClient = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
+        })
+
     }
+
     // запрос для выгрузки изоброжение с сервира
-    private fun initGetImgDta(){
+    private fun initGetImgDta() {
         // запрос для выгрузки изоброжение с сервира
         viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
             try {
-                if (result.result != null){
+                if (result.result != null) {
                     errorGetImg = result.code.toString()
-                    var imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
+                    val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
                     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                    image_profile.setImageBitmap(decodedImage)
-                    bitmapToFile(decodedImage)
-                }else{
-                    //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
-                    if (result.error.code != 404){
-                        listListResult(result.error.code!!)
-                    }else{
-                        errorGetImg = "200"
+                    val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                    val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                    image_profile.setImageBitmap(scaled)
+                    bitmapToFile(decodedImage, requireContext())
+                } else {
+                    if (result.error != null) {
+                        if (errorGetImg != result.error.code.toString()) {
+                            //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
+                            if (result.error.code != 404) {
+                                getErrorCode(result.error.code!!)
+                                errorGetImg = result.error.code.toString()
+                            } else {
+                                errorGetImg = "200"
+                            }
+                        }
                     }
                 }
-                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200") {
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                     resultSuccessfully()
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
@@ -256,15 +266,76 @@ class ProfileFragment : Fragment() {
         // запрос для выгрузки изоброжение с сервира если есть ошибка
         viewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
             try {
+                if (error != null) {
+                    if (errorGetImg != error) {
+                        getErrorCode(error.toInt())
+                    }
+                }
                 errorGetImg = error
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            if (error != null) {
-                errorList(error)
-            }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         })
+    }
+
+    private fun MyApplication() {
+        //Маи заявки если все успешно
+        viewModel.listListApplicationDta.observe(viewLifecycleOwner, Observer { result ->
+            try {
+                if (result.result != null) {
+                    errorNullAp = ""
+                    listApplication = result.result
+                    initPager()
+                    AppPreferences.status = false
+                    errorCodeAp = result.code.toString()
+                } else if (result.error != null) {
+                    if (errorCodeAp != result.error.code.toString()) {
+                        if (result.error.code != 404) {
+                            if (result.error.code != null) {
+                                getErrorCode(result.error.code!!)
+                            }
+                        } else {
+                            resultTrue()
+                            errorNullAp = result.error.code.toString()
+                            initPager()
+                        }
+                    }
+                    errorCodeAp = result.error.code.toString()
+                }
+                if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                    resultSuccessfully()
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                profile_swipe.isRefreshing = false
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
+        //Маи заявки если ошибка
+        viewModel.errorListApplication.observe(viewLifecycleOwner, Observer { error ->
+            try {
+                if (errorCodeAp != error) {
+                    if (error != "404") {
+                        errorCodeAp = error
+                        if (error != null) {
+                            getErrorCode(error.toInt())
+                        }
+                    } else {
+                        resultTrue()
+                        errorNullAp = error
+                        initPager()
+                    }
+                }
+                errorCodeAp = error
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            profile_swipe.isRefreshing = false
+        })
+
     }
 
     // проверка если errorCode и errorCodeClient == 200
@@ -284,76 +355,85 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun listListResult(result: Int) {
-        if (result == 400 || result == 500 || result == 409 || result == 429) {
-            profile_technical_work.visibility = View.VISIBLE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (result == 403) {
-            profile_access_restricted.visibility = View.VISIBLE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (result == 404) {
-            profile_not_found.visibility = View.VISIBLE
-            profile_access_restricted.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-        } else if (result == 401) {
-            initAuthorized()
-        }
+    private fun resultTrue() {
+        profile_swipe.visibility = View.VISIBLE
+        profile_technical_work.visibility = View.GONE
+        profile_no_connection.visibility = View.GONE
+        profile_access_restricted.visibility = View.GONE
+        profile_not_found.visibility = View.GONE
     }
 
-    private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409") {
-            profile_technical_work.visibility = View.VISIBLE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "403") {
-            profile_access_restricted.visibility = View.VISIBLE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "404") {
-            profile_not_found.visibility = View.VISIBLE
-            profile_access_restricted.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_no_connection.visibility = View.GONE
-            profile_swipe.visibility = View.GONE
-        } else if (error == "601") {
-            profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-        } else if (error == "401") {
-            initAuthorized()
-        }
+    private fun getErrorCode(error: Int) {
+        listListResult(
+            error, profile_technical_work as LinearLayout, profile_no_connection as LinearLayout,
+            profile_swipe as SwipeRefreshLayout, profile_access_restricted as LinearLayout,
+            profile_not_found as LinearLayout, activity as AppCompatActivity
+        )
+        MainActivity.alert.hide()
+    }
+
+    //Запрос на получение масива заявки
+    override fun applicationListener(int: Int, item: ResultApplicationModel) {
+        HomeActivity.alert.show()
+        val mapLOan = HashMap<String, String>()
+        mapLOan.put("login", AppPreferences.login.toString())
+        mapLOan.put("token", AppPreferences.token.toString())
+        mapLOan.put("id", item.id!!)
+
+        viewModel.getApplication(mapLOan).observe(viewLifecycleOwner, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        val intent = Intent(requireContext(), GetLoanActivity::class.java)
+                        intent.putExtra("getLOan", data.result)
+                        intent.putExtra("getBool", true)
+                        startActivity(intent)
+                    } else if (data.error != null) {
+                        getErrorCode(data.error.code!!)
+                    }
+                }
+                Status.NETWORK, Status.ERROR -> {
+                    getErrorCode(msg!!.toInt())
+                }
+            }
+            HomeActivity.alert.hide()
+        })
     }
 
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(list), "Мои операции")
-        adapter.addFragment(MyApplicationFragment(), "Мои заявки")
+        adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
+        adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
         profile_pager.setAdapter(adapter)
         adapter.notifyDataSetChanged()
 
         profile_pager.isEnabled = false
 
         v1.setOnClickListener {
-            profile_pager.setCurrentItem(0)
+            pagerPosition = 0
+            profile_pager.currentItem = 0
         }
 
         v2.setOnClickListener {
-            profile_pager.setCurrentItem(1)
+            pagerPosition = 1
+            profile_pager.currentItem = 1
         }
+
+        //проверяет если пежер currentItem = 1 то выдемы нопредел)нные поля или на оборот
+        if (pagerPosition != -1) {
+            if (pagerPosition == 1) {
+                profile_bar_one.visibility = View.VISIBLE
+                profile_bar_zero.visibility = View.GONE
+            } else {
+                profile_bar_zero.visibility = View.VISIBLE
+                profile_bar_one.visibility = View.GONE
+            }
+        }
+
+        profile_bar_zero.visibility = View.VISIBLE
+        profile_bar_one.visibility = View.GONE
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(
@@ -380,7 +460,10 @@ class ProfileFragment : Fragment() {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 initRestart()
@@ -402,14 +485,12 @@ class ProfileFragment : Fragment() {
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
-            viewModel.errorListOperation.value = null
-            viewModel.errorClientInfo.value = null
-            viewModel.errorGetImg.value = null
-            errorCode = "601"
-            errorCodeClient = "601"
-            errorGetImg = "601"
+            errorValue()
+            clearError()
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null
+                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null && viewModel.errorListApplication.value == null
+            ) {
                 if (!viewModel.refreshCode) {
                     MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -417,33 +498,26 @@ class ProfileFragment : Fragment() {
                         viewModel.listOperation(map)
                         viewModel.clientInfo(map)
                         viewModel.getImg(mapImg)
+                        viewModel.listApplication(map)
                         initRecycler()
                         initGetImgDta()
                     }, 500)
                 }
             } else {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorListOperation.value != null) {
-                        viewModel.listListOperationDta.postValue(null)
-                        viewModel.errorListOperation.value = null
-                        viewModel.listOperation(map)
-                    } else if (viewModel.errorClientInfo.value != null) {
-                        viewModel.listClientInfoDta.postValue(null)
-                        viewModel.errorClientInfo.value = null
-                        viewModel.clientInfo(map)
-                    }else if (viewModel.errorGetImg.value != null){
-                        viewModel.listGetImgDta.postValue(null)
-                        viewModel.errorGetImg.value = null
-                        viewModel.getImg(mapImg)
-                    }
-                    viewModel.listOperation(map)
-                    viewModel.clientInfo(map)
-                    viewModel.getImg(mapImg)
-                    initRecycler()
-                    initGetImgDta()
-                }, 500)
+                clearError()
+                viewModel.listOperation(map)
+                viewModel.listApplication(map)
+                viewModel.clientInfo(map)
+                viewModel.getImg(mapImg)
             }
         }
+    }
+
+    //Очещает в запросе данные
+    private fun clearError() {
+        viewModel.errorListOperation.value = null
+        viewModel.errorClientInfo.value = null
+        viewModel.errorGetImg.value = null
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -460,15 +534,19 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        initArgument()
 
-        if (AppPreferences.inputsAnim != 0){
+        initArgument()
+        errorValue()
+        if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
         }
-        if (viewModel.listListOperationDta.value != null || viewModel.listClientInfoDta.value != null || viewModel.listGetImgDta.value != null) {
-            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200") {
+        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null
+            || viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null || viewModel.errorListApplication.value != null
+        ) {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
                 AppPreferences.reviewCode = 0
-                if (inputsAnim != 0){
+                AppPreferences.reviewCodeAp = 0
+                if (inputsAnim != 0) {
                     profAnim = true
                 }
                 viewModel.listGetImgDta.postValue(null)
@@ -476,11 +554,17 @@ class ProfileFragment : Fragment() {
                 initGetImgDta()
                 initRecycler()
             } else {
-                AppPreferences.reviewCode = 1
-                initRestart()
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
+//                initRestart()
+                viewModel.listGetImgDta.postValue(null)
+                viewModel.getImg(mapImg)
+                initGetImgDta()
+                initRecycler()
             }
         } else {
             AppPreferences.reviewCode = 1
+            AppPreferences.reviewCodeAp = 1
             viewModel.refreshCode = false
             initRestart()
         }
@@ -496,5 +580,12 @@ class ProfileFragment : Fragment() {
 
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
+    }
+
+    private fun errorValue() {
+        errorCode = ""
+        errorCodeClient = ""
+        errorCodeAp = ""
+        errorGetImg = ""
     }
 }

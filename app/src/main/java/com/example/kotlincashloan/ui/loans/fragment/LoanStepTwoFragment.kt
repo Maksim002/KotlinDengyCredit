@@ -14,18 +14,26 @@ import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
+import com.example.kotlincashloan.adapter.loans.StepClickListener
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
+import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
+import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -35,7 +43,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment : Fragment() {
+class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -66,7 +74,6 @@ class LoanStepTwoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initClick()
         initRestart()
     }
@@ -89,10 +96,16 @@ class LoanStepTwoFragment : Fragment() {
         }
 
         bottom_step_two.setOnClickListener {
-            AppPreferences.type = totalCounter.toString()
-            AppPreferences.sum = loan_step_sum.text.toString()
+            initSaveLoan()
+        }
+    }
 
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
+    override fun onResume() {
+        super.onResume()
+        if (status == true){
+            bottom_step_two.setText("Сохранить")
+        }else{
+            bottom_step_two.text = "Следующий шаг"
         }
     }
 
@@ -142,6 +155,67 @@ class LoanStepTwoFragment : Fragment() {
                 initError(error)
             }
         })
+    }
+
+
+    //Сохронение на сервер данных
+    private fun initSaveLoan() {
+        GetLoanActivity.alert.show()
+        val mapSave = mutableMapOf<String, String>()
+        mapSave.put("login", AppPreferences.login.toString())
+        mapSave.put("token", AppPreferences.token.toString())
+        mapSave.put("loan_type", "2");
+        mapSave.put("loan_term", totalCounter.toString())
+        mapSave.put("loan_sum", loan_step_sum.text.toString())
+        mapSave.put("step", "1")
+
+        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+            val data = result.data
+            val msg = result.msg
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        layout_two.visibility = View.VISIBLE
+                        loans_two_work.visibility = View.GONE
+                        loans_two_connection.visibility = View.GONE
+                        loans_two_restricted.visibility = View.GONE
+                        loans_two_found.visibility = View.GONE
+                        AppPreferences.applicationId = data.result.id.toString()
+                        if (status == true){
+                            requireActivity().finish()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+                        }
+                    }else if (data.error.code != null) {
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                    }else if (data.reject != null) {
+                        initBottomSheet(data.reject.message!!)
+                        layout_two.visibility = View.VISIBLE
+                        loans_two_work.visibility = View.GONE
+                        loans_two_connection.visibility = View.GONE
+                        loans_two_restricted.visibility = View.GONE
+                        loans_two_found.visibility = View.GONE
+                    }
+                }
+                Status.ERROR -> {
+                    listListResult(msg!!, activity as AppCompatActivity)
+                }
+                Status.NETWORK -> {
+                    listListResult(msg!!, activity as AppCompatActivity)
+                }
+            }
+            GetLoanActivity.alert.hide()
+        })
+    }
+
+    override fun onClickStepListener() {
+
+    }
+
+    private fun initBottomSheet(message: String) {
+        val stepBottomFragment = StepBottomFragment(this, message)
+        stepBottomFragment.isCancelable = false
+        stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun initResiscler() {
@@ -256,7 +330,7 @@ class LoanStepTwoFragment : Fragment() {
         params.gravity = Gravity.CENTER
         val sum = monthMax
         val pairs = arrayOfNulls<ImageView>(sum)
-        var v = pairs.size - 1
+        val v = pairs.size - 1
 
         for (l in 0..v) {
             val p = pairs.size / 2
@@ -283,7 +357,7 @@ class LoanStepTwoFragment : Fragment() {
         params.gravity = Gravity.CENTER
         val sum = sumMax / 1000
         val pairs = arrayOfNulls<ImageView>(sum)
-        var v = pairs.size - 1
+        val v = pairs.size - 1
 
         for (l in 0..v) {
             val p = pairs.size / 2

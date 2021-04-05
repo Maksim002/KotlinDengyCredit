@@ -81,11 +81,9 @@ class SupportFragment : Fragment() {
             if (viewModel.listFaqDta.value == null) {
                 if (!viewModel.refreshCode) {
                     MainActivity.alert.show()
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        viewModel.refreshCode = false
-                        viewModel.listFaq(map)
-                        initRecycler()
-                    }, 500)
+                    swipe()
+                }else{
+                    swipe()
                 }
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -97,6 +95,14 @@ class SupportFragment : Fragment() {
                 }, 500)
             }
         }
+    }
+    // отправлет model и возврощает ответ
+    private fun swipe(){
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            viewModel.refreshCode = false
+            viewModel.listFaq(map)
+            initRecycler()
+        }, 500)
     }
 
     private fun iniClick() {
@@ -139,7 +145,9 @@ class SupportFragment : Fragment() {
                     myAdapter.update(result.result)
                     profile_recycler.adapter = myAdapter
                     initVisibilities()
+                    profile_recycler.visibility = View.VISIBLE
                     support_swipe_layout.visibility = View.VISIBLE
+                    layout_support_null.visibility = View.GONE
                     support_no_connection.visibility = View.GONE
                     support_not_found.visibility = View.GONE
                     support_technical_work.visibility = View.GONE
@@ -162,8 +170,8 @@ class SupportFragment : Fragment() {
                         layout_access_restricted.visibility = View.GONE
                         support_not_found.visibility = View.GONE
                     } else if (result.error.code == 404) {
-                        support_not_found.visibility = View.VISIBLE
-                        support_swipe_layout.visibility = View.GONE
+                        layout_support_null.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
                         support_no_connection.visibility = View.GONE
                         layout_access_restricted.visibility = View.GONE
                         support_technical_work.visibility = View.GONE
@@ -183,8 +191,8 @@ class SupportFragment : Fragment() {
                 errorCode = error
             }
             if (error == "404") {
-                support_not_found.visibility = View.VISIBLE
-                support_swipe_layout.visibility = View.GONE
+                layout_support_null.visibility = View.VISIBLE
+                profile_recycler.visibility = View.GONE
                 support_no_connection.visibility = View.GONE
                 layout_access_restricted.visibility = View.GONE
                 support_technical_work.visibility = View.GONE
@@ -232,12 +240,8 @@ class SupportFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.listFaqDta.value != null) {
-            if (errorCode == "200") {
-                initRecycler()
-            } else {
-                initRestart()
-            }
+        if (viewModel.listFaqDta.value != null || viewModel.error.value != null) {
+            initRecycler()
         } else {
             viewModel.refreshCode = false
             initRestart()

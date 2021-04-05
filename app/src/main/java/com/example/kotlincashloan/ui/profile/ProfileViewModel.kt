@@ -1,21 +1,31 @@
 package com.example.kotlincashloan.ui.profile
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Handler
+import android.util.Base64
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
+import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.service.model.profile.*
+import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.timelysoft.tsjdomcom.service.NetworkRepository
+import com.timelysoft.tsjdomcom.service.ResultStatus
 import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileViewModel : ViewModel(){
+    var repository = NetworkRepository()
     val handler = Handler()
     var refreshCode = false
+//    var mitmap = HashMap<String, Bitmap>()
 
     val errorListOperation = MutableLiveData<String>()
     var listListOperationDta = MutableLiveData<CommonResponse<ArrayList<ResultOperationModel>>>()
@@ -39,12 +49,37 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorListOperation.postValue(response.raw().code.toString())
                 }
-//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                    HomeActivity.alert.hide()
-//                },550)
             }
         })
     }
+
+
+    val errorListApplication = MutableLiveData<String>()
+    var listListApplicationDta = MutableLiveData<CommonResponse<ArrayList<ResultApplicationModel>>>()
+
+    fun listApplication(map: Map<String, String>){
+        RetrofitService.apiService().listLoan(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultApplicationModel>>> {
+            override fun onFailure(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, t: Throwable) {
+                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                    errorListApplication.postValue( "601")
+                }else{
+                    errorListApplication.postValue( "600")
+                }
+            }
+            override fun onResponse(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, response: Response<CommonResponse<ArrayList<ResultApplicationModel>>>) {
+                if (response.isSuccessful) {
+                    if (response.body()!!.code == 200){
+                        listListApplicationDta.postValue(response.body())
+                    }else{
+                        errorListApplication.postValue(response.body()!!.code.toString())
+                    }
+                }else{
+                    errorListApplication.postValue(response.raw().code.toString())
+                }
+            }
+        })
+    }
+
 
     val errorGetOperation = MutableLiveData<String>()
     var listGetOperationDta = MutableLiveData<CommonResponse<GetResultOperationModel>>()
@@ -292,6 +327,12 @@ class ProfileViewModel : ViewModel(){
         })
     }
 
+
+    //Запрос на получение картинок для заёма
+    fun getImgLoan(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<GetImgResultModel>>> {
+        return repository.getImgLoan(phone)
+    }
+
     val errorUploadImg = MutableLiveData<String>()
     var listUploadImgDta = MutableLiveData<CommonResponse<UploadImgResultModel>>()
 
@@ -317,4 +358,37 @@ class ProfileViewModel : ViewModel(){
             }
         })
     }
+
+
+
+    fun getApplication(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<GetLoanModel>>> {
+        return repository.getApplication(phone)
+    }
+
+
+//    val errorGetApplication = MutableLiveData<String>()
+//    var listGetApplicationDta = MutableLiveData<CommonResponse<GetLoanModel>>()
+//
+//    fun getApplication(map: Map<String, String>){
+//        RetrofitService.apiService().getLoan(map).enqueue(object : Callback<CommonResponse<GetLoanModel>> {
+//            override fun onFailure(call: Call<CommonResponse<GetLoanModel>>, t: Throwable) {
+//                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+//                    errorGetApplication.postValue( "601")
+//                }else{
+//                    errorGetApplication.postValue( "600")
+//                }
+//            }
+//            override fun onResponse(call: Call<CommonResponse<GetLoanModel>>, response: Response<CommonResponse<GetLoanModel>>) {
+//                if (response.isSuccessful) {
+//                    if (response.body()!!.code == 200){
+//                        listGetApplicationDta.postValue(response.body())
+//                    }else{
+//                        errorGetApplication.postValue(response.body()!!.code.toString())
+//                    }
+//                }else{
+//                    errorGetApplication.postValue(response.raw().code.toString())
+//                }
+//            }
+//        })
+//    }
 }

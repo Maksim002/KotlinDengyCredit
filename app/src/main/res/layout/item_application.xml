@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/application_item"
     android:layout_marginBottom="4dp"
     android:background="@color/whiteColor"
     android:orientation="vertical">
@@ -19,13 +20,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/app_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:layout_marginLeft="6dp"
             android:text="Выгодная сторона"
             android:textColor="@color/blackColor"
-            android:textSize="17dp" />
+            android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,6 +36,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/application_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
@@ -44,6 +47,7 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/app_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -74,6 +78,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/application_review"
                     android:layout_width="7dp"
                     android:layout_height="7dp"
                     android:src="@drawable/ic_point" />
@@ -86,6 +91,7 @@
                 android:layout_gravity="center">
 
                 <ImageView
+                    android:id="@+id/application_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="12dp"
                     android:layout_marginLeft="13dp"

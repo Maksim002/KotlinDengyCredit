@@ -26,19 +26,19 @@ class LoanStepOneFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
-        initResult()
+//        initResult()
     }
 
     private fun initClick() {
 
         bottom_step_one.setOnClickListener {
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
+           (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        AppPreferences.sum = ""
+        bottom_step_one.text = "Начать"
         AppPreferences.nationality = ""
         initRequest()
     }
@@ -51,9 +51,9 @@ class LoanStepOneFragment() : Fragment() {
         viewModel.listYears(map)
     }
 
-    private fun initResult() {
-        viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result->
-            println()
-        })
-    }
+//    private fun initResult() {
+//        viewModel.getListYearsDta.observe(viewLifecycleOwner, Observer { result->
+//            println()
+//        })
+//    }
 }

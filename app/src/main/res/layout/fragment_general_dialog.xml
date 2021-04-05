@@ -37,7 +37,7 @@
             android:maxLines="1"
             android:singleLine="true"
             android:drawableLeft="@drawable/ic_baseline_search"
-            android:background="@drawable/circle_orange_background_edit"
+            android:background="@drawable/circle_orange_background_grey"
             android:padding="@dimen/_8sdp"
             android:textSize="@dimen/_14sdp" />
 

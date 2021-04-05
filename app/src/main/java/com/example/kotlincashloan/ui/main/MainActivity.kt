@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.LiveData
@@ -51,8 +52,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        val notificationmanager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState

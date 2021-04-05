@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:background="@color/whiteColor"
     android:layout_height="match_parent"
     tools:context=".ui.loans.GetLoanActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_get_loan"
+        android:layout_width="match_parent"
+        android:background="@color/whiteColor"
+        android:layout_height="match_parent">
 
     <com.example.kotlincashloan.utils.DeactivatableViewPager
         android:id="@+id/get_loan_view_pagers"
@@ -22,7 +27,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_marginTop="14dp"
         android:layout_marginRight="6dp"
         android:src="@drawable/ic_cross_clear"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,4 +45,26 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/get_loan_access_restricted"
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/get_loan_no_connection"
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/get_loan_technical_work"
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/get_loan_not_found"
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
+</LinearLayout>

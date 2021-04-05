@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -14,11 +13,13 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingConnection
 import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -28,15 +29,10 @@ import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.YourApplicationFragment
 import com.example.myapplication.LoginViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_contacting_service.*
 import kotlinx.android.synthetic.main.activity_contacting_service.questionnaire_phone_additional
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -65,6 +61,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
         HomeActivity.alert = LoadingAlert(this)
         MainActivity.timer = TimerListener(this)
 
@@ -72,6 +70,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         initToolBar()
         getListCountry()
         getType()
+        initView()
         iniClick()
     }
 
@@ -84,10 +83,12 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun iniClick() {
 
         questionnaire_phone_additional.addTextChangedListener {
+            editUtils(layout_phone_number,questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", false)
             initCleaningRoom()
         }
 
         questionnaire_phone_list_country.setOnClickListener {
+            questionnaire_phone_list_country.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -106,6 +107,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         password_recovery_type.setOnClickListener {
+            password_recovery_type.isClickable = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -159,6 +161,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
+            questionnaire_phone_list_country.isClickable = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.setText("")
             questionnaire_phone_additional.error = null
@@ -172,6 +175,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         if (model.key == "listSupportType") {
+            password_recovery_type.isClickable = true
             password_recovery_type.error = null
             password_recovery_type.setText(listSupportType[model.position].name)
             typePosition = listSupportType[model.position].name.toString()
@@ -483,48 +487,50 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun validate(): Boolean {
         var valid = true
         if (questionnaire_phone_surnames.text.toString().isEmpty()) {
-            questionnaire_phone_surnames.error = "Введите фамилию"
+            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", true)
             valid = false
         }
 
         if (questionnaire_phone_name.text.toString().isEmpty()) {
-            questionnaire_phone_name.error = "Введите имя"
+            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", true)
             valid = false
-        }
-
-        if (questionnaire_phone_patronymics.text.toString().isEmpty()) {
-            questionnaire_phone_patronymics.error = "Введите отчество"
-            valid = false
-        }
-
-        if (questionnaire_phone_list_country.text.isEmpty()) {
-            questionnaire_phone_list_country.error = "Выберите страну"
-            valid = false
-        } else {
-            questionnaire_phone_list_country.error = null
         }
 
         if (password_recovery_type.text.isEmpty()) {
-            password_recovery_type.error = "Выберите тип оброщения"
+            editUtils(password_recovery_type, questionnaire_type_error, "Выберите из списка", true)
             valid = false
-        } else {
-            password_recovery_type.error = null
         }
 
-
-        if (reNum.length != numberCharacters) {
-            questionnaire_phone_additional.error = "Введите валидный номер"
+        if (questionnaire_phone_additional.text!!.isNotEmpty()) {
+            if (reNum.length != numberCharacters) {
+                editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", true)
+                valid = false
+            }
+        }else{
+            editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Заполните поле", true)
             valid = false
-        } else {
-            questionnaire_phone_additional.error = null
         }
-
 
         if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
 
         return valid
+    }
+
+    //Метод слушает изменение в полях
+    private fun initView() {
+        questionnaire_phone_surnames.addTextChangedListener {
+            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", false)
+        }
+
+        questionnaire_phone_name.addTextChangedListener {
+            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", false)
+        }
+
+        password_recovery_type.addTextChangedListener {
+            editUtils(password_recovery_type, questionnaire_type_error, "Выберите из списка", false)
+        }
     }
 
     override fun onResume() {

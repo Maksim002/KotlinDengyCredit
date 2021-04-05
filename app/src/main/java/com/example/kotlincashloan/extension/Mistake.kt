@@ -1,10 +1,9 @@
 package com.example.kotlincashloan.extension
 
 
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.LifecycleOwner
+import com.example.kotlincashloan.ui.loans.dialogue.ConnectionBottomLoanFragment
+import com.example.kotlincashloan.ui.loans.dialogue.LoanBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.ConnectionBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 
@@ -29,4 +28,24 @@ fun loadingConnection(activity: AppCompatActivity){
     }
 }
 
+
+fun loadingMistakeIm(activity: AppCompatActivity){
+    val bottomSheetDialogFragment = LoanBottomSheetFragment()
+    try {
+        bottomSheetDialogFragment.isCancelable = false;
+        bottomSheetDialogFragment.show(activity.supportFragmentManager, bottomSheetDialogFragment.tag)
+    } catch (e: Exception) {
+        println()
+    }
+}
+
+fun loadingConnectionIm(activity: AppCompatActivity){
+    val connectionSheetDialogFragment = ConnectionBottomLoanFragment()
+    try {
+        connectionSheetDialogFragment.isCancelable = false;
+        connectionSheetDialogFragment.show(activity.supportFragmentManager, connectionSheetDialogFragment.tag)
+    } catch (e: Exception) {
+        println()
+    }
+}
 

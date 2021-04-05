@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:paddingTop="16dp"
     android:paddingLeft="16dp"
+    android:paddingTop="16dp"
     android:paddingRight="16dp"
-    android:paddingBottom="6dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:paddingBottom="6dp">
 
     <LinearLayout
         android:id="@+id/pin_layout"
@@ -16,77 +16,122 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/bottom_sheet_closed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_esc" />
+        <ImageView
+            android:id="@+id/bottom_sheet_closed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_esc" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Выберите пин-код"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="@color/blackColor"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем"
-        android:textColor="#373435"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:textSize="14sp"/>
-
-        <AutoCompleteTextView
-            android:id="@+id/bottom_sheet_pin_code"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Пин - код"
-            android:maxLength="4"
+            android:gravity="center"
+            android:text="Выберите пин-код"
             android:textColor="@color/blackColor"
-            android:imeOptions="actionNext"
-            android:inputType="number"
-            android:padding="13dp"
-            android:textSize="14dp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <AutoCompleteTextView
-            android:id="@+id/bottom_sheet_repeat_code"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/circle_orange_background_edit"
-            android:hint="Повторите пин-код"
-            android:maxLength="4"
-            android:imeOptions="actionDone"
-            android:textColor="@color/blackColor"
-            android:inputType="number"
-            android:padding="13dp"
-            android:textSize="14dp" />
+            android:gravity="center"
+            android:text="Выберите пин-код из 4-х цифр, чтобы вам было проще заходить в приложение в будущем."
+            android:textColor="#373435"
+            android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/bottom_sheet_resume"
-        style="@style/RoundedOrangeBackground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp"
-        android:text="Продолжить"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/bottom_sheet_pin_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/circle_orange_background_grey"
+                android:hint="Пин - код"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:maxLength="4"
+                android:padding="16dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_pin_error"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
+                android:gravity="right"
+                android:text="error"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/bottom_sheet_repeat_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle_orange_background_grey"
+                android:hint="Повторите пин-код"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="4"
+                android:padding="16dp"
+                android:textColor="@color/blackColor"
+                android:textSize="14dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_repeat_error"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_3sdp"
+                android:gravity="right"
+                android:text="error"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/bottom_sheet_resume"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="Продолжить"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
     </LinearLayout>
 
-    <include layout="@layout/item_no_connection"
+    <include
         android:id="@+id/pin_no_connection"
-        android:visibility="gone"/>
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
 
 </LinearLayout>

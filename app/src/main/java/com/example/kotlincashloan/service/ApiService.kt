@@ -162,6 +162,11 @@ interface ApiService {
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
+    @POST("getImg?token=oYyxhIFgJjAb")
+    suspend fun getImgLoan(@FieldMap map: Map<String, String>): Response<CommonResponse<GetImgResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
     @POST("uploadImg?token=oYyxhIFgJjAb")
     fun uploadImg(@FieldMap params: Map<String, String>):Call<CommonResponse<UploadImgResultModel>>
 
@@ -249,5 +254,20 @@ interface ApiService {
     @FormUrlEncoded
     @POST("saveLoan?token=oYyxhIFgJjAb")
     suspend fun saveLoans(@FieldMap params: Map<String, String>): Response<CommonResponseReject<SaveLoanResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("listLoan?token=oYyxhIFgJjAb")
+    fun listLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<ArrayList<ResultApplicationModel>>>
+
+//    @Headers("Content-Type: application/x-www-form-urlencoded")
+//    @FormUrlEncoded
+//    @POST("getLoan?token=oYyxhIFgJjAb")
+//    fun getLoan(@FieldMap params: Map<String, String>):Call<CommonResponse<GetLoanModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST("getLoan?token=oYyxhIFgJjAb")
+    suspend fun getLoan(@FieldMap params: Map<String, String>): Response<CommonResponse<GetLoanModel>>
 }
 

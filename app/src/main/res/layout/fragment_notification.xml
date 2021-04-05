@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/notification_anim_layout"
-    android:background="@color/whiteColor"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_anim_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/whiteColor"
+    android:orientation="vertical"
     tools:context=".ui.notification.NotificationFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/notification_swipe"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:visibility="visible"
-        android:layout_height="wrap_content">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/notification_recycler"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:layout_marginTop="10dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/notification_notification_null"
+                layout="@layout/item_notification_null"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notification_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <include layout="@layout/item_access_restricted"
+    <include
         android:id="@+id/notification_access_restricted"
-        android:visibility="gone"/>
+        layout="@layout/item_access_restricted"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_no_connection"
+    <include
         android:id="@+id/notification_no_connection"
-        android:visibility="gone"/>
+        layout="@layout/item_no_connection"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_technical_work"
+    <include
         android:id="@+id/notification_technical_work"
-        android:visibility="gone"/>
+        layout="@layout/item_technical_work"
+        android:visibility="gone" />
 
-    <include layout="@layout/item_not_found"
+    <include
         android:id="@+id/notification_not_found"
-        android:visibility="gone"/>
+        layout="@layout/item_not_found"
+        android:visibility="gone" />
 </LinearLayout>
