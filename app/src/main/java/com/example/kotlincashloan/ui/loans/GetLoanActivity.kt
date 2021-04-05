@@ -244,7 +244,7 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-        list.add(LoansListModel(LoanStepFaceFragment()))
+//        list.add(LoansListModel(LoanStepFaceFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))

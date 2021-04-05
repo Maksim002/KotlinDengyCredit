@@ -27,8 +27,6 @@ import android.widget.Toast;
 import com.example.kotlincashloan.R;
 import com.example.kotlincashloan.adapter.loans.StepClickListener;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
-import com.example.kotlincashloan.service.model.login.SaveLoanModel;
-import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel;
 import com.example.kotlincashloan.ui.loans.GetLoanActivity;
 import com.example.kotlincashloan.ui.loans.LoansViewModel;
@@ -51,7 +49,6 @@ import com.regula.documentreader.api.results.DocumentReaderScenario;
 import com.regula.documentreader.api.results.DocumentReaderTextField;
 import com.timelysoft.tsjdomcom.service.AppPreferences;
 import com.timelysoft.tsjdomcom.service.ResultStatus;
-import com.timelysoft.tsjdomcom.service.Status;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -187,18 +184,18 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                 switch (result.getStatus()) {
                     case SUCCESS: {
                         if (result.getData().getResult() != null) {
-                                layout_status.setVisibility(View.VISIBLE);
-                                theeIncorrect.setVisibility(View.GONE);
-                                status_technical_work.setVisibility(View.GONE);
-                                status_no_questionnaire.setVisibility(View.GONE);
-                                status_not_found.setVisibility(View.GONE);
-                                docImageIv.setImageBitmap(documentImage);
-                                portraitIv.setImageBitmap(portrait);
-                                if (AppPreferences.INSTANCE.getStatus() == true){
-                                    getActivity().finish();
-                                }else {
-                                    ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-                                }
+                            layout_status.setVisibility(View.VISIBLE);
+                            theeIncorrect.setVisibility(View.GONE);
+                            status_technical_work.setVisibility(View.GONE);
+                            status_no_questionnaire.setVisibility(View.GONE);
+                            status_not_found.setVisibility(View.GONE);
+                            docImageIv.setImageBitmap(documentImage);
+                            portraitIv.setImageBitmap(portrait);
+                            if (AppPreferences.INSTANCE.getStatus() == true){
+                                getActivity().finish();
+                            }else {
+                                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                            }
                         } else if (result.getData().getError() != null) {
                             if (result.getData().getError().getCode() == 400) {
                                 theeIncorrect.setText("Отсканируйте документ повторно");

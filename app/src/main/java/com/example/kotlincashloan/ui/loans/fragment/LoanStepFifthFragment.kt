@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.location.Address
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
@@ -24,11 +23,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.drawToBitmap
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -48,7 +45,6 @@ import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.spinnerdatepickerlib.DatePicker
 import com.example.spinnerdatepickerlib.DatePickerDialog

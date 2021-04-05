@@ -93,8 +93,6 @@ dependencies {
     //mask phone
     implementation 'com.github.santalu:mask-edittext:1.1.1'
 
-    //DatePickerDialog(
-    implementation 'com.ycuwq.widgets:datepicker:1.2.0'
 
     //READING HTML
     implementation 'com.github.billthefarmer:MarkdownView:v1.04'
@@ -113,10 +111,7 @@ dependencies {
     implementation('com.regula.documentreader:api:5.4.+@aar') {
         transitive = true;
     }
-    implementation ('com.regula.documentreader:facesdk:5.4.655@aar'){
-        transitive = true
-    }
-
+    implementation ('com.regula.documentreader:facesdk:5.4.655@aar')
 
     //Native
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
