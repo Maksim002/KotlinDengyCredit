@@ -422,9 +422,9 @@ override fun onStart() {
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
-            fifth_potent.visibility = View.VISIBLE
-            fifth_receipt.visibility = View.VISIBLE
-            fifth_permission.visibility = View.VISIBLE
+            fifth_potent.visibility = View.GONE
+            fifth_receipt.visibility = View.GONE
+            fifth_permission.visibility = View.GONE
             layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "KGZ") {
