@@ -1132,15 +1132,22 @@ override fun onStart() {
 
 
                     //preparing database files, it will be downloaded from network only one time and stored on user device
-                    DocumentReader.Instance().prepareDatabase(requireContext(), "Full", object : IDocumentReaderPrepareCompletion {
+                    DocumentReader.Instance().prepareDatabase(
+                        requireContext(),
+                        "Full",
+                        object : IDocumentReaderPrepareCompletion {
                             override fun onPrepareProgressChanged(progress: Int) {
                                 try {
                                     text.setText("Загрузка базы данных: $progress%")
-                                }catch (e:Exception){
+                                } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
                             }
-                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
+
+                            override fun onPrepareCompleted(
+                                p0: Boolean,
+                                p1: DocumentReaderException?
+                            ) {
                                 //Initializing the reader
                                 DocumentReader.Instance().initializeReader(
                                     requireContext(),
@@ -1154,24 +1161,22 @@ override fun onStart() {
                                         e.printStackTrace()
                                     }
                                     DocumentReader.Instance().customization().edit()
-                                        .setShowHelpAnimation(
-                                            false
-                                        ).apply()
+                                        .setShowHelpAnimation(false).apply()
                                     DocumentReader.Instance().functionality().edit()
-                                        .setShowSkipNextPageButton(
-                                            false
-                                        ).apply()
+                                        .setShowSkipNextPageButton(false).apply()
                                     if (success) {
                                         //initialization successful
-                                        fifth_potent.setOnClickListener(View.OnClickListener {
-                                            //starting video processing
-                                            DocumentReader.Instance().showScanner(
-                                                requireContext(),
-                                                completion
-                                            )
-                                            DocumentReader.Instance()
-                                                .processParams().multipageProcessing = true
-                                        })
+                                        try {
+                                            fifth_potent.setOnClickListener(View.OnClickListener {
+                                                //starting video processing
+                                                DocumentReader.Instance()
+                                                    .showScanner(requireContext(), completion)
+                                                DocumentReader.Instance()
+                                                    .processParams().multipageProcessing = true
+                                            })
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
 
                                         //getting current processing scenario and loading available scenarios to ListView
                                         var currentScenario =

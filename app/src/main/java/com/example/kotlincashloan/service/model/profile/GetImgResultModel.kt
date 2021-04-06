@@ -10,5 +10,9 @@ class GetImgResultModel (
 
     @SerializedName("mime_type")
     @Expose
-    var mimeType: String? = null
+    var mimeType: String? = null,
+
+    @SerializedName("match")
+    @Expose
+    var match: String? = null
 )

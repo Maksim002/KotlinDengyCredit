@@ -396,6 +396,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             showScanner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    theeIncorrect.setVisibility(View.GONE);
                     clearResults();
 
                     //starting video processing

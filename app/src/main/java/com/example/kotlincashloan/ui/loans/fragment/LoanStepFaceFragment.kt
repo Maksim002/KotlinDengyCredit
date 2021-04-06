@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -30,15 +29,18 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
+import java.text.DecimalFormat
 
-class LoanStepFaceFragment() : Fragment(), StepClickListener {
+class LoanStepFaceFragment(var statusValue: Boolean) : Fragment(), StepClickListener {
     private var viewModel = LoansViewModel()
     private var photoViewModel = ProfileViewModel()
     private lateinit var imageFace: Bitmap
     private lateinit var textViewLiveliness: String
+    private var percent = 0.00
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_loan_step_face, container, false)
     }
 
@@ -67,6 +69,7 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
     private fun initClick() {
         bottom_loan_face.setOnClickListener {
             requestFace()
+            thee_incorrect_face.visibility = View.GONE
         }
 
         access_restricted.setOnClickListener {
@@ -84,6 +87,17 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
         not_found.setOnClickListener {
             initRestart()
         }
+
+        face_cross_back.setOnClickListener {
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (statusValue == true) {
+            face_cross_back.visibility = View.GONE
+        }
     }
 
     private fun initResult() {
@@ -92,48 +106,70 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
         mapPhoto.put("login", AppPreferences.login.toString())
         mapPhoto.put("token", AppPreferences.token.toString())
         mapPhoto.put("type", "doc")
-        mapPhoto.put("doc_id", "3")
+        mapPhoto.put("doc_id", AppPreferences.applicationId.toString())
         mapPhoto.put("type_id", "passport_photo")
 
         photoViewModel.getImg(mapPhoto)
-        photoViewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result->
+        photoViewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
             val data = result.result
             val msg = result.error
-            if (data != null){
+            if (data != null) {
                 baseToBitmap(data.data.toString())
+                percent = data.match!!.toDouble()
                 layout_face.visibility = View.VISIBLE
                 face_access_restricted.visibility = View.GONE
                 face_no_connection.visibility = View.GONE
                 face_technical_work.visibility = View.GONE
                 face_not_found.visibility = View.GONE
-            }else if (msg != null){
-                listListResult(result.error.code!!.toInt(),face_technical_work as LinearLayout,face_no_connection as LinearLayout
-                    ,layout_face,face_access_restricted as LinearLayout,face_not_found as LinearLayout, requireActivity())
+            } else if (msg != null) {
+                listListResult(
+                    result.error.code!!.toInt(),
+                    face_technical_work as LinearLayout,
+                    face_no_connection as LinearLayout,
+                    layout_face,
+                    face_access_restricted as LinearLayout,
+                    face_not_found as LinearLayout,
+                    requireActivity()
+                )
             }
         })
 
-        photoViewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
-                listListResult(error,face_technical_work as LinearLayout,face_no_connection as LinearLayout
-                    ,layout_face,face_access_restricted as LinearLayout,face_not_found as LinearLayout, requireActivity())
+        photoViewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
+                listListResult(
+                    error,
+                    face_technical_work as LinearLayout,
+                    face_no_connection as LinearLayout,
+                    layout_face,
+                    face_access_restricted as LinearLayout,
+                    face_not_found as LinearLayout,
+                    requireActivity()
+                )
             }
         })
     }
 
-    private fun requestFace(){
+    private fun requestFace() {
         //Метод сканироет лицо проверяет на живность
-        Instance().startLivenessMatching(requireContext(), 1) { livenessResponse: LivenessResponse? ->
+        Instance().startLivenessMatching(
+            requireContext(),
+            1
+        ) { livenessResponse: LivenessResponse? ->
             if (livenessResponse != null && livenessResponse.bitmap != null) {
+                GetLoanActivity.alert.show()
                 //Если сканирование прошло успешно
-               if (livenessResponse.liveness == 0) {
+                if (livenessResponse.liveness == 0) {
                     imageFace = livenessResponse.bitmap!!
-                   imageConverter(livenessResponse.bitmap!!)
+                    imageConverter(livenessResponse.bitmap!!)
                     comparingPhotos()
+                }else if (livenessResponse.liveness == 1){
+                    GetLoanActivity.alert.hide()
                 }
+            } else {
+                GetLoanActivity.alert.hide()
             }
-            GetLoanActivity.alert.show()
             Instance().stopLivenessProcessing(requireContext());
-       }
+        }
     }
 
     // Метод сравнивает 2 фотографии imageView1 && imageView2
@@ -159,21 +195,21 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
         Instance().matchFaces(matchRequest) { matchFacesResponse ->
             if (matchFacesResponse?.matchedFaces!!.size != 0) {
                 val similarity = matchFacesResponse.matchedFaces[0].similarity
-                if (similarity.toString() == "NaN"){
+                if (similarity.toString() == "NaN") {
                     //Если сравнивается живое лицо && придметом
                     textViewLiveliness = "0.0"
-                }else{
+                } else {
                     //Если сравнивается живое лицо && фото
                     textViewLiveliness = String.format("%.2f", similarity * 100)
                     calculatingPercentages(textViewLiveliness)
                 }
-            }else{
+            } else {
                 // если придстоит сравнить 2 непохожии фотографии
                 val similarity = matchFacesResponse.unmatchedFaces[0].similarity
-                if (similarity.toString() == "NaN"){
+                if (similarity.toString() == "NaN") {
                     //Если сравнивается живое лицо && придметом
                     textViewLiveliness = "Сходство: 0.0%"
-                }else{
+                } else {
                     //Если сравнивается живое лицо && фото
                     textViewLiveliness = String.format("%.2f", similarity * 100)
                     calculatingPercentages(textViewLiveliness)
@@ -182,11 +218,12 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
         }
     }
 
-    private fun calculatingPercentages(string: String){
-        if (string >= "90.00"){
+    private fun calculatingPercentages(string: String) {
+        val formattedDouble: String = DecimalFormat("#0.00").format(percent)
+        if (string >= formattedDouble) {
             initSaveImage()
-        }else{
-            Toast.makeText(requireContext(), "Отсканируйте лицо повторно", Toast.LENGTH_LONG).show()
+        } else {
+            thee_incorrect_face.visibility = View.VISIBLE
             GetLoanActivity.alert.hide()
         }
     }
@@ -200,28 +237,28 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
         mapImage["live_photo_1"] = getBitmapIm
         mapImage.put("step", "0")
 
-        viewModel.saveLoans(mapImage).observe(viewLifecycleOwner, Observer { result->
+        viewModel.saveLoans(mapImage).observe(viewLifecycleOwner, Observer { result ->
             val msg = result.msg
             val data = result.data
-            when(result.status){
-                Status.SUCCESS ->{
-                    if (data!!.result != null){
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
                         initSaveLoan()
-                    }else if (data.error.code != null){
+                    } else if (data.error.code != null) {
                         if (data.error.code == 409) {
-                            Toast.makeText(requireContext(), "Отсканируйте лицо повторно", Toast.LENGTH_LONG).show()
+                            thee_incorrect_face.visibility = View.VISIBLE
                             GetLoanActivity.alert.hide()
-                        }else{
+                        } else {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                             GetLoanActivity.alert.hide()
                         }
-                    }else if (data.reject != null){
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
                         GetLoanActivity.alert.hide()
                     }
                 }
-                Status.ERROR, Status.NETWORK ->{
-                    if (msg != null){
+                Status.ERROR, Status.NETWORK -> {
+                    if (msg != null) {
                         listListResult(msg, activity as AppCompatActivity)
                         GetLoanActivity.alert.hide()
                     }
@@ -231,28 +268,32 @@ class LoanStepFaceFragment() : Fragment(), StepClickListener {
     }
 
     //Сохронение Если совподение 99%
-    private fun initSaveLoan(){
+    private fun initSaveLoan() {
         val mapSaveLoan = HashMap<String, String>()
         mapSaveLoan.put("login", AppPreferences.login.toString())
         mapSaveLoan.put("token", AppPreferences.token.toString())
         mapSaveLoan.put("id", AppPreferences.applicationId.toString())
         mapSaveLoan.put("step", "7")
 
-        viewModel.saveLoans(mapSaveLoan).observe(viewLifecycleOwner, Observer { result->
+        viewModel.saveLoans(mapSaveLoan).observe(viewLifecycleOwner, Observer { result ->
             val msg = result.msg
             val data = result.data
-            when(result.status){
-                Status.SUCCESS ->{
-                   if (data!!.result != null){
-                       (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
-                   }else if (data.error.code != null){
-                       listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                   }else if (data.reject != null){
-                       initBottomSheet(data.reject.message!!)
-                   }
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        if (statusValue == true){
+                            requireActivity().finish()
+                        }else{
+                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
+                        }
+                    } else if (data.error.code != null) {
+                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                    } else if (data.reject != null) {
+                        initBottomSheet(data.reject.message!!)
+                    }
                 }
-                Status.ERROR, Status.NETWORK ->{
-                    if (msg != null){
+                Status.ERROR, Status.NETWORK -> {
+                    if (msg != null) {
                         listListResult(msg, activity as AppCompatActivity)
                     }
                 }

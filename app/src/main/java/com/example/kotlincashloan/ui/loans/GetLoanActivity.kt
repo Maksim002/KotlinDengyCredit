@@ -118,6 +118,8 @@ class GetLoanActivity : AppCompatActivity() {
             permission = 5
         }else if (listLoan.step == "6"){
             permission = 6
+        }else if (listLoan.step == "7"){
+            permission = 7
         }
     }
 
@@ -244,7 +246,7 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFaceFragment()))
+//        list.add(LoansListModel(LoanStepFaceFragment(statusValue)))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
@@ -253,7 +255,7 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
         list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission)))
         list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
-        list.add(LoansListModel(LoanStepFaceFragment()))
+        list.add(LoansListModel(LoanStepFaceFragment(statusValue)))
         list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true
