@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
 import com.example.kotlincashloan.adapter.loans.StepClickListener;
+import com.example.kotlincashloan.extension.GetTimerKt;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel;
 import com.example.kotlincashloan.ui.loans.GetLoanActivity;
@@ -64,9 +65,9 @@ import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
 import static com.regula.documentreader.api.enums.LCID.RUSSIAN;
 
 public class LoanStepThreeFragment extends Fragment implements StepClickListener {
-    private HashMap<String, ImageStringModel> list = new HashMap();
-    private HashMap<String, String> map = new HashMap<>();
-    private LoansViewModel viewModel = new LoansViewModel();
+    private final HashMap<String, ImageStringModel> list = new HashMap();
+    private final HashMap<String, String> map = new HashMap<>();
+    private final LoansViewModel viewModel = new LoansViewModel();
     private Bitmap documentImageTwo;
     private Bitmap portrait;
     private Bitmap documentImage;
@@ -83,7 +84,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private LinearLayout layout_status, status_no_questionnaire, status_technical_work, status_not_found;
     private Button no_connection_repeat, technical_work, not_found;
 
-    private boolean doRfid = false;
+    private final boolean doRfid = false;
     private AlertDialog loadingDialog;
 
     @Override
@@ -349,7 +350,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                         @Override
                                         public void onClick(View view) {
                                             clearResults();
-
+                                            //Остановка таймера
+                                            GetTimerKt.initSuspendTime();
                                             //starting video processing
                                             DocumentReader.Instance().showScanner(requireContext(), completion);
                                             DocumentReader.Instance().processParams().multipageProcessing = true;
@@ -398,7 +400,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                 public void onClick(View view) {
                     theeIncorrect.setVisibility(View.GONE);
                     clearResults();
-
+                    //Остановка таймера
+                    GetTimerKt.initSuspendTime();
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion);
                     DocumentReader.Instance().processParams().multipageProcessing = true;
@@ -436,7 +439,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     }
 
     //DocumentReader processing callback
-    private IDocumentReaderCompletion completion = new IDocumentReaderCompletion() {
+    private final IDocumentReaderCompletion completion = new IDocumentReaderCompletion() {
         @Override
         public void onCompleted(int i, DocumentReaderResults documentReaderResults, DocumentReaderException e) {
 //processing is finished, all results are ready

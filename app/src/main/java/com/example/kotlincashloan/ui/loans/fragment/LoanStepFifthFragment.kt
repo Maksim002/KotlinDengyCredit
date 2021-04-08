@@ -724,14 +724,12 @@ override fun onStart() {
     private fun getMyFile() {
         val file = "photo"
         val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        //Отключение тамера
+        initSuspendTime()
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri = FileProvider.getUriForFile(
-                requireContext(),
-                "com.example.kotlincashloan",
-                files
-            )
+            val imagUri: Uri = FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imagUri)
             startActivityForResult(takePictureIntent, IMAGE_PICK_CODE)
@@ -1168,19 +1166,18 @@ override fun onStart() {
                                         //initialization successful
                                         try {
                                             fifth_potent.setOnClickListener(View.OnClickListener {
+                                                //остонавливате таймер
+                                                initSuspendTime()
                                                 //starting video processing
-                                                DocumentReader.Instance()
-                                                    .showScanner(requireContext(), completion)
-                                                DocumentReader.Instance()
-                                                    .processParams().multipageProcessing = true
+                                                DocumentReader.Instance().showScanner(requireContext(), completion)
+                                                DocumentReader.Instance().processParams().multipageProcessing = true
                                             })
                                         } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
 
                                         //getting current processing scenario and loading available scenarios to ListView
-                                        var currentScenario =
-                                            DocumentReader.Instance().processParams().scenario
+                                        var currentScenario = DocumentReader.Instance().processParams().scenario
                                         val scenarios = ArrayList<String>()
                                         for (scenario in DocumentReader.Instance().availableScenarios) {
                                             scenarios.add(scenario.name)
@@ -1197,11 +1194,7 @@ override fun onStart() {
                                         //добавил трай что бы непадал
                                         try {
                                             //Initialization was not successful
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Init failed:$p1",
-                                                Toast.LENGTH_LONG
-                                            ).show()
+                                            Toast.makeText(requireContext(), "Init failed:$p1", Toast.LENGTH_LONG).show()
                                         } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
@@ -1216,6 +1209,8 @@ override fun onStart() {
                 }
             } else {
                 fifth_potent.setOnClickListener(View.OnClickListener {
+                    //остонавливате таймер
+                    initSuspendTime()
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion)
                     DocumentReader.Instance().processParams().multipageProcessing = true

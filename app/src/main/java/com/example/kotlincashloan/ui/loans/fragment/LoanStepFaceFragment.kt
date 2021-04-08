@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.StepClickListener
+import com.example.kotlincashloan.extension.initSuspendTime
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
@@ -69,6 +70,8 @@ class LoanStepFaceFragment(var statusValue: Boolean) : Fragment(), StepClickList
     private fun initClick() {
         bottom_loan_face.setOnClickListener {
             requestFace()
+            //Остановка таймера
+            initSuspendTime()
             thee_incorrect_face.visibility = View.GONE
         }
 

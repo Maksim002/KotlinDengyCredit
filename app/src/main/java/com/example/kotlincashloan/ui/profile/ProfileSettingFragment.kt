@@ -32,10 +32,7 @@ import com.example.cookiebar.CookieBar
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.listListResultHome
-import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.extension.loadingMistakeIm
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.ClientInfoResultModel
 import com.example.kotlincashloan.service.model.profile.CounterNumResultModel
@@ -740,6 +737,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         }
 
         profile_tube.setOnClickListener {
+             //остановка таймера
+            initSuspendTime()
             loadFiles()
         }
 

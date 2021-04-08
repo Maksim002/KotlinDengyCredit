@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -246,7 +247,7 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFaceFragment(statusValue)))
+//        list.add(LoansListModel(LoanStepThreeFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
@@ -300,6 +301,7 @@ class GetLoanActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        initClear()
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
             timer.timeStop()

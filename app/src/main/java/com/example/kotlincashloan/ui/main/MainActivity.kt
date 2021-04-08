@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.android.navigationadvancedsample.ClickPushNotification
 import com.example.android.navigationadvancedsample.setupWithNavController
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.TimerListener
@@ -125,6 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        initClear()
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             timer.timeStop()
         }, 2000)
@@ -138,15 +140,5 @@ class MainActivity : AppCompatActivity() {
                 AppPreferences.isNumber = false
             }, 200)
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        if (AppPreferences.token != "") {
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                timer.timeStart()
-//                AppPreferences.isNumber = false
-//            }, 200)
-//        }
     }
 }
