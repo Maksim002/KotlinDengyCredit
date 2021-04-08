@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:paddingTop="16dp"
     android:paddingBottom="6dp"
@@ -19,13 +20,15 @@
         android:textStyle="bold"/>
 
     <TextView
+        android:id="@+id/sheet_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:justificationMode="inter_word"
         android:textSize="14sp"
         android:layout_marginTop="10dp"
-        android:text="Вы прошли регистрацию. Чтобы войти в приложение нажмите “Авторизация”. Логин и пароль придут вам в СМС-сообщении."
-        android:textColor="@color/blackColor"/>
+        android:text="@string/autorization"
+        android:textColor="@color/blackColor"
+        tools:targetApi="o" />
 
     <Button
         android:id="@+id/authorization"

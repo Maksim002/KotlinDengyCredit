@@ -24,7 +24,7 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/blackColor"
         android:textSize="14sp"
-        android:gravity="center"
+        android:justificationMode="inter_word"
         android:text="@string/The_app_is_not_available"/>
 
         <Button

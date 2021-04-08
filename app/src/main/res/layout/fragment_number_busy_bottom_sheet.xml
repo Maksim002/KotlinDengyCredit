@@ -30,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textColor="@color/blackColor"
+        android:justificationMode="inter_word"
         android:textSize="14sp"
-        android:gravity="center"
         android:text="@string/the_number_is_already_registered"/>
     
     <LinearLayout
