@@ -224,30 +224,12 @@ class GetLoanActivity : AppCompatActivity() {
 
     //Срвнивает со степом на какой экран перети
     private fun transition() {
-//        if (listLoan.step!!.toInt() == 3) {
-//            get_loan_view_pagers.currentItem = 6
-//        }
-
         get_loan_view_pagers.currentItem = listLoan.step!!.toInt()
-
-//        if (listLoan.step!!.toInt() == 1) {
-//            get_loan_view_pagers.currentItem = 1
-//        } else if (listLoan.step!!.toInt() == 2) {
-//            get_loan_view_pagers.currentItem = 2
-//        } else if (listLoan.step!!.toInt() == 3) {
-//            get_loan_view_pagers.currentItem = 3
-//        } else if (listLoan.step!!.toInt() == 4) {
-//            get_loan_view_pagers.currentItem = 5
-//        } else if (listLoan.step!!.toInt() == 5) {
-//            get_loan_view_pagers.currentItem = 5
-//        } else if (listLoan.step!!.toInt() == 6) {
-//            get_loan_view_pagers.currentItem = 7
-//        }
         alert.hide()
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepThreeFragment()))
+//        list.add(LoansListModel(LoanStepFaceFragment(statusValue)))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue)))

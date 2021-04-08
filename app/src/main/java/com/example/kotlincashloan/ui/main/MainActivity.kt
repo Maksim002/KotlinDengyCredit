@@ -127,6 +127,10 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         initClear()
+        //если токен пуст то выходи из приложения
+        if (AppPreferences.token == ""){
+            finish()
+        }
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             timer.timeStop()
         }, 2000)

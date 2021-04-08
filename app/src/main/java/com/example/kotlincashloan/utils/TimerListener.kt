@@ -14,7 +14,7 @@ class TimerListener(var activity: Activity){
 
     init {
         try {
-            timer = object : CountDownTimer(60000, 1000) {
+            timer = object : CountDownTimer(120000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
 //                    Toast.makeText(activity.applicationContext, millisUntilFinished.toString() , Toast.LENGTH_LONG).show()
 //                    Toast.makeText(activity.applicationContext, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show()
@@ -28,8 +28,7 @@ class TimerListener(var activity: Activity){
                     HomeActivity.repeatedClick = 1
                     AppPreferences.isNumber = true
                     AppPreferences.isPinCode = true
-                    activity.finishAffinity();
-                    System.exit(0);
+                    activity.finish()
                 }
             }
         }catch (e: Exception){
