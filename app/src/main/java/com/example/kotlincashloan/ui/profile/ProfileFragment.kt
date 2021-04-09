@@ -407,7 +407,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
         adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
         adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
         profile_pager.setAdapter(adapter)
-        adapter.notifyDataSetChanged()
 
         profile_pager.isEnabled = false
 

@@ -251,7 +251,7 @@ override fun onStart() {
     if (contract_type.text.isNotEmpty()) {
         contract_type.hint = null
     }
-    initRestart()
+//    initRestart()
 }
 
     //Сохронение картинки на сервер

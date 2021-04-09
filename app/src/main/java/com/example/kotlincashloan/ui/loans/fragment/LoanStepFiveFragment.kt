@@ -28,13 +28,15 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) :
+    Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -81,7 +83,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
-        if (permission == 4){
+        if (permission == 4) {
             alert.show()
         }
         initRestart()
@@ -107,11 +109,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             initLisTypeIncome()
             initListIncomeAdditional()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        initRestart()
     }
 
     override fun onResume() {
@@ -163,15 +160,13 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             if (itemDialog.size == 0) {
                 for (i in 1..listTypeWork.size) {
                     if (i <= listTypeWork.size) {
-                        itemDialog.add(
-                            GeneralDialogModel(
-                                listTypeWork[i - 1].name.toString(),
-                                "listTypeWork",
-                                i - 1,
-                                0,
+                        itemDialog.add(GeneralDialogModel(listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, 0,
                                 listTypeWork[i - 1].name.toString()
                             )
                         )
+                    }
+                    if (i == listTypeWork.size) {
+                        itemDialog.add(GeneralDialogModel("Другое", "listTypeWork", i, 0, "Другое"))
                     }
                 }
             }
@@ -328,11 +323,23 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun listenerClickResult(model: GeneralDialogModel) {
 
         if (model.key == "listTypeWork") {
-            fire_post.isClickable = true
-            fire_post.error = null
-            fire_post.setText(listTypeWork[model.position].name)
-            typeWorkPosition = listTypeWork[model.position].name.toString()
-            typeId = listTypeWork[model.position].id!!
+            if (itemDialog.first { it.id == model.id }.name == "Другое") {
+                fire_post.isClickable = true
+                fire_post.error = null
+                fire_post.setText("Другое")
+                typeWorkPosition = "Другое"
+                typeId = "0"
+                five_layout_text.visibility = View.VISIBLE
+            } else {
+                fire_post.isClickable = true
+                fire_post.error = null
+                fire_post.setText(listTypeWork[model.position].name)
+                typeWorkPosition = listTypeWork[model.position].name.toString()
+                typeId = listTypeWork[model.position].id!!
+                five_layout_text.visibility = View.GONE
+                fire_step_four_working.setText("")
+                editUtils(fire_step_four_working, step_four_working_error, "", false)
+            }
         }
 
         if (model.key == "listYears") {
@@ -402,33 +409,44 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         if (status == true) {
             bottom_loan_fire.setText("Сохранить")
             five_cross_back.visibility = View.GONE
-
             //place_work
             fire_step_four_residence.setText(listLoan.placeWork)
             //type_work
-            fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
-            typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
-            typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+            if (listLoan.typeWork == "0") {
+                fire_post.setText("Другое")
+                fire_step_four_working.setText(listLoan.otherTypeWork)
+                typeWorkPosition = "Другое"
+                typeId = listLoan.typeWork.toString()
+                five_layout_text.visibility = View.VISIBLE
+            } else {
+                fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
+                typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
+                typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+                five_layout_text.visibility = View.GONE
+            }
             //work_exp_ru
             fire_work_experience_r_f.setText(listYears.first { it.id == listLoan.workExpRu }.name)
             yearsPosition = listYears.first { it.id == listLoan.workExpRu }.name.toString()
             yearsRfId = listYears.first { it.id == listLoan.workExpRu }.id!!
             //work_exp_last
-            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast}.name)
-            experiencePosition = listWorkExperience.first { it.id == listLoan.workExpLast}.name.toString()
-            yearsId = listWorkExperience.first{it.id == listLoan.workExpLast}.id!!
+            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast }.name)
+            experiencePosition =
+                listWorkExperience.first { it.id == listLoan.workExpLast }.name.toString()
+            yearsId = listWorkExperience.first { it.id == listLoan.workExpLast }.id!!
             //income
-            fire_list_income.setText(listIncome.first { it.id == listLoan.income}.name)
-            incomePosition = listIncome.first { it.id == listLoan.income}.name.toString()
-            incomeId = listIncome.first { it.id == listLoan.income}.id!!
+            fire_list_income.setText(listIncome.first { it.id == listLoan.income }.name)
+            incomePosition = listIncome.first { it.id == listLoan.income }.name.toString()
+            incomeId = listIncome.first { it.id == listLoan.income }.id!!
             //sub_income_id
-            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId}.name)
-            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId}.name.toString()
-            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId}.id!!
+            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId }.name)
+            typeIncomePosition =
+                listTypeIncome.first { it.id == listLoan.subIncomeId }.name.toString()
+            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId }.id!!
             //sub_income_sum
-            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name)
-            incomeAdditionalPosition = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name.toString()
-            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.id!!
+            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name)
+            incomeAdditionalPosition =
+                listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name.toString()
+            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.id!!
         }
     }
 
@@ -636,6 +654,11 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.applicationId.toString()
         mapSave["type_work"] = typeId
+
+        if (fire_step_four_working.text.isNotEmpty()) {
+            mapSave["other_type_work"] = fire_step_four_working.text.toString()
+        }
+
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId
         mapSave["income"] = incomeId
@@ -659,9 +682,9 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                         fire_ste_no_connection.visibility = View.GONE
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
-                        if (status == true){
+                        if (status == true) {
                             requireActivity().onBackPressed()
-                        }else{
+                        } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
                         }
 
@@ -715,10 +738,12 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
     }
 
-    private fun getErrorCode(error: Int){
-        listListResult(error,fire_ste_technical_work as LinearLayout,fire_ste_no_connection
-                as LinearLayout,layout_fire as ConstraintLayout,fire_ste_access_restricted
-                as LinearLayout,fire_ste_not_found as LinearLayout,requireActivity())
+    private fun getErrorCode(error: Int) {
+        listListResult(
+            error, fire_ste_technical_work as LinearLayout, fire_ste_no_connection
+                    as LinearLayout, layout_fire as ConstraintLayout, fire_ste_access_restricted
+                    as LinearLayout, fire_ste_not_found as LinearLayout, requireActivity()
+        )
     }
 
     //Метотд для скрытия клавиатуры
@@ -740,6 +765,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             editUtils(fire_step_four_residence, step_four_residence_error, "Заполните поле", true)
             valid = false
         }
+
+        if (five_layout_text.visibility != View.GONE) {
+            if (fire_step_four_working.text.isEmpty()) {
+                editUtils(fire_step_four_working, step_four_working_error, "Заполните поле", true)
+                valid = false
+            }
+        }
+
         if (fire_post.text.isEmpty()) {
             editUtils(fire_post, fire_post_error, "Выберите из списка", true)
             valid = false
@@ -780,6 +813,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     private fun initView() {
+        fire_step_four_working.addTextChangedListener {
+            editUtils(fire_step_four_working, step_four_working_error, "", false)
+        }
+
         fire_step_four_residence.addTextChangedListener {
             editUtils(fire_step_four_residence, step_four_residence_error, "", false)
         }

@@ -81,6 +81,10 @@ class GetLoanModel(
     @Expose
     var bankCard: String? = null,
 
+    @SerializedName("other_type_work")
+    @Expose
+    var otherTypeWork: String? = null,
+
     @SerializedName("second_phone")
     @Expose
     var secondPhone: String? = null,

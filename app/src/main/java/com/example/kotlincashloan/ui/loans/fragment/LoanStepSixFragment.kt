@@ -147,10 +147,10 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        initRestart()
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        initRestart()
+//    }
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
