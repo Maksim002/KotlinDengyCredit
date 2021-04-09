@@ -157,7 +157,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, cityPosition, "В каком городе России вы живете?")
+                initBottomSheet(itemDialog, cityPosition, "В каком городе России Вы живете?")
             }
         }
 
@@ -214,7 +214,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у вас в семье?")
+                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у Вас в семье?")
             }
         }
 
@@ -321,8 +321,8 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
                 six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
                 six_number_phone.setText(l)
-                alert.hide()
             }
+            alert.hide()
         }
     }
 

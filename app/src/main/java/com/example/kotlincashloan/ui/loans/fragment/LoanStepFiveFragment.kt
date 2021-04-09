@@ -160,7 +160,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             if (itemDialog.size == 0) {
                 for (i in 1..listTypeWork.size) {
                     if (i <= listTypeWork.size) {
-                        itemDialog.add(GeneralDialogModel(listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, 0,
+                        itemDialog.add(GeneralDialogModel(listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, listTypeWork[i -1].id!!.toInt(),
                                 listTypeWork[i - 1].name.toString()
                             )
                         )
@@ -171,7 +171,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition, "Кем вы работаете?")
+                initBottomSheet(itemDialog, typeWorkPosition, "Кем Вы работаете?")
             }
         }
 
@@ -195,7 +195,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Сколько вы работаете в России?")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько Вы работаете в России?")
             }
         }
 
@@ -236,7 +236,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 initBottomSheet(
                     itemDialog,
                     experiencePosition,
-                    "Сколько вы работаете на последнем месте работы в России?"
+                    "Сколько Вы работаете на последнем месте работы в России?"
                 )
             }
         }
