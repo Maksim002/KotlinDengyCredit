@@ -29,7 +29,7 @@ class PushNotification : FirebaseMessagingService() {
 
     private fun showNotification(title: String, message: String, isData: String) {
 
-        FirebaseMessaging.getInstance().subscribeToTopic("testnotification")
+        FirebaseMessaging.getInstance().subscribeToTopic("com.beksar.testnotification")
 
         val notChannelId = "com.beksar.testnotification"
         val notificationManager: NotificationManager =
@@ -37,13 +37,12 @@ class PushNotification : FirebaseMessagingService() {
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val c = NotificationChannel(notChannelId, "testnotification", NotificationManager.IMPORTANCE_DEFAULT)
+            val c = NotificationChannel(notChannelId, "com.beksar.testnotification", NotificationManager.IMPORTANCE_DEFAULT)
             c.description = "testnotification"
             c.enableLights(true)
             c.lightColor = Color.BLUE
             notificationManager.createNotificationChannel(c)
         }
-
         // Create an Intent for the activity you want to start
         val resultIntent: Intent
         //Проверка если токин пустой открой главнй экран иначе переди на нужный экран

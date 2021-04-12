@@ -351,6 +351,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             AppPreferences.token = ""
         }
 
+//        if (home_login_code.isChecked) {
+//            if (AppPreferences.token != ""){
+//                startMainActivity()
+//            }
+//        }
+
         // TODO: 21-2-26 Проверить нужен ли этот метод
         if (AppPreferences.token != "") {
             startMainActivity()

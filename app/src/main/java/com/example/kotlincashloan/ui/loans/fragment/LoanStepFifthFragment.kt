@@ -1599,7 +1599,7 @@ override fun onStart() {
             }
         }
 
-        if (layout_contract_type.visibility != View.GONE) {
+        if (fifth_contract.visibility != View.GONE) {
             if (contract_type.text.length == 0) {
                 if (contract_type.text.isEmpty()) {
                     editUtils(contract_type, contract_type_error, "Выберите из списка", true, null)
