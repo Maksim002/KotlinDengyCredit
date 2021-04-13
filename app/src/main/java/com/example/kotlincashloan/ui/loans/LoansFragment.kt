@@ -8,24 +8,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
+import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.MyApplicationFragment
+import com.example.kotlincashloan.ui.profile.ProfileViewModel
+import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.fragment_loans.loans_layout
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -35,6 +42,7 @@ import java.lang.Exception
 class LoansFragment : Fragment(), LoansListener {
     private var myAdapter = LoansAdapter(this)
     private var viewModel = LoansViewModel()
+    private var viewProfileModel = ProfileViewModel()
     val map = HashMap<String, String>()
     val handler = Handler()
     private var listNewsId: String = ""
@@ -44,6 +52,9 @@ class LoansFragment : Fragment(), LoansListener {
 
     private var progressPositionMax = 0
     private var progressPositionRemains = 0
+
+    private var editActive = ""
+    private var editParallel = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +70,7 @@ class LoansFragment : Fragment(), LoansListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-        map.put("v", "1")
+//        map.put("v", "1")
         initClick()
         initRefresh()
 
@@ -80,64 +91,99 @@ class LoansFragment : Fragment(), LoansListener {
                 } else {
                     initCode()
                     if (result.result != null) {
-                        // Ползунок Параллельный заем, появляется в случае если массив result содержит вложенный массив parallel_loan и имеет значение status = true.
-                        if (result.result.parallelLoan!!.status == false) {
-                            loan_layout_parallel.visibility = View.GONE
-                        } else if (result.result.parallelLoan!!.status == true) {
-                            loan_layout_parallel.visibility = View.VISIBLE
-                        }
-                        //Кнопка Внести погашение. Показываем если выбранный тип займа имеет status = true
-                        if (result.result.activeLoan!!.status == false) {
-                            loan_active_status.visibility = View.GONE
-                        } else if (result.result.activeLoan!!.status == true) {
-                            loan_active_status.visibility = View.VISIBLE
-                        }
-                        // Кнопка Получить заем. Показываем если result содержит get_active_loan = true
-                        if (result.result.getActiveLoan == false) {
-                            loan_get_active_loan.visibility = View.GONE
-                        } else if (result.result.getActiveLoan == true) {
-                            loan_get_active_loan.visibility = View.VISIBLE
-                        }
-                        // Кнопка Получить параллельный заем. Показываем если result содержит get_parallel_loan = true
-                        if (result.result.getParallelLoan == false) {
-                            loan_get_parallel_loan.visibility = View.GONE
-                        } else if (result.result.getParallelLoan == true) {
-                            loan_get_parallel_loan.visibility = View.VISIBLE
-                        }
-                        // проверка следующего погошения
-                        nextRepaymentActive(result)
-
-                        verificationArrayActive(result)
-
-                        if (result.result.activeLoan!!.paid != null || result.result.activeLoan!!.total != null) {
-                            progressPositionMax =
-                                result.result.activeLoan!!.total.toString().toInt()
-                            progressPositionRemains =
-                                result.result.activeLoan!!.paid.toString().toInt()
-                        } else {
-                            progressPositionMax = 0
-                            progressPositionRemains = 0
-                        }
-
-                        initLogicSeekBar()
-
-                        if (loan_switch.isChecked){
-                            checkedTrue(result)
+                        if (result.result.clientStatus == 3) {
+                            val intent = Intent(context, GetLoanActivity::class.java)
+                            startActivity(intent)
                         }else{
-                            checkedFalse(result)
-                        }
-
-                        loan_switch.setOnClickListener {
-                            if (!loan_switch.isChecked) {
-                                checkedFalse(result)
-                            } else {
-                                checkedTrue(result)
+                            // Ползунок Параллельный заем, появляется в случае если массив result содержит вложенный массив parallel_loan и имеет значение status = true.
+                            if (result.result.parallelLoan!!.status == false) {
+                                loan_layout_parallel.visibility = View.GONE
+                            } else if (result.result.parallelLoan!!.status == true) {
+                                loan_layout_parallel.visibility = View.VISIBLE
                             }
-                        }
+                            //Кнопка Внести погашение. Показываем если выбранный тип займа имеет status = true
+                            if (result.result.activeLoan!!.status == false) {
+                                loan_active_status.visibility = View.GONE
+                            } else if (result.result.activeLoan!!.status == true) {
+                                loan_active_status.visibility = View.VISIBLE
+                            }
+                            // Кнопка Получить заем. Показываем если result содержит get_active_loan = true
+                            if (result.result.getActiveLoan == false) {
+                                loan_get_active_loan.visibility = View.GONE
+                            } else if (result.result.getActiveLoan == true) {
+                                loan_get_active_loan.visibility = View.VISIBLE
+                            }
+                            // Кнопка Получить параллельный заем. Показываем если result содержит get_parallel_loan = true
+                            if (result.result.getParallelLoan == false) {
+                                loan_get_parallel_loan.visibility = View.GONE
+                            } else if (result.result.getParallelLoan == true) {
+                                loan_get_parallel_loan.visibility = View.VISIBLE
+                            }
 
-                        initRecycler()
-                        loans_layout.visibility = View.VISIBLE
-                        loans_no_connection.visibility = View.GONE
+                            // Кнопка продолжение на получение заёма. Паказываем если result содержит edit_active_loan = true
+                            if (result.result.editActiveLoan == 0) {
+                                editActive = ""
+                                loan_edit_active_loan.visibility = View.GONE
+                            } else {
+                                editActive = result.result.editActiveLoan.toString()
+                                loan_edit_active_loan.visibility = View.VISIBLE
+                            }
+                            // Кнопка продолжение на получение параллельного заёма. Паказываем если result содержит edit_parallel_loan = true
+                            if (result.result.editParallelLoan == 0) {
+                                editParallel = ""
+                                loan_edit_parallel_loan.visibility = View.GONE
+                            } else {
+                                editParallel = result.result.editParallelLoan.toString()
+                                loan_edit_parallel_loan.visibility = View.VISIBLE
+                            }
+                            // Кнопка если process_active_loan = true то отоброжаем кнопку заявка в обработке
+                            if (result.result.processActiveLoan == false) {
+                                loan_process_active_loan.visibility = View.GONE
+                            } else if (result.result.processActiveLoan == true) {
+                                loan_process_active_loan.visibility = View.VISIBLE
+                            }
+                            // Кнопка если process_parallel_loan = true то отоброжаем кнопку заявка в обработке
+                            if (result.result.processParallelLoan == false) {
+                                loan_process_parallel_loan.visibility = View.GONE
+                            } else if (result.result.processParallelLoan == true) {
+                                loan_process_parallel_loan.visibility = View.VISIBLE
+                            }
+
+                            // проверка следующего погошения
+                            nextRepaymentActive(result)
+
+                            verificationArrayActive(result)
+
+                            if (result.result.activeLoan!!.paid != null || result.result.activeLoan!!.total != null) {
+                                progressPositionMax =
+                                    result.result.activeLoan!!.total.toString().toInt()
+                                progressPositionRemains =
+                                    result.result.activeLoan!!.paid.toString().toInt()
+                            } else {
+                                progressPositionMax = 0
+                                progressPositionRemains = 0
+                            }
+
+                            initLogicSeekBar()
+
+                            if (loan_switch.isChecked) {
+                                checkedTrue(result)
+                            } else {
+                                checkedFalse(result)
+                            }
+
+                            loan_switch.setOnClickListener {
+                                if (!loan_switch.isChecked) {
+                                    checkedFalse(result)
+                                } else {
+                                    checkedTrue(result)
+                                }
+                            }
+
+                            initRecycler()
+                            loans_layout.visibility = View.VISIBLE
+                            loans_no_connection.visibility = View.GONE
+                        }
                     }
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -165,7 +211,7 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
     //Если Чекбокс true
-    private fun checkedTrue(result: CommonResponse<LoanInfoResultModel>){
+    private fun checkedTrue(result: CommonResponse<LoanInfoResultModel>) {
         if (result.result.parallelLoan!!.paid != null || result.result.parallelLoan!!.total != null) {
             progressPositionMax = result.result.parallelLoan!!.total.toString().toInt()
             progressPositionRemains = result.result.parallelLoan!!.paid.toString().toInt()
@@ -187,13 +233,29 @@ class LoansFragment : Fragment(), LoansListener {
         } else if (result.result.getParallelLoan == true) {
             loan_get_active_loan.visibility = View.VISIBLE
         }
+
+        // Кнопка продолжение на получение параллельного заёма. Паказываем если result содержит edit_parallel_loan = true
+        if (result.result.editParallelLoan == 0) {
+            editParallel = ""
+            loan_edit_parallel_loan.visibility = View.GONE
+        } else {
+            editParallel = result.result.editParallelLoan.toString()
+            loan_edit_parallel_loan.visibility = View.VISIBLE
+        }
+        // Кнопка если process_parallel_loan = true то отоброжаем кнопку заявка в обработке
+        if (result.result.processParallelLoan == false) {
+            loan_process_parallel_loan.visibility = View.GONE
+        } else if (result.result.processParallelLoan == true) {
+            loan_process_parallel_loan.visibility = View.VISIBLE
+        }
+
         // проверка следующего погошения
         nextRepaymentParallel(result)
         initLogicSeekBar()
     }
 
     //Если Чекбокс false
-    private fun checkedFalse(result: CommonResponse<LoanInfoResultModel>){
+    private fun checkedFalse(result: CommonResponse<LoanInfoResultModel>) {
         if (result.result.activeLoan != null) {
             if (result.result.activeLoan!!.paid != null || result.result.activeLoan!!.total != null) {
                 progressPositionMax =
@@ -216,6 +278,21 @@ class LoansFragment : Fragment(), LoansListener {
                 loan_get_active_loan.visibility = View.GONE
             } else if (result.result.getActiveLoan == true) {
                 loan_get_active_loan.visibility = View.VISIBLE
+            }
+
+            // Кнопка продолжение на получение заёма. Паказываем если result содержит edit_active_loan = true
+            if (result.result.editActiveLoan == 0) {
+                editActive = ""
+                loan_edit_active_loan.visibility = View.GONE
+            } else {
+                editActive = result.result.editActiveLoan.toString()
+                loan_edit_active_loan.visibility = View.VISIBLE
+            }
+            // Кнопка если process_active_loan = true то отоброжаем кнопку заявка в обработке
+            if (result.result.processActiveLoan == false) {
+                loan_process_active_loan.visibility = View.GONE
+            } else if (result.result.processActiveLoan == true) {
+                loan_process_active_loan.visibility = View.VISIBLE
             }
         }
 
@@ -338,6 +415,14 @@ class LoansFragment : Fragment(), LoansListener {
         technical_work.setOnClickListener {
             initRepeat()
         }
+
+        loan_edit_active_loan.setOnClickListener {
+            continueApplication()
+        }
+
+        loan_edit_parallel_loan.setOnClickListener {
+            continueApplication()
+        }
     }
 
     private fun initRepeat() {
@@ -377,11 +462,61 @@ class LoansFragment : Fragment(), LoansListener {
         }
     }
 
+    //Запрос на получение масива заявки
+    private fun continueApplication() {
+        HomeActivity.alert.show()
+        val mapLOan = java.util.HashMap<String, String>()
+        mapLOan.put("login", AppPreferences.login.toString())
+        mapLOan.put("token", AppPreferences.token.toString())
+
+        if (loan_switch.isChecked == true) {
+            if (editParallel != "") {
+                mapLOan.put("id", editParallel)
+            }
+        } else {
+            if (editActive != "") {
+                mapLOan.put("id", editActive)
+            }
+        }
+
+        viewProfileModel.getApplication(mapLOan).observe(viewLifecycleOwner, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result != null) {
+                        val intent = Intent(requireContext(), GetLoanActivity::class.java)
+                        intent.putExtra("getLOan", data.result)
+                        intent.putExtra("getBool", true)
+                        intent.putExtra("application", true)
+                        startActivity(intent)
+                    } else if (data.error != null) {
+                        getErrorCode(data.error.code!!)
+                    }
+                }
+                Status.NETWORK, Status.ERROR -> {
+                    getErrorCode(msg!!.toInt())
+                }
+            }
+            HomeActivity.alert.hide()
+        })
+    }
+
+    private fun getErrorCode(error: Int) {
+        listListResult(
+            error, loans_technical_work as LinearLayout, loans_no_connection as LinearLayout,
+            loans_layout as SwipeRefreshLayout, loans_access_restricted as LinearLayout,
+            loans_not_found as LinearLayout, activity as AppCompatActivity
+        )
+        MainActivity.alert.hide()
+    }
+
     private fun initRefresh() {
         loans_layout.setOnRefreshListener {
             requireActivity().window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable {
                 initRepeat()
             }, 700)
@@ -400,10 +535,10 @@ class LoansFragment : Fragment(), LoansListener {
         viewModel.listNewsDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.error != null) {
-                    if (result.error.code != 404){
+                    if (result.error.code != 404) {
                         listNewsId = result.error.toString()
                         initErrorResult(result.error.code!!)
-                    }else{
+                    } else {
                         loans_loans_null.visibility = View.VISIBLE
                         loans_recycler.visibility = View.GONE
                     }
@@ -439,10 +574,10 @@ class LoansFragment : Fragment(), LoansListener {
 
         viewModel.errorNews.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
-                if (error.toString() != "404"){
+                if (error.toString() != "404") {
                     initError(error)
                     listNewsId = error
-                }else{
+                } else {
                     loans_loans_null.visibility = View.VISIBLE
                     loans_recycler.visibility = View.GONE
                 }

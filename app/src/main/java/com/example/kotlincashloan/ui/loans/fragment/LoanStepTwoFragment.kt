@@ -43,7 +43,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
+class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -102,8 +102,10 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
 
     override fun onResume() {
         super.onResume()
-        if (status == true){
-            bottom_step_two.setText("Сохранить")
+        if (applicationStatus == false) {
+            if (status == true) {
+                bottom_step_two.setText("Сохранить")
+            }
         }else{
             bottom_step_two.text = "Следующий шаг"
         }
@@ -181,8 +183,10 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
                         loans_two_restricted.visibility = View.GONE
                         loans_two_found.visibility = View.GONE
                         AppPreferences.applicationId = data.result.id.toString()
-                        if (status == true){
-                            requireActivity().finish()
+                        if (applicationStatus == false) {
+                            if (status == true) {
+                                requireActivity().finish()
+                            }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                         }

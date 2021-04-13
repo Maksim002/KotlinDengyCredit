@@ -37,6 +37,7 @@ class GetLoanActivity : AppCompatActivity() {
     var viewModel = ProfileViewModel()
     var states = ArrayList<String>()
     private var statusValue = false
+    private var applicationStatus = false
     private var errorCodeIm = ""
     private var o: Int = 0
     private val getImList: ArrayList<String> = arrayListOf()
@@ -62,9 +63,12 @@ class GetLoanActivity : AppCompatActivity() {
 
         try {
             val valod = intent.extras!!.getBoolean("getBool")
+            val application = intent.extras!!.getBoolean("application")
             listLoan = intent.extras!!.getSerializable("getLOan") as GetLoanModel
             statusValue = valod
+            applicationStatus = application
             AppPreferences.status = valod
+            AppPreferences.applicationStatus = application
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -232,7 +236,7 @@ class GetLoanActivity : AppCompatActivity() {
 //        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
 
         list.add(LoansListModel(LoanStepOneFragment()))
-        list.add(LoansListModel(LoanStepTwoFragment(statusValue)))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission)))
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))

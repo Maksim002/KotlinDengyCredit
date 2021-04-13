@@ -117,6 +117,12 @@ object AppPreferences {
             it.putBoolean("status", value)
         }
 
+    var applicationStatus: Boolean
+        get() = preferences.getBoolean("applicationStatus", false)
+        set(value) = preferences.edit {
+            it.putBoolean("applicationStatus", value)
+        }
+
     var isFormatMask: String?
         get() = preferences.getString("isFormatMask", "")
         set(value) = preferences.edit {
