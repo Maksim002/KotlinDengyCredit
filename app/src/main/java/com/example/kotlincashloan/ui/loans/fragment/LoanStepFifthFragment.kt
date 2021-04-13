@@ -71,7 +71,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
     private var viewModel = LoansViewModel()
     private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
@@ -179,9 +179,11 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (statusValue) {
-            bottom_loan_fifth.setText("Сохранить")
-            fifth_cross_six.visibility = View.GONE
-            if (mitmap.values != null) {
+            if (applicationStatus == false){
+                bottom_loan_fifth.setText("Сохранить")
+                fifth_cross_six.visibility = View.GONE
+            }
+            if (mitmap.values.size != 0) {
                 russianFederationA = true
                 migrationCardA = true
                 migrationCardB = true
@@ -209,6 +211,8 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 imageViewModel.updateBitmaps(mitmap)
                 mitmap.clear()
                 alert.hide()
+            }else{
+                dataImage()
             }
             //при редактирование сравнивает спрятать поля или нет
             if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
@@ -382,9 +386,11 @@ override fun onStart() {
                         fifth_ste_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            if (statusValue == true){
-                                requireActivity().onBackPressed()
-                            }else{
+                            if (applicationStatus == false){
+                                if (statusValue == true){
+                                    requireActivity().onBackPressed()
+                                }
+                            } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                             }
                         }
@@ -408,9 +414,13 @@ override fun onStart() {
     //Скрытие полей
     private fun initHidingFields() {
         if (statusValue == true){
-            hidingLayout = listLoan.nationality_ocr.toString()
+            // после удалить
+            hidingLayout = "KGZ"
+//            hidingLayout = listLoan.nationality_ocr.toString()
         }else{
-            hidingLayout = AppPreferences.nationality.toString()
+            // после удалить
+            hidingLayout = "KGZ"
+//            hidingLayout = AppPreferences.nationality.toString()
         }
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {

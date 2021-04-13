@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(),
+class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) : Fragment(),
     ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
@@ -166,8 +166,11 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            bottom_loan_six.setText("Сохранить")
-            four_cross_six.visibility = View.GONE
+            if (applicationStatus == false){
+                bottom_loan_six.setText("Сохранить")
+                four_cross_six.visibility = View.GONE
+            }
+            try {
             //reLastName
             six_loan_surname.setText(listLoan.reLastName)
             //reFirstName
@@ -180,6 +183,9 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             family = listFamily.first{ it.id == listLoan.reType }.id.toString()
             //rePhone
             six_loan_phone.setText(listLoan.rePhone)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
             alert.hide()
         }
     }
@@ -238,8 +244,10 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                         six_ste_no_connection.visibility = View.GONE
                         six_ste_access_restricted.visibility = View.GONE
                         six_ste_not_found.visibility = View.GONE
-                        if (status == true){
-                            requireActivity().finish()
+                        if (applicationStatus == false){
+                            if (status == true){
+                                requireActivity().finish()
+                            }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
                         }

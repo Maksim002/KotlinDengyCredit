@@ -130,7 +130,9 @@ class GetLoanActivity : AppCompatActivity() {
 
     private fun initGetLoan() {
         if (statusValue == true) {
-            loan_cross_clear.visibility = View.GONE
+            if (applicationStatus == false){
+                loan_cross_clear.visibility = View.GONE
+            }
             alert.show()
         }
         try {
@@ -160,7 +162,7 @@ class GetLoanActivity : AppCompatActivity() {
                                                 o++
                                                 initGetLoan()
                                             } else if (viewModel.repository.mitmap.size == states.size - 1) {
-                                                LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)
+                                                LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission, applicationStatus)
                                                 transition()
                                                 alert.hide()
                                             }
@@ -238,11 +240,11 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission)))
-        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
-        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission)))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission)))
-        list.add(LoansListModel(LoanStepFaceFragment(statusValue)))
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepPushFragment()))
 
         get_loan_view_pagers.isEnabled = true

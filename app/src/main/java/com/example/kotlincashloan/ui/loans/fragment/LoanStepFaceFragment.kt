@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.text.DecimalFormat
 
-class LoanStepFaceFragment(var statusValue: Boolean) : Fragment(), StepClickListener {
+class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Boolean) : Fragment(), StepClickListener {
     private var viewModel = LoansViewModel()
     private var photoViewModel = ProfileViewModel()
     private lateinit var imageFace: Bitmap
@@ -99,7 +99,9 @@ class LoanStepFaceFragment(var statusValue: Boolean) : Fragment(), StepClickList
     override fun onResume() {
         super.onResume()
         if (statusValue == true) {
-            face_cross_back.visibility = View.GONE
+            if (applicationStatus == false){
+                face_cross_back.visibility = View.GONE
+            }
         }
     }
 
@@ -284,8 +286,10 @@ class LoanStepFaceFragment(var statusValue: Boolean) : Fragment(), StepClickList
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        if (statusValue == true){
-                            requireActivity().finish()
+                        if (applicationStatus == false){
+                            if (statusValue == true){
+                                requireActivity().finish()
+                            }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
                         }

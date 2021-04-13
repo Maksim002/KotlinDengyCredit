@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) :
+class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) :
     Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
@@ -160,9 +160,9 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             if (itemDialog.size == 0) {
                 for (i in 1..listTypeWork.size) {
                     if (i <= listTypeWork.size) {
-                        itemDialog.add(GeneralDialogModel(listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, listTypeWork[i -1].id!!.toInt(),
-                                listTypeWork[i - 1].name.toString()
-                            )
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, listTypeWork[i - 1].id!!.toInt(), listTypeWork[i - 1].name.toString())
                         )
                     }
                     if (i == listTypeWork.size) {
@@ -328,7 +328,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 fire_post.error = null
                 fire_post.setText("Другое")
                 typeWorkPosition = "Другое"
-                typeId = "0"
+                typeId = "9999"
                 five_layout_text.visibility = View.VISIBLE
             } else {
                 fire_post.isClickable = true
@@ -407,12 +407,15 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            bottom_loan_fire.setText("Сохранить")
-            five_cross_back.visibility = View.GONE
+            if (applicationStatus == false) {
+                bottom_loan_fire.setText("Сохранить")
+                five_cross_back.visibility = View.GONE
+            }
+            try {
             //place_work
             fire_step_four_residence.setText(listLoan.placeWork)
             //type_work
-            if (listLoan.typeWork == "0") {
+            if (listLoan.typeWork == "9999") {
                 fire_post.setText("Другое")
                 fire_step_four_working.setText(listLoan.otherTypeWork)
                 typeWorkPosition = "Другое"
@@ -447,6 +450,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             incomeAdditionalPosition =
                 listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name.toString()
             additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.id!!
+
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
     }
 
@@ -682,8 +689,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                         fire_ste_no_connection.visibility = View.GONE
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
-                        if (status == true) {
-                            requireActivity().onBackPressed()
+                        if (applicationStatus == false) {
+                            if (status == true) {
+                                requireActivity().onBackPressed()
+                            }
                         } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
                         }
