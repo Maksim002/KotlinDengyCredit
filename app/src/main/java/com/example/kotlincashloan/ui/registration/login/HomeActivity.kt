@@ -1,12 +1,10 @@
 package com.example.kotlincashloan.ui.registration.login
 
+import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.PorterDuff
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings
 import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
@@ -346,10 +344,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_login_code.isChecked = false
         }
 
-        //Очещает токен
-        if (home_login_code.isChecked) {
-            AppPreferences.token = ""
-        }
+//        //Очещает токен
+//        if (home_login_code.isChecked) {
+//            AppPreferences.token = ""
+//        }
 
 //        if (home_login_code.isChecked) {
 //            if (AppPreferences.token != ""){
@@ -359,13 +357,19 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
         // TODO: 21-2-26 Проверить нужен ли этот метод
         if (AppPreferences.token != "") {
-            startMainActivity()
+            if (AppPreferences.savePin != ""){
+                startMainActivity()
+            }else{
+                AppPreferences.token = ""
+            }
         } else {
             if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
                         if (AppPreferences.isPinCode) {
-                            initBottomSheet()
+                            if (AppPreferences.savePin != ""){
+                                initBottomSheet()
+                            }
                         }
                     }
                 }
