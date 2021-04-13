@@ -344,30 +344,26 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_login_code.isChecked = false
         }
 
-//        //Очещает токен
-//        if (home_login_code.isChecked) {
-//            AppPreferences.token = ""
-//        }
-
-//        if (home_login_code.isChecked) {
-//            if (AppPreferences.token != ""){
-//                startMainActivity()
-//            }
-//        }
-
-        // TODO: 21-2-26 Проверить нужен ли этот метод
-        if (AppPreferences.token != "") {
-            if (AppPreferences.savePin != ""){
+        //проверка если галочка пинкода отключена и галочка отпичатка пальза тоже
+        // и токен не пустой  то переди сразу на главный экран
+        if (home_touch_id.isChecked == false && home_login_code.isChecked == false) {
+            if (AppPreferences.token != "") {
                 startMainActivity()
-            }else{
+            }
+            // если токен не пустой и пин код сохранён то переди на главный экран
+            // иначе удоляй токен
+        } else if (AppPreferences.token != "") {
+            if (AppPreferences.savePin != "") {
+                startMainActivity()
+            } else {
                 AppPreferences.token = ""
             }
-        } else {
+        }else{
             if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
                         if (AppPreferences.isPinCode) {
-                            if (AppPreferences.savePin != ""){
+                            if (AppPreferences.savePin != "") {
                                 initBottomSheet()
                             }
                         }
