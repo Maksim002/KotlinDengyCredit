@@ -188,6 +188,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
                                 requireActivity().finish()
                             }
                         }else{
+//                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
                         }
                     }else if (data.error.code != null) {

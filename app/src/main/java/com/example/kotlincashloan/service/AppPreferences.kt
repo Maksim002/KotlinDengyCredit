@@ -43,10 +43,10 @@ object AppPreferences {
             it.putString("applicationId", value)
         }
 
-    var idApplications: String?
-        get() = preferences.getString("idApplications", "")
+    var refreshWindow: String?
+        get() = preferences.getString("refreshWindow", "")
         set(value) = preferences.edit {
-            it.putString("idApplications", value)
+            it.putString("refreshWindow", value)
         }
 
 

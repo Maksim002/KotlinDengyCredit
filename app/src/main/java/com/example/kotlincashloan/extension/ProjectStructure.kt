@@ -16,8 +16,11 @@ import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 
+val hashMapBitmap: HashMap<String, Bitmap> = HashMap()
+
 fun getListsFifth(bitmap: HashMap<String, Bitmap>, id: ImageView, idIc: ImageView ,imageViewModel: SharedViewModel, activity: Activity, updateKey: String, idKey: String){
     if (bitmap[idKey] != null) {
+        hashMapBitmap.put(updateKey, bitmap[idKey]!!)
         id.setImageBitmap(bitmap[idKey])
         imageViewModel.updateKey(updateKey)
         changeImage(idIc, true, activity)

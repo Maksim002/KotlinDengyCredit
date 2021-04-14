@@ -315,8 +315,6 @@ class NetworkRepository {
         }
     }
 
-    var mitmap = HashMap<String, Bitmap>()
-
     fun getImgLoan(map: Map<String, String>) = liveData(Dispatchers.IO) {
         try {
             val response = RetrofitService.apiService().getImgLoan(map)
@@ -324,11 +322,11 @@ class NetworkRepository {
                 response.isSuccessful -> {
                     if (response.body() != null) {
                         emit(ResultStatus.success(response.body()))
-                        val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
-                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                            val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
-                            val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
-                            mitmap.put(map["type_id"].toString(), scaled)
+//                        val imageBytes = Base64.decode(response.body()!!.result.data, Base64.DEFAULT)
+//                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+//                            val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+//                            val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+//                            mitmap.put(map["type_id"].toString(), scaled)
                     } else {
                         emit(ResultStatus.error("Запрос прошел успешно"))
                     }

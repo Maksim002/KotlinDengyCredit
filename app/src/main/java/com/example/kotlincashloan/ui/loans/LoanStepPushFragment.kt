@@ -24,6 +24,8 @@ class LoanStepPushFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         no_connection_repeat.setOnClickListener {
+            AppPreferences.refreshWindow = "1"
+            AppPreferences.applicationId = ""
             requireActivity().finish()
         }
     }

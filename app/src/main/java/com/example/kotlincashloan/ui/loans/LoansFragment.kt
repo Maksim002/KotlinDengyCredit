@@ -675,7 +675,13 @@ class LoansFragment : Fragment(), LoansListener {
         }
         val handler = Handler()
         MainActivity.alert.show()
-        if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
+        if (AppPreferences.refreshWindow == "1"){
+            viewModel.listNews(map)
+            viewModel.getLoanInfo(map)
+            initResult()
+            initRecycler()
+            AppPreferences.refreshWindow = ""
+        }else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)

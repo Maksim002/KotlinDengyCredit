@@ -208,10 +208,12 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 getListsFifth(mitmap, photo_RVP, RVP_add_im, imageViewModel,requireActivity(),"photo_RVP","rvp_img")
                 getListsFifth(mitmap, photo_VNJ, VNJ_add_im, imageViewModel,requireActivity(),"photo_VNJ","vnzh_img")
                 getListsText()
-                imageViewModel.updateBitmaps(mitmap)
+                imageMap = hashMapBitmap
+                imageViewModel.updateBitmaps(imageMap)
                 mitmap.clear()
                 alert.hide()
-            }else{
+            }
+            else{
                 dataImage()
             }
             //при редактирование сравнивает спрятать поля или нет
@@ -232,11 +234,15 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private fun getListsText() {
         if (statusValue){
         try {
-            fifth_goal_name.text = MyUtils.toMyDate(listLoan.regDate!!)
+            if (listLoan.regDate != ""){
+                fifth_goal_name.text = listLoan.regDate!!
+            }
             list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
             goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
             goalId = listLoan.entryGoal!!.toInt()
-            date_entry.text = MyUtils.toMyDate(listLoan.entryDate!!)
+            if (listLoan.entryDate != ""){
+                date_entry.text = listLoan.entryDate!!
+            }
             contract_type.setText(listTypeContract.first { it.id == listLoan.typeContract }.name.toString())
             contractPosition = listTypeContract.first { it.id == listLoan.typeContract }.name.toString()
             contractTypeId = listLoan.typeContract!!.toInt()
@@ -414,13 +420,9 @@ override fun onStart() {
     //Скрытие полей
     private fun initHidingFields() {
         if (statusValue == true){
-            // после удалить
-            hidingLayout = "KGZ"
-//            hidingLayout = listLoan.nationality_ocr.toString()
+            hidingLayout = listLoan.nationality_ocr.toString()
         }else{
-            // после удалить
-            hidingLayout = "KGZ"
-//            hidingLayout = AppPreferences.nationality.toString()
+            hidingLayout = AppPreferences.nationality.toString()
         }
 
         if (hidingLayout == "UZB" || hidingLayout == "TJK") {
@@ -980,11 +982,7 @@ override fun onStart() {
     private fun iniData() {
         if (countriesList.size != 0) {
             if (countriesList[0].key == "fifth_goal_name") {
-                val calendarDta = GregorianCalendar(
-                    countriesList[0].year,
-                    countriesList[0].monthOfYear,
-                    countriesList[0].dayOfMonth
-                )
+                val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 fifth_goal_name.setText(MyUtils.toMyDate(calendar))
                 countriesPhone = calendar
@@ -995,13 +993,7 @@ override fun onStart() {
         fifth_goal_name.setOnClickListener(View.OnClickListener { v: View? ->
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
-            if (countriesList.size != 0) {
-                showDate(
-                    countriesList[0].year,
-                    countriesList[0].monthOfYear,
-                    countriesList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+            if (countriesList.size != 0) { showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -1012,11 +1004,7 @@ override fun onStart() {
 
         if (goalList.size != 0) {
             if (goalList[0].key == "date_entry") {
-                val calendarDta = GregorianCalendar(
-                    goalList[0].year,
-                    goalList[0].monthOfYear,
-                    goalList[0].dayOfMonth
-                )
+                val calendarDta = GregorianCalendar(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth)
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 date_entry.setText(MyUtils.toMyDate(calendar))
                 goalPhone = calendar
@@ -1027,12 +1015,7 @@ override fun onStart() {
             date_entry.error = null
             keyData = "date_entry"
             if (goalList.size != 0) {
-                showDate(
-                    goalList[0].year,
-                    goalList[0].monthOfYear,
-                    goalList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)

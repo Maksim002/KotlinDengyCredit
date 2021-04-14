@@ -1,8 +1,11 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
+import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -42,6 +45,7 @@ class GetLoanActivity : AppCompatActivity() {
     private var o: Int = 0
     private val getImList: ArrayList<String> = arrayListOf()
     private var permission = 0
+    var mitmap = HashMap<String, Bitmap>()
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -67,6 +71,9 @@ class GetLoanActivity : AppCompatActivity() {
             listLoan = intent.extras!!.getSerializable("getLOan") as GetLoanModel
             statusValue = valod
             applicationStatus = application
+            if (valod){
+                AppPreferences.applicationId = listLoan.id
+            }
             AppPreferences.status = valod
             AppPreferences.applicationStatus = application
         } catch (e: Exception) {
@@ -139,7 +146,7 @@ class GetLoanActivity : AppCompatActivity() {
             states = listLoan.docs!!
             statusValue = true
 
-            if (listLoan.step == "6") {
+            if (listLoan.step!! >= "6") {
                 if (o <= states.size) {
                     if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
                         val mapImg = HashMap<String, String>()
@@ -159,10 +166,12 @@ class GetLoanActivity : AppCompatActivity() {
                                         if (data!!.result != null) {
                                             errorCodeIm = data.code.toString()
                                             if (getImList.size != states.size) {
+                                                convert(data.result.data.toString())
                                                 o++
                                                 initGetLoan()
-                                            } else if (viewModel.repository.mitmap.size == states.size - 1) {
-                                                LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission, applicationStatus)
+                                            } else if (mitmap.size == states.size-1) {
+                                                convert(data.result.data.toString())
+                                                LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)
                                                 transition()
                                                 alert.hide()
                                             }
@@ -219,6 +228,14 @@ class GetLoanActivity : AppCompatActivity() {
         }
     }
 
+    private fun convert(string: String){
+        val imageBytes = Base64.decode(string, Base64.DEFAULT)
+        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+        val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+        mitmap.put(states[o], scaled)
+    }
+
 
     //Блакирует кнопку на время запроса
     private fun isClickableBottom() {
@@ -243,7 +260,7 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, viewModel.repository.mitmap, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepPushFragment()))
 
