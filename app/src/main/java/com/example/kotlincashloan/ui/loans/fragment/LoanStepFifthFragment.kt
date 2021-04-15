@@ -179,6 +179,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (statusValue) {
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             if (applicationStatus == false){
                 bottom_loan_fifth.setText("Сохранить")
                 fifth_cross_six.visibility = View.GONE
@@ -215,6 +216,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
             }
             else{
                 dataImage()
+                alert.hide()
             }
             //при редактирование сравнивает спрятать поля или нет
             if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
@@ -236,6 +238,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         try {
             if (listLoan.regDate != ""){
                 fifth_goal_name.text = listLoan.regDate!!
+                fifth_goal_name.hint = null
             }
             list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
             goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
@@ -395,6 +398,8 @@ override fun onStart() {
                             if (applicationStatus == false){
                                 if (statusValue == true){
                                     requireActivity().onBackPressed()
+                                }else{
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                                 }
                             } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7

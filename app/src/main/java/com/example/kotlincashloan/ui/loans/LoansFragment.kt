@@ -56,6 +56,8 @@ class LoansFragment : Fragment(), LoansListener {
     private var editActive = ""
     private var editParallel = ""
 
+    private var loanCode = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,9 +94,12 @@ class LoansFragment : Fragment(), LoansListener {
                     initCode()
                     if (result.result != null) {
                         if (result.result.clientStatus == 3) {
-                            val intent = Intent(context, GetLoanActivity::class.java)
-                            startActivity(intent)
-                        }else{
+                            if (loanCode != result.code.toString()) {
+                                val intent = Intent(context, GetLoanActivity::class.java)
+                                startActivity(intent)
+                            }
+                            loanCode = result.code.toString()
+                        } else {
                             // Ползунок Параллельный заем, появляется в случае если массив result содержит вложенный массив parallel_loan и имеет значение status = true.
                             if (result.result.parallelLoan!!.status == false) {
                                 loan_layout_parallel.visibility = View.GONE
@@ -675,13 +680,13 @@ class LoansFragment : Fragment(), LoansListener {
         }
         val handler = Handler()
         MainActivity.alert.show()
-        if (AppPreferences.refreshWindow == "1"){
+        if (AppPreferences.refreshWindow == "1") {
             viewModel.listNews(map)
             viewModel.getLoanInfo(map)
             initResult()
             initRecycler()
             AppPreferences.refreshWindow = ""
-        }else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
+        } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)

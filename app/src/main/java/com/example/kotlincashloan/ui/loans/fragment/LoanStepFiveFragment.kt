@@ -28,6 +28,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -407,6 +408,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             if (applicationStatus == false) {
                 bottom_loan_fire.setText("Сохранить")
                 five_cross_back.visibility = View.GONE
@@ -692,6 +694,8 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                         if (applicationStatus == false) {
                             if (status == true) {
                                 requireActivity().onBackPressed()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
                             }
                         } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)

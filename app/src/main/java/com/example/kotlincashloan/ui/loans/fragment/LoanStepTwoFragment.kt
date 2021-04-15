@@ -33,6 +33,7 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -79,6 +80,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
     }
 
     private fun initClick() {
+
         no_connection_repeat.setOnClickListener {
             initRestart()
         }
@@ -105,6 +107,8 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         if (applicationStatus == false) {
             if (status == true) {
                 bottom_step_two.setText("Сохранить")
+            }else{
+                bottom_step_two.text = "Следующий шаг"
             }
         }else{
             bottom_step_two.text = "Следующий шаг"
@@ -186,6 +190,9 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
                         if (applicationStatus == false) {
                             if (status == true) {
                                 requireActivity().finish()
+                            }else{
+//                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
                             }
                         }else{
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2

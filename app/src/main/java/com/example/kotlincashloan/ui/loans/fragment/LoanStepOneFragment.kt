@@ -10,6 +10,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_step_one_loan.*
 
 class LoanStepOneFragment() : Fragment() {
@@ -30,6 +31,8 @@ class LoanStepOneFragment() : Fragment() {
     }
 
     private fun initClick() {
+
+        (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
 
         bottom_step_one.setOnClickListener {
            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)

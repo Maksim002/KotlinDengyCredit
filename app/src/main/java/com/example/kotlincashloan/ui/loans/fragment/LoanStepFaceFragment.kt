@@ -25,6 +25,7 @@ import com.regula.facesdk.structs.Image
 import com.regula.facesdk.structs.MatchFacesRequest
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -68,6 +69,10 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     // Метод обробатывает клики
     private fun initClick() {
+        if (statusValue == true){
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         bottom_loan_face.setOnClickListener {
             requestFace()
             //Остановка таймера
@@ -289,6 +294,8 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                         if (applicationStatus == false){
                             if (statusValue == true){
                                 requireActivity().finish()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
                             }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8

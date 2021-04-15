@@ -28,6 +28,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -166,6 +167,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             if (applicationStatus == false){
                 bottom_loan_six.setText("Сохранить")
                 four_cross_six.visibility = View.GONE
@@ -247,6 +249,8 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                         if (applicationStatus == false){
                             if (status == true){
                                 requireActivity().finish()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
                             }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
