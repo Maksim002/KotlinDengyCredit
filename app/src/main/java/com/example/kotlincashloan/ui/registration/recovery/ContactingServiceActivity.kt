@@ -89,7 +89,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         questionnaire_phone_list_country.setOnClickListener {
-            questionnaire_phone_list_country.isClickable = false
+            questionnaire_phone_list_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -108,7 +108,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         password_recovery_type.setOnClickListener {
-            password_recovery_type.isClickable = false
+            password_recovery_type.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -162,7 +162,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
-            questionnaire_phone_list_country.isClickable = true
+            questionnaire_phone_list_country.isEnabled = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.setText("")
             questionnaire_phone_additional.error = null
@@ -176,7 +176,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         if (model.key == "listSupportType") {
-            password_recovery_type.isClickable = true
+            password_recovery_type.isEnabled = true
             password_recovery_type.error = null
             password_recovery_type.setText(listSupportType[model.position].name)
             typePosition = listSupportType[model.position].name.toString()
@@ -482,6 +482,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

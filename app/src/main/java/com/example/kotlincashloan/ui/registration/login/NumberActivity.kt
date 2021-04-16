@@ -196,7 +196,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         number_list_country.setOnClickListener {
-            number_list_country.isClickable = false
+            number_list_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -328,7 +328,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
-            number_list_country.isClickable = true
+            number_list_country.isEnabled = true
             number_phone.error = null
             //Очещает старую маску при выборе новой
             number_phone.mask = ""
@@ -356,6 +356,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         title: String, id: AutoCompleteTextView
     ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

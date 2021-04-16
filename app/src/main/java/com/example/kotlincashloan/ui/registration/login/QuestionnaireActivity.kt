@@ -256,7 +256,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_available_countries.setOnClickListener {
-            questionnaire_available_countries.isClickable = false
+            questionnaire_available_countries.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -272,7 +272,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_id_sxs.setOnClickListener {
-            questionnaire_id_sxs.isClickable = false
+            questionnaire_id_sxs.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -288,7 +288,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_id_nationality.setOnClickListener {
-            questionnaire_id_nationality.isClickable = false
+            questionnaire_id_nationality.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -310,7 +310,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_id_secret.setOnClickListener {
-            questionnaire_id_secret.isClickable = false
+            questionnaire_id_secret.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -712,7 +712,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listGender") {
-            questionnaire_id_sxs.isClickable = false
+            questionnaire_id_sxs.isEnabled = false
             questionnaire_id_sxs.setText(listGender[model.position].name)
             genderPosition = listGender[model.position].name.toString()
             idSex = listGender[model.position].id!!.toInt()
@@ -720,7 +720,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (model.key == "listNationality") {
-            questionnaire_id_nationality.isClickable = true
+            questionnaire_id_nationality.isEnabled = true
             questionnaire_id_nationality.setText(listNationality[model.position].name)
             nationalityPosition = listNationality[model.position].name.toString()
             listNationalityId = listNationality[model.position].id!!.toInt()
@@ -728,7 +728,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (model.key == "listSecretQuestion") {
-            questionnaire_id_secret.isClickable = true
+            questionnaire_id_secret.isEnabled = true
             questionnaire_id_secret.setText(listSecretQuestion[model.position].name)
             questionPosition = listSecretQuestion[model.position].name.toString()
             listSecretQuestionId = listSecretQuestion[model.position].id!!.toInt()
@@ -736,7 +736,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (model.key == "listNationalityCounter") {
-            questionnaire_available_countries.isClickable = true
+            questionnaire_available_countries.isEnabled = true
             questionnaire_phone_additional.mask = null
             questionnaire_phone_additional.error = null
             questionnaire_phone_additional.text = null
@@ -770,6 +770,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

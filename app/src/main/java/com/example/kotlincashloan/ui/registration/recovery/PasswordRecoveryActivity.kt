@@ -67,7 +67,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         questionnaire_phone_list_country.setOnClickListener {
-            questionnaire_phone_list_country.isClickable = false
+            questionnaire_phone_list_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -114,7 +114,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listTypeWork") {
-            questionnaire_phone_list_country.isClickable = true
+            questionnaire_phone_list_country.isEnabled = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.error = null
             password_recovery_word.error = null
@@ -339,6 +339,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

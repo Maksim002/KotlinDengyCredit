@@ -620,13 +620,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listQuestions") {
-            profile_s_question.isClickable = true
+            profile_s_question.isEnabled = true
             profile_s_question.setText(question[model.position].name)
             questionPosition = question[model.position].name.toString()
             questionId = question[model.position].id.toString()
 
         } else if (model.key == "listCountries") {
-            profile_s_mask.isClickable = true
+            profile_s_mask.isEnabled = true
             profile_setting_second_phone.mask = null
             profile_s_mask.setText("+" + countries[model.position].phoneCode)
             countriesPosition = countries[model.position].name.toString()
@@ -648,7 +648,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         //Click Список секретных вопросов
         profile_s_question.setOnClickListener {
-            profile_s_question.isClickable = false
+            profile_s_question.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -673,6 +673,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         //Click Список доступных стран
         profile_s_mask.setOnClickListener {
+            profile_s_mask.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -1215,6 +1216,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         title: String, id: AutoCompleteTextView
     ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
