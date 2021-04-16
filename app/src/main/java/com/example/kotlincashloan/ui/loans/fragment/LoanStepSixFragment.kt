@@ -110,7 +110,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         six_loan_family.setOnClickListener {
-            six_loan_family.isClickable = false
+            six_loan_family.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -163,7 +163,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listFamily") {
-            six_loan_family.isClickable = true
+            six_loan_family.isEnabled = true
             six_loan_family.setText(listFamily[model.position].name)
             familyPosition = listFamily[model.position].name.toString()
             family = listFamily[model.position].id.toString()
@@ -290,6 +290,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         title: String, id: AutoCompleteTextView
     ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

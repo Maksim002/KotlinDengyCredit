@@ -161,7 +161,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_post.setOnClickListener {
-            fire_post.isClickable = false
+            fire_post.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -183,7 +183,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_work_experience_r_f.setOnClickListener {
-            fire_work_experience_r_f.isClickable = false
+            fire_work_experience_r_f.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -207,7 +207,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_work_experience.setOnClickListener {
-            fire_work_experience.isClickable = false
+            fire_work_experience.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -249,7 +249,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_list_income.setOnClickListener {
-            fire_list_income.isClickable = false
+            fire_list_income.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -273,7 +273,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_additional_income.setOnClickListener {
-            fire_additional_income.isClickable = false
+            fire_additional_income.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -297,7 +297,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_additional_amount.setOnClickListener {
-            fire_additional_amount.isClickable = false
+            fire_additional_amount.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -331,14 +331,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         if (model.key == "listTypeWork") {
             if (itemDialog.first { it.id == model.id }.name == "Другое") {
-                fire_post.isClickable = true
+                fire_post.isEnabled = true
                 fire_post.error = null
                 fire_post.setText("Другое")
                 typeWorkPosition = "Другое"
                 typeId = "9999"
                 five_layout_text.visibility = View.VISIBLE
             } else {
-                fire_post.isClickable = true
+                fire_post.isEnabled = true
                 fire_post.error = null
                 fire_post.setText(listTypeWork[model.position].name)
                 typeWorkPosition = listTypeWork[model.position].name.toString()
@@ -350,7 +350,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listYears") {
-            fire_work_experience_r_f.isClickable = true
+            fire_work_experience_r_f.isEnabled = true
             fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -372,7 +372,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listWorkExperience") {
-            fire_work_experience.isClickable = true
+            fire_work_experience.isEnabled = true
             fire_work_experience.error = null
             fire_work_experience.hint = ""
             fire_work_experience.setText(listWorkExperience[model.position].name)
@@ -381,7 +381,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listIncome") {
-            fire_list_income.isClickable = true
+            fire_list_income.isEnabled = true
             fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
             incomePosition = listIncome[model.position].name.toString()
@@ -389,7 +389,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listTypeIncome") {
-            fire_additional_income.isClickable = true
+            fire_additional_income.isEnabled = true
             fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
             typeIncomePosition = listTypeIncome[model.position].name.toString()
@@ -403,7 +403,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listIncomeAdditional") {
-            fire_additional_amount.isClickable = true
+            fire_additional_amount.isEnabled = true
             fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
             incomeAdditionalPosition = listIncomeAdditional[model.position].name.toString()
@@ -736,6 +736,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         title: String, id: AutoCompleteTextView
     ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

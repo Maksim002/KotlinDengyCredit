@@ -555,7 +555,7 @@ override fun onStart() {
         }
 
         list_countries.setOnClickListener {
-            list_countries.isClickable = false
+            list_countries.isEnabled = false
             list_countries.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -585,7 +585,7 @@ override fun onStart() {
 
 
         contract_type.setOnClickListener {
-            contract_type.isClickable = false
+            contract_type.isEnabled = false
             contract_type.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -678,7 +678,7 @@ override fun onStart() {
 
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listEntryGoal") {
-            list_countries.isClickable = true
+            list_countries.isEnabled = true
             list_countries.setText(listEntryGoal[model.position].name)
             goalPosition = listEntryGoal[model.position].name.toString()
             goalId = model.id!!
@@ -686,7 +686,7 @@ override fun onStart() {
         }
 
         if (model.key == "listTypeContract") {
-            contract_type.isClickable = true
+            contract_type.isEnabled = true
             contract_type.setText(listTypeContract[model.position].name)
             contractPosition = listTypeContract[model.position].name.toString()
             contractTypeId = model.id!!
@@ -720,6 +720,7 @@ override fun onStart() {
         title: String, id: AutoCompleteTextView
     ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
