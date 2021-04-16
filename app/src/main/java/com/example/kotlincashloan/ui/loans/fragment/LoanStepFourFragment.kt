@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowId
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -35,12 +37,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment(
-    var status: Boolean,
-    var listLoan: GetLoanModel,
-    var permission: Int,
-    var applicationStatus: Boolean
-) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -90,6 +87,12 @@ class LoanStepFourFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (status == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         if (permission == 3) {
             alert.show()
         }
@@ -133,31 +136,24 @@ class LoanStepFourFragment(
         }
 
         six_available_country.setOnClickListener {
-            six_available_country.isClickable = false
+            six_available_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listAvailableSix.size) {
                     if (i <= listAvailableSix.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listAvailableSix[i - 1].name.toString(),
-                                "listAvailableSix",
-                                i - 1,
-                                0,
-                                listAvailableSix[i - 1].name.toString()
-                            )
-                        )
+                            GeneralDialogModel(listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, sixPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, sixPosition, "Список доступных стран", six_available_country)
             }
         }
 
         loans_step_four_city.setOnClickListener {
-            loans_step_four_city.isClickable = false
+            loans_step_four_city.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -176,12 +172,12 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, cityPosition, "В каком городе России Вы живете?")
+                initBottomSheet(itemDialog, cityPosition, "В каком городе России Вы живете?", loans_step_four_city)
             }
         }
 
         loans_step_four_status.setOnClickListener {
-            loans_step_four_status.isClickable = false
+            loans_step_four_status.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -200,12 +196,12 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, familyPosition, "Семейное положение")
+                initBottomSheet(itemDialog, familyPosition, "Семейное положение", loans_step_four_status)
             }
         }
 
         loans_step_four_family.setOnClickListener {
-            loans_step_four_family.isClickable = false
+            loans_step_four_family.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -224,12 +220,12 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, numbersPosition, "Количество членов семьи")
+                initBottomSheet(itemDialog, numbersPosition, "Количество членов семьи" , loans_step_four_family)
             }
         }
 
         loans_step_four_children.setOnClickListener {
-            loans_step_four_children.isClickable = false
+            loans_step_four_children.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -247,16 +243,12 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(
-                    itemDialog,
-                    childrenPosition,
-                    "Сколько человек работает у Вас в семье?"
-                )
+                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у Вас в семье?", loans_step_four_children)
             }
         }
 
         loans_step_four_federation.setOnClickListener {
-            loans_step_four_federation.isClickable = false
+            loans_step_four_federation.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -274,12 +266,12 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Сколько лет проживаете в РФ")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько лет проживаете в РФ", loans_step_four_federation)
             }
         }
 
         loans_step_four_card.setOnClickListener {
-            loans_step_four_card.isClickable = false
+            loans_step_four_card.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -298,7 +290,7 @@ class LoanStepFourFragment(
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, catsNamesPosition, "Есть банковская карта")
+                initBottomSheet(itemDialog, catsNamesPosition, "Есть банковская карта", loans_step_four_card)
             }
         }
     }
@@ -325,10 +317,14 @@ class LoanStepFourFragment(
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            //Если applicationStatus == true меняем текст на кнопки
             if (applicationStatus == false) {
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                 bottom_loan_four.setText("Сохранить")
                 four_cross_back.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             }
             try {
             //city
@@ -387,7 +383,7 @@ class LoanStepFourFragment(
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableSix") {
-            six_available_country.isClickable = true
+            six_available_country.isEnabled = true
             six_number_phone.error = null
             //Очещает старую маску при выборе новой
             six_number_phone.mask = ""
@@ -400,14 +396,14 @@ class LoanStepFourFragment(
         }
 
         if (model.key == "listCity") {
-            loans_step_four_city.isClickable = true
+            loans_step_four_city.isEnabled = true
             loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
             cityPosition = listCity[model.position].name.toString()
             cityId = listCity[model.position].id!!
         }
         if (model.key == "listFamilyStatus") {
-            loans_step_four_status.isClickable = true
+            loans_step_four_status.isEnabled = true
             loans_step_four_status.error = null
             loans_step_four_status.setText(listFamilyStatus[model.position].name)
             familyPosition = listFamilyStatus[model.position].name.toString()
@@ -415,7 +411,7 @@ class LoanStepFourFragment(
         }
 
         if (model.key == "listNumbers") {
-            loans_step_four_family.isClickable = true
+            loans_step_four_family.isEnabled = true
             loans_step_four_family.error = null
             loans_step_four_family.setText(listNumbers[model.position].name)
             numbersPosition = listNumbers[model.position].name.toString()
@@ -423,7 +419,7 @@ class LoanStepFourFragment(
         }
 
         if (model.key == "listNumbersChildren") {
-            loans_step_four_children.isClickable = true
+            loans_step_four_children.isEnabled = true
             loans_step_four_children.error = null
             loans_step_four_children.setText(listNumbersChildren[model.position].name)
             childrenPosition = listNumbersChildren[model.position].name.toString()
@@ -431,7 +427,7 @@ class LoanStepFourFragment(
         }
 
         if (model.key == "listYears") {
-            loans_step_four_federation.isClickable = true
+            loans_step_four_federation.isEnabled = true
             loans_step_four_federation.error = null
             loans_step_four_federation.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -439,7 +435,7 @@ class LoanStepFourFragment(
         }
 
         if (model.key == "listCatsNames") {
-            loans_step_four_card.isClickable = true
+            loans_step_four_card.isEnabled = true
             loans_step_four_card.error = null
             loans_step_four_card.setText(listCatsNames[model.position])
             catsNamesPosition = listCatsNames[model.position]
@@ -704,10 +700,9 @@ class LoanStepFourFragment(
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String
-    ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

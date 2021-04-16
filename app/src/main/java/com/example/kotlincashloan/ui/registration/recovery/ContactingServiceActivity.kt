@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -102,7 +103,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countryPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, countryPosition, "Список доступных стран", questionnaire_phone_list_country)
             }
         }
 
@@ -120,7 +121,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typePosition, "Выберите тему обращения")
+                initBottomSheet(itemDialog, typePosition, "Выберите тему обращения", password_recovery_type)
             }
         }
 
@@ -479,8 +480,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

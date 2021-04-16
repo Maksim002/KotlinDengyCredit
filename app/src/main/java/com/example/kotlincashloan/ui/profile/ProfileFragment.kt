@@ -389,6 +389,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         val intent = Intent(requireContext(), GetLoanActivity::class.java)
                         intent.putExtra("getLOan", data.result)
                         intent.putExtra("getBool", true)
+                        intent.putExtra("application", false)
                         startActivity(intent)
                     } else if (data.error != null) {
                         getErrorCode(data.error.code!!)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
@@ -266,7 +267,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, counterNationalPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, counterNationalPosition, "Список доступных стран", questionnaire_available_countries)
             }
         }
 
@@ -282,7 +283,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, genderPosition, "Выберите пол")
+                initBottomSheet(itemDialog, genderPosition, "Выберите пол", questionnaire_id_sxs)
             }
         }
 
@@ -304,7 +305,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, nationalityPosition, "Выберите гражданство")
+                initBottomSheet(itemDialog, nationalityPosition, "Выберите гражданство", questionnaire_id_nationality)
             }
         }
 
@@ -320,7 +321,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос")
+                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос", questionnaire_id_secret)
             }
         }
 
@@ -767,8 +768,8 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

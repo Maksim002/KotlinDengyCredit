@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.registration.recovery
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -79,7 +80,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countryPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, countryPosition, "Список доступных стран", questionnaire_phone_list_country)
             }
         }
 
@@ -336,8 +337,8 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

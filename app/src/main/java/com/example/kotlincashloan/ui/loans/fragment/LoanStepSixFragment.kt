@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -60,6 +61,12 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (status == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         if (permission == 5){
             alert.show()
         }
@@ -122,7 +129,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, familyPosition, "Кем приходится")
+                initBottomSheet(itemDialog, familyPosition, "Кем приходится", six_loan_family)
             }
         }
     }
@@ -167,10 +174,14 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            //Если applicationStatus == true меняем текст на кнопки
             if (applicationStatus == false){
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                 bottom_loan_six.setText("Сохранить")
                 four_cross_six.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             }
             try {
             //reLastName
@@ -276,9 +287,9 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

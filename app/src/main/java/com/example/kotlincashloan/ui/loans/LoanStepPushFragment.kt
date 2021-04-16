@@ -10,7 +10,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_push.*
 
-class LoanStepPushFragment(var status: Boolean) : Fragment() {
+class LoanStepPushFragment(var status: Boolean, var applicationStatus: Boolean) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,12 +23,14 @@ class LoanStepPushFragment(var status: Boolean) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (status == true){
+
+        // Отоброожает кнопку если статус видем закрытия
+        if (status == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
         no_connection_repeat.setOnClickListener {
-            AppPreferences.refreshWindow = "1"
             AppPreferences.applicationId = ""
             requireActivity().finish()
         }

@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -138,6 +139,12 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (statusValue == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         if (permission == 6){
             alert.show()
         }
@@ -179,10 +186,14 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (statusValue) {
-            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            //Если applicationStatus == true меняем текст на кнопки
             if (applicationStatus == false){
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                 bottom_loan_fifth.setText("Сохранить")
                 fifth_cross_six.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             }
             if (mitmap.values.size != 0) {
                 russianFederationA = true
@@ -209,8 +220,11 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 getListsFifth(mitmap, photo_RVP, RVP_add_im, imageViewModel,requireActivity(),"photo_RVP","rvp_img")
                 getListsFifth(mitmap, photo_VNJ, VNJ_add_im, imageViewModel,requireActivity(),"photo_VNJ","vnzh_img")
                 getListsText()
+                // Конвертирует ключи  с бека в формат ключей проекта
                 imageMap = hashMapBitmap
+                // Сохроняет картинки во viewModel
                 imageViewModel.updateBitmaps(imageMap)
+                // После добовлния удолят bitmap кортинок получаемых с сервира
                 mitmap.clear()
                 alert.hide()
             }
@@ -227,7 +241,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 fifth_incorrect_patent.visibility = View.GONE
                 fifth_permission.visibility = View.GONE
             }
-        } else {
+        }else {
             dataImage()
         }
     }
@@ -561,7 +575,7 @@ override fun onStart() {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда")
+                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда", list_countries)
             }
         }
 
@@ -594,7 +608,7 @@ override fun onStart() {
                 initBottomSheet(
                     itemDialog,
                     contractPosition,
-                    "Выберите тип вашего трудового договора"
+                    "Выберите тип вашего трудового договора", contract_type
                 )
             }
         }
@@ -703,9 +717,9 @@ override fun onStart() {
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -84,6 +85,11 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (status == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
         if (permission == 4) {
             alert.show()
         }
@@ -172,7 +178,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition, "Кем Вы работаете?")
+                initBottomSheet(itemDialog, typeWorkPosition, "Кем Вы работаете?", fire_post)
             }
         }
 
@@ -196,7 +202,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Сколько Вы работаете в России?")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько Вы работаете в России?", fire_work_experience_r_f)
             }
         }
 
@@ -237,7 +243,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 initBottomSheet(
                     itemDialog,
                     experiencePosition,
-                    "Сколько Вы работаете на последнем месте работы в России?"
+                    "Сколько Вы работаете на последнем месте работы в России?", fire_work_experience
                 )
             }
         }
@@ -262,7 +268,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomePosition, "Ежемесячный доход")
+                initBottomSheet(itemDialog, incomePosition, "Ежемесячный доход", fire_list_income)
             }
         }
 
@@ -286,7 +292,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeIncomePosition, "Дополнительный доход")
+                initBottomSheet(itemDialog, typeIncomePosition, "Дополнительный доход", fire_additional_income)
             }
         }
 
@@ -310,7 +316,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomeAdditionalPosition, "Сумма доп. дохода")
+                initBottomSheet(itemDialog, incomeAdditionalPosition, "Сумма доп. дохода", fire_additional_amount)
             }
         }
     }
@@ -408,10 +414,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            //Если applicationStatus == true меняем текст на кнопки
             if (applicationStatus == false) {
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                 bottom_loan_fire.setText("Сохранить")
                 five_cross_back.visibility = View.GONE
+            }else{
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
             }
             try {
             //place_work
@@ -723,9 +733,9 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

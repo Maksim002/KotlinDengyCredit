@@ -215,7 +215,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, сountryPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, сountryPosition, "Список доступных стран", number_list_country)
             }
         }
     }
@@ -353,9 +353,9 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 

@@ -18,6 +18,7 @@ import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -666,7 +667,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос")
+                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос", profile_s_question)
             }
         }
 
@@ -690,7 +691,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countriesPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, countriesPosition, "Список доступных стран", profile_s_mask)
             }
         }
 
@@ -1211,9 +1212,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 

@@ -2,6 +2,7 @@ package com.example.kotlincashloan.common
 
 import android.os.Bundle
 import android.view.*
+import android.widget.AutoCompleteTextView
 import androidx.core.widget.addTextChangedListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.GeneralDialogAdapter
@@ -13,7 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_general_dialog.*
 
 
-class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: String, var title: String) : BottomSheetDialogFragment(), ListenerGeneralDialog {
+class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: String, var title: String, var idText: AutoCompleteTextView) : BottomSheetDialogFragment(), ListenerGeneralDialog {
     private var adapterDialog = GeneralDialogAdapter(position, this)
 
     override fun onCreateView(
@@ -38,6 +39,7 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
 
     private fun initClick() {
         home_enter.setOnClickListener {
+            idText.isEnabled = true
             dismiss()
         }
 

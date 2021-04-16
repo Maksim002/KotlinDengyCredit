@@ -23,6 +23,7 @@ import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.MyApplicationFragment
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.ui.registration.login.HomeActivity.Companion.alert
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -189,6 +190,7 @@ class LoansFragment : Fragment(), LoansListener {
                             loans_layout.visibility = View.VISIBLE
                             loans_no_connection.visibility = View.GONE
                         }
+                        alert.hide()
                     }
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -196,10 +198,12 @@ class LoansFragment : Fragment(), LoansListener {
                 if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         MainActivity.alert.hide()
+                        alert.hide()
                         alertValid = true
                     }, 650)
                 } else {
                     MainActivity.alert.hide()
+                    alert.hide()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -503,7 +507,7 @@ class LoansFragment : Fragment(), LoansListener {
                     getErrorCode(msg!!.toInt())
                 }
             }
-            HomeActivity.alert.hide()
+            MainActivity.alert.hide()
         })
     }
 
@@ -567,6 +571,7 @@ class LoansFragment : Fragment(), LoansListener {
                 if (alertValid == false) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         MainActivity.alert.hide()
+                        alert.hide()
                         alertValid = true
                     }, 650)
                 } else {
@@ -680,12 +685,16 @@ class LoansFragment : Fragment(), LoansListener {
         }
         val handler = Handler()
         MainActivity.alert.show()
-        if (AppPreferences.refreshWindow == "1") {
-            viewModel.listNews(map)
-            viewModel.getLoanInfo(map)
-            initResult()
-            initRecycler()
-            AppPreferences.refreshWindow = ""
+        if (AppPreferences.refreshWindow == "true") {
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                viewModel.listNewsDta.value = null
+                viewModel.listLoanInfo.value = null
+                viewModel.listNews(map)
+                viewModel.getLoanInfo(map)
+                initResult()
+                initRecycler()
+                AppPreferences.refreshWindow = ""
+            }, 800)
         } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.listNews(map)

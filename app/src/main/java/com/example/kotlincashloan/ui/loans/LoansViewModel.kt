@@ -115,6 +115,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }
+                HomeActivity.alert.hide()
             }
         })
     }

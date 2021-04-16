@@ -61,14 +61,6 @@ class GetLoanActivity : AppCompatActivity() {
         // TODO: 02.04.21 Если мешает убратиь
         AppPreferences.status = false
 
-        //меняет цвет статус бара
-        ColorWindows(this).statusBarTextColor()
-        timer = TimerListenerLoan(this)
-        alert = LoadingAlert(this)
-
-        loanCrossClear = findViewById(R.id.loan_cross_clear)
-        get_loan_view_pagers = findViewById(R.id.get_loan_view_pagers)
-
         try {
             val valod = intent.extras!!.getBoolean("getBool")
             val application = intent.extras!!.getBoolean("application")
@@ -76,6 +68,9 @@ class GetLoanActivity : AppCompatActivity() {
             statusValue = valod
             applicationStatus = application
             if (valod) {
+                if (application != false){
+                    AppPreferences.refreshWindow = "true"
+                }
                 AppPreferences.applicationId = listLoan.id
                 AppPreferences.status = valod
                 AppPreferences.applicationStatus = application
@@ -83,6 +78,14 @@ class GetLoanActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        //меняет цвет статус бара
+        ColorWindows(this).statusBarTextColor()
+        timer = TimerListenerLoan(this)
+        alert = LoadingAlert(this)
+
+        loanCrossClear = findViewById(R.id.loan_cross_clear)
+        get_loan_view_pagers = findViewById(R.id.get_loan_view_pagers)
 
         getPermission()
 
@@ -287,48 +290,12 @@ class GetLoanActivity : AppCompatActivity() {
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(
-            LoanStepFourFragment(
-                    statusValue,
-                    listLoan,
-                    permission,
-                    applicationStatus
-                )
-            )
-        )
-        list.add(
-            LoansListModel(
-                LoanStepFiveFragment(
-                    statusValue,
-                    listLoan,
-                    permission,
-                    applicationStatus
-                )
-            )
-        )
-        list.add(
-            LoansListModel(
-                LoanStepSixFragment(
-                    statusValue,
-                    listLoan,
-                    permission,
-                    applicationStatus
-                )
-            )
-        )
-        list.add(
-            LoansListModel(
-                LoanStepFifthFragment(
-                    statusValue,
-                    mitmap,
-                    listLoan,
-                    permission,
-                    applicationStatus
-                )
-            )
-        )
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
-        list.add(LoansListModel(LoanStepPushFragment(statusValue)))
+        list.add(LoansListModel(LoanStepPushFragment(statusValue, applicationStatus)))
 
         get_loan_view_pagers.isEnabled = true
 
@@ -341,7 +308,6 @@ class GetLoanActivity : AppCompatActivity() {
         get_loan_view_pagers.adapter = adapters
 
         loan_cross_clear.setOnClickListener {
-            AppPreferences.refreshWindow = "1"
             this.finish()
         }
 

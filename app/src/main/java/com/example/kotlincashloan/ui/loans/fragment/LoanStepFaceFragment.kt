@@ -27,6 +27,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
+import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -50,6 +51,11 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         super.onViewCreated(view, savedInstanceState)
         Instance().setServiceUrl("https://faceapi.molbulak.com")
 
+        if (statusValue == false && applicationStatus == false){
+            // Отоброожает кнопку если статус false видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         initRestart()
         initClick()
     }
@@ -70,7 +76,12 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
     // Метод обробатывает клики
     private fun initClick() {
         if (statusValue == true){
-            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            if (applicationStatus == false){
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            }
         }
 
         bottom_loan_face.setOnClickListener {

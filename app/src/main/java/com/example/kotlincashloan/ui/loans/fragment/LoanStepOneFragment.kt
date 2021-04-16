@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -31,6 +32,15 @@ class LoanStepOneFragment() : Fragment() {
     }
 
     private fun initClick() {
+        try {
+            val application = requireActivity().intent.extras!!.getBoolean("application")
+            if (application != false){
+                AppPreferences.refreshWindow = "true"
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
 
         (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
 
@@ -41,6 +51,7 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         bottom_step_one.text = "Начать"
         AppPreferences.nationality = ""
         initRequest()
