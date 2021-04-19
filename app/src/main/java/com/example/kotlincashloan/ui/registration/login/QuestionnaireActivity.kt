@@ -3,6 +3,7 @@ package com.example.kotlinscreenscanner.ui.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
@@ -38,6 +39,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -76,6 +78,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private var listNationality: ArrayList<ListNationalityResultModel> = arrayListOf()
     private var listSecretQuestion: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
     private var listNationalityCounter: ArrayList<CounterResultModel> = arrayListOf()
+    private val handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -402,6 +405,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     private fun iniData() {
         questionnaire_date_birth.setOnClickListener(View.OnClickListener { v: View? ->
+            questionnaire_date_birth.isEnabled = false
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                questionnaire_date_birth.isEnabled = true
+            }, 900)
+
             if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
                 showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
             }else{

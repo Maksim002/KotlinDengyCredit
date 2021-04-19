@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
@@ -72,7 +73,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
     private var viewModel = LoansViewModel()
     private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
@@ -126,6 +127,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private lateinit var idImageIc: ImageView
     private lateinit var alert: LoadingAlert
     private var visibilityIm = 0
+    private val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -614,66 +616,94 @@ override fun onStart() {
         }
 
         russian_federationA.setOnClickListener {
+            russian_federationA.isClickable = false
             imageKey = "russian_federationA"
             loadFiles()
         }
 
         russian_federationB.setOnClickListener {
+            russian_federationB.isClickable = false
             imageKey = "russian_federationB"
             loadFiles()
         }
 
 
         migration_cardA.setOnClickListener {
+            migration_cardA.isClickable = false
             imageKey = "migration_cardA"
             loadFiles()
         }
 
         migration_cardB.setOnClickListener {
+            migration_cardB.isClickable = false
             imageKey = "migration_cardB"
             loadFiles()
         }
 
         receipt_patent.setOnClickListener {
+            receipt_patent.isClickable = false
             imageKey = "receipt_patent"
             loadFiles()
         }
 
         work_permitA.setOnClickListener {
+            work_permitA.isClickable = false
             imageKey = "work_permitA"
             loadFiles()
         }
 
         work_permitB.setOnClickListener {
+            work_permitB.isClickable = false
             imageKey = "work_permitB"
             loadFiles()
         }
 
         photo_2NDFL.setOnClickListener {
+            photo_2NDFL.isClickable = false
             imageKey = "photo_2NDFL"
             loadFiles()
         }
 
         last_page_one.setOnClickListener {
             lastPageOne = true
+            last_page_one.isClickable = false
             imageKey = "last_page_one"
             loadFiles()
         }
 
         last_page_two.setOnClickListener {
+            last_page_two.isClickable = false
             imageKey = "last_page_two"
             loadFiles()
         }
 
         photo_RVP.setOnClickListener {
+            photo_RVP.isClickable = false
             imageKey = "photo_RVP"
             loadFiles()
         }
 
         photo_VNJ.setOnClickListener {
+            photo_VNJ.isClickable = false
             imageKey = "photo_VNJ"
             loadFiles()
         }
+    }
+
+    //Делает фотографии гликабельной
+    private fun noBlock() {
+        russian_federationA.isClickable = true
+        russian_federationB.isClickable = true
+        migration_cardA.isClickable = true
+        migration_cardB.isClickable = true
+        receipt_patent.isClickable = true
+        work_permitA.isClickable = true
+        work_permitB.isClickable = true
+        photo_2NDFL.isClickable = true
+        last_page_one.isClickable = true
+        last_page_two.isClickable = true
+        photo_RVP.isClickable = true
+        photo_VNJ.isClickable = true
     }
 
     override fun listenerClickResult(model: GeneralDialogModel) {
@@ -1000,6 +1030,7 @@ override fun onStart() {
     }
 
     private fun iniData() {
+
         if (countriesList.size != 0) {
             if (countriesList[0].key == "fifth_goal_name") {
                 val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
@@ -1011,6 +1042,11 @@ override fun onStart() {
 
 
         fifth_goal_name.setOnClickListener(View.OnClickListener { v: View? ->
+            fifth_goal_name.isEnabled = false
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                fifth_goal_name.isEnabled = true
+            }, 900)
+
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
             if (countriesList.size != 0) { showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
@@ -1032,6 +1068,10 @@ override fun onStart() {
         }
 
         date_entry.setOnClickListener {
+            date_entry.isEnabled = false
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                date_entry.isEnabled = true
+            }, 900)
             date_entry.error = null
             keyData = "date_entry"
             if (goalList.size != 0) {
@@ -1682,6 +1722,7 @@ override fun onStart() {
 
     override fun onResume() {
         super.onResume()
+        noBlock()
         initTextValidation()
     }
 }

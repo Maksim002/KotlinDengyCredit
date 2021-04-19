@@ -739,6 +739,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         }
 
         profile_tube.setOnClickListener {
+            profile_tube.isClickable = false
              //остановка таймера
             initSuspendTime()
             loadFiles()
@@ -1222,6 +1223,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
     override fun onResume() {
         super.onResume()
+        profile_tube.isClickable = true
         profile_s_one_password.text = null
         profile_s_two_password.text = null
         profile_s_two_password.transformationMethod = PasswordTransformationMethod()
