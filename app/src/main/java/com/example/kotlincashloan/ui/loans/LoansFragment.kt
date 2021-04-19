@@ -20,9 +20,7 @@ import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
-import com.example.kotlincashloan.ui.profile.MyApplicationFragment
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.ui.registration.login.HomeActivity.Companion.alert
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -33,7 +31,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.fragment_loans.loans_layout
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -73,7 +70,6 @@ class LoansFragment : Fragment(), LoansListener {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
-//        map.put("v", "1")
         initClick()
         initRefresh()
 
@@ -97,6 +93,7 @@ class LoansFragment : Fragment(), LoansListener {
                         if (result.result.clientStatus == 3) {
                             if (loanCode != result.code.toString()) {
                                 val intent = Intent(context, GetLoanActivity::class.java)
+                                intent.putExtra("application", true)
                                 startActivity(intent)
                             }
                             loanCode = result.code.toString()
@@ -445,7 +442,7 @@ class LoansFragment : Fragment(), LoansListener {
             listNewsId = "601"
             listLoanId = "601"
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            MainActivity.alert.hide()
+            alert.hide()
         } else {
             if (viewModel.listNewsDta.value != null) {
                 viewModel.errorNews.value = null
@@ -473,7 +470,7 @@ class LoansFragment : Fragment(), LoansListener {
 
     //Запрос на получение масива заявки
     private fun continueApplication() {
-        HomeActivity.alert.show()
+//        alert.show()
         val mapLOan = java.util.HashMap<String, String>()
         mapLOan.put("login", AppPreferences.login.toString())
         mapLOan.put("token", AppPreferences.token.toString())
@@ -574,8 +571,6 @@ class LoansFragment : Fragment(), LoansListener {
                         alert.hide()
                         alertValid = true
                     }, 650)
-                } else {
-//                    MainActivity.alert.hide()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -592,7 +587,6 @@ class LoansFragment : Fragment(), LoansListener {
                     loans_recycler.visibility = View.GONE
                 }
             }
-//            MainActivity.alert.hide()
         })
     }
 

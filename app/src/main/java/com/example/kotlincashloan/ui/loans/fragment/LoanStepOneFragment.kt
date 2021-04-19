@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_step_one_loan.*
 
 class LoanStepOneFragment() : Fragment() {
     private var viewModel = LoansViewModel()
+    private var application = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,13 +28,12 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initClick()
 //        initResult()
     }
 
     private fun initClick() {
         try {
-            val application = requireActivity().intent.extras!!.getBoolean("application")
+            application = requireActivity().intent.extras!!.getBoolean("application")
             if (application != false){
                 AppPreferences.refreshWindow = "true"
             }
@@ -51,6 +51,7 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        initClick()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         bottom_step_one.text = "Начать"
         AppPreferences.nationality = ""
