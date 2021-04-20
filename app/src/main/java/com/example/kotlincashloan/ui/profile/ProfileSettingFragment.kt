@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.graphics.drawable.ColorDrawable
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -1168,13 +1169,32 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             if (data == null) {
+                var rotatedBitmap: Bitmap? = null
                 val imageBitmap: Bitmap = BitmapFactory.decodeFile(currentPhotoPath)
-                imageBitmap(imageBitmap)
+                val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
+                val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
+                val ei = ExifInterface(currentPhotoPath)
+                val orientation: Int = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+                when (orientation) {
+                    ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(scaled, 90F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(scaled, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(scaled, 270F)
+                    ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = scaled
+                    else -> rotatedBitmap = scaled
+                }
+                imageBitmap(rotatedBitmap!!)
             } else {
                 val bm: Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
                 imageBitmap(bm)
             }
         }
+    }
+
+    //Делает картинку с камеры вертикальной
+    fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     private fun imageBitmap(bm: Bitmap){
