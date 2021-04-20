@@ -123,10 +123,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         if (additionalId == "-1") {
             fire_additional_amount.visibility = View.GONE
         }
-        //В поле длинная строка. Если поле непустое удоляет hide
-        if (fire_work_experience.text.isNotEmpty()) {
-            fire_work_experience.hint = null
-        }
     }
 
     private fun initClick() {
@@ -465,6 +461,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
             }catch (e:Exception){
                 e.printStackTrace()
+            }
+            //В поле длинная строка. Если поле непустое удоляет hide
+            if (fire_work_experience.text.isNotEmpty()) {
+                fire_work_experience.hint = null
             }
         }
     }

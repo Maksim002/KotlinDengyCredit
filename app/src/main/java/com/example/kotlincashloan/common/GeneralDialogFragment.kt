@@ -55,14 +55,25 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
             dialog_text.visibility = View.GONE
         }
 
-        val params: ViewGroup.LayoutParams = recycler_dialog.getLayoutParams()
-        if (list.size == 2){
-            params.height = 360
-        }else if (list.size == 3){
-            params.height = 620
+        val params: ViewGroup.LayoutParams = recycler_dialog.layoutParams
+        if (params.height <= 400){
+            if (list.size == 2){
+                params.height = 260
+            }else if (list.size == 3){
+                params.height = 380
+            }else{
+                params.height = params.height
+            }
         }else{
-            params.height = 580
+            if (list.size == 2){
+                params.height = 360
+            }else if (list.size == 3){
+                params.height = 620
+            }else{
+                params.height = params.height
+            }
         }
+
         recycler_dialog.layoutParams = params
 
         adapterDialog.update(list)
