@@ -720,7 +720,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listGender") {
-            questionnaire_id_sxs.isEnabled = false
+            questionnaire_id_sxs.isEnabled = true
             questionnaire_id_sxs.setText(listGender[model.position].name)
             genderPosition = listGender[model.position].name.toString()
             idSex = listGender[model.position].id!!.toInt()
