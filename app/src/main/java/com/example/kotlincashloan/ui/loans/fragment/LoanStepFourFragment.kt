@@ -797,7 +797,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                     layout_phone_number,
                     six_number_phone,
                     six_number_phone_error,
-                    "Ввидите правильный номер",
+                    "Введите правильный номер",
                     true
                 )
                 valid = false

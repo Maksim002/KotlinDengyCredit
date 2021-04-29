@@ -112,6 +112,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile_setting, container, false)
+        return inflater.inflate(R.layout.fragment_profile_setting, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -865,7 +866,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 layout_profile_setting_second,
                 profile_setting_second_phone,
                 profile_setting_second_error,
-                "Ввидите правильный номер",
+                "Введите правильный номер",
                 false
             )
             profile_optional_number.setTextColor(
@@ -1309,7 +1310,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     layout_profile_setting_second,
                     profile_setting_second_phone,
                     profile_setting_second_error,
-                    "Ввидите правильный номер",
+                    "Введите правильный номер",
                     true
                 )
                 profile_optional_number.setTextColor(

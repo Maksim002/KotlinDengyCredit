@@ -254,7 +254,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun initClock() {
 
         questionnaire_phone_additional.addTextChangedListener {
-            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Ввидите правильный номер", false)
+            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Введите правильный номер", false)
             initCleaningRoom()
         }
 
@@ -799,7 +799,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()){
             if (reNum.length != nationalityCounter) {
-                editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Ввидите правильный номер", true)
+                editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Введите правильный номер", true)
                 valid = false
             }
         }

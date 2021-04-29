@@ -162,7 +162,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                 number_layout_phone,
                 number_phone,
                 number_phone_error,
-                "Ввидите правильный номер",
+                "Введите правильный номер",
                 false
             )
             initCleaningRoom()
@@ -376,7 +376,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
 
         if (number_phone.text!!.isNotEmpty()) {
             if (reNum.length != numberCharacters) {
-                editUtils(number_layout_phone, number_phone, number_phone_error, "Ввидите правильный номер", true)
+                editUtils(number_layout_phone, number_phone, number_phone_error, "Введите правильный номер", true)
                 valid = false
             }
         }else{

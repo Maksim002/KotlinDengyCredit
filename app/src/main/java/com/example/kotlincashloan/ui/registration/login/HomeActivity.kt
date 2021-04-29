@@ -5,6 +5,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -16,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.loadingMistakeCode
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -49,7 +51,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var tokenId = ""
     private lateinit var timer: TimerListener
     private var inputsAnim = false
-    private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private var recPosition = 0
 
     companion object {
         var repeatedClick = 0
@@ -58,25 +60,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     init {
         try {
-            val configSettings = FirebaseRemoteConfigSettings.Builder().build()
-            remoteConfig.setConfigSettingsAsync(configSettings);
-
-            AppPreferences.urlApi = ""
-            AppPreferences.tokenApi = ""
-            remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
-                if (task.isSuccessful) {
-                    remoteConfig.fetchAndActivate()
-                    val urlApi = remoteConfig.getString("url_dev")
-                    val tokenApi = remoteConfig.getString("token_dev")
-                    AppPreferences.urlApi = urlApi
-                    AppPreferences.tokenApi =  tokenApi
-                    println()
-                } else {
-                    Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
-                }
-            })
-
-
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     return@OnCompleteListener
@@ -86,7 +69,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     AppPreferences.pushNotificationsId = token
                 }
             })
-
         } catch (e: Exception) {
             Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
         }
@@ -96,11 +78,53 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         AppPreferences.init(application)
+        alert = LoadingAlert(this)
+        timer = TimerListener(this)
+        if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+            initApyService()
+        }
         iniClick()
         initCheck()
         initView()
-        alert = LoadingAlert(this)
-        timer = TimerListener(this)
+    }
+
+    // сервис получает логен токен с firebase
+    private fun initApyService() {
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            home_no_connection.visibility = View.VISIBLE
+            home_layout.visibility = View.GONE
+        }else{
+            alert.show()
+            val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+            val configSettings = FirebaseRemoteConfigSettings.Builder().build()
+            remoteConfig.setConfigSettingsAsync(configSettings);
+            AppPreferences.urlApi = ""
+            AppPreferences.tokenApi = ""
+            remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
+                if (task.isSuccessful) {
+                    remoteConfig.fetchAndActivate()
+                    val urlApi = remoteConfig.getString("url_dev")
+                    val tokenApi = remoteConfig.getString("token_dev")
+                    AppPreferences.urlApi = urlApi
+                    AppPreferences.tokenApi = tokenApi
+
+                    if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                        if (recPosition <= 5) {
+                            initApyService()
+                            recPosition++
+                        } else {
+                            alert.hide()
+                            loadingMistakeCode(this)
+                        }
+                    } else {
+                        alert.hide()
+                    }
+                } else {
+                    Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
     private fun iniClick() {
@@ -137,13 +161,21 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 iniTouchId()
                 home_incorrect.visibility = View.GONE
             } else {
-                iniResult()
+                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+                    initApyService()
+                }else{
+                    iniResult()
+                }
             }
         }
 
         home_enter.setOnClickListener {
             if (validate()) {
-                iniResult()
+                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+                    initApyService()
+                }else{
+                    iniResult()
+                }
             }
         }
     }
@@ -162,7 +194,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             map.put("system", "1")
             home_enter.isEnabled = false
             viewModel.auth(map).observe(this, Observer { result ->
-                var msg = result.msg
+                val msg = result.msg
                 val data = result.data
                 when (result.status) {
                     Status.SUCCESS -> {

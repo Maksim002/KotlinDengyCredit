@@ -84,7 +84,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun iniClick() {
 
         questionnaire_phone_additional.addTextChangedListener {
-            editUtils(layout_phone_number,questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", false)
+            editUtils(layout_phone_number,questionnaire_phone_additional, questionnaire_phone_additional_error, "Введите правильный номер", false)
             initCleaningRoom()
         }
 
@@ -505,7 +505,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()) {
             if (reNum.length != numberCharacters) {
-                editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", true)
+                editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Введите правильный номер", true)
                 valid = false
             }
         }else{

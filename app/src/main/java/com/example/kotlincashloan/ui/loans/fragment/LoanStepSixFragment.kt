@@ -350,7 +350,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             editUtils(six_loan_phone, six_loan_phone_error, "Заполните поле", true)
             valid = false
         } else if (six_loan_phone.text.toString().toFullPhone().length != 20) {
-            editUtils(six_loan_phone, six_loan_phone_error, "Ввидите правильный номер", true)
+            editUtils(six_loan_phone, six_loan_phone_error, "Введите правильный номер", true)
             valid = false
         }
         return valid
