@@ -34,7 +34,7 @@ object RetrofitService {
             .writeTimeout(90, TimeUnit.SECONDS)
             .build()
 
-    private fun retrofit(baseUrl: String = "https://crm-api.molbulak.ru/api/app/"): Retrofit =
+    private fun retrofit(baseUrl: String = AppPreferences.urlApi.toString()): Retrofit =
         Retrofit.Builder()
             .client(client)
             .baseUrl(baseUrl)

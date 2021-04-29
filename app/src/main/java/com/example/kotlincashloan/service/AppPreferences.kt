@@ -37,6 +37,19 @@ object AppPreferences {
             it.putString("nationality", value)
         }
 
+
+    var urlApi: String?
+        get() = preferences.getString("urlApi", "")
+        set(value) = preferences.edit {
+            it.putString("urlApi", value)
+        }
+
+    var tokenApi: String?
+        get() = preferences.getString("tokenApi", "")
+        set(value) = preferences.edit {
+            it.putString("tokenApi", value)
+        }
+
     var applicationId: String?
         get() = preferences.getString("applicationId", "")
         set(value) = preferences.edit {

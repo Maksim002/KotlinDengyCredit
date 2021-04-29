@@ -450,9 +450,9 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             incomeId = listIncome.first { it.id == listLoan.income }.id!!
             //sub_income_id
             fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId }.name)
-            typeIncomePosition =
-                listTypeIncome.first { it.id == listLoan.subIncomeId }.name.toString()
+            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId }.name.toString()
             typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId }.id!!
+            if (typeIncomeId == "1"){ additionalId = "-1"}
             //sub_income_sum
             fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name)
             incomeAdditionalPosition =
@@ -465,6 +465,9 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             //В поле длинная строка. Если поле непустое удоляет hide
             if (fire_work_experience.text.isNotEmpty()) {
                 fire_work_experience.hint = null
+            }
+            if (additionalId == "-1") {
+                fire_additional_amount.visibility = View.GONE
             }
         }
     }

@@ -54,6 +54,7 @@ dependencies {
     //test
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation project(path: ':CookieBar')
+    implementation 'com.google.firebase:firebase-config-ktx:20.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

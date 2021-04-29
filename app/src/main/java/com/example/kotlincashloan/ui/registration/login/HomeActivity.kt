@@ -1,7 +1,5 @@
 package com.example.kotlincashloan.ui.registration.login
 
-import android.app.Activity
-import android.content.ComponentName
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -31,6 +29,8 @@ import com.example.kotlinscreenscanner.ui.login.fragment.PinCodeBottomFragment
 import com.example.myapplication.LoginViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
@@ -50,6 +50,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var tokenId = ""
     private lateinit var timer: TimerListener
     private var inputsAnim = false
+    private val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     companion object {
         var repeatedClick = 0
@@ -58,6 +59,25 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     init {
         try {
+            val configSettings = FirebaseRemoteConfigSettings.Builder().build()
+            remoteConfig.setConfigSettingsAsync(configSettings);
+
+            AppPreferences.urlApi = ""
+            AppPreferences.tokenApi = ""
+            remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
+                if (task.isSuccessful) {
+                    remoteConfig.fetchAndActivate()
+                    val urlApi = remoteConfig.getString("url_dev")
+                    val tokenApi = remoteConfig.getString("token_dev")
+                    AppPreferences.urlApi = urlApi
+                    AppPreferences.tokenApi =  tokenApi
+                    println()
+                } else {
+                    Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
+                }
+            })
+
+
             FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     return@OnCompleteListener
@@ -472,19 +492,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
-                                    Toast.makeText(
-                                        this@HomeActivity,
-                                        data.error.message,
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    Toast.makeText(this@HomeActivity, data.error.message, Toast.LENGTH_LONG).show()
                                 } else {
                                     home_no_connection.visibility = View.GONE
                                     home_layout.visibility = View.VISIBLE
                                     tokenId = data.result.token
-                                    viewModel.save(
-                                        home_text_login.text.toString(),
-                                        data.result.token
-                                    )
+                                    viewModel.save(home_text_login.text.toString(), data.result.token)
                                     val intent = Intent(this@HomeActivity, MainActivity::class.java)
                                     startActivity(intent)
                                 }
