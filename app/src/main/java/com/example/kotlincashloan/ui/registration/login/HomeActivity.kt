@@ -43,7 +43,6 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
-
 class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     ExistingBottomListener {
     private var viewModel = LoginViewModel()
