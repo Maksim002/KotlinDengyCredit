@@ -33,6 +33,8 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.himanshurawat.hasher.HashType
+import com.himanshurawat.hasher.Hasher
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
@@ -188,7 +190,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         } else {
             alert.show()
             val map = HashMap<String, String>()
-            map.put("password", home_text_password.text.toString())
+            map.put("password", Hasher.hash(home_text_password.text.toString(), HashType.MD5))
             map.put("login", home_text_login.text.toString())
             map.put("uid", AppPreferences.pushNotificationsId.toString())
             map.put("system", "1")
@@ -228,7 +230,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             } else {
                                 AppPreferences.token = data.result.token
                                 AppPreferences.login = data.result.login
-                                AppPreferences.password = home_text_password.text.toString()
+                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                                 if (AppPreferences.token != null) {
                                     home_incorrect.visibility = View.GONE
                                     startMainActivity()
@@ -239,7 +241,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 AppPreferences.isTouchId = home_touch_id.isChecked
                                 AppPreferences.isLoginCode = home_login_code.isChecked
                                 viewModel.save(home_text_login.text.toString(), data.result.token)
-                                AppPreferences.password = home_text_password.text.toString()
+                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                             } else {
                                 AppPreferences.isRemember = false
                                 AppPreferences.clearLogin()

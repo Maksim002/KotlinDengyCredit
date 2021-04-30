@@ -45,12 +45,12 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.himanshurawat.hasher.HashType
+import com.himanshurawat.hasher.Hasher
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.home_forget_password
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -495,39 +495,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     }
                 }
             })
-
-
-//        viewModel.listCheckPasswordDta.observe(
-//            viewLifecycleOwner,
-//            androidx.lifecycle.Observer { result ->
-//                try {
-//                    if (result.result != null) {
-//                        passwordTrue = result.result.code.toString()
-//                        if (isValidPassword()){
-//                            initPassword()
-//                        }
-//                    } else {
-//                        passwordTrue = result.error.code.toString()
-//                        if (result.error.code == 400){
-//                            isValidPassword()
-//                        }else{
-//                            listListResult(result.error.code!!)
-//                        }
-//                    }
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            })
-//
-//        viewModel.errorCheckPassword.observe(
-//            viewLifecycleOwner,
-//            androidx.lifecycle.Observer { error ->
-//                if (error != null) {
-//                    passwordTrue = error.toString()
-//                    errorCheckPassword = error
-//                    errorList(error)
-//                }
-//            })
     }
 
     // данные для сохролнения
@@ -536,18 +503,17 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         if (isValid()) {
             if (textPasswordOne == textPasswordTwo) {
                 if (textPasswordOne != "") {
-                    AppPreferences.password = textPasswordOne
+                    AppPreferences.password = Hasher.hash(textPasswordOne, HashType.MD5)
                 }
             }
             val mapProfile = HashMap<String, String>()
             mapProfile.put("login", AppPreferences.login.toString())
             mapProfile.put("token", AppPreferences.token.toString())
-            mapProfile.put("password", profile_s_one_password.text.toString())
+            mapProfile.put("password", textPasswordOne)
             mapProfile.put("second_phone", reNum)
             mapProfile.put("question", questionId)
             mapProfile.put("response", profile_s_response.text.toString())
             viewModel.saveProfile(mapProfile)
-            AppPreferences.password = profile_s_one_password.text.toString()
         }
     }
 
@@ -1007,7 +973,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     val mapProfilePassword = HashMap<String, String>()
                     mapProfilePassword.put("login", AppPreferences.login.toString())
                     mapProfilePassword.put("password", profile_s_old_password.text.toString())
-//                viewModel.checkPassword(mapProfilePassword)
                     checkPassword(mapProfilePassword)
                 }else{
                     isValidPassword()
@@ -1017,7 +982,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     val mapProfilePassword = HashMap<String, String>()
                     mapProfilePassword.put("login", AppPreferences.login.toString())
                     mapProfilePassword.put("password", profile_s_old_password.text.toString())
-//                viewModel.checkPassword(mapProfilePassword)
                     checkPassword(mapProfilePassword)
                 }else{
                     initPassword()
