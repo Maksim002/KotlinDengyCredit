@@ -62,6 +62,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var errorNull = ""
     private var errorNullAp = ""
     private var pagerPosition = -1
+    private var addImage = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -99,6 +100,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         profile_your.setOnClickListener {
             if (sendPicture != "") {
                 bundle.putString("sendPicture", sendPicture)
+                bundle.putBoolean("addImage", addImage)
             }
             inputsAnim = 1
             findNavController().navigate(R.id.profile_setting_navigation, bundle)
@@ -242,9 +244,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
                     image_profile.setImageBitmap(scaled)
                     bitmapToFile(decodedImage, requireContext())
+                    addImage = false
                 } else {
                     if (result.error != null) {
                         if (errorGetImg != result.error.code.toString()) {
+                            addImage = true
                             //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
                             if (result.error.code != 404) {
                                 getErrorCode(result.error.code!!)

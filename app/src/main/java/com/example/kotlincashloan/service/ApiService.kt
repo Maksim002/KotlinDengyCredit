@@ -150,10 +150,19 @@ interface ApiService {
     @POST
     fun saveProfile(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<SaveProfileResultModel>>
 
+//    @Headers("Content-Type: application/x-www-form-urlencoded")
+//    @FormUrlEncoded
+//    @POST
+//    fun checkPassword(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<CheckPasswordResultModel>>
+
+
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST
-    fun checkPassword(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<CheckPasswordResultModel>>
+    suspend fun checkPassword(@FieldMap params: Map<String, String>, @Url string: String): Response<CommonResponse<CheckPasswordResultModel>>
+
+
+
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded

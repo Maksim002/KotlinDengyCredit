@@ -273,31 +273,37 @@ class ProfileViewModel : ViewModel(){
         })
     }
 
-    val errorCheckPassword = MutableLiveData<String>()
-    var listCheckPasswordDta = MutableLiveData<CommonResponse<CheckPasswordResultModel>>()
 
-    fun checkPassword(map: Map<String, String>){
-        RetrofitService.apiService().checkPassword(map, generateUrl("checkPassword")).enqueue(object : Callback<CommonResponse<CheckPasswordResultModel>> {
-            override fun onFailure(call: Call<CommonResponse<CheckPasswordResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
-                    errorCheckPassword.postValue( "601")
-                }else{
-                    errorCheckPassword.postValue( "600")
-                }
-            }
-            override fun onResponse(call: Call<CommonResponse<CheckPasswordResultModel>>, response: Response<CommonResponse<CheckPasswordResultModel>>) {
-                if (response.isSuccessful) {
-                    if (response.body()!!.code == 200){
-                        listCheckPasswordDta.postValue(response.body())
-                    }else{
-                        errorCheckPassword.postValue(response.body()!!.code.toString())
-                    }
-                }else{
-                    errorCheckPassword.postValue(response.raw().code.toString())
-                }
-            }
-        })
+    fun checkPassword(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<CheckPasswordResultModel>>> {
+        return repository.checkPassword(phone)
     }
+
+
+//    val errorCheckPassword = MutableLiveData<String>()
+//    var listCheckPasswordDta = MutableLiveData<CommonResponse<CheckPasswordResultModel>>()
+//
+//    fun checkPassword(map: Map<String, String>){
+//        RetrofitService.apiService().checkPassword(map, generateUrl("checkPassword")).enqueue(object : Callback<CommonResponse<CheckPasswordResultModel>> {
+//            override fun onFailure(call: Call<CommonResponse<CheckPasswordResultModel>>, t: Throwable) {
+//                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+//                    errorCheckPassword.postValue( "601")
+//                }else{
+//                    errorCheckPassword.postValue( "600")
+//                }
+//            }
+//            override fun onResponse(call: Call<CommonResponse<CheckPasswordResultModel>>, response: Response<CommonResponse<CheckPasswordResultModel>>) {
+//                if (response.isSuccessful) {
+//                    if (response.body()!!.code == 200){
+//                        listCheckPasswordDta.postValue(response.body())
+//                    }else{
+//                        errorCheckPassword.postValue(response.body()!!.code.toString())
+//                    }
+//                }else{
+//                    errorCheckPassword.postValue(response.raw().code.toString())
+//                }
+//            }
+//        })
+//    }
 
     val errorGetImg = MutableLiveData<String>()
     var listGetImgDta = MutableLiveData<CommonResponse<GetImgResultModel>>()

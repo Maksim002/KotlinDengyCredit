@@ -47,6 +47,7 @@ import com.example.kotlinscreenscanner.service.model.ListSecretQuestionResultMod
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
+import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
@@ -72,7 +73,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private var errorListSecretQuestion = ""
     private var errorSaveProfile = ""
     private var errorClientInfo = ""
-    private var errorCheckPassword = ""
     private val handler = Handler()
     private var clientResult = ClientInfoResultModel()
     private lateinit var simpleDateFormat: SimpleDateFormat
@@ -86,24 +86,22 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private var reNum = ""
     private var profileSettingAnim = false
     private var profileSettingAnimR = false
-
     private var phoneSecondId = ""
     private var questionId = ""
-
     private var textPasswordOne = ""
     private var textPasswordTwo = ""
-
     private lateinit var bitmap: Bitmap
     private var imageString: String = ""
     private lateinit var currentPhotoPath: String
     private var questionPosition = ""
     private var countriesPosition = ""
-
     private lateinit var myThread: Thread
     private lateinit var dialog: AlertDialog
     private var itemDialog: ArrayList<GeneralDialogModel> = arrayListOf()
     private var question: ArrayList<ListSecretQuestionResultModel> = arrayListOf()
     private var countries: ArrayList<CounterNumResultModel> = arrayListOf()
+    private var addImage = false
+    private var passwordTrue = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,7 +109,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile_setting, container, false)
         return inflater.inflate(R.layout.fragment_profile_setting, container, false)
     }
 
@@ -146,11 +143,21 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             ""
         }
 
+        val getAddImage = try {
+            requireArguments().getBoolean("addImage")
+        } catch (e: Exception) {
+            false
+        }
+
         if (sendPicture != null) {
-            Glide
-                .with(this)
-                .load(sendPicture)
-                .into(profile_setting_image);
+            if (!addImage) {
+                if (!getAddImage) {
+                    Glide
+                        .with(this)
+                        .load(sendPicture)
+                        .into(profile_setting_image);
+                }
+            }
         }
 
         listClientInfo = try {
@@ -329,10 +336,13 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
                             val firstNationality = clientResult.phoneFirst!!.toInt()
                             numberAvailable = result.result[checkNumber].phoneLength!!.toInt()
-                            profile_setting_first.mask = result.result.first { it.id == firstNationality }.phoneMask
-                            MyUtils.toMask(clientResult.firstPhone.toString(), result.result.first
-                            { it.id == firstNationality }.phoneCode!!.length,
-                                result.result.first { it.id == firstNationality }.phoneLength!!.toInt())
+                            profile_setting_first.mask =
+                                result.result.first { it.id == firstNationality }.phoneMask
+                            MyUtils.toMask(
+                                clientResult.firstPhone.toString(), result.result.first
+                                { it.id == firstNationality }.phoneCode!!.length,
+                                result.result.first { it.id == firstNationality }.phoneLength!!.toInt()
+                            )
 
                             profile_setting_first.setText(clientResult.firstPhone.toString())
 
@@ -453,30 +463,71 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             })
     }
 
-    private fun checkPassword() {
+    private fun checkPassword(mapProfilePassword: HashMap<String, String>) {
         //проверка старого пороля
-        viewModel.listCheckPasswordDta.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { result ->
-                try {
-                    if (result.result != null) {
-                        initPassword()
-                    } else {
-                        listListResult(result.error.code!!)
+        viewModel.checkPassword(mapProfilePassword)
+            .observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+                val msg = result.msg
+                val date = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (date!!.result != null) {
+                            passwordTrue = date.result.code.toString()
+                            if (isValidPassword()) {
+                                initPassword()
+                            }
+                        } else {
+                            passwordTrue = date.error.code.toString()
+                            if (date.error.code == 400) {
+                                isValidPassword()
+                            } else {
+                                listListResult(date.error.code!!)
+                            }
+                        }
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    Status.NETWORK, Status.ERROR -> {
+                        passwordTrue = msg.toString()
+                        if (msg == "400") {
+                            isValidPassword()
+                        } else {
+                            listListResult(msg!!.toInt())
+                        }
+                    }
                 }
             })
 
-        viewModel.errorCheckPassword.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { error ->
-                if (error != null) {
-                    errorCheckPassword = error
-                    errorList(error)
-                }
-            })
+
+//        viewModel.listCheckPasswordDta.observe(
+//            viewLifecycleOwner,
+//            androidx.lifecycle.Observer { result ->
+//                try {
+//                    if (result.result != null) {
+//                        passwordTrue = result.result.code.toString()
+//                        if (isValidPassword()){
+//                            initPassword()
+//                        }
+//                    } else {
+//                        passwordTrue = result.error.code.toString()
+//                        if (result.error.code == 400){
+//                            isValidPassword()
+//                        }else{
+//                            listListResult(result.error.code!!)
+//                        }
+//                    }
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//            })
+//
+//        viewModel.errorCheckPassword.observe(
+//            viewLifecycleOwner,
+//            androidx.lifecycle.Observer { error ->
+//                if (error != null) {
+//                    passwordTrue = error.toString()
+//                    errorCheckPassword = error
+//                    errorList(error)
+//                }
+//            })
     }
 
     // данные для сохролнения
@@ -491,11 +542,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             val mapProfile = HashMap<String, String>()
             mapProfile.put("login", AppPreferences.login.toString())
             mapProfile.put("token", AppPreferences.token.toString())
-            mapProfile.put("password", AppPreferences.password.toString())
+            mapProfile.put("password", profile_s_one_password.text.toString())
             mapProfile.put("second_phone", reNum)
             mapProfile.put("question", questionId)
             mapProfile.put("response", profile_s_response.text.toString())
             viewModel.saveProfile(mapProfile)
+            AppPreferences.password = profile_s_one_password.text.toString()
         }
     }
 
@@ -515,11 +567,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                         profile_s_response.setText(clientResult.response)
                         errorClientInfo = result.code.toString()
                         resultSuccessfully()
-//                        if (!profileSettingAnim) {
-//                            //profileAnim анимация для перехода с адного дествия в другое
-//                            TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
-//                            profileSettingAnim = true
-//                        }
 
                         //получение полов
                         gettingFloors()
@@ -597,7 +644,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             // now assign the system
             // service to InputMethodManager
             try {
-                val manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                val manager =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                 manager!!.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -669,7 +717,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос", profile_s_question)
+                initBottomSheet(
+                    itemDialog,
+                    questionPosition,
+                    "Выберите секретный вопрос",
+                    profile_s_question
+                )
             }
         }
 
@@ -694,7 +747,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countriesPosition, "Список доступных стран", profile_s_mask)
+                initBottomSheet(
+                    itemDialog,
+                    countriesPosition,
+                    "Список доступных стран",
+                    profile_s_mask
+                )
             }
         }
 
@@ -742,7 +800,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         profile_tube.setOnClickListener {
             profile_tube.isClickable = false
-             //остановка таймера
+            //остановка таймера
             initSuspendTime()
             loadFiles()
         }
@@ -871,8 +929,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             )
             profile_optional_number.setTextColor(
                 ContextCompat.getColor(
-                    requireContext(),
-                    R.color.blackColor
+                    requireContext(), R.color.blackColor
                 )
             )
             initCleaningRoom()
@@ -946,28 +1003,24 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         profile_s_enter.setOnClickListener {
             if (profile_s_one_password.text.toString() != "" && profile_s_two_password.text.toString() != "") {
-                if (AppPreferences.password == profile_s_old_password.text.toString()) {
+                if (profile_s_old_password.text.isNotEmpty()) {
                     val mapProfilePassword = HashMap<String, String>()
                     mapProfilePassword.put("login", AppPreferences.login.toString())
-                    if (profile_s_old_password.text.toString().isNotEmpty()) {
-                        mapProfilePassword.put("password", profile_s_old_password.text.toString())
-                    } else {
-                        mapProfilePassword.put("password", AppPreferences.password.toString())
-                    }
-                    viewModel.checkPassword(mapProfilePassword)
-                    checkPassword()
-                } else {
+                    mapProfilePassword.put("password", profile_s_old_password.text.toString())
+//                viewModel.checkPassword(mapProfilePassword)
+                    checkPassword(mapProfilePassword)
+                }else{
                     isValidPassword()
                 }
-            } else {
-                if (profile_s_old_password.text.toString() == "") {
+            }else{
+                if (profile_s_old_password.text.isNotEmpty()) {
+                    val mapProfilePassword = HashMap<String, String>()
+                    mapProfilePassword.put("login", AppPreferences.login.toString())
+                    mapProfilePassword.put("password", profile_s_old_password.text.toString())
+//                viewModel.checkPassword(mapProfilePassword)
+                    checkPassword(mapProfilePassword)
+                }else{
                     initPassword()
-                } else {
-                    if (AppPreferences.password == profile_s_old_password.text.toString()) {
-                        initPassword()
-                    } else {
-                        isValidPassword()
-                    }
                 }
             }
         }
@@ -1077,15 +1130,15 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 if (result.result != null) {
                     profile_setting_image.setImageBitmap(bitmap)
                     MainActivity.alert.hide()
-                }else if (result.error != null){
+                } else if (result.error != null) {
                     listListResultHome(result.error.code!!.toInt(), activity as AppCompatActivity)
                     MainActivity.alert.hide()
                 }
             })
 
         viewModel.errorUploadImg.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
-            if (error != null){
-                listListResultHome(error, activity as  AppCompatActivity)
+            if (error != null) {
+                listListResultHome(error, activity as AppCompatActivity)
                 MainActivity.alert.hide()
             }
         })
@@ -1102,13 +1155,17 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
             if (!profileSettingAnim) {
                 //profileAnim анимация для перехода с адного дествия в другое
-                TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+                TransitionAnimation(activity as AppCompatActivity).transitionRight(
+                    profile_setting_anim
+                )
                 profileSettingAnim = true
             }
 
             if (profileSettingAnimR) {
                 //profileAnim анимация для перехода с адного дествия в другое
-                TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+                TransitionAnimation(activity as AppCompatActivity).transitionLeft(
+                    profile_setting_anim
+                )
                 profileSettingAnimR = false
             }
         }
@@ -1117,7 +1174,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.CAMERA),
@@ -1150,8 +1211,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri = FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
-
+            val imagUri: Uri =
+                FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
             val takePictureIntent = Intent(ACTION_IMAGE_CAPTURE)
             val pickIntent = Intent(Intent.ACTION_PICK)
             pickIntent.type = "image/*"
@@ -1175,17 +1236,24 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 val ei = ExifInterface(currentPhotoPath)
-                val orientation: Int = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+                val orientation: Int = ei.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED
+                )
                 when (orientation) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(scaled, 90F)
-                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap = rotateImage(scaled, 180F)
-                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap = rotateImage(scaled, 270F)
+                    ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
+                        rotateImage(scaled, 180F)
+                    ExifInterface.ORIENTATION_ROTATE_270 -> rotatedBitmap =
+                        rotateImage(scaled, 270F)
                     ExifInterface.ORIENTATION_NORMAL -> rotatedBitmap = scaled
                     else -> rotatedBitmap = scaled
                 }
                 imageBitmap(rotatedBitmap!!)
             } else {
-                val bm: Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
+                val bm: Bitmap = MediaStore.Images.Media.getBitmap(
+                    requireActivity().getApplicationContext().getContentResolver(), data.getData()
+                );
                 imageBitmap(bm)
             }
         }
@@ -1198,7 +1266,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
-    private fun imageBitmap(bm: Bitmap){
+    private fun imageBitmap(bm: Bitmap) {
+        addImage = true
         val nh = (bm.height * (512.0 / bm.width)).toInt()
         val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)
         bitmap = scaled
@@ -1414,7 +1483,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 ), PorterDuff.Mode.SRC_IN
             );
             valid = false
-        } else if (profile_s_old_password.text.toString() != AppPreferences.password) {
+        } else if (passwordTrue != "200") {
             editUtils(
                 layout_profile_s_old,
                 profile_s_old_password,
@@ -1430,6 +1499,15 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 ), PorterDuff.Mode.SRC_IN
             );
             valid = false
+        } else {
+            editUtils(layout_profile_s_old, profile_s_old_password, profile_s_old_error, "", false)
+            text_old.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
+            profile_s_old_password_image.setColorFilter(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.blackColor
+                ), PorterDuff.Mode.SRC_IN
+            );
         }
         return valid
     }
