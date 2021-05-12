@@ -163,7 +163,6 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         })
     }
 
-
     //Сохронение на сервер данных
     private fun initSaveLoan() {
         GetLoanActivity.alert.show()

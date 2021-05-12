@@ -82,9 +82,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         AppPreferences.init(application)
         alert = LoadingAlert(this)
         timer = TimerListener(this)
-        if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
-            initApyService()
-        }
+//        if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+//            initApyService()
+//        }
+        initApyService()
         iniClick()
         initCheck()
         initView()

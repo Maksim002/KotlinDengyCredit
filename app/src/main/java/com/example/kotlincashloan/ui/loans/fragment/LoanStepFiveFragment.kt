@@ -93,6 +93,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         if (permission == 4) {
             alert.show()
         }
+
         initRestart()
         initClick()
         initView()

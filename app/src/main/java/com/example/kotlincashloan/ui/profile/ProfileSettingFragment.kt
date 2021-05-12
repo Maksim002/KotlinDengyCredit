@@ -321,7 +321,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             })
     }
 
-    // TODO: 21-2-12  Список доступных стран
+    //  Список доступных стран
     private fun listCountries() {
         viewModel.listAvailableCountryDta.observe(
             viewLifecycleOwner,
@@ -411,7 +411,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             })
     }
 
-    // TODO: 21-2-11  Список секретных вопросов
+    // Список секретных вопросов
     private fun listQuestions() {
         viewModel.listSecretQuestionDta.observe(
             viewLifecycleOwner,
@@ -633,7 +633,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         }
     }
 
-    // TODO: 21-2-12 Получает информацию из адаптера
+    // Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listQuestions") {
             profile_s_question.isEnabled = true
