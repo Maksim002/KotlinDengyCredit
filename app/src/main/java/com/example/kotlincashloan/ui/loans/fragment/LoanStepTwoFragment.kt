@@ -44,7 +44,11 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) : Fragment(), StepClickListener {
+class LoanStepTwoFragment(
+    var status: Boolean,
+    var listLoan: GetLoanModel,
+    var applicationStatus: Boolean
+) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -63,6 +67,8 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
     private var totalCounter = 0
     private var totalRate = 0.0
 
+    private var seekbarValue = ""
+
     val handler = Handler()
 
     override fun onCreateView(
@@ -77,6 +83,12 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         super.onViewCreated(view, savedInstanceState)
         initClick()
         initRestart()
+
+        if (status == true) {
+
+        }
+
+        listLoan
     }
 
     private fun initClick() {
@@ -107,27 +119,41 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         if (applicationStatus == false) {
             if (status == true) {
                 bottom_step_two.setText("Сохранить")
-            }else{
+            } else {
                 bottom_step_two.text = "Следующий шаг"
             }
-        }else{
+        } else {
             bottom_step_two.text = "Следующий шаг"
         }
     }
 
     private fun initСounter() {
         //Если запрос счётчика прошол успешно
-        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result->
+        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 sumMin = result.result.minSum.toString().toDouble().toInt()
                 sumMax = result.result.maxSum.toString().toDouble().toInt()
+
                 maxCounter = result.result.maxCount.toString().toInt()
                 minCounter = result.result.minCount.toString().toInt()
 
                 totalRate = result.result.rate!!.toDouble()
 
                 position = minCounter
-                progressBarr(sumMin.toString())
+
+                if (status) {
+                    if (listLoan.loanSum != null) {
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            step_item_list.smoothScrollToPosition(listLoan.loanTerm!!.toInt() - minCounter)
+                            progressBarr(listLoan.loanSum!!.toDouble().toInt().toString())
+                            loan_step_seek.progress = listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
+                        }, 1200)
+                    } else {
+                        progressBarr(sumMin.toString())
+                    }
+                } else {
+                    progressBarr(sumMin.toString())
+                }
 
                 totalCounter = result.result.minCount.toString().toInt()
                 totalSum = result.result.minSum!!.toDouble().toInt()
@@ -148,7 +174,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
                 totalSum()
                 initResiscler()
                 initSeekBar()
-            }else{
+            } else {
                 if (result.error.code != null) {
                     initErrorResult(result.error.code!!)
                 }
@@ -156,8 +182,8 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         })
 
 
-        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
+        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
                 initError(error)
             }
         })
@@ -189,17 +215,18 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
                         if (applicationStatus == false) {
                             if (status == true) {
                                 requireActivity().finish()
-                            }else{
+                            } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                    3
                             }
-                        }else{
+                        } else {
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
                         }
-                    }else if (data.error.code != null) {
+                    } else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    }else if (data.reject != null) {
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
                         layout_two.visibility = View.VISIBLE
                         loans_two_work.visibility = View.GONE
@@ -242,10 +269,15 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
 
         try {
             step_item_list.initialize(myAdapter)
-            step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
+            step_item_list.setViewsToChangeColor(
+                listOf(
+                    R.id.loan_step_number,
+                    R.id.loan_step_number
+                )
+            )
             myAdapter.update(list)
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -257,7 +289,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
                     val position = getCurrentItem()
                     loan_step_month_seek.progress = position
                 }
-                if (newState == RecyclerView.SCREEN_STATE_ON){
+                if (newState == RecyclerView.SCREEN_STATE_ON) {
                     val position = getCurrentItem()
                     AppPreferences.isSeekBar = position
                 }
@@ -265,8 +297,13 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         })
     }
 
-    private fun totalSum(){
-        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), - totalCounter.toDouble())))
+    private fun totalSum() {
+        val equ = round(
+            (totalSum * (totalRate / 100)) / (1 - pow(
+                (1 + (totalRate / 100)),
+                -totalCounter.toDouble()
+            ))
+        )
         totalSumLoans.setText(equ.toInt().toString())
     }
 
@@ -297,7 +334,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         loan_step_seek.max = sumMax / 1000 - 5
         loan_step_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                val seekbarValue = i.toString()
+                seekbarValue = i.toString()
                 var resultSum = 0
                 resultSum = seekbarValue.toInt() * 1000 + sumMin
                 progressBarr(resultSum.toString())
@@ -460,7 +497,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
         startActivity(intent)
     }
 
-    private fun initRestart(){
+    private fun initRestart() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("loan_type", "1")
@@ -472,7 +509,7 @@ class LoanStepTwoFragment(var status: Boolean, var applicationStatus: Boolean) :
             layout_two.visibility = View.GONE
             loans_two_restricted.visibility = View.GONE
             loans_two_found.visibility = View.GONE
-        }else{
+        } else {
             viewModel.getInfo(map)
             initСounter()
         }

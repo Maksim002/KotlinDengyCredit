@@ -82,9 +82,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         AppPreferences.init(application)
         alert = LoadingAlert(this)
         timer = TimerListener(this)
-//        if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
-//            initApyService()
-//        }
         initApyService()
         iniClick()
         initCheck()
@@ -98,7 +95,9 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
         }else{
-            alert.show()
+            if (AppPreferences.savePin == ""){
+                alert.show()
+            }
             val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
             val configSettings = FirebaseRemoteConfigSettings.Builder().build()
             remoteConfig.setConfigSettingsAsync(configSettings);

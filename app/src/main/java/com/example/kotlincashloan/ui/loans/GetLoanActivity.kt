@@ -288,7 +288,7 @@ class GetLoanActivity : AppCompatActivity() {
 //        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
 
         list.add(LoansListModel(LoanStepOneFragment()))
-        list.add(LoansListModel(LoanStepTwoFragment(statusValue, applicationStatus)))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus)))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
