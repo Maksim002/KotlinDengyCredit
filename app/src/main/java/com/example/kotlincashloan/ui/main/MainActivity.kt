@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -117,10 +118,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setTitle(title: String?, color: Int) {
+    fun setTitle(title: String?, color: Int, textOnline: String? = null) {
         if (main_toolBar != null) {
             main_toolBar.setText(title)
             main_toolBar.setTextColor(color)
+            main_online.setText(textOnline)
+            main_online.setTextColor(color)
+            if (main_online.text != ""){
+                main_online.visibility = View.VISIBLE
+            }else{
+                main_online.visibility = View.GONE
+            }
         }
     }
 

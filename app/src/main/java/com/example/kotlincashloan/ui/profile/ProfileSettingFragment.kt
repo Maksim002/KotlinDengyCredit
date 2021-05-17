@@ -1306,10 +1306,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         ColorWindows(activity as AppCompatActivity).rollback()
 
         val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
-        backArrow.setColorFilter(
-            resources.getColor(android.R.color.white),
-            PorterDuff.Mode.SRC_ATOP
-        )
+        backArrow.setColorFilter(resources.getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP)
         (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
         profile_s_owner.requestFocus()
     }
@@ -1537,10 +1534,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             )
             text_repeat.setTextColor(ContextCompat.getColor(requireContext(), R.color.blackColor))
             profile_s_two_password_show.setColorFilter(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.blackColor
-                ), PorterDuff.Mode.SRC_IN
+                ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN
             );
         }
     }

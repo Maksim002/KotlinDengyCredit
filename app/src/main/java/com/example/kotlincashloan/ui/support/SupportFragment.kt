@@ -2,8 +2,6 @@ package com.example.kotlincashloan.ui.support
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -12,11 +10,14 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
+import com.example.kotlincashloan.adapter.support.SupportListener
+import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -27,22 +28,25 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
 
 
-class SupportFragment : Fragment() {
-    private var myAdapter = SupportAdapter()
+class SupportFragment : Fragment(), SupportListener {
+    private var myAdapter = SupportAdapter(this)
     private var viewModel = SupportViewModel()
     private val map = HashMap<String, String>()
     val handler = Handler()
-
+    private var list: ArrayList<ListFaqResultModel> = arrayListOf()
+    private var heightRecycler = 0
+    private var heightLiner = 0
+    private var primaryInput = false
     //    private var refresh = false
     private var errorCode = ""
+    private var foresight = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    var firstStart = false
+    var heightSize = 0
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_support, container, false)
     }
@@ -53,6 +57,8 @@ class SupportFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
+
+        profile_recycler.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS;
 
         setTitle("FAQ", resources.getColor(R.color.whiteColor))
 
@@ -121,14 +127,19 @@ class SupportFragment : Fragment() {
         not_found.setOnClickListener {
             initRestart()
         }
+
+        support_button_res.setOnClickListener {
+            findNavController().navigate(R.id.chat_navigation)
+        }
+
+        support_button_lay.setOnClickListener {
+            findNavController().navigate(R.id.chat_navigation)
+        }
     }
 
     private fun initRefresh() {
         support_swipe_layout.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
 //                refresh = true
@@ -142,7 +153,8 @@ class SupportFragment : Fragment() {
         viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null) {
-                    myAdapter.update(result.result)
+                    list = result.result
+                    myAdapter.update(list)
                     profile_recycler.adapter = myAdapter
                     initVisibilities()
                     profile_recycler.visibility = View.VISIBLE
@@ -224,6 +236,63 @@ class SupportFragment : Fragment() {
         })
     }
 
+    override fun onClickListener(item: ListFaqResultModel) {
+        try {
+            if (foresight){
+                if (!item.clicked) {
+                    if (!primaryInput){
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            isSwitchingFalse()
+                            primaryInput = true
+                        }, 600)
+                    }else{
+                        isSwitchingFalse()
+                    }
+                } else {
+                    isSwitchingTrue()
+                }
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+    }
+
+    //Метод запрашивает и сравнивает размеры окон
+    fun fitView(recyclerView: RecyclerView) {
+        // запрашивает размер NestedScrollView
+        layout_liner.post {
+            heightLiner = layout_liner.height
+            // запрашивает размер RecyclerView
+            recyclerView.post {
+                heightRecycler = profile_recycler.height
+                // проверяет если это первичный старт
+                // Отрезмера NestedScrollView отнемает -240
+                if (!firstStart){
+                    heightSize = heightLiner - 240
+                    firstStart = true
+                }
+                // Сравнивает размер окон
+                if (heightRecycler >= heightSize ) {
+                    foresight = false
+                    isSwitchingFalse()
+                } else {
+                    foresight = true
+                    isSwitchingTrue()
+                }
+            }
+        }
+    }
+
+    private fun isSwitchingTrue(){
+        support_button_res.visibility = View.GONE
+        support_button_lay.visibility = View.VISIBLE
+    }
+
+    private fun isSwitchingFalse(){
+        support_button_res.visibility = View.VISIBLE
+        support_button_lay.visibility = View.GONE
+    }
+
     private fun initAuthorized() {
         val intent = Intent(context, HomeActivity::class.java)
         AppPreferences.token = ""
@@ -236,6 +305,9 @@ class SupportFragment : Fragment() {
         layout_access_restricted.visibility = View.GONE
         support_technical_work.visibility = View.GONE
         support_not_found.visibility == View.GONE
+        if (myAdapter.itemCount != 0){
+            fitView(profile_recycler)
+        }
     }
 
     override fun onResume() {
