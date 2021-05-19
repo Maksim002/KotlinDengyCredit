@@ -108,8 +108,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     remoteConfig.fetchAndActivate()
                     val urlApi = remoteConfig.getString("url_dev")
                     val tokenApi = remoteConfig.getString("token_dev")
-                    AppPreferences.urlApi = urlApi
-                    AppPreferences.tokenApi = tokenApi
+                    AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
+                    AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 
                     if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                         if (recPosition <= 5) {
@@ -267,7 +267,9 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
-                        } else {
+                        } else if(msg == "601") {
+                            loadingMistake(this)
+                        }else{
                             home_no_connection.visibility = View.VISIBLE
                             home_layout.visibility = View.GONE
                         }
@@ -539,8 +541,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 loadingMistake(this@HomeActivity)
                             }
                             Status.NETWORK -> {
-                                home_no_connection.visibility = View.VISIBLE
-                                home_layout.visibility = View.GONE
+                                if(msg == "601") {
+                                    loadingMistake(this@HomeActivity)
+                                }else{
+                                    home_no_connection.visibility = View.VISIBLE
+                                    home_layout.visibility = View.GONE
+                                }
                             }
                         }
                         alert.hide()

@@ -1138,16 +1138,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.CAMERA),
-                    CAMERA_PERM_CODE
-                )
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERM_CODE)
             } else {
                 getMyFile()
             }
@@ -1170,13 +1162,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
     private fun getMyFile() {
         val file = "photo"
-        val dtoregDirectiry: File? =
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri =
-                FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
+            val imagUri: Uri = FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
             val takePictureIntent = Intent(ACTION_IMAGE_CAPTURE)
             val pickIntent = Intent(Intent.ACTION_PICK)
             pickIntent.type = "image/*"
@@ -1200,10 +1190,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 val nh = (imageBitmap.height * (512.0 / imageBitmap.width)).toInt()
                 val scaled = Bitmap.createScaledBitmap(imageBitmap, 512, nh, true)
                 val ei = ExifInterface(currentPhotoPath)
-                val orientation: Int = ei.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED
-                )
+                val orientation: Int = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
                 when (orientation) {
                     ExifInterface.ORIENTATION_ROTATE_90 -> rotatedBitmap = rotateImage(scaled, 90F)
                     ExifInterface.ORIENTATION_ROTATE_180 -> rotatedBitmap =
@@ -1215,9 +1202,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 }
                 imageBitmap(rotatedBitmap!!)
             } else {
-                val bm: Bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().getApplicationContext().getContentResolver(), data.getData()
-                );
+                val bm: Bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getApplicationContext().getContentResolver(), data.getData());
                 imageBitmap(bm)
             }
         }
