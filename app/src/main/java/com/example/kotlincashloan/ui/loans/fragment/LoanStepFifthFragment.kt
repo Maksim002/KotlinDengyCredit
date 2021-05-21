@@ -64,7 +64,6 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -143,8 +142,10 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
 
-        if (statusValue == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
@@ -365,7 +366,7 @@ override fun onStart() {
                 if (result.error.code == 409) {
                     Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    getErrorCode(result.error.code!!)
+                    listListResult(result.error.code!!.toInt(), activity as AppCompatActivity)
                     errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
@@ -376,11 +377,12 @@ override fun onStart() {
             if (error != null) {
                 if (error == "409") { Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    getErrorCode(error.toInt())
+                    listListResult(error, activity as AppCompatActivity)
                     errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
             imageString.clear()
+            GetLoanActivity.alert.hide()
         })
     }
 

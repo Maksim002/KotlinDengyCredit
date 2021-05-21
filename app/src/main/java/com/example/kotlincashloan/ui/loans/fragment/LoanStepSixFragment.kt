@@ -63,8 +63,10 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
 
-        if (status == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 

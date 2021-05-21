@@ -88,8 +88,10 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
 
-        if (status == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
@@ -493,6 +495,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getResultOk()
             } else {
                 getErrorCode(result.error.code!!)
+              alert.hide()
             }
         })
 
@@ -501,6 +504,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 listAvailableCountryDta = error
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -521,6 +525,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListCityDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -530,6 +535,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -550,6 +556,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListFamilyStatusDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -559,6 +566,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -579,6 +587,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -588,6 +597,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -609,6 +619,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -617,6 +628,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = error
 
                 getErrorCode(error.toInt())
+                alert.hide()
             }
         })
     }
@@ -638,6 +650,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListYearsDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -647,6 +660,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 

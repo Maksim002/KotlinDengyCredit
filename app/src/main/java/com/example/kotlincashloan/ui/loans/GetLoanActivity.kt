@@ -60,6 +60,7 @@ class GetLoanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_loan)
+
         // TODO: 02.04.21 Если мешает убратиь
         AppPreferences.status = false
 

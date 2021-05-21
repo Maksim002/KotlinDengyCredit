@@ -120,10 +120,16 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
     //Получает данные на редактирование заёма
     private void getLists() {
+//        if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
+//            if (AppPreferences.INSTANCE.getStatus() == true) {
+//                threeCrossBack.setVisibility(View.GONE);
+//            }
+//        }
+
         if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
-            if (AppPreferences.INSTANCE.getStatus() == true) {
-                threeCrossBack.setVisibility(View.GONE);
-            }
+            threeCrossBack.setVisibility(View.GONE);
+        }else {
+            threeCrossBack.setVisibility(View.VISIBLE);
         }
     }
 

@@ -87,10 +87,13 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
 
-        if (status == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
+
         if (permission == 4) {
             alert.show()
         }
@@ -796,11 +799,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     private fun getErrorCode(error: Int) {
-        listListResult(
-            error, fire_ste_technical_work as LinearLayout, fire_ste_no_connection
-                    as LinearLayout, layout_fire as ConstraintLayout, fire_ste_access_restricted
-                    as LinearLayout, fire_ste_not_found as LinearLayout, requireActivity()
-        )
+        if (error != 0){
+            listListResult(
+                error, fire_ste_technical_work as LinearLayout, fire_ste_no_connection
+                        as LinearLayout, layout_fire as ConstraintLayout, fire_ste_access_restricted
+                        as LinearLayout, fire_ste_not_found as LinearLayout, requireActivity(), true
+            )
+        }
+
     }
 
     //Метотд для скрытия клавиатуры

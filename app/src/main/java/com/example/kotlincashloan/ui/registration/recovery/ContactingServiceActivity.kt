@@ -62,6 +62,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
+
         //меняет цвет статус бара
         ColorWindows(this).statusBarTextColor()
         HomeActivity.alert = LoadingAlert(this)
@@ -204,9 +205,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         if (view != null) {
             // now assign the system
             // service to InputMethodManager
-            val manager = this.getSystemService(
-                Context.INPUT_METHOD_SERVICE
-            ) as InputMethodManager?
+            val manager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             manager!!.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
