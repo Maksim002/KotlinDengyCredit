@@ -24,9 +24,10 @@ class LoanStepPushFragment(var status: Boolean, var applicationStatus: Boolean) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Отоброожает кнопку если статус видем закрытия
-        if (status == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (status == false){
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            // Отоброожает кнопку если статус true видем закрытия
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 

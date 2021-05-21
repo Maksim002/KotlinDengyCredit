@@ -667,6 +667,18 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave.put("bank_card", cardId)
         mapSave.put("step", "3")
 
+        if (status == true){
+            //Сохроняет изменненые данные в масив
+            listLoan.city = cityId
+            listLoan.secondPhone = reNum
+            listLoan.address = loans_step_four_residence.text.toString()
+            listLoan.familyStatus = statusId
+            listLoan.countFamily = familyId
+            listLoan.countFamilyWork = childrenId
+            listLoan.liveInRu = liveId
+            listLoan.bankCard = cardId
+        }
+
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg

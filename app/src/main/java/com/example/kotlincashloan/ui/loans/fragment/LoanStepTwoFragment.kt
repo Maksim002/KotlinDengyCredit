@@ -72,11 +72,7 @@ class LoanStepTwoFragment(
 
     val handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_loan_step_two, container, false)
     }
 
@@ -86,10 +82,9 @@ class LoanStepTwoFragment(
         initRestart()
 
         if (status == true) {
-
+            totalCounter = listLoan.loanTerm!!.toInt()
+            loan_step_sum.text = listLoan.loanSum
         }
-
-        listLoan
     }
 
     private fun initClick() {
@@ -147,7 +142,8 @@ class LoanStepTwoFragment(
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
                             step_item_list.smoothScrollToPosition(listLoan.loanTerm!!.toInt() - minCounter)
                             progressBarr(listLoan.loanSum!!.toDouble().toInt().toString())
-                            loan_step_seek.progress = listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
+                            loan_step_seek.progress =
+                                listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
                         }, 1200)
                     } else {
                         progressBarr(sumMin.toString())
@@ -156,9 +152,10 @@ class LoanStepTwoFragment(
                     progressBarr(sumMin.toString())
                 }
 
-                totalCounter = result.result.minCount.toString().toInt()
-                totalSum = result.result.minSum!!.toDouble().toInt()
-
+                if (!status){
+                    totalCounter = result.result.minCount.toString().toInt()
+                    totalSum = result.result.minSum!!.toDouble().toInt()
+                }
                 minCounterLoan.setText(minCounter.toString())
                 maxCounterLoan.setText(maxCounter.toString())
 
@@ -209,6 +206,11 @@ class LoanStepTwoFragment(
             mapSave.put("loan_sum", loan_step_sum.text.toString())
             mapSave.put("step", "1")
 
+            if (status == true) {
+                listLoan.loanTerm = totalCounter.toString()
+                listLoan.loanSum = loan_step_sum.text.toString()
+            }
+
             viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
                 val data = result.data
                 val msg = result.msg
@@ -226,13 +228,11 @@ class LoanStepTwoFragment(
                                     requireActivity().finish()
                                 } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                        3
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
                                 }
                             } else {
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                    3
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
                             }
                         } else if (data.error.code != null) {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
@@ -280,12 +280,7 @@ class LoanStepTwoFragment(
 
         try {
             step_item_list.initialize(myAdapter)
-            step_item_list.setViewsToChangeColor(
-                listOf(
-                    R.id.loan_step_number,
-                    R.id.loan_step_number
-                )
-            )
+            step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
             myAdapter.update(list)
 
         } catch (e: Exception) {
@@ -309,18 +304,12 @@ class LoanStepTwoFragment(
     }
 
     private fun totalSum() {
-        val equ = round(
-            (totalSum * (totalRate / 100)) / (1 - pow(
-                (1 + (totalRate / 100)),
-                -totalCounter.toDouble()
-            ))
-        )
+        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), -totalCounter.toDouble())))
         totalSumLoans.setText(equ.toInt().toString())
     }
 
     operator fun hasNext(): Boolean {
-        return step_item_list.getAdapter() != null &&
-                getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
+        return step_item_list.getAdapter() != null && getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
     }
 
     operator fun next() {
@@ -368,7 +357,8 @@ class LoanStepTwoFragment(
                 AppPreferences.isSeekBar = position
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
 //                step_item_list.smoothScrollToPosition(position)
 //                AppPreferences.isSeekBar = position
@@ -480,7 +470,7 @@ class LoanStepTwoFragment(
 //            loans_two_found.visibility = View.GONE
 //            loans_two_work.visibility = View.GONE
 //        } else
-            if (error == "403") {
+        if (error == "403") {
             loans_two_restricted.visibility = View.VISIBLE
             loans_two_found.visibility = View.GONE
             loans_two_work.visibility = View.GONE

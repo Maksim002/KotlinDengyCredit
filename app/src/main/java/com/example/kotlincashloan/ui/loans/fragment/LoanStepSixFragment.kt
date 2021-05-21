@@ -118,14 +118,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                 for (i in 1..listFamily.size) {
                     if (i <= listFamily.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listFamily[i - 1].name.toString(),
-                                "listFamily",
-                                i - 1,
-                                0,
-                                listFamily[i - 1].name.toString()
-                            )
-                        )
+                            GeneralDialogModel(listFamily[i - 1].name.toString(), "listFamily", i - 1, 0, listFamily[i - 1].name.toString()))
                     }
                 }
             }
@@ -248,6 +241,15 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             mapSave["type"] = family
             mapSave["phone"] = six_loan_phone.text.toString()
             mapSave["step"] = "5"
+
+            if (status == true){
+                //Сохроняет обновленные данные в смасив
+                listLoan.reLastName = six_loan_surname.text.toString()
+                listLoan.reFirstName = six_loan_name.text.toString()
+                listLoan.reSecondName = six_loan_middle_name.text.toString()
+                listLoan.reType = family
+                listLoan.rePhone = six_loan_phone.text.toString()
+            }
 
             viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
                 val data = result.data

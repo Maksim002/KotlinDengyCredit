@@ -704,6 +704,25 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave["place_work"] = fire_step_four_residence.text.toString()
         mapSave["step"] = "4"
 
+        if (status == true){
+            //Сохроняет измененные данные в масив
+            listLoan.typeWork = typeId
+            if (fire_step_four_working.text.isNotEmpty()) {
+                listLoan.otherTypeWork = fire_step_four_working.text.toString()
+            }
+            listLoan.workExpRu = yearsRfId
+            listLoan.workExpLast = yearsId
+            listLoan.income = incomeId
+            listLoan.subIncomeId = typeIncomeId
+            if (additionalId == "-1") {
+                listLoan.subIncomeSum = ""
+            } else {
+                listLoan.subIncomeSum = additionalId
+            }
+            listLoan.placeWork = fire_step_four_residence.text.toString()
+        }
+
+
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg

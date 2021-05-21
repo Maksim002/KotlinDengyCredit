@@ -342,6 +342,15 @@ override fun onStart() {
             } else {
                 mapImage["type_contract"] = contractTypeId.toString()
             }
+
+            if (statusValue == true) {
+                //Сохроняет обновленные данные в смасив
+                if (contractPosition == "") {
+                    listLoan.typeContract = ""
+                } else {
+                    listLoan.typeContract = contractTypeId.toString()
+                }
+            }
         }
 
         GetLoanActivity.alert.show()
@@ -398,6 +407,27 @@ override fun onStart() {
             mapSave["entry_goal"] = goalId.toString()
         }
         mapSave["step"] = "6"
+
+        if (statusValue == true) {
+            //Сохроняет обновленные данные в смасив
+            if (countriesPhone == ""){
+                listLoan.regDate = fifth_goal_name.text.toString()
+            }else{
+                listLoan.regDate = countriesPhone
+            }
+
+            if (goalPhone == ""){
+                listLoan.entryDate = date_entry.text.toString()
+            }else{
+                listLoan.entryDate = goalPhone
+            }
+
+            if (goalPosition == ""){
+                listLoan.entryGoal = ""
+            }else{
+                listLoan.entryGoal = goalId.toString()
+            }
+        }
 
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data

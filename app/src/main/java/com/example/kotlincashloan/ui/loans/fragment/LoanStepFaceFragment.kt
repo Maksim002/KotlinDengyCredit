@@ -52,8 +52,10 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         super.onViewCreated(view, savedInstanceState)
         Instance().setServiceUrl("https://faceapi.molbulak.com")
 
-        if (statusValue == false && applicationStatus == false){
-            // Отоброожает кнопку если статус false видем закрытия
+        if (statusValue == false){
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            // Отоброожает кнопку если статус true видем закрытия
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
