@@ -158,97 +158,106 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     }
 
     private void initResult() {
-        GetLoanActivity.alert.show();
-        map.put("login", AppPreferences.INSTANCE.getLogin());
-        map.put("token", AppPreferences.INSTANCE.getToken());
-
-        if (list.containsKey("passport_photo")) {
-            map.put("passport_photo", list.get("passport_photo").getString());
+        new ObservedInternet().observedInternet(requireContext());
+        if (AppPreferences.INSTANCE.getObservedInternet()) {
+            status_no_questionnaire.setVisibility(View.VISIBLE);
+            status_technical_work.setVisibility(View.GONE);
+            layout_status.setVisibility(View.GONE);
+            status_not_found.setVisibility(View.GONE);
+            theeIncorrect.setVisibility(View.GONE);
         } else {
-            map.put("passport_photo", "");
-        }
-        if (list.containsKey("passport_img_1")) {
-            map.put("passport_img_1", list.get("passport_img_1").getString());
-        } else {
-            map.put("passport_img_1", "");
-        }
-        if (list.containsKey("passport_img_2")) {
-            map.put("passport_img_2", list.get("passport_img_2").getString());
-        } else {
-            map.put("passport_img_2", "");
-        }
-        map.put("id", AppPreferences.INSTANCE.getApplicationId());
-        map.put("step", "2");
+            GetLoanActivity.alert.show();
+            map.put("login", AppPreferences.INSTANCE.getLogin());
+            map.put("token", AppPreferences.INSTANCE.getToken());
+
+            if (list.containsKey("passport_photo")) {
+                map.put("passport_photo", list.get("passport_photo").getString());
+            } else {
+                map.put("passport_photo", "");
+            }
+            if (list.containsKey("passport_img_1")) {
+                map.put("passport_img_1", list.get("passport_img_1").getString());
+            } else {
+                map.put("passport_img_1", "");
+            }
+            if (list.containsKey("passport_img_2")) {
+                map.put("passport_img_2", list.get("passport_img_2").getString());
+            } else {
+                map.put("passport_img_2", "");
+            }
+            map.put("id", AppPreferences.INSTANCE.getApplicationId());
+            map.put("step", "2");
 
 
-        viewModel.saveLoans(map).observe(getViewLifecycleOwner(), new Observer<ResultStatus<CommonResponseReject<SaveLoanResultModel>>>() {
-            @Override
-            public void onChanged(ResultStatus<CommonResponseReject<SaveLoanResultModel>> result) {
-                switch (result.getStatus()) {
-                    case SUCCESS: {
-                        if (result.getData().getResult() != null) {
-                            layout_status.setVisibility(View.VISIBLE);
-                            theeIncorrect.setVisibility(View.GONE);
-                            status_technical_work.setVisibility(View.GONE);
-                            status_no_questionnaire.setVisibility(View.GONE);
-                            status_not_found.setVisibility(View.GONE);
-                            docImageIv.setImageBitmap(documentImage);
-                            portraitIv.setImageBitmap(portrait);
-                            if (AppPreferences.INSTANCE.getStatus() == true){
-                                getActivity().finish();
-                            }else {
-                                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-                            }
-                        } else if (result.getData().getError() != null) {
-                            if (result.getData().getError().getCode() == 400) {
-                                theeIncorrect.setText("Отсканируйте документ повторно");
-                                theeIncorrect.setVisibility(View.VISIBLE);
-                            } else if (result.getData().getError().getCode() == 500) {
-                                status_technical_work.setVisibility(View.VISIBLE);
-                                status_no_questionnaire.setVisibility(View.GONE);
-                                layout_status.setVisibility(View.GONE);
-                                status_not_found.setVisibility(View.GONE);
+            viewModel.saveLoans(map).observe(getViewLifecycleOwner(), new Observer<ResultStatus<CommonResponseReject<SaveLoanResultModel>>>() {
+                @Override
+                public void onChanged(ResultStatus<CommonResponseReject<SaveLoanResultModel>> result) {
+                    switch (result.getStatus()) {
+                        case SUCCESS: {
+                            if (result.getData().getResult() != null) {
+                                layout_status.setVisibility(View.VISIBLE);
                                 theeIncorrect.setVisibility(View.GONE);
-                            } else if (result.getData().getError().getCode() == 401) {
-                                initAuthorized();
-                            } else if (result.getData().getError().getCode() == 409) {
-                                Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
-                                theeIncorrect.setVisibility(View.GONE);
-                            } else if (result.getData().getError().getCode() == 404) {
-                                status_not_found.setVisibility(View.VISIBLE);
                                 status_technical_work.setVisibility(View.GONE);
                                 status_no_questionnaire.setVisibility(View.GONE);
-                                layout_status.setVisibility(View.GONE);
+                                status_not_found.setVisibility(View.GONE);
+                                docImageIv.setImageBitmap(documentImage);
+                                portraitIv.setImageBitmap(portrait);
+                                if (AppPreferences.INSTANCE.getStatus() == true) {
+                                    getActivity().finish();
+                                } else {
+                                    ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                                }
+                            } else if (result.getData().getError() != null) {
+                                if (result.getData().getError().getCode() == 400) {
+                                    theeIncorrect.setText("Отсканируйте документ повторно");
+                                    theeIncorrect.setVisibility(View.VISIBLE);
+                                } else if (result.getData().getError().getCode() == 500) {
+                                    status_technical_work.setVisibility(View.VISIBLE);
+                                    status_no_questionnaire.setVisibility(View.GONE);
+                                    layout_status.setVisibility(View.GONE);
+                                    status_not_found.setVisibility(View.GONE);
+                                    theeIncorrect.setVisibility(View.GONE);
+                                } else if (result.getData().getError().getCode() == 401) {
+                                    initAuthorized();
+                                } else if (result.getData().getError().getCode() == 409) {
+                                    Toast.makeText(requireContext(), "Анкета уже создана", Toast.LENGTH_LONG).show();
+                                    theeIncorrect.setVisibility(View.GONE);
+                                } else if (result.getData().getError().getCode() == 404) {
+                                    status_not_found.setVisibility(View.VISIBLE);
+                                    status_technical_work.setVisibility(View.GONE);
+                                    status_no_questionnaire.setVisibility(View.GONE);
+                                    layout_status.setVisibility(View.GONE);
+                                    theeIncorrect.setVisibility(View.GONE);
+                                }
+                            } else if (result.getData().getReject() != null) {
+                                initBottomSheet(result.getData().getReject().getMessage());
+                                layout_status.setVisibility(View.VISIBLE);
+                                status_technical_work.setVisibility(View.GONE);
+                                status_no_questionnaire.setVisibility(View.GONE);
+                                status_not_found.setVisibility(View.GONE);
                                 theeIncorrect.setVisibility(View.GONE);
                             }
-                        } else if (result.getData().getReject() != null) {
-                            initBottomSheet(result.getData().getReject().getMessage());
-                            layout_status.setVisibility(View.VISIBLE);
-                            status_technical_work.setVisibility(View.GONE);
-                            status_no_questionnaire.setVisibility(View.GONE);
-                            status_not_found.setVisibility(View.GONE);
-                            theeIncorrect.setVisibility(View.GONE);
+                        }
+                        case NETWORK:
+                        case ERROR: {
+                            if (result.getMsg() != null) {
+                                errorSaveLoan(result.getMsg());
+                            } else if (result.getData().getCode() != 200) {
+                                errorSaveLoan(String.valueOf(result.getData().getCode()));
+                            }
                         }
                     }
-                    case NETWORK:
-                    case ERROR: {
-                        if (result.getMsg() != null) {
-                            errorSaveLoan(result.getMsg());
-                        } else if (result.getData().getCode() != 200) {
-                            errorSaveLoan(String.valueOf(result.getData().getCode()));
-                        }
-                    }
+                    GetLoanActivity.alert.hide();
                 }
-                GetLoanActivity.alert.hide();
-            }
-        });
+            });
+        }
     }
 
     private void errorSaveLoan(String error) {
         if (error != null) {
-            if (error.equals("601")) {
-                status_no_questionnaire.setVisibility(View.VISIBLE);
-                status_technical_work.setVisibility(View.GONE);
+            if (error.equals("601") || error.equals("600")) {
+                status_technical_work.setVisibility(View.VISIBLE);
+                status_no_questionnaire.setVisibility(View.GONE);
                 layout_status.setVisibility(View.GONE);
                 status_not_found.setVisibility(View.GONE);
                 theeIncorrect.setVisibility(View.GONE);

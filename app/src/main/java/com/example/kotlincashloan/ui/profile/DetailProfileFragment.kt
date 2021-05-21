@@ -85,87 +85,101 @@ class DetailProfileFragment : Fragment() {
     }
 
     private fun initResult() {
-        viewModel.listGetOperationDta.observe(viewLifecycleOwner, Observer { result ->
-            if (result.result != null) {
-                d_profile_title.text = result.result.title
-                d_profile_date.text = result.result.date
-                d_profile_description.text = result.result.description
-                d_profile_text.loadMarkdown(result.result.text)
-                errorCode = result.code.toString()
-                if (!detailProfileAnim) {
-                    //detailProfileAnim анимация для перехода с адного дествия в другое
-                    TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
-                    detailProfileAnim = true
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            d_profile_no_connection.visibility = View.VISIBLE
+            d_profile_technical_work.visibility = View.GONE
+            d_profile_profile.visibility = View.GONE
+            d_profile_access_restricted.visibility = View.GONE
+            d_profile_not_found.visibility = View.GONE
+            viewModel.errorGetOperation.value = null
+            errorCode = "601"
+        } else {
+            viewModel.listGetOperationDta.observe(viewLifecycleOwner, Observer { result ->
+                if (result.result != null) {
+                    d_profile_title.text = result.result.title
+                    d_profile_date.text = result.result.date
+                    d_profile_description.text = result.result.description
+                    d_profile_text.loadMarkdown(result.result.text)
+                    errorCode = result.code.toString()
+                    if (!detailProfileAnim) {
+                        //detailProfileAnim анимация для перехода с адного дествия в другое
+                        TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
+                        detailProfileAnim = true
+                    }
+                    d_profile_access_restricted.visibility = View.GONE
+                    d_profile_no_connection.visibility = View.GONE
+                    d_profile_technical_work.visibility = View.GONE
+                    d_profile_not_found.visibility = View.GONE
+                    d_profile_profile.visibility = View.VISIBLE
+                } else {
+                    if (result.error.code != null) {
+                        errorCode = result.error.code.toString()
+                    }
+                    if (result.error.code == 400 || result.error.code == 500) {
+                        d_profile_technical_work.visibility = View.VISIBLE
+                        d_profile_profile.visibility = View.GONE
+                        d_profile_access_restricted.visibility = View.GONE
+                        d_profile_no_connection.visibility = View.GONE
+                        d_profile_not_found.visibility = View.GONE
+                    } else if (result.error.code == 403) {
+                        d_profile_access_restricted.visibility = View.VISIBLE
+                        d_profile_technical_work.visibility = View.GONE
+                        d_profile_profile.visibility = View.GONE
+                        d_profile_no_connection.visibility = View.GONE
+                        d_profile_not_found.visibility = View.GONE
+                    } else if (result.error.code == 404) {
+                        d_profile_not_found.visibility = View.VISIBLE
+                        d_profile_access_restricted.visibility = View.GONE
+                        d_profile_technical_work.visibility = View.GONE
+                        d_profile_profile.visibility = View.GONE
+                        d_profile_no_connection.visibility = View.GONE
+                    } else if (result.error.code == 401) {
+                        initAuthorized()
+                    }
                 }
-                d_profile_access_restricted.visibility = View.GONE
-                d_profile_no_connection.visibility = View.GONE
-                d_profile_technical_work.visibility = View.GONE
-                d_profile_not_found.visibility = View.GONE
-                d_profile_profile.visibility = View.VISIBLE
-            } else {
-                if (result.error.code != null) {
-                    errorCode = result.error.code.toString()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                }, 500)
+            })
+
+            viewModel.errorGetOperation.observe(viewLifecycleOwner, Observer { error ->
+                if (error != null) {
+                    errorCode = error
                 }
-                if (result.error.code == 400 || result.error.code == 500) {
+                if (error == "400" || error == "500" || error == "600" || error == "601") {
                     d_profile_technical_work.visibility = View.VISIBLE
                     d_profile_profile.visibility = View.GONE
                     d_profile_access_restricted.visibility = View.GONE
                     d_profile_no_connection.visibility = View.GONE
                     d_profile_not_found.visibility = View.GONE
-                } else if (result.error.code == 403) {
+                } else if (error == "403") {
                     d_profile_access_restricted.visibility = View.VISIBLE
                     d_profile_technical_work.visibility = View.GONE
                     d_profile_profile.visibility = View.GONE
                     d_profile_no_connection.visibility = View.GONE
                     d_profile_not_found.visibility = View.GONE
-                } else if (result.error.code == 404) {
+                } else if (error == "404") {
                     d_profile_not_found.visibility = View.VISIBLE
                     d_profile_access_restricted.visibility = View.GONE
                     d_profile_technical_work.visibility = View.GONE
                     d_profile_profile.visibility = View.GONE
                     d_profile_no_connection.visibility = View.GONE
-                } else if (result.error.code == 401) {
+                } else if (error == "401") {
                     initAuthorized()
                 }
-            }
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                HomeActivity.alert.hide()
-//            },500)
-        })
-
-        viewModel.errorGetOperation.observe(viewLifecycleOwner, Observer { error ->
-            if (error != null) {
-                errorCode = error
-            }
-            if (error == "400" || error == "500" || error == "600") {
-                d_profile_technical_work.visibility = View.VISIBLE
-                d_profile_profile.visibility = View.GONE
-                d_profile_access_restricted.visibility = View.GONE
-                d_profile_no_connection.visibility = View.GONE
-                d_profile_not_found.visibility = View.GONE
-            } else if (error == "403") {
-                d_profile_access_restricted.visibility = View.VISIBLE
-                d_profile_technical_work.visibility = View.GONE
-                d_profile_profile.visibility = View.GONE
-                d_profile_no_connection.visibility = View.GONE
-                d_profile_not_found.visibility = View.GONE
-            } else if (error == "404") {
-                d_profile_not_found.visibility = View.VISIBLE
-                d_profile_access_restricted.visibility = View.GONE
-                d_profile_technical_work.visibility = View.GONE
-                d_profile_profile.visibility = View.GONE
-                d_profile_no_connection.visibility = View.GONE
-            } else if (error == "401") {
-                initAuthorized()
-            } else if (error == "601") {
-                d_profile_no_connection.visibility = View.VISIBLE
-                d_profile_technical_work.visibility = View.GONE
-                d_profile_profile.visibility = View.GONE
-                d_profile_access_restricted.visibility = View.GONE
-                d_profile_not_found.visibility = View.GONE
-            }
-//            HomeActivity.alert.hide()
-        })
+//                else if (error == "601") {
+//                    d_profile_no_connection.visibility = View.VISIBLE
+//                    d_profile_technical_work.visibility = View.GONE
+//                    d_profile_profile.visibility = View.GONE
+//                    d_profile_access_restricted.visibility = View.GONE
+//                    d_profile_not_found.visibility = View.GONE
+//                }
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    HomeActivity.alert.hide()
+                }, 500)
+            })
+        }
     }
 
     private fun initRestart() {
@@ -180,14 +194,12 @@ class DetailProfileFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetOperationDta.value == null) {
-                MainActivity.alert.show()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    viewModel.getOperation(map)
-                    initResult()
-                }, 500)
+                HomeActivity.alert.show()
+                viewModel.getOperation(map)
+                initResult()
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorGetOperation.value != null){
+                    if (viewModel.errorGetOperation.value != null) {
                         viewModel.errorGetOperation.value = null
                         viewModel.listGetOperationDta.postValue(null)
                     }
@@ -213,6 +225,7 @@ class DetailProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
         if (viewModel.listGetOperationDta.value != null) {
             if (errorCode == "200") {
                 initResult()
@@ -231,4 +244,5 @@ class DetailProfileFragment : Fragment() {
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).rollback()
     }
+
 }

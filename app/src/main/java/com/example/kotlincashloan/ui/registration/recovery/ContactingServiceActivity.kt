@@ -277,7 +277,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingMistake(this)
@@ -381,7 +381,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600") {
+                            if (msg == "600" || msg == "601") {
                                 loadingMistake(this)
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
@@ -457,7 +457,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             loadingMistake(this)
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE

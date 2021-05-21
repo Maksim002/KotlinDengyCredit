@@ -114,14 +114,14 @@ class LoansDetailsFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetDta.value == null) {
-               MainActivity.alert.show()
+                MainActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNews(map)
                     initRequest()
                 }, 500)
-            }else{
+            } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorGet.value != null){
+                    if (viewModel.errorGet.value != null) {
                         viewModel.errorGet.value = null
                         viewModel.listGetDta.postValue(null)
                     }
@@ -140,8 +140,10 @@ class LoansDetailsFragment : Fragment() {
             try {
                 if (result.code == 200 && result.result != null) {
                     // animation перехода с одного фрагмента в друной
-                    if (!loansAnim){
-                        TransitionAnimation(activity as  AppCompatActivity).transitionRight(loans_layout)
+                    if (!loansAnim) {
+                        TransitionAnimation(activity as AppCompatActivity).transitionRight(
+                            loans_layout
+                        )
                         loansAnim = true
                     }
                     loans_details_name.setText(result.result.name)
@@ -183,12 +185,12 @@ class LoansDetailsFragment : Fragment() {
                         loans_detail_not_found.visibility = View.GONE
                     }
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                HomeActivity.alert.hide()
-//            },400)
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                MainActivity.alert.hide()
+            }, 400)
         })
 
         viewModel.errorGet.observe(viewLifecycleOwner, Observer { error ->
@@ -209,20 +211,23 @@ class LoansDetailsFragment : Fragment() {
                 loans_detail_technical_work.visibility = View.GONE
             } else if (error == "401") {
                 initAuthorized()
-            } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600") {
+            } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
                 loans_detail_technical_work.visibility = View.VISIBLE
                 loans_detail_no_connection.visibility = View.GONE
                 loans_detail_layout.visibility = View.GONE
                 loans_detail_access_restricted.visibility = View.GONE
                 loans_detail_not_found.visibility = View.GONE
-            } else if (error == "601") {
-                loans_detail_no_connection.visibility = View.VISIBLE
-                loans_detail_layout.visibility = View.GONE
-                loans_detail_access_restricted.visibility = View.GONE
-                loans_detail_not_found.visibility = View.GONE
-                loans_detail_technical_work.visibility = View.GONE
             }
-//            HomeActivity.alert.hide()
+//            else if (error == "601") {
+//                loans_detail_no_connection.visibility = View.VISIBLE
+//                loans_detail_layout.visibility = View.GONE
+//                loans_detail_access_restricted.visibility = View.GONE
+//                loans_detail_not_found.visibility = View.GONE
+//                loans_detail_technical_work.visibility = View.GONE
+//            }
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                MainActivity.alert.hide()
+            }, 400)
         })
     }
 

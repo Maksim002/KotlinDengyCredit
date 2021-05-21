@@ -95,6 +95,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
         }else{
+            home_layout.visibility = View.VISIBLE
+            home_no_connection.visibility = View.GONE
             if (AppPreferences.savePin == ""){
                 alert.show()
             }
@@ -108,8 +110,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     remoteConfig.fetchAndActivate()
                     val urlApi = remoteConfig.getString("url_dev")
                     val tokenApi = remoteConfig.getString("token_dev")
-                    AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
-                    AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+                    AppPreferences.urlApi = urlApi
+                    AppPreferences.tokenApi = tokenApi
+
+//                    https://crm-api-dev.molbulak.ru/api/app/
 
                     if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                         if (recPosition <= 5) {
@@ -262,12 +266,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
-                            loadingMistake(this)
-                        } else if(msg == "601") {
                             loadingMistake(this)
                         }else{
                             home_no_connection.visibility = View.VISIBLE

@@ -113,7 +113,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
@@ -248,81 +248,88 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
 
     // Регистрация. Список доступных стран
     private fun getListCountry() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        HomeActivity.alert.show()
-        viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        number_phone.mask = ""
-                        number_phone.text = null
-                        number_list_country.setText("+" + result.data.result[0].phoneCode.toString())
-                        number_phone.mask = result.data.result[0].phoneMaskSmall
-                        numberCharacters = result.data.result[0].phoneLength!!.toInt()
-                        сountryPosition = result.data.result[0].name.toString()
-                        listAvailableCountry = data.result
-                        initVisibilities()
-                    } else {
-                        if (data.error.code == 403) {
-                            number_no_connection.visibility = View.GONE
-                            number_access_restricted.visibility = View.VISIBLE
-                            number_layout.visibility = View.GONE
+        ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            number_no_connection.visibility = View.VISIBLE
+            number_layout.visibility = View.GONE
+        } else {
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            HomeActivity.alert.show()
+            viewModel.listAvailableCountry(map)
+                .observe(this, androidx.lifecycle.Observer { result ->
+                    val msg = result.msg
+                    val data = result.data
+                    when (result.status) {
+                        Status.SUCCESS -> {
+                            if (data!!.result != null) {
+                                number_phone.mask = ""
+                                number_phone.text = null
+                                number_list_country.setText("+" + result.data.result[0].phoneCode.toString())
+                                number_phone.mask = result.data.result[0].phoneMaskSmall
+                                numberCharacters = result.data.result[0].phoneLength!!.toInt()
+                                сountryPosition = result.data.result[0].name.toString()
+                                listAvailableCountry = data.result
+                                initVisibilities()
+                            } else {
+                                if (data.error.code == 403) {
+                                    number_no_connection.visibility = View.GONE
+                                    number_access_restricted.visibility = View.VISIBLE
+                                    number_layout.visibility = View.GONE
 
-                        } else if (data.error.code == 404) {
-                            number_no_connection.visibility = View.GONE
-                            number_not_found.visibility = View.VISIBLE
-                            number_layout.visibility = View.GONE
+                                } else if (data.error.code == 404) {
+                                    number_no_connection.visibility = View.GONE
+                                    number_not_found.visibility = View.VISIBLE
+                                    number_layout.visibility = View.GONE
 
-                        } else if (data.error.code == 401) {
-                            initAuthorized()
-                        } else {
-                            number_no_connection.visibility = View.GONE
-                            number_technical_work.visibility = View.VISIBLE
-                            number_layout.visibility = View.GONE
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    number_no_connection.visibility = View.GONE
+                                    number_technical_work.visibility = View.VISIBLE
+                                    number_layout.visibility = View.GONE
+                                }
+                            }
+                        }
+                        Status.ERROR -> {
+                            if (msg == "404") {
+                                number_no_connection.visibility = View.GONE
+                                number_not_found.visibility = View.VISIBLE
+                                number_layout.visibility = View.GONE
+
+                            } else if (msg == "403") {
+                                number_no_connection.visibility = View.GONE
+                                number_access_restricted.visibility = View.VISIBLE
+                                number_layout.visibility = View.GONE
+
+                            } else if (msg == "401") {
+                                initAuthorized()
+                            } else {
+                                number_no_connection.visibility = View.GONE
+                                number_technical_work.visibility = View.VISIBLE
+                                number_layout.visibility = View.GONE
+                            }
+                        }
+                        Status.NETWORK -> {
+                            if (msg == "601" || msg == "600") {
+                                number_technical_work.visibility = View.VISIBLE
+                                number_no_connection.visibility = View.GONE
+                                number_layout.visibility = View.GONE
+                                number_access_restricted.visibility = View.GONE
+                                number_not_found.visibility = View.GONE
+                                if (bottomSheetDialogFragment.isResumed == true) {
+                                    bottomSheetDialogFragment.dismiss()
+                                }
+                            } else {
+                                number_no_connection.visibility = View.VISIBLE
+                                number_technical_work.visibility = View.GONE
+                                number_layout.visibility = View.GONE
+                            }
                         }
                     }
-                }
-                Status.ERROR -> {
-                    if (msg == "404") {
-                        number_no_connection.visibility = View.GONE
-                        number_not_found.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-
-                    } else if (msg == "403") {
-                        number_no_connection.visibility = View.GONE
-                        number_access_restricted.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-
-                    } else if (msg == "401") {
-                        initAuthorized()
-                    } else {
-                        number_no_connection.visibility = View.GONE
-                        number_technical_work.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-                    }
-                }
-                Status.NETWORK -> {
-                    if (msg == "601") {
-                        number_no_connection.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-                        number_access_restricted.visibility = View.GONE
-                        number_not_found.visibility = View.GONE
-                        number_technical_work.visibility = View.GONE
-                        if (bottomSheetDialogFragment.isResumed == true) {
-                            bottomSheetDialogFragment.dismiss()
-                        }
-                    } else {
-                        number_no_connection.visibility = View.GONE
-                        number_technical_work.visibility = View.VISIBLE
-                        number_layout.visibility = View.GONE
-                    }
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                    HomeActivity.alert.hide()
+                })
+        }
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера

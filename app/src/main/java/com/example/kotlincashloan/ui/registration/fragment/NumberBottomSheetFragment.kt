@@ -96,7 +96,7 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                                 }
                             }
                             Status.NETWORK -> {
-                                if (msg == "600") {
+                                if (msg == "600" || msg == "601") {
                                     loadingMistake(activity as AppCompatActivity)
                                     number_incorrect.visibility = View.VISIBLE
                                 } else {

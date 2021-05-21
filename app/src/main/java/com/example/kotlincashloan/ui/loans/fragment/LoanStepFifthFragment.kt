@@ -64,6 +64,7 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -545,9 +546,18 @@ override fun onStart() {
         }
 
         bottom_loan_fifth.setOnClickListener {
-            saveValidate = true
-            if (validate()) {
-                initSaveServer()
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                fifth_ste_no_connection.visibility = View.VISIBLE
+                layout_fifth.visibility = View.GONE
+                fifth_ste_technical_work.visibility = View.GONE
+                fifth_ste_access_restricted.visibility = View.GONE
+                fifth_ste_not_found.visibility = View.GONE
+            } else {
+                saveValidate = true
+                if (validate()) {
+                    initSaveServer()
+                }
             }
         }
 

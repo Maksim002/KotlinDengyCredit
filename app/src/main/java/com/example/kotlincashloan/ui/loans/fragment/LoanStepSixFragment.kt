@@ -31,6 +31,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -228,53 +229,64 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
-        val mapSave = mutableMapOf<String, String>()
-        mapSave["login"] = AppPreferences.login.toString()
-        mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.applicationId.toString()
-        mapSave["last_name"] = six_loan_surname.text.toString()
-        mapSave["first_name"] = six_loan_name.text.toString()
-        mapSave["second_name"] = six_loan_middle_name.text.toString()
-        mapSave["type"] = family
-        mapSave["phone"] = six_loan_phone.text.toString()
-        mapSave["step"] = "5"
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            six_ste_no_connection.visibility = View.VISIBLE
+            layout_loan_six.visibility = View.GONE
+            six_ste_technical_work.visibility = View.GONE
+            six_ste_access_restricted.visibility = View.GONE
+            six_ste_not_found.visibility = View.GONE
+        } else {
+            GetLoanActivity.alert.show()
+            val mapSave = mutableMapOf<String, String>()
+            mapSave["login"] = AppPreferences.login.toString()
+            mapSave["token"] = AppPreferences.token.toString()
+            mapSave["id"] = AppPreferences.applicationId.toString()
+            mapSave["last_name"] = six_loan_surname.text.toString()
+            mapSave["first_name"] = six_loan_name.text.toString()
+            mapSave["second_name"] = six_loan_middle_name.text.toString()
+            mapSave["type"] = family
+            mapSave["phone"] = six_loan_phone.text.toString()
+            mapSave["step"] = "5"
 
-        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
-            val data = result.data
-            val msg = result.msg
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        layout_loan_six.visibility = View.VISIBLE
-                        six_ste_technical_work.visibility = View.GONE
-                        six_ste_no_connection.visibility = View.GONE
-                        six_ste_access_restricted.visibility = View.GONE
-                        six_ste_not_found.visibility = View.GONE
-                        if (applicationStatus == false){
-                            if (status == true){
-                                requireActivity().finish()
-                            }else{
-                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+            viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+                val data = result.data
+                val msg = result.msg
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            layout_loan_six.visibility = View.VISIBLE
+                            six_ste_technical_work.visibility = View.GONE
+                            six_ste_no_connection.visibility = View.GONE
+                            six_ste_access_restricted.visibility = View.GONE
+                            six_ste_not_found.visibility = View.GONE
+                            if (applicationStatus == false) {
+                                if (status == true) {
+                                    requireActivity().finish()
+                                } else {
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                        6
+                                }
+                            } else {
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                    6
                             }
-                        }else{
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+                        } else if (data.error.code != null) {
+                            listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                        } else if (data.reject != null) {
+                            initBottomSheet(data.reject.message.toString())
                         }
-                    } else if (data.error.code != null) {
-                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    } else if (data.reject != null) {
-                        initBottomSheet(data.reject.message.toString())
+                    }
+                    Status.ERROR -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
+                    }
+                    Status.NETWORK -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                Status.ERROR -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-                Status.NETWORK -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-            }
-            GetLoanActivity.alert.hide()
-        })
+                GetLoanActivity.alert.hide()
+            })
+        }
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.

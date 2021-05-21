@@ -20,6 +20,7 @@ import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.fragment.*
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.utils.ColorWindows
+import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
@@ -27,6 +28,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -144,121 +146,103 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initGetLoan() {
-        if (statusValue == true) {
-            if (applicationStatus == false) {
-                loan_cross_clear.visibility = View.GONE
+            if (statusValue == true) {
+                if (applicationStatus == false) {
+                    loan_cross_clear.visibility = View.GONE
+                }
+                alert.show()
             }
-            alert.show()
-        }
-        try {
-            if (listLoan.docs!!.size != 0) {
-                states = listLoan.docs!!
-                statusValue = true
+            try {
+                if (listLoan.docs!!.size != 0) {
+                    states = listLoan.docs!!
+                    statusValue = true
 
-                if (listLoan.step!!.toInt() >= 6) {
-                    //getListsFifth ОЧЕЩАЕТ ВСЕ КАРТИНКИ ПЕРЕД ЗАПОЛНЕНИЕМ
-                    hashMapBitmap.clear()
+                    if (listLoan.step!!.toInt() >= 6) {
+                        //getListsFifth ОЧЕЩАЕТ ВСЕ КАРТИНКИ ПЕРЕД ЗАПОЛНЕНИЕМ
+                        hashMapBitmap.clear()
 
-                    if (position <= states.size) {
-                        if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
-                            val mapImg = HashMap<String, String>()
-                            mapImg.put("login", AppPreferences.login.toString())
-                            mapImg.put("token", AppPreferences.token.toString())
-                            mapImg.put("type", "doc")
-                            mapImg.put("doc_id", listLoan.id.toString())
-                            mapImg.put("type_id", states[position])
-                            getImList.add(position.toString())
+                        if (position <= states.size) {
+                            if (errorCodeIm == "200" || errorCodeIm == "404" || errorCodeIm == "") {
+                                val mapImg = HashMap<String, String>()
+                                mapImg.put("login", AppPreferences.login.toString())
+                                mapImg.put("token", AppPreferences.token.toString())
+                                mapImg.put("type", "doc")
+                                mapImg.put("doc_id", listLoan.id.toString())
+                                mapImg.put("type_id", states[position])
+                                getImList.add(position.toString())
 
-                            viewModel.getImgLoan(mapImg)
-                                .observe(this, androidx.lifecycle.Observer { result ->
-                                    val msg = result.msg
-                                    val data = result.data
-                                    when (result.status) {
-                                        Status.SUCCESS -> {
-                                            if (data!!.result != null) {
-                                                errorCodeIm = data.code.toString()
-                                                if (getImList.size != states.size) {
-                                                    convert(data.result.data.toString())
-                                                    position++
-                                                    initGetLoan()
-                                                } else if (mitmap.size == states.size - 1) {
-                                                    convert(data.result.data.toString())
-                                                    LoanStepFifthFragment(
-                                                        statusValue,
-                                                        mitmap,
-                                                        listLoan,
-                                                        permission,
-                                                        applicationStatus
-                                                    )
-                                                    transition()
-                                                    alert.hide()
-                                                }
-                                            } else {
-                                                if (data.error.code == 404) {
-                                                    if (errorCodeIm != "404") {
-                                                        Toast.makeText(
-                                                            this,
-                                                            "Фото нет",
-                                                            Toast.LENGTH_LONG
-                                                        ).show()
+                                viewModel.getImgLoan(mapImg)
+                                    .observe(this, androidx.lifecycle.Observer { result ->
+                                        val msg = result.msg
+                                        val data = result.data
+                                        when (result.status) {
+                                            Status.SUCCESS -> {
+                                                if (data!!.result != null) {
+                                                    errorCodeIm = data.code.toString()
+                                                    if (getImList.size != states.size) {
+                                                        convert(data.result.data.toString())
+                                                        position++
+                                                        initGetLoan()
+                                                    } else if (mitmap.size == states.size - 1) {
+                                                        convert(data.result.data.toString())
+                                                        LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)
                                                         transition()
-                                                        isClickableBottom()
-                                                        errorCodeIm = "404"
                                                         alert.hide()
                                                     }
                                                 } else {
-                                                    if (errorCodeIm != data.error.code.toString()) {
-                                                        listListResult(
-                                                            data.error.code!!.toInt(),
-                                                            this
-                                                        )
+                                                    if (data.error.code == 404) {
+                                                        if (errorCodeIm != "404") {
+                                                            Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
+                                                            transition()
+                                                            isClickableBottom()
+                                                            errorCodeIm = "404"
+                                                            alert.hide()
+                                                        }
+                                                    } else {
+                                                        if (errorCodeIm != data.error.code.toString()) {
+                                                            listListResult(data.error.code!!.toInt(), this)
+                                                            isClickableBottom()
+                                                            errorCodeIm = data.error.code.toString()
+                                                            alert.hide()
+                                                        }
+                                                    }
+                                                    alert.hide()
+                                                }
+                                            }
+                                            Status.NETWORK, Status.ERROR -> {
+                                                if (msg!! == "404") {
+                                                    if (errorCodeIm != "404") {
+                                                        Toast.makeText(this, "Фото нет", Toast.LENGTH_LONG).show()
+                                                        transition()
                                                         isClickableBottom()
-                                                        errorCodeIm = data.error.code.toString()
-                                                        alert.hide()
+                                                        errorCodeIm = "404"
+                                                    }
+                                                } else {
+                                                    if (errorCodeIm != msg) {
+                                                        listListResult(msg, this)
+                                                        isClickableBottom()
+                                                        errorCodeIm = msg
                                                     }
                                                 }
                                                 alert.hide()
                                             }
                                         }
-                                        Status.NETWORK, Status.ERROR -> {
-                                            if (msg!! == "404") {
-                                                if (errorCodeIm != "404") {
-                                                    Toast.makeText(
-                                                        this,
-                                                        "Фото нет",
-                                                        Toast.LENGTH_LONG
-                                                    )
-                                                        .show()
-                                                    transition()
-                                                    isClickableBottom()
-                                                    errorCodeIm = "404"
-                                                }
-                                            } else {
-                                                if (errorCodeIm != msg) {
-                                                    listListResult(msg, this)
-                                                    isClickableBottom()
-                                                    errorCodeIm = msg
-                                                }
-                                            }
-                                            alert.hide()
-                                        }
-                                    }
-                                })
+                                    })
+                            }
                         }
+                    } else {
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            transition()
+                        }, 2500)
                     }
-                }else{
+                } else {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         transition()
                     }, 2500)
                 }
-            } else {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    transition()
-                }, 2500)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun convert(string: String) {

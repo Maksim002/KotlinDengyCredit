@@ -32,6 +32,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -127,6 +128,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     private fun initClick() {
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            fire_ste_no_connection.visibility = View.VISIBLE
+            layout_fire.visibility = View.GONE
+            fire_ste_technical_work.visibility = View.GONE
+            fire_ste_access_restricted.visibility = View.GONE
+            fire_ste_not_found.visibility = View.GONE
+        } else {
         bottom_loan_fire.setOnClickListener {
             if (fire_additional_amount.visibility == View.GONE) {
                 additionalId = "-1"
@@ -134,6 +143,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             if (validate()) {
                 initSaveLoan()
             }
+        }
         }
 
         access_restricted.setOnClickListener {

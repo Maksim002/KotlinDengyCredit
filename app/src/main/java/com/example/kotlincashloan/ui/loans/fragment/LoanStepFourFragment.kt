@@ -125,8 +125,17 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         bottom_loan_four.setOnClickListener {
-            if (validate()) {
-                initSaveLoan()
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                loans_ste_no_connection.visibility = View.VISIBLE
+                loans_step_layout.visibility = View.GONE
+                loans_ste_technical_work.visibility = View.GONE
+                loans_ste_access_restricted.visibility = View.GONE
+                loans_ste_not_found.visibility = View.GONE
+            } else {
+                if (validate()) {
+                    initSaveLoan()
+                }
             }
         }
 

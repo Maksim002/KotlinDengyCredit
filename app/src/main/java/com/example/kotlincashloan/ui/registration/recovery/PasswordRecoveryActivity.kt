@@ -195,7 +195,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
@@ -315,7 +315,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600") {
+                            if (msg == "600" || msg == "601") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE

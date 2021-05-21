@@ -28,6 +28,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -85,10 +86,19 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         }
 
         bottom_loan_face.setOnClickListener {
-            requestFace()
-            //Остановка таймера
-            initSuspendTime()
-            thee_incorrect_face.visibility = View.GONE
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                face_no_connection.visibility = View.VISIBLE
+                layout_face.visibility = View.GONE
+                face_access_restricted.visibility = View.GONE
+                face_technical_work.visibility = View.GONE
+                face_not_found.visibility = View.GONE
+            } else {
+                requestFace()
+                //Остановка таймера
+                initSuspendTime()
+                thee_incorrect_face.visibility = View.GONE
+            }
         }
 
         access_restricted.setOnClickListener {
@@ -172,10 +182,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     private fun requestFace() {
         //Метод сканироет лицо проверяет на живность
-        Instance().startLivenessMatching(
-            requireContext(),
-            1
-        ) { livenessResponse: LivenessResponse? ->
+        Instance().startLivenessMatching(requireContext(), 1) { livenessResponse: LivenessResponse? ->
             if (livenessResponse != null && livenessResponse.bitmap != null) {
                 GetLoanActivity.alert.show()
                 //Если сканирование прошло успешно

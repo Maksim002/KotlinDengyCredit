@@ -152,14 +152,18 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
     }
 
+    private fun nouInternet(){
+        questionnaire_no_questionnaire.visibility = View.VISIBLE
+        questionnaire_layout.visibility = View.GONE
+        questionnaire_technical_work.visibility = View.GONE
+        questionnaire_not_found.visibility = View.GONE
+        questionnaire_access_restricted.visibility = View.GONE
+    }
+
     private fun initResult() {
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
-            questionnaire_no_questionnaire.visibility = View.VISIBLE
-            questionnaire_layout.visibility = View.GONE
-            questionnaire_technical_work.visibility = View.GONE
-            questionnaire_not_found.visibility = View.GONE
-            questionnaire_access_restricted.visibility = View.GONE
+            nouInternet()
         } else {
             val map = mutableMapOf<String, String>()
             map["last_name"] = questionnaire_text_surnames.text.toString()
@@ -229,7 +233,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                         }
                     }
                     Status.NETWORK ->{
-                        if (msg == "600"){
+                        if (msg == "600" || msg == "601"){
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_layout.visibility = View.VISIBLE
                             loadingMistake(this)
@@ -441,280 +445,306 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     //Регистрация. Выбо пола.
     private fun getIdSxs() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        HomeActivity.alert.show()
-        viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        listGender = data.result
-                    }else{
-                        if (data.error.code == 403){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+         ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            nouInternet()
+        } else {
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            HomeActivity.alert.show()
+            viewModel.listGender(map).observe(this, androidx.lifecycle.Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            listGender = data.result
+                        } else {
+                            if (data.error.code == 403) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_access_restricted.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
+                            } else if (data.error.code == 404) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_not_found.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+
+                            } else if (data.error.code == 401) {
+                                initAuthorized()
+                            } else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_technical_work.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+                            }
+                        }
+                    }
+                    Status.ERROR -> {
+                        if (msg == "404") {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
+                        } else if (msg == "403") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else{
+                        } else {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
                         }
                     }
-                }
-                Status.ERROR -> {
-                    if (msg == "404"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
+                    Status.NETWORK -> {
+                        if (msg == "600" || msg == "601") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        } else {
+                            questionnaire_no_questionnaire.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.GONE
+                        }
 
-                    }else if (msg == "403"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    }else if (msg == "401"){
-                        initAuthorized()
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
                     }
                 }
-                Status.NETWORK -> {
-                    if (msg == "600"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.GONE
-                    }
-
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                HomeActivity.alert.hide()
+            })
+        }
     }
 
     // Регистрация. Список доступных стран
     private fun getListCountry() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        HomeActivity.alert.show()
-        viewModel.listAvailableCountry(map).observe(this, Observer { result->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        listNationalityCounter = data.result
-                        counterNationalPosition = listNationalityCounter[0].name.toString()
-                        questionnaire_available_countries.setText("+" + result.data.result[0].phoneCode.toString())
-                        questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
-                        nationalityCounter = result.data.result[0].phoneLength!!.toInt()
-                    } else {
-                        if (data.error.code == 403){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+         ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            nouInternet()
+        } else {
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            HomeActivity.alert.show()
+            viewModel.listAvailableCountry(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            listNationalityCounter = data.result
+                            counterNationalPosition = listNationalityCounter[0].name.toString()
+                            questionnaire_available_countries.setText("+" + result.data.result[0].phoneCode.toString())
+                            questionnaire_phone_additional.mask =
+                                result.data.result[0].phoneMaskSmall
+                            nationalityCounter = result.data.result[0].phoneLength!!.toInt()
+                        } else {
+                            if (data.error.code == 403) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_access_restricted.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
+                            } else if (data.error.code == 404) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_not_found.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+
+                            } else if (data.error.code == 401) {
+                                initAuthorized()
+                            } else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_technical_work.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+                            }
+                        }
+                    }
+                    Status.ERROR -> {
+                        if (msg == "404") {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
+                        } else if (msg == "403") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else{
+                        } else {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
                         }
                     }
-                }
-                Status.ERROR -> {
-                    if (msg == "404") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "403") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "401") {
-                        initAuthorized()
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
+                    Status.NETWORK -> {
+                        if (msg == "600" || msg == "601") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        } else {
+                            questionnaire_no_questionnaire.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.GONE
+                        }
                     }
                 }
-                Status.NETWORK -> {
-                    if (msg == "600"){
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.GONE
-                    }
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                HomeActivity.alert.hide()
+            })
+        }
     }
 
 
 
     //Регистрация получение грожданство
     private fun getListNationality() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        HomeActivity.alert.show()
-        viewModel.listNationality(map).observe(this, Observer { result ->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        listNationality = data.result
-                    } else {
-                        if (data.error.code == 403){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+         ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            nouInternet()
+        } else {
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            HomeActivity.alert.show()
+            viewModel.listNationality(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            listNationality = data.result
+                        } else {
+                            if (data.error.code == 403) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_access_restricted.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
+                            } else if (data.error.code == 404) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_not_found.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+
+                            } else if (data.error.code == 401) {
+                                initAuthorized()
+                            } else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_technical_work.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+                            }
+                        }
+                    }
+                    Status.ERROR -> {
+                        if (msg == "404") {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
+                        } else if (msg == "403") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else{
+                        } else {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
                         }
                     }
-                }
-                Status.ERROR -> {
-                    if (msg == "404") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "403") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "401") {
-                        initAuthorized()
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
+                    Status.NETWORK -> {
+                        if (msg == "600" || msg == "601") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        } else {
+                            questionnaire_no_questionnaire.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.GONE
+                        }
                     }
                 }
-                Status.NETWORK -> {
-                    if (msg == "600"){
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.GONE
-                    }
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                HomeActivity.alert.hide()
+            })
+        }
     }
 
     // Регистрация выбор секретного вопроса
     private fun getAutoOperation() {
-        val map = HashMap<String, Int>()
-        map.put("id", 0)
-        HomeActivity.alert.show()
-        viewModel.listSecretQuestion(map).observe(this, Observer { result ->
-            val msg = result.msg
-            val data = result.data
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        listSecretQuestion = data.result
-                    }else{
-                        if (data.error.code == 403){
-                            questionnaire_no_questionnaire.visibility = View.GONE
-                            questionnaire_access_restricted.visibility = View.VISIBLE
-                            questionnaire_layout.visibility = View.GONE
+         ObservedInternet().observedInternet(this)
+        if (!AppPreferences.observedInternet) {
+            nouInternet()
+        } else {
+            val map = HashMap<String, Int>()
+            map.put("id", 0)
+            HomeActivity.alert.show()
+            viewModel.listSecretQuestion(map).observe(this, Observer { result ->
+                val msg = result.msg
+                val data = result.data
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            listSecretQuestion = data.result
+                        } else {
+                            if (data.error.code == 403) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_access_restricted.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 404){
+                            } else if (data.error.code == 404) {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_not_found.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+
+                            } else if (data.error.code == 401) {
+                                initAuthorized()
+                            } else {
+                                questionnaire_no_questionnaire.visibility = View.GONE
+                                questionnaire_technical_work.visibility = View.VISIBLE
+                                questionnaire_layout.visibility = View.GONE
+                            }
+                        }
+                    }
+                    Status.ERROR -> {
+                        if (msg == "404") {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_not_found.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
 
-                        }else if (data.error.code == 401){
+                        } else if (msg == "403") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+
+                        } else if (msg == "401") {
                             initAuthorized()
-                        }else{
+                        } else {
                             questionnaire_no_questionnaire.visibility = View.GONE
                             questionnaire_technical_work.visibility = View.VISIBLE
                             questionnaire_layout.visibility = View.GONE
                         }
                     }
-                }
-                Status.ERROR -> {
-                    if (msg == "404") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_not_found.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "403") {
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_access_restricted.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-
-                    } else if (msg == "401") {
-                        initAuthorized()
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
+                    Status.NETWORK -> {
+                        if (msg == "600" || msg == "601") {
+                            questionnaire_no_questionnaire.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                        } else {
+                            questionnaire_no_questionnaire.visibility = View.VISIBLE
+                            questionnaire_layout.visibility = View.GONE
+                            questionnaire_technical_work.visibility = View.GONE
+                            questionnaire_not_found.visibility = View.GONE
+                            questionnaire_access_restricted.visibility = View.GONE
+                        }
                     }
                 }
-                Status.NETWORK -> {
-                    if (msg == "600"){
-                        questionnaire_no_questionnaire.visibility = View.GONE
-                        questionnaire_technical_work.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }else{
-                        questionnaire_no_questionnaire.visibility = View.VISIBLE
-                        questionnaire_layout.visibility = View.GONE
-                    }
-                }
-            }
-            HomeActivity.alert.hide()
-        })
+                HomeActivity.alert.hide()
+            })
+        }
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера

@@ -36,6 +36,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -191,59 +192,69 @@ class LoanStepTwoFragment(
 
     //Сохронение на сервер данных
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
-        val mapSave = mutableMapOf<String, String>()
-        mapSave.put("login", AppPreferences.login.toString())
-        mapSave.put("token", AppPreferences.token.toString())
-        mapSave.put("loan_type", "2");
-        mapSave.put("loan_term", totalCounter.toString())
-        mapSave.put("loan_sum", loan_step_sum.text.toString())
-        mapSave.put("step", "1")
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loans_two_connection.visibility = View.VISIBLE
+            layout_two.visibility = View.GONE
+            loans_two_work.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+        } else {
+            GetLoanActivity.alert.show()
+            val mapSave = mutableMapOf<String, String>()
+            mapSave.put("login", AppPreferences.login.toString())
+            mapSave.put("token", AppPreferences.token.toString())
+            mapSave.put("loan_type", "2");
+            mapSave.put("loan_term", totalCounter.toString())
+            mapSave.put("loan_sum", loan_step_sum.text.toString())
+            mapSave.put("step", "1")
 
-        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
-            val data = result.data
-            val msg = result.msg
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        layout_two.visibility = View.VISIBLE
-                        loans_two_work.visibility = View.GONE
-                        loans_two_connection.visibility = View.GONE
-                        loans_two_restricted.visibility = View.GONE
-                        loans_two_found.visibility = View.GONE
-                        AppPreferences.applicationId = data.result.id.toString()
-                        if (applicationStatus == false) {
-                            if (status == true) {
-                                requireActivity().finish()
-                            } else {
+            viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+                val data = result.data
+                val msg = result.msg
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            layout_two.visibility = View.VISIBLE
+                            loans_two_work.visibility = View.GONE
+                            loans_two_connection.visibility = View.GONE
+                            loans_two_restricted.visibility = View.GONE
+                            loans_two_found.visibility = View.GONE
+                            AppPreferences.applicationId = data.result.id.toString()
+                            if (applicationStatus == false) {
+                                if (status == true) {
+                                    requireActivity().finish()
+                                } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                        3
+                                }
+                            } else {
+//                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
                                     3
                             }
-                        } else {
-//                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                        } else if (data.error.code != null) {
+                            listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                        } else if (data.reject != null) {
+                            initBottomSheet(data.reject.message!!)
+                            layout_two.visibility = View.VISIBLE
+                            loans_two_work.visibility = View.GONE
+                            loans_two_connection.visibility = View.GONE
+                            loans_two_restricted.visibility = View.GONE
+                            loans_two_found.visibility = View.GONE
                         }
-                    } else if (data.error.code != null) {
-                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    } else if (data.reject != null) {
-                        initBottomSheet(data.reject.message!!)
-                        layout_two.visibility = View.VISIBLE
-                        loans_two_work.visibility = View.GONE
-                        loans_two_connection.visibility = View.GONE
-                        loans_two_restricted.visibility = View.GONE
-                        loans_two_found.visibility = View.GONE
+                    }
+                    Status.ERROR -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
+                    }
+                    Status.NETWORK -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                Status.ERROR -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-                Status.NETWORK -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-            }
-            GetLoanActivity.alert.hide()
-        })
+                GetLoanActivity.alert.hide()
+            })
+        }
     }
 
     override fun onClickStepListener() {
@@ -462,13 +473,14 @@ class LoanStepTwoFragment(
     }
 
     private fun initError(error: String) {
-        if (error == "601") {
-            loans_two_connection.visibility = View.VISIBLE
-            layout_two.visibility = View.GONE
-            loans_two_restricted.visibility = View.GONE
-            loans_two_found.visibility = View.GONE
-            loans_two_work.visibility = View.GONE
-        } else if (error == "403") {
+//        if (error == "601") {
+//            loans_two_connection.visibility = View.VISIBLE
+//            layout_two.visibility = View.GONE
+//            loans_two_restricted.visibility = View.GONE
+//            loans_two_found.visibility = View.GONE
+//            loans_two_work.visibility = View.GONE
+//        } else
+            if (error == "403") {
             loans_two_restricted.visibility = View.VISIBLE
             loans_two_found.visibility = View.GONE
             loans_two_work.visibility = View.GONE
@@ -482,7 +494,7 @@ class LoanStepTwoFragment(
             loans_two_restricted.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
-        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600") {
+        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
             loans_two_work.visibility = View.VISIBLE
             loans_two_connection.visibility = View.GONE
             layout_two.visibility = View.GONE
