@@ -160,8 +160,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                         resultSuccessfully()
                     }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    profile_swipe.isRefreshing = false
+//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                    profile_swipe.isRefreshing = false
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -195,8 +195,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                profile_swipe.isRefreshing = false
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                profile_swipe.isRefreshing = false
             })
 
 
@@ -235,8 +235,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                profile_swipe.isRefreshing = false
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                profile_swipe.isRefreshing = false
             })
         }
     }
@@ -285,6 +285,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                         resultSuccessfully()
                     }
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    profile_swipe.isRefreshing = false
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -298,12 +300,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
                             getErrorCode(error.toInt())
                         }
                         clearingDate()
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        profile_swipe.isRefreshing = false
                     }
                     errorGetImg = error
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             })
         }
     }
@@ -346,8 +350,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                         resultSuccessfully()
                     }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    profile_swipe.isRefreshing = false
+//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                    profile_swipe.isRefreshing = false
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -372,8 +376,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                profile_swipe.isRefreshing = false
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                profile_swipe.isRefreshing = false
             })
         }
     }
@@ -550,8 +554,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         clearingDate()
                         viewModel.listOperation(map)
                         viewModel.clientInfo(map)
-                        viewModel.getImg(mapImg)
                         viewModel.listApplication(map)
+                        viewModel.getImg(mapImg)
                         initRecycler()
                         initGetImgDta()
                     }, 500)
@@ -569,8 +573,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     initRecycler()
                 }
 //                clearError()
-                viewModel.listGetImgDta.postValue(null)
-                viewModel.getImg(mapImg)
+//                viewModel.listGetImgDta.postValue(null)
+//                viewModel.getImg(mapImg)
                 initGetImgDta()
                 initRecycler()
             }
@@ -587,8 +591,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
             clearingDate()
             viewModel.listOperation(map)
             viewModel.clientInfo(map)
-            viewModel.getImg(mapImg)
             viewModel.listApplication(map)
+            viewModel.getImg(mapImg)
             initRecycler()
             initGetImgDta()
         }else{
@@ -596,8 +600,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
             clearingDate()
             viewModel.listOperation(map)
             viewModel.clientInfo(map)
-            viewModel.getImg(mapImg)
             viewModel.listApplication(map)
+            viewModel.getImg(mapImg)
             initRecycler()
             initGetImgDta()
         }
@@ -635,12 +639,18 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     override fun onResume() {
         super.onResume()
-
         initArgument()
         errorValue()
         if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
         }
+        if (AppPreferences.updatingImage){
+            viewModel.listGetImgDta.postValue(null)
+            viewModel.getImg(mapImg)
+            initGetImgDta()
+            AppPreferences.updatingImage = false
+        }
+
         if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null
 //            || viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null || viewModel.errorListApplication.value != null
         ) {
@@ -650,8 +660,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 if (inputsAnim != 0) {
                     profAnim = true
                 }
-                viewModel.listGetImgDta.postValue(null)
-                viewModel.getImg(mapImg)
+//                viewModel.listGetImgDta.postValue(null)
+//                viewModel.getImg(mapImg)
                 initGetImgDta()
                 initRecycler()
             } else {

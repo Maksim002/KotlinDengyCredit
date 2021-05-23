@@ -124,6 +124,12 @@ object AppPreferences {
             it.putBoolean("errorCode", value)
         }
 
+    var updatingImage: Boolean
+        get() = preferences.getBoolean("updatingImage", false)
+        set(value) = preferences.edit {
+            it.putBoolean("updatingImage", value)
+        }
+
     var status: Boolean
         get() = preferences.getBoolean("status", false)
         set(value) = preferences.edit {

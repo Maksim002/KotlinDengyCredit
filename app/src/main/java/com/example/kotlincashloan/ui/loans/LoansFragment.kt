@@ -91,6 +91,11 @@ class LoansFragment : Fragment(), LoansListener {
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
+                listNewsId = "601"
+                listLoanId = "601"
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                MainActivity.alert.hide()
+                alert.hide()
             } else {
                 viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
                     try {
@@ -221,10 +226,10 @@ class LoansFragment : Fragment(), LoansListener {
                     if (error != null) {
                         initError(error)
                         listLoanId = error
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            MainActivity.alert.hide()
+                        }, 700)
                     }
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        MainActivity.alert.hide()
-                    }, 700)
                 })
             }
         } catch (e: Exception) {
@@ -460,6 +465,7 @@ class LoansFragment : Fragment(), LoansListener {
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 alert.hide()
+                MainActivity.alert.hide()
             } else {
                 if (viewModel.listNewsDta.value != null) {
                     viewModel.errorNews.value = null
@@ -594,13 +600,13 @@ class LoansFragment : Fragment(), LoansListener {
                         }
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         loans_layout.isRefreshing = false
-                        if (alertValid == false) {
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                alert.hide()
-                                alertValid = true
-                            }, 650)
-                        }
+//                        if (alertValid == false) {
+//                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                                MainActivity.alert.hide()
+//                                alert.hide()
+//                                alertValid = true
+//                            }, 650)
+//                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -740,6 +746,14 @@ class LoansFragment : Fragment(), LoansListener {
         ColorWindows(activity as AppCompatActivity).noRollback()
     }
 
+
+//    override fun onStart() {
+//        super.onStart()
+//        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//            AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
+//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+//        }, 20000)
+//    }
 
 //    var b = false
 //    override fun onStart() {

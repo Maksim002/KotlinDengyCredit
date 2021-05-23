@@ -108,11 +108,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private val mapQuestion = HashMap<String, String>()
     private val mapInfo = HashMap<String, String>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile_setting, container, false)
     }
@@ -244,7 +240,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         initResult()
     }
 
-    private fun clearingDate(){
+    private fun clearingDate() {
         viewModel.errorListGender.value = null
         viewModel.listGenderDta.value = null
         viewModel.errorListNationality.value = null
@@ -274,7 +270,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             viewModel.errorListSecretQuestion.value = null
             viewModel.errorSaveProfile.value = null
         } else {
-            viewModel.listGenderDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+            viewModel.listGenderDta.observe(
+                viewLifecycleOwner,
+                androidx.lifecycle.Observer { result ->
                     try {
                         if (result.result != null) {
                             profile_setting_gender.setText(result.result.first { it.id == clientResult.gender!!.toInt() }.name)
@@ -496,17 +494,19 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
                             errorListSecretQuestion = result.code.toString()
                             resultSuccessfully()
-
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                dialog.dismiss()
+                            },500)
                         } else {
                             listListResult(result.error.code!!)
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                dialog.dismiss()
+                            }, 500)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                     profile_s_swipe.isRefreshing = false
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        dialog.dismiss()
-                    }, 500)
                 })
 
             viewModel.errorListSecretQuestion.observe(
@@ -515,11 +515,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     if (error != null) {
                         errorListSecretQuestion = error
                         errorList(error)
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            dialog.dismiss()
+                        }, 500)
                     }
                     profile_s_swipe.isRefreshing = false
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        dialog.dismiss()
-                    }, 500)
                 })
         }
     }
@@ -640,15 +640,15 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
                         } else {
                             listListResult(result.error.code!!)
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                dialog.dismiss()
-                            }, 500)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     profile_s_swipe.isRefreshing = false
+//                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                        dialog.dismiss()
+//                    }, 500)
                 })
 
             //listClientInfoDta Проверка на ошибки
@@ -662,12 +662,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     }
                     if (error != null) {
                         errorList(error)
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            dialog.dismiss()
+                        }, 500)
                     }
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     profile_s_swipe.isRefreshing = false
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        dialog.dismiss()
-                    }, 500)
                 })
 
             //результат о сохронение данных
@@ -1334,6 +1334,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun imageBitmap(bm: Bitmap) {
+        AppPreferences.updatingImage = true
         addImage = true
         val nh = (bm.height * (512.0 / bm.width)).toInt()
         val scaled = Bitmap.createScaledBitmap(bm, 512, nh, true)

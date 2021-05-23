@@ -108,14 +108,14 @@ class SupportFragment : Fragment(), SupportListener {
         }
     }
 
-    private fun isRestart(){
-        if (viewModel.listFaqDta.value == null){
+    private fun isRestart() {
+        if (viewModel.listFaqDta.value == null) {
             viewModel.refreshCode = false
             viewModel.listFaqDta.value = null
             viewModel.error.value = null
             viewModel.listFaq(map)
             initRecycler()
-        }else {
+        } else {
             viewModel.refreshCode = false
             viewModel.listFaqDta.value = null
             viewModel.error.value = null
@@ -167,6 +167,7 @@ class SupportFragment : Fragment(), SupportListener {
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                foresight = false
                 viewModel.refreshCode = true
 //                refresh = true
                 isRestart()
@@ -232,68 +233,69 @@ class SupportFragment : Fragment(), SupportListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
-                },500)
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    MainActivity.alert.hide()
+//                },500)
             })
 
             viewModel.error.observe(viewLifecycleOwner, Observer { error ->
                 if (error != null) {
                     errorCode = error
-                }
-                if (error == "404") {
-                    layout_support_null.visibility = View.VISIBLE
-                    profile_recycler.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
-                    support_technical_work.visibility = View.GONE
 
-                } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429" || error == "601") {
-                    support_technical_work.visibility = View.VISIBLE
-                    support_swipe_layout.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    layout_access_restricted.visibility = View.GONE
-                    support_not_found.visibility = View.GONE
+                    if (error == "404") {
+                        layout_support_null.visibility = View.VISIBLE
+                        profile_recycler.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        layout_access_restricted.visibility = View.GONE
+                        support_technical_work.visibility = View.GONE
 
-                } else if (error == "403") {
-                    layout_access_restricted.visibility = View.VISIBLE
-                    support_swipe_layout.visibility = View.GONE
-                    support_no_connection.visibility = View.GONE
-                    support_technical_work.visibility = View.GONE
-                    support_not_found.visibility = View.GONE
-                } else if (error == "401") {
-                    initAuthorized()
-                }
+                    } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429" || error == "601") {
+                        support_technical_work.visibility = View.VISIBLE
+                        support_swipe_layout.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        layout_access_restricted.visibility = View.GONE
+                        support_not_found.visibility = View.GONE
+
+                    } else if (error == "403") {
+                        layout_access_restricted.visibility = View.VISIBLE
+                        support_swipe_layout.visibility = View.GONE
+                        support_no_connection.visibility = View.GONE
+                        support_technical_work.visibility = View.GONE
+                        support_not_found.visibility = View.GONE
+                    } else if (error == "401") {
+                        initAuthorized()
+                    }
 //                else if (error == "601") {
 //                    layout_access_restricted.visibility = View.GONE
 //                    support_technical_work.visibility = View.GONE
 //                    support_swipe_layout.visibility = View.GONE
 //                    support_no_connection.visibility = View.VISIBLE
 //                }
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                support_swipe_layout.isRefreshing = false
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
-                },500)
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    support_swipe_layout.isRefreshing = false
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        MainActivity.alert.hide()
+                    }, 500)
+                }
             })
         }
     }
 
     override fun onClickListener(item: ListFaqResultModel) {
         try {
-            if (foresight) {
-                if (!item.clicked) {
-                    if (!primaryInput) {
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            isSwitchingFalse()
-                            primaryInput = true
-                        }, 600)
-                    } else {
+            if (!item.clicked) {
+                foresight = true
+                if (!primaryInput) {
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         isSwitchingFalse()
-                    }
+                        primaryInput = true
+                    }, 600)
                 } else {
-                    isSwitchingTrue()
+                    isSwitchingFalse()
                 }
+            } else {
+                foresight = false
+                isSwitchingTrue()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -301,12 +303,12 @@ class SupportFragment : Fragment(), SupportListener {
     }
 
     //Метод запрашивает и сравнивает размеры окон
-    fun fitView(recyclerView: RecyclerView) {
+    fun fitView(recyclerView: RecyclerView? = null) {
         // запрашивает размер NestedScrollView
         layout_liner.post {
             heightLiner = layout_liner.height
             // запрашивает размер RecyclerView
-            recyclerView.post {
+            recyclerView!!.post {
                 heightRecycler = profile_recycler.height
                 // проверяет если это первичный старт
                 // Отрезмера NestedScrollView отнемает -240
@@ -316,10 +318,8 @@ class SupportFragment : Fragment(), SupportListener {
                 }
                 // Сравнивает размер окон
                 if (heightRecycler >= heightSize) {
-                    foresight = false
                     isSwitchingFalse()
                 } else {
-                    foresight = true
                     isSwitchingTrue()
                 }
             }
@@ -348,8 +348,16 @@ class SupportFragment : Fragment(), SupportListener {
         layout_access_restricted.visibility = View.GONE
         support_technical_work.visibility = View.GONE
         support_not_found.visibility == View.GONE
-        if (myAdapter.itemCount != 0) {
-            fitView(profile_recycler)
+        if (!foresight) {
+            if (myAdapter.itemCount == list.size) {
+                fitView(profile_recycler)
+            }
+        } else {
+            if (myAdapter.itemCount == list.size) {
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    fitView(profile_recycler)
+                }, 300)
+            }
         }
     }
 
