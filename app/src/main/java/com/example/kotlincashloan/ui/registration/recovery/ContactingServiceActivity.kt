@@ -20,12 +20,14 @@ import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.ui.registration.recovery.fragment.BottomDialogListener
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.YourApplicationFragment
 import com.example.myapplication.LoginViewModel
@@ -42,7 +44,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
+class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult , BottomDialogListener{
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
     private var myViewMode = PasswordViewMode()
@@ -51,6 +53,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private var profNumber = ""
     private var reNum = ""
     private var valod = false
+    private var discovery = false
 
     private var countryPosition = ""
     private var typePosition = ""
@@ -243,7 +246,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             if (data.error.code == 500 || data.error.code == 400) {
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
-                                loadingMistake(this)
+                                if (!discovery){
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                             } else if (data.error.code == 409) {
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
@@ -268,18 +274,27 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         } else if (msg == "500" || msg == "400") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery){
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                         } else {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery){
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                         }
                     }
                     Status.NETWORK -> {
                         if (msg == "600" || msg == "601") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery){
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                         } else {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
@@ -354,7 +369,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                                 } else if (data.error.code == 401) {
                                     initAuthorized()
                                 } else {
-                                    loadingMistake(this)
+                                    if (!discovery){
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
                                     password_no_questionnaire.visibility = View.GONE
                                     contacting_layout.visibility = View.VISIBLE
                                 }
@@ -374,14 +392,20 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             } else if (msg == "401") {
                                 initAuthorized()
                             } else {
-                                loadingMistake(this)
+                                if (!discovery){
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             }
                         }
                         Status.NETWORK -> {
                             if (msg == "600" || msg == "601") {
-                                loadingMistake(this)
+                                if (!discovery){
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             } else {
@@ -432,7 +456,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             } else if (data.error.code == 401) {
                                 initAuthorized()
                             } else {
-                                loadingMistake(this)
+                                if (!discovery){
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             }
@@ -450,14 +477,20 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         } else if (msg == "401") {
                             initAuthorized()
                         } else {
-                            loadingMistake(this)
+                            if (!discovery){
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                         }
                     }
                     Status.NETWORK -> {
                         if (msg == "600" || msg == "601") {
-                            loadingMistake(this)
+                            if (!discovery){
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                         } else {
@@ -470,6 +503,13 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                 HomeActivity.alert.hide()
             })
         }
+    }
+
+    //Слушаеть на 2 открытие loadingMistake(this, this)
+    override fun bottomOnClickListener(boolean: Boolean) {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        discovery = true
     }
 
     //очещает список
