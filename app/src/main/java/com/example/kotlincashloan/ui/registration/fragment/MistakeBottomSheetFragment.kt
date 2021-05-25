@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.registration.recovery.fragment.BottomDialogListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_mistake_bottom_sheet.*
 
-class MistakeBottomSheetFragment(var listener: BottomDialogListener? = null) : BottomSheetDialogFragment() {
+class MistakeBottomSheetFragment(var listener: BottomDialogListener? = null, var string: String? = null) : BottomSheetDialogFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,8 +31,12 @@ class MistakeBottomSheetFragment(var listener: BottomDialogListener? = null) : B
 
     private fun initClick() {
         mistake_ok.setOnClickListener {
-            listener!!.bottomOnClickListener(true)
-            this.dismiss()
+            if (AppPreferences.token != ""){
+                requireActivity().finish()
+            }else{
+                listener!!.bottomOnClickListener(true)
+                this.dismiss()
+            }
         }
     }
 }

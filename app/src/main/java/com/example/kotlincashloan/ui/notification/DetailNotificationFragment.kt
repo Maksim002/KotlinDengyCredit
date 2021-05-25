@@ -94,8 +94,8 @@ class DetailNotificationFragment : Fragment() {
             viewModel.errorDetailNotice.value = null
             errorCode = "601"
         } else {
+            MainActivity.alert.show()
             if (viewModel.listNoticeDetailDta.value == null) {
-                HomeActivity.alert.show()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.errorDetailNotice.value = null
                     viewModel.getNotice(map)
@@ -161,7 +161,7 @@ class DetailNotificationFragment : Fragment() {
                     }
                 }
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
+                MainActivity.alert.hide()
             },450)
             }catch (e: Exception){
                 e.printStackTrace()
@@ -193,7 +193,7 @@ class DetailNotificationFragment : Fragment() {
                 initAuthorized()
             }
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                HomeActivity.alert.hide()
+                MainActivity.alert.hide()
             },450)
         })
     }

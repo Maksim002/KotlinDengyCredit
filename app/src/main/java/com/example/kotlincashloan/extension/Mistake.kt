@@ -13,8 +13,8 @@ import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragm
 val bottomSheetBottomFragment = MistakeBottomDialogFragment()
 val connectionSheetDialogFragment = ConnectionBottomSheetFragment()
 
-fun loadingMistake(activity: AppCompatActivity, listener: BottomDialogListener? = null){
-    val bottomSheetDialogFragment = MistakeBottomSheetFragment(listener)
+fun loadingMistake(activity: AppCompatActivity, listener: BottomDialogListener? = null, string: String? = null){
+    val bottomSheetDialogFragment = MistakeBottomSheetFragment(listener, string)
     try {
         bottomSheetDialogFragment.isCancelable = false;
         bottomSheetDialogFragment.show(activity.supportFragmentManager, bottomSheetDialogFragment.tag)

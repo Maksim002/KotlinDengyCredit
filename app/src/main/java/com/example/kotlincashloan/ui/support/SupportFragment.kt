@@ -109,6 +109,7 @@ class SupportFragment : Fragment(), SupportListener {
     }
 
     private fun isRestart() {
+        MainActivity.alert.show()
         if (viewModel.listFaqDta.value == null) {
             viewModel.refreshCode = false
             viewModel.listFaqDta.value = null

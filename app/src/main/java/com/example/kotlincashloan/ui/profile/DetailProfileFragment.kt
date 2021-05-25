@@ -139,7 +139,7 @@ class DetailProfileFragment : Fragment() {
                     }
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 }, 500)
             })
 
@@ -176,7 +176,7 @@ class DetailProfileFragment : Fragment() {
 //                    d_profile_not_found.visibility = View.GONE
 //                }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
+                    MainActivity.alert.hide()
                 }, 500)
             })
         }
@@ -193,8 +193,8 @@ class DetailProfileFragment : Fragment() {
             viewModel.errorGetOperation.value = null
             errorCode = "601"
         } else {
+            MainActivity.alert.show()
             if (viewModel.listGetOperationDta.value == null) {
-                HomeActivity.alert.show()
                 viewModel.getOperation(map)
                 initResult()
             } else {

@@ -108,7 +108,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private val mapQuestion = HashMap<String, String>()
     private val mapInfo = HashMap<String, String>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile_setting, container, false)
     }
@@ -496,7 +500,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                             resultSuccessfully()
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                                 dialog.dismiss()
-                            },500)
+                            }, 500)
                         } else {
                             listListResult(result.error.code!!)
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -595,112 +599,113 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun initResult() {
-        //проверка на интернет
-        ObservedInternet().observedInternet(requireContext())
-        if (!AppPreferences.observedInternet) {
-            profile_s_no_connection.visibility = View.VISIBLE
-            profile_s_technical_work.visibility = View.GONE
-            profile_s_access_restricted.visibility = View.GONE
-            profile_s_not_found.visibility = View.GONE
-            profile_s_swipe.visibility = View.GONE
-            viewModel.errorClientInfo.value = null
-            viewModel.errorListGender.value = null
-            viewModel.errorListNationality.value = null
-            viewModel.errorListAvailableCountry.value = null
-            viewModel.errorListSecretQuestion.value = null
-            viewModel.errorSaveProfile.value = null
-        } else {
-            //если все успешно получает информацию о пользователе
-            viewModel.listClientInfoDta.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { result ->
-                    try {
-                        if (result.result != null) {
-                            clientResult = result.result
-                            profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
-                            profile_setting_second_name.setText(clientResult.lastName)
-                            profile_setting_first_name.setText(clientResult.firstName)
-                            profile_setting_last_name.setText(clientResult.secondName)
-                            profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
-                            profile_s_response.setText(clientResult.response)
-                            errorClientInfo = result.code.toString()
-                            resultSuccessfully()
+        try {
+            //проверка на интернет
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                profile_s_no_connection.visibility = View.VISIBLE
+                profile_s_technical_work.visibility = View.GONE
+                profile_s_access_restricted.visibility = View.GONE
+                profile_s_not_found.visibility = View.GONE
+                profile_s_swipe.visibility = View.GONE
+                viewModel.errorClientInfo.value = null
+                viewModel.errorListGender.value = null
+                viewModel.errorListNationality.value = null
+                viewModel.errorListAvailableCountry.value = null
+                viewModel.errorListSecretQuestion.value = null
+                viewModel.errorSaveProfile.value = null
+            } else {
+                //если все успешно получает информацию о пользователе
+                viewModel.listClientInfoDta.observe(
+                    viewLifecycleOwner,
+                    androidx.lifecycle.Observer { result ->
+                        try {
+                            if (result.result != null) {
+                                clientResult = result.result
+                                profile_setting_fio.setText(clientResult.firstName + " " + clientResult.lastName)
+                                profile_setting_second_name.setText(clientResult.lastName)
+                                profile_setting_first_name.setText(clientResult.firstName)
+                                profile_setting_last_name.setText(clientResult.secondName)
+                                profile_setting_data.setText(MyUtils.toMyDate(clientResult.uDate.toString()))
+                                profile_s_response.setText(clientResult.response)
+                                errorClientInfo = result.code.toString()
+                                resultSuccessfully()
 
-                            //получение полов
-                            gettingFloors()
+                                //получение полов
+                                gettingFloors()
 
-                            //получение гражданства
-                            obtainingCitizenship()
+                                //получение гражданства
+                                obtainingCitizenship()
 
-                            //Список доступных стран
-                            listCountries()
+                                //Список доступных стран
+                                listCountries()
 
-                            //Список секретных вопросов
-                            listQuestions()
+                                //Список секретных вопросов
+                                listQuestions()
 
-                        } else {
-                            listListResult(result.error.code!!)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    profile_s_swipe.isRefreshing = false
-//                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                        dialog.dismiss()
-//                    }, 500)
-                })
-
-            //listClientInfoDta Проверка на ошибки
-            viewModel.errorClientInfo.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { error ->
-                    try {
-                        errorClientInfo = error
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                    if (error != null) {
-                        errorList(error)
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            dialog.dismiss()
-                        }, 500)
-                    }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    profile_s_swipe.isRefreshing = false
-                })
-
-            //результат о сохронение данных
-            viewModel.listSaveProfileDta.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { result ->
-                    try {
-                        if (result.result != null) {
-                            if (reView) {
-                                CookieBar.build(requireActivity())
-                                    .setTitle("Успешно сохранено")
-                                    .setTitleColor(R.color.blackColor)
-                                    .setDuration(5000)
-                                    .setCookiePosition(Gravity.TOP)
-                                    .show()
-                                AppPreferences.boleanCode = true
-                                findNavController().navigate(R.id.profile_navigation)
+                            } else {
+                                listListResult(result.error.code!!)
                             }
-                            reView = false
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                })
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        profile_s_swipe.isRefreshing = false
+                    })
 
-            viewModel.errorSaveProfile.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { error ->
-                    if (error != null) {
-                        errorSaveProfile = error
-                        errorList(error)
-                    }
-                })
+                //listClientInfoDta Проверка на ошибки
+                viewModel.errorClientInfo.observe(
+                    viewLifecycleOwner,
+                    androidx.lifecycle.Observer { error ->
+                        try {
+                            errorClientInfo = error
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                        if (error != null) {
+                            errorList(error)
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                dialog.dismiss()
+                            }, 500)
+                        }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        profile_s_swipe.isRefreshing = false
+                    })
+
+                //результат о сохронение данных
+                viewModel.listSaveProfileDta.observe(
+                    viewLifecycleOwner,
+                    androidx.lifecycle.Observer { result ->
+                        try {
+                            if (result.result != null) {
+                                if (reView) {
+                                    CookieBar.build(requireActivity())
+                                        .setTitle("Успешно сохранено")
+                                        .setTitleColor(R.color.blackColor)
+                                        .setDuration(5000)
+                                        .setCookiePosition(Gravity.TOP)
+                                        .show()
+                                    AppPreferences.boleanCode = true
+                                    findNavController().navigate(R.id.profile_navigation)
+                                }
+                                reView = false
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    })
+
+                viewModel.errorSaveProfile.observe(
+                    viewLifecycleOwner,
+                    androidx.lifecycle.Observer { error ->
+                        if (error != null) {
+                            errorSaveProfile = error
+                            errorList(error)
+                        }
+                    })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
