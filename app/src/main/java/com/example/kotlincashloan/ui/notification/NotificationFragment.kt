@@ -131,10 +131,7 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initRefresh() {
         notification_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 isRestart()
             }, 500)
@@ -168,6 +165,8 @@ class NotificationFragment : Fragment(), NotificationListener {
                             notification_not_found.visibility = View.GONE
                             errorCode = result.code.toString()
                             MainActivity.alert.hide()
+                            notification_swipe.isRefreshing = false
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         } else {
                             if (result.error.code != null) {
                                 errorCode = ""
@@ -196,13 +195,13 @@ class NotificationFragment : Fragment(), NotificationListener {
                             }
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                                 MainActivity.alert.hide()
+                                notification_swipe.isRefreshing = false
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }, 200)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    notification_swipe.isRefreshing = false
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 })
 
                 viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
@@ -239,6 +238,8 @@ class NotificationFragment : Fragment(), NotificationListener {
 //            }
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
                             MainActivity.alert.hide()
+                            notification_swipe.isRefreshing = false
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         }, 200)
                     }
                 })
