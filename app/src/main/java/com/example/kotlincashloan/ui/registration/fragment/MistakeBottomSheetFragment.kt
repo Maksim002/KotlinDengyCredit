@@ -34,7 +34,11 @@ class MistakeBottomSheetFragment(var listener: BottomDialogListener? = null, var
             if (AppPreferences.token != ""){
                 requireActivity().finish()
             }else{
-                listener!!.bottomOnClickListener(true)
+                try {
+                    listener!!.bottomOnClickListener(true)
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
                 this.dismiss()
             }
         }

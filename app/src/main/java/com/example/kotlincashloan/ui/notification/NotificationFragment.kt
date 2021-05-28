@@ -20,7 +20,6 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -270,6 +269,11 @@ class NotificationFragment : Fragment(), NotificationListener {
         if (activity is MainActivity) {
             activity.setTitle(title, color)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
     }
 
     override fun onResume() {

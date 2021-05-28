@@ -76,7 +76,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        MainActivity.alert = LoadingAlert(requireActivity())
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
