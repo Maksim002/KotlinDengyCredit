@@ -124,196 +124,204 @@ class ProfileFragment : Fragment(), ApplicationListener {
     }
 
     private fun initRecycler() {
-        //проверка на интернет
-        ObservedInternet().observedInternet(requireContext())
-        if (!AppPreferences.observedInternet) {
-            profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-            errorValue()
-            clearError()
-        } else {
-            //Маи операции если все успешно
-            viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
-                try {
-                    if (result.result != null) {
-                        errorNull = ""
-                        listOperation = result.result
-                        initPager()
-                        errorCode = result.code.toString()
-                    } else if (result.error != null) {
-                        if (errorCode != result.error.code.toString()) {
-                            if (result.error.code != 404) {
-                                if (result.error.code != null) {
-                                    getErrorCode(result.error.code!!)
+        try {
+            //проверка на интернет
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                profile_no_connection.visibility = View.VISIBLE
+                profile_swipe.visibility = View.GONE
+                profile_technical_work.visibility = View.GONE
+                profile_access_restricted.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+                errorValue()
+                clearError()
+            } else {
+                //Маи операции если все успешно
+                viewModel.listListOperationDta.observe(viewLifecycleOwner, Observer { result ->
+                    try {
+                        if (result.result != null) {
+                            errorNull = ""
+                            listOperation = result.result
+                            initPager()
+                            errorCode = result.code.toString()
+                        } else if (result.error != null) {
+                            if (errorCode != result.error.code.toString()) {
+                                if (result.error.code != 404) {
+                                    if (result.error.code != null) {
+                                        getErrorCode(result.error.code!!)
+                                    }
+                                } else {
+                                    resultTrue()
+                                    errorNull = result.error.code.toString()
+                                    initPager()
                                 }
-                            } else {
-                                resultTrue()
-                                errorNull = result.error.code.toString()
-                                initPager()
                             }
+                            errorCode = result.error.code.toString()
                         }
-                        errorCode = result.error.code.toString()
-                    }
-                    if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
-                        resultSuccessfully()
-                    }
+                        if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                            resultSuccessfully()
+                        }
 //                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //                    profile_swipe.isRefreshing = false
 
-                } catch (e: Exception) {
-                    e.printStackTrace()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                })
+
+                if (AppPreferences.status == true) {
+                    viewModel.listApplication(map)
+                    //Маи заявки если все успешно
+                    MyApplication()
+                } else {
+                    MyApplication()
                 }
-            })
 
-            if (AppPreferences.status == true) {
-                viewModel.listApplication(map)
-                //Маи заявки если все успешно
-                MyApplication()
-            } else {
-                MyApplication()
-            }
+                //listListOperationDta Проверка на ошибки
+                viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
+                    try {
+                        if (errorCode != error) {
+                            if (error != "404") {
+                                errorCode = error
+                                if (error != null) {
+                                    getErrorCode(error.toInt())
+                                }
+                            } else {
+                                resultTrue()
+                                errorNull = error
+                                initPager()
+                            }
+                        }
+                        errorCode = error
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                profile_swipe.isRefreshing = false
+                })
 
-            //listListOperationDta Проверка на ошибки
-            viewModel.errorListOperation.observe(viewLifecycleOwner, Observer { error ->
-                try {
-                    if (errorCode != error) {
-                        if (error != "404") {
-                            errorCode = error
-                            if (error != null) {
+
+                //если все успешно
+                viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
+                    try {
+                        if (result.result != null) {
+                            profile_fio.setText(result.result.firstName + " " + result.result.lastName)
+                            bundle.putSerializable("client", result.result)
+                            errorCodeClient = result.code.toString()
+                        } else {
+                            if (result!!.error.code != null) {
+                                if (errorCodeClient != result.error.code.toString()) {
+                                    getErrorCode(result.error.code!!)
+                                }
+                                errorCodeClient = result.error.code.toString()
+                            }
+                        }
+                        if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                            resultSuccessfully()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                })
+
+                //listClientInfoDta Проверка на ошибки
+                viewModel.errorClientInfo.observe(viewLifecycleOwner, Observer { error ->
+                    try {
+                        if (error != null) {
+                            if (errorCodeClient != error) {
                                 getErrorCode(error.toInt())
                             }
-                        } else {
-                            resultTrue()
-                            errorNull = error
-                            initPager()
                         }
+                        errorCodeClient = error
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                    errorCode = error
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
 //                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //                profile_swipe.isRefreshing = false
-            })
-
-
-            //если все успешно
-            viewModel.listClientInfoDta.observe(viewLifecycleOwner, Observer { result ->
-                try {
-                    if (result.result != null) {
-                        profile_fio.setText(result.result.firstName + " " + result.result.lastName)
-                        bundle.putSerializable("client", result.result)
-                        errorCodeClient = result.code.toString()
-                    } else {
-                        if (result!!.error.code != null) {
-                            if (errorCodeClient != result.error.code.toString()) {
-                                getErrorCode(result.error.code!!)
-                            }
-                            errorCodeClient = result.error.code.toString()
-                        }
-                    }
-                    if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
-                        resultSuccessfully()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            })
-
-            //listClientInfoDta Проверка на ошибки
-            viewModel.errorClientInfo.observe(viewLifecycleOwner, Observer { error ->
-                try {
-                    if (error != null) {
-                        if (errorCodeClient != error) {
-                            getErrorCode(error.toInt())
-                        }
-                    }
-                    errorCodeClient = error
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
-            })
+                })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     // запрос для выгрузки изоброжение с сервира
     private fun initGetImgDta() {
-          //проверка на интернет
-        ObservedInternet().observedInternet(requireContext())
-        if (!AppPreferences.observedInternet) {
-            profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
-            profile_technical_work.visibility = View.GONE
-            profile_access_restricted.visibility = View.GONE
-            profile_not_found.visibility = View.GONE
-            errorValue()
-            clearError()
-        } else {
-            // запрос для выгрузки изоброжение с сервира
-            viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
-                try {
-                    if (result.result != null) {
-                        errorGetImg = result.code.toString()
-                        val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
-                        val decodedImage =
-                            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-                        val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
-                        val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
-                        image_profile.setImageBitmap(scaled)
-                        bitmapToFile(decodedImage, requireContext())
-                        addImage = false
-                    } else {
-                        if (result.error != null) {
-                            if (errorGetImg != result.error.code.toString()) {
-                                addImage = true
-                                //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
-                                if (result.error.code != 404) {
-                                    getErrorCode(result.error.code!!)
-                                    clearingDate()
-                                    errorGetImg = result.error.code.toString()
-                                } else {
-                                    errorGetImg = "200"
+        try {
+            //проверка на интернет
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                profile_no_connection.visibility = View.VISIBLE
+                profile_swipe.visibility = View.GONE
+                profile_technical_work.visibility = View.GONE
+                profile_access_restricted.visibility = View.GONE
+                profile_not_found.visibility = View.GONE
+                errorValue()
+                clearError()
+            } else {
+                // запрос для выгрузки изоброжение с сервира
+                viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
+                    try {
+                        if (result.result != null) {
+                            errorGetImg = result.code.toString()
+                            val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
+                            val decodedImage =
+                                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
+                            val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
+                            image_profile.setImageBitmap(scaled)
+                            bitmapToFile(decodedImage, requireContext())
+                            addImage = false
+                        } else {
+                            if (result.error != null) {
+                                if (errorGetImg != result.error.code.toString()) {
+                                    addImage = true
+                                    //если проиходит 404 то провека незаходит в метот для проверки общих ошибок
+                                    if (result.error.code != 404) {
+                                        getErrorCode(result.error.code!!)
+                                        clearingDate()
+                                        errorGetImg = result.error.code.toString()
+                                    } else {
+                                        errorGetImg = "200"
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
-                        resultSuccessfully()
-                    }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    profile_swipe.isRefreshing = false
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            })
-
-            // запрос для выгрузки изоброжение с сервира если есть ошибка
-            viewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
-                try {
-                    if (error != null) {
-                        if (errorGetImg != error) {
-                            getErrorCode(error.toInt())
+                        if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
+                            resultSuccessfully()
                         }
-                        clearingDate()
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         profile_swipe.isRefreshing = false
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                    errorGetImg = error
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
+                })
+
+                // запрос для выгрузки изоброжение с сервира если есть ошибка
+                viewModel.errorGetImg.observe(viewLifecycleOwner, Observer { error ->
+                    try {
+                        if (error != null) {
+                            if (errorGetImg != error) {
+                                getErrorCode(error.toInt())
+                            }
+                            clearingDate()
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            profile_swipe.isRefreshing = false
+                        }
+                        errorGetImg = error
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
 //                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            })
+                })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun MyApplication() {
-          //проверка на интернет
+        //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
@@ -418,7 +426,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     //Запрос на получение масива заявки
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
-          //проверка на интернет
+        //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
@@ -561,7 +569,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     }, 500)
                 }
             } else {
-                if (profile_swipe.isRefreshing == true){
+                if (profile_swipe.isRefreshing == true) {
                     clearError()
                     clearingDate()
                     viewModel.listOperation(map)
@@ -581,11 +589,12 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
-    private fun isRestart(){
+    private fun isRestart() {
         if (viewModel.listListOperationDta.value == null &&
             viewModel.listClientInfoDta.value == null &&
             viewModel.listGetImgDta.value == null &&
-            viewModel.listListApplicationDta.value == null){
+            viewModel.listListApplicationDta.value == null
+        ) {
 
             viewModel.refreshCode = false
             clearingDate()
@@ -595,7 +604,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             viewModel.getImg(mapImg)
             initRecycler()
             initGetImgDta()
-        }else{
+        } else {
             viewModel.refreshCode = false
             clearingDate()
             viewModel.listOperation(map)
@@ -607,7 +616,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
-    private fun clearingDate(){
+    private fun clearingDate() {
         viewModel.listListOperationDta.value = null
         viewModel.listClientInfoDta.value = null
         viewModel.listGetImgDta.value = null
@@ -644,7 +653,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
         }
-        if (AppPreferences.updatingImage){
+        if (AppPreferences.updatingImage) {
             viewModel.listGetImgDta.postValue(null)
             viewModel.getImg(mapImg)
             initGetImgDta()

@@ -49,7 +49,11 @@ class ChatFragment : Fragment() {
 
     private var b = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
@@ -82,12 +86,19 @@ class ChatFragment : Fragment() {
         chatAdapter.addItem(jsonObject)
         recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
 
+
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             val jsonObject1 = JSONObject()
             jsonObject1.put("method", "Привет как ваше нечего")
             jsonObject1.put("isSent", false)
             chatAdapter.addItem(jsonObject1)
-            recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
+            if (chatAdapter.itemCount != 0) {
+                try {
+                    recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }, 1000)
     }
 

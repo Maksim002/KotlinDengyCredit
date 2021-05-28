@@ -178,107 +178,111 @@ class SupportFragment : Fragment(), SupportListener {
     }
 
     private fun initRecycler() {
-        ObservedInternet().observedInternet(requireContext())
-        if (!AppPreferences.observedInternet) {
-            support_no_connection.visibility = View.VISIBLE
-            support_swipe_layout.visibility = View.GONE
-            support_not_found.visibility = View.GONE
-            support_technical_work.visibility = View.GONE
-            layout_access_restricted.visibility = View.GONE
-            errorCode = "601"
-            viewModel.error.value = null
-        } else {
-            viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
-                try {
-                    if (result.result != null) {
-                        list = result.result
-                        myAdapter.update(list)
-                        profile_recycler.adapter = myAdapter
-                        initVisibilities()
-                        profile_recycler.visibility = View.VISIBLE
-                        support_swipe_layout.visibility = View.VISIBLE
-                        layout_support_null.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        support_not_found.visibility = View.GONE
-                        support_technical_work.visibility = View.GONE
-                        layout_access_restricted.visibility = View.GONE
-                        errorCode = result.code.toString()
-                    } else {
-                        if (result.error.code != null) {
-                            errorCode = result.error.code.toString()
-                        }
-                        if (result.error.code == 403) {
-                            layout_access_restricted.visibility = View.VISIBLE
-                            support_swipe_layout.visibility = View.GONE
+        try {
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                support_no_connection.visibility = View.VISIBLE
+                support_swipe_layout.visibility = View.GONE
+                support_not_found.visibility = View.GONE
+                support_technical_work.visibility = View.GONE
+                layout_access_restricted.visibility = View.GONE
+                errorCode = "601"
+                viewModel.error.value = null
+            } else {
+                viewModel.listFaqDta.observe(viewLifecycleOwner, Observer { result ->
+                    try {
+                        if (result.result != null) {
+                            list = result.result
+                            myAdapter.update(list)
+                            profile_recycler.adapter = myAdapter
+                            initVisibilities()
+                            profile_recycler.visibility = View.VISIBLE
+                            support_swipe_layout.visibility = View.VISIBLE
+                            layout_support_null.visibility = View.GONE
                             support_no_connection.visibility = View.GONE
+                            support_not_found.visibility = View.GONE
                             support_technical_work.visibility = View.GONE
-                            support_not_found.visibility = View.GONE
-                        } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                            support_technical_work.visibility = View.VISIBLE
-                            support_swipe_layout.visibility = View.GONE
-                            support_no_connection.visibility = View.GONE
                             layout_access_restricted.visibility = View.GONE
-                            support_not_found.visibility = View.GONE
-                        } else if (result.error.code == 404) {
+                            errorCode = result.code.toString()
+                        } else {
+                            if (result.error.code != null) {
+                                errorCode = result.error.code.toString()
+                            }
+                            if (result.error.code == 403) {
+                                layout_access_restricted.visibility = View.VISIBLE
+                                support_swipe_layout.visibility = View.GONE
+                                support_no_connection.visibility = View.GONE
+                                support_technical_work.visibility = View.GONE
+                                support_not_found.visibility = View.GONE
+                            } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                                support_technical_work.visibility = View.VISIBLE
+                                support_swipe_layout.visibility = View.GONE
+                                support_no_connection.visibility = View.GONE
+                                layout_access_restricted.visibility = View.GONE
+                                support_not_found.visibility = View.GONE
+                            } else if (result.error.code == 404) {
+                                layout_support_null.visibility = View.VISIBLE
+                                profile_recycler.visibility = View.GONE
+                                support_no_connection.visibility = View.GONE
+                                layout_access_restricted.visibility = View.GONE
+                                support_technical_work.visibility = View.GONE
+                            } else if (result.error.code == 401) {
+                                initAuthorized()
+                            }
+                        }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        support_swipe_layout.isRefreshing = false
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    MainActivity.alert.hide()
+//                },500)
+                })
+
+                viewModel.error.observe(viewLifecycleOwner, Observer { error ->
+                    if (error != null) {
+                        errorCode = error
+
+                        if (error == "404") {
                             layout_support_null.visibility = View.VISIBLE
                             profile_recycler.visibility = View.GONE
                             support_no_connection.visibility = View.GONE
                             layout_access_restricted.visibility = View.GONE
                             support_technical_work.visibility = View.GONE
-                        } else if (result.error.code == 401) {
+
+                        } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429" || error == "601") {
+                            support_technical_work.visibility = View.VISIBLE
+                            support_swipe_layout.visibility = View.GONE
+                            support_no_connection.visibility = View.GONE
+                            layout_access_restricted.visibility = View.GONE
+                            support_not_found.visibility = View.GONE
+
+                        } else if (error == "403") {
+                            layout_access_restricted.visibility = View.VISIBLE
+                            support_swipe_layout.visibility = View.GONE
+                            support_no_connection.visibility = View.GONE
+                            support_technical_work.visibility = View.GONE
+                            support_not_found.visibility = View.GONE
+                        } else if (error == "401") {
                             initAuthorized()
                         }
-                    }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    support_swipe_layout.isRefreshing = false
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                    MainActivity.alert.hide()
-//                },500)
-            })
-
-            viewModel.error.observe(viewLifecycleOwner, Observer { error ->
-                if (error != null) {
-                    errorCode = error
-
-                    if (error == "404") {
-                        layout_support_null.visibility = View.VISIBLE
-                        profile_recycler.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        layout_access_restricted.visibility = View.GONE
-                        support_technical_work.visibility = View.GONE
-
-                    } else if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429" || error == "601") {
-                        support_technical_work.visibility = View.VISIBLE
-                        support_swipe_layout.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        layout_access_restricted.visibility = View.GONE
-                        support_not_found.visibility = View.GONE
-
-                    } else if (error == "403") {
-                        layout_access_restricted.visibility = View.VISIBLE
-                        support_swipe_layout.visibility = View.GONE
-                        support_no_connection.visibility = View.GONE
-                        support_technical_work.visibility = View.GONE
-                        support_not_found.visibility = View.GONE
-                    } else if (error == "401") {
-                        initAuthorized()
-                    }
 //                else if (error == "601") {
 //                    layout_access_restricted.visibility = View.GONE
 //                    support_technical_work.visibility = View.GONE
 //                    support_swipe_layout.visibility = View.GONE
 //                    support_no_connection.visibility = View.VISIBLE
 //                }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    support_swipe_layout.isRefreshing = false
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        MainActivity.alert.hide()
-                    }, 500)
-                }
-            })
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        support_swipe_layout.isRefreshing = false
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            MainActivity.alert.hide()
+                        }, 500)
+                    }
+                })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
