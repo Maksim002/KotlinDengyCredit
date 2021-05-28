@@ -209,7 +209,11 @@ class SupportFragment : Fragment(), SupportListener {
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                                 MainActivity.alert.hide()
                                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                support_swipe_layout.isRefreshing = false
+                                try {
+                                    support_swipe_layout.isRefreshing = false
+                                }catch (e: Exception){
+                                    e.printStackTrace()
+                                }
                             },400)
                         } else {
                             if (result.error.code != null) {

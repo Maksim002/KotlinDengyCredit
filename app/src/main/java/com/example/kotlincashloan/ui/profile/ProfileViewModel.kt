@@ -327,9 +327,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorGetImg.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
-                },500)
             }
         })
     }

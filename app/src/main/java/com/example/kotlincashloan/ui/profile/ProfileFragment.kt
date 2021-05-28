@@ -273,6 +273,15 @@ class ProfileFragment : Fragment(), ApplicationListener {
                             image_profile.setImageBitmap(scaled)
                             bitmapToFile(decodedImage, requireContext())
                             addImage = false
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                MainActivity.alert.hide()
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                try {
+                                    profile_swipe.isRefreshing = false
+                                }catch (e: Exception){
+                                    e.printStackTrace()
+                                }
+                            },500)
                         } else {
                             if (result.error != null) {
                                 if (errorGetImg != result.error.code.toString()) {
@@ -286,13 +295,18 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                         errorGetImg = "200"
                                     }
                                 }
+                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                    MainActivity.alert.hide()
+                                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    profile_swipe.isRefreshing = false
+                                },500)
                             }
                         }
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                             resultSuccessfully()
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        profile_swipe.isRefreshing = false
+//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                        profile_swipe.isRefreshing = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -306,8 +320,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                 getErrorCode(error.toInt())
                             }
                             clearingDate()
-                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            profile_swipe.isRefreshing = false
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                MainActivity.alert.hide()
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                profile_swipe.isRefreshing = false
+                            },500)
                         }
                         errorGetImg = error
                     } catch (e: Exception) {
@@ -423,6 +440,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
             profile_not_found as LinearLayout, activity as AppCompatActivity
         )
         MainActivity.alert.hide()
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        profile_swipe.isRefreshing = false
     }
 
     //Запрос на получение масива заявки
