@@ -91,7 +91,7 @@ class SupportFragment : Fragment(), SupportListener {
         } else {
             if (viewModel.listFaqDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    MainActivity.alert.show()
+                    HomeActivity.alert.show()
                     swipe()
                 } else {
                     swipe()
@@ -109,7 +109,9 @@ class SupportFragment : Fragment(), SupportListener {
     }
 
     private fun isRestart() {
-        MainActivity.alert.show()
+        if (!viewModel.refreshCode) {
+            HomeActivity.alert.show()
+        }
         if (viewModel.listFaqDta.value == null) {
             viewModel.refreshCode = false
             viewModel.listFaqDta.value = null
@@ -276,7 +278,7 @@ class SupportFragment : Fragment(), SupportListener {
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         support_swipe_layout.isRefreshing = false
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            MainActivity.alert.hide()
+                            HomeActivity.alert.hide()
                         }, 500)
                     }
                 })

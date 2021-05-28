@@ -226,6 +226,7 @@ class LoansFragment : Fragment(), LoansListener {
                             MainActivity.alert.hide()
                         }, 700)
                     }
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 })
             }
         } catch (e: Exception) {
@@ -618,6 +619,7 @@ class LoansFragment : Fragment(), LoansListener {
                             loans_recycler.visibility = View.GONE
                         }
                     }
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 })
             }
         } catch (e: Exception) {
@@ -743,19 +745,11 @@ class LoansFragment : Fragment(), LoansListener {
     }
 
 
-//    override fun onStart() {
-//        super.onStart()
-//        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//            AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
-//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
-//        }, 20000)
-//    }
-
 //    var b = false
 //    override fun onStart() {
-//        super.onStart()
-//        if (b == false){
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//       super.onStart()
+//       if (b == false){
+//           handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //            AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
 //            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 //            }, 30000)

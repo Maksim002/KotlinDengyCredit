@@ -43,7 +43,7 @@ class SupportViewModel : ViewModel(){
                     error.postValue(response.raw().code.toString())
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
+                    HomeActivity.alert.hide()
                 },400)
             }
         })
