@@ -35,6 +35,7 @@ import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -75,6 +76,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
+        MainActivity.alert = LoadingAlert(requireActivity())
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
         map.put("login", AppPreferences.login.toString())
@@ -265,8 +267,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         if (result.result != null) {
                             errorGetImg = result.code.toString()
                             val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
-                            val decodedImage =
-                                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                             val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
                             val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
                             image_profile.setImageBitmap(scaled)
@@ -462,7 +463,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         getErrorCode(msg!!.toInt())
                     }
                 }
-                HomeActivity.alert.hide()
+                MainActivity.alert.hide()
             })
         }
     }

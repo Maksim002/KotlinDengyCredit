@@ -20,6 +20,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -35,7 +36,9 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var errorCode = ""
     private var notificationAnim = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_notification, container, false)
     }
@@ -84,7 +87,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         } else {
             if (viewModel.listNoticeDta.value == null || viewModel.errorNotice.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.errorNotice.value = null
@@ -164,6 +167,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                             notification_no_connection.visibility = View.GONE
                             notification_not_found.visibility = View.GONE
                             errorCode = result.code.toString()
+                            MainActivity.alert.hide()
                         } else {
                             if (result.error.code != null) {
                                 errorCode = ""
@@ -191,7 +195,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                                 }
                             }
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                HomeActivity.alert.hide()
+                                MainActivity.alert.hide()
                             }, 200)
                         }
                     } catch (e: Exception) {
@@ -234,7 +238,7 @@ class NotificationFragment : Fragment(), NotificationListener {
 //                notification_swipe.visibility = View.GONE
 //            }
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            HomeActivity.alert.hide()
+                            MainActivity.alert.hide()
                         }, 200)
                     }
                 })

@@ -41,9 +41,6 @@ class NotificationViewModel : ViewModel(){
                 }else{
                     errorNotice.postValue(response.code().toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },400)
             }
         })
     }

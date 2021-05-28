@@ -91,7 +91,7 @@ class SupportFragment : Fragment(), SupportListener {
         } else {
             if (viewModel.listFaqDta.value == null) {
                 if (!viewModel.refreshCode) {
-                    HomeActivity.alert.show()
+                    MainActivity.alert.show()
                     swipe()
                 } else {
                     swipe()
@@ -110,7 +110,7 @@ class SupportFragment : Fragment(), SupportListener {
 
     private fun isRestart() {
         if (!viewModel.refreshCode) {
-            HomeActivity.alert.show()
+            MainActivity.alert.show()
         }
         if (viewModel.listFaqDta.value == null) {
             viewModel.refreshCode = false
@@ -206,6 +206,11 @@ class SupportFragment : Fragment(), SupportListener {
                             support_technical_work.visibility = View.GONE
                             layout_access_restricted.visibility = View.GONE
                             errorCode = result.code.toString()
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                MainActivity.alert.hide()
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                support_swipe_layout.isRefreshing = false
+                            },400)
                         } else {
                             if (result.error.code != null) {
                                 errorCode = result.error.code.toString()
@@ -231,15 +236,15 @@ class SupportFragment : Fragment(), SupportListener {
                             } else if (result.error.code == 401) {
                                 initAuthorized()
                             }
+                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                MainActivity.alert.hide()
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                support_swipe_layout.isRefreshing = false
+                            }, 500)
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        support_swipe_layout.isRefreshing = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                    MainActivity.alert.hide()
-//                },500)
                 })
 
                 viewModel.error.observe(viewLifecycleOwner, Observer { error ->
@@ -275,10 +280,10 @@ class SupportFragment : Fragment(), SupportListener {
 //                    support_swipe_layout.visibility = View.GONE
 //                    support_no_connection.visibility = View.VISIBLE
 //                }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        support_swipe_layout.isRefreshing = false
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            HomeActivity.alert.hide()
+                            MainActivity.alert.hide()
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            support_swipe_layout.isRefreshing = false
                         }, 500)
                     }
                 })
