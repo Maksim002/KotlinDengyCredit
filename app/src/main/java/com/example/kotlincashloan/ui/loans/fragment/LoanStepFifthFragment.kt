@@ -7,28 +7,27 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.location.Address
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.drawToBitmap
 import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -48,7 +47,6 @@ import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.spinnerdatepickerlib.DatePicker
 import com.example.spinnerdatepickerlib.DatePickerDialog
@@ -75,7 +73,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener {
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
     private var viewModel = LoansViewModel()
     private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
@@ -129,6 +127,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private lateinit var idImageIc: ImageView
     private lateinit var alert: LoadingAlert
     private var visibilityIm = 0
+    private val handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -142,6 +141,14 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         if (permission == 6){
             alert.show()
         }
@@ -183,9 +190,16 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (statusValue) {
-            bottom_loan_fifth.setText("Сохранить")
-            fifth_cross_six.visibility = View.GONE
-            if (mitmap.values != null) {
+            //Если applicationStatus == true меняем текст на кнопки
+            if (applicationStatus == false){
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                bottom_loan_fifth.setText("Сохранить")
+                fifth_cross_six.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            }
+            if (mitmap.values.size != 0) {
                 russianFederationA = true
                 migrationCardA = true
                 migrationCardB = true
@@ -210,8 +224,16 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 getListsFifth(mitmap, photo_RVP, RVP_add_im, imageViewModel,requireActivity(),"photo_RVP","rvp_img")
                 getListsFifth(mitmap, photo_VNJ, VNJ_add_im, imageViewModel,requireActivity(),"photo_VNJ","vnzh_img")
                 getListsText()
-                imageViewModel.updateBitmaps(mitmap)
+                // Конвертирует ключи  с бека в формат ключей проекта
+                imageMap = hashMapBitmap
+                // Сохроняет картинки во viewModel
+                imageViewModel.updateBitmaps(imageMap)
+                // После добовлния удолят bitmap кортинок получаемых с сервира
                 mitmap.clear()
+                alert.hide()
+            }
+            else{
+                dataImage()
                 alert.hide()
             }
             //при редактирование сравнивает спрятать поля или нет
@@ -223,7 +245,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 fifth_incorrect_patent.visibility = View.GONE
                 fifth_permission.visibility = View.GONE
             }
-        } else {
+        }else {
             dataImage()
         }
     }
@@ -232,11 +254,16 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private fun getListsText() {
         if (statusValue){
         try {
-            fifth_goal_name.text = MyUtils.toMyDate(listLoan.regDate!!)
+            if (listLoan.regDate != ""){
+                fifth_goal_name.text = listLoan.regDate!!
+                fifth_goal_name.hint = null
+            }
             list_countries.setText( listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString())
             goalPosition = listEntryGoal.first { it.id == listLoan.entryGoal }.name.toString()
             goalId = listLoan.entryGoal!!.toInt()
-            date_entry.text = MyUtils.toMyDate(listLoan.entryDate!!)
+            if (listLoan.entryDate != ""){
+                date_entry.text = listLoan.entryDate!!
+            }
             contract_type.setText(listTypeContract.first { it.id == listLoan.typeContract }.name.toString())
             contractPosition = listTypeContract.first { it.id == listLoan.typeContract }.name.toString()
             contractTypeId = listLoan.typeContract!!.toInt()
@@ -255,7 +282,7 @@ override fun onStart() {
     if (contract_type.text.isNotEmpty()) {
         contract_type.hint = null
     }
-    initRestart()
+//    initRestart()
 }
 
     //Сохронение картинки на сервер
@@ -316,6 +343,15 @@ override fun onStart() {
             } else {
                 mapImage["type_contract"] = contractTypeId.toString()
             }
+
+            if (statusValue == true) {
+                //Сохроняет обновленные данные в смасив
+                if (contractPosition == "") {
+                    listLoan.typeContract = ""
+                } else {
+                    listLoan.typeContract = contractTypeId.toString()
+                }
+            }
         }
 
         GetLoanActivity.alert.show()
@@ -330,7 +366,7 @@ override fun onStart() {
                 if (result.error.code == 409) {
                     Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    getErrorCode(result.error.code!!)
+                    listListResult(result.error.code!!.toInt(), activity as AppCompatActivity)
                     errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
@@ -341,11 +377,12 @@ override fun onStart() {
             if (error != null) {
                 if (error == "409") { Toast.makeText(requireContext(), "Отсканируйте документ повторно", Toast.LENGTH_LONG).show()
                 } else {
-                    getErrorCode(error.toInt())
+                    listListResult(error, activity as AppCompatActivity)
                     errorImageRus(idImage,idImageIc,imageString,imageKey, requireActivity())
                 }
             }
             imageString.clear()
+            GetLoanActivity.alert.hide()
         })
     }
 
@@ -373,6 +410,27 @@ override fun onStart() {
         }
         mapSave["step"] = "6"
 
+        if (statusValue == true) {
+            //Сохроняет обновленные данные в смасив
+            if (countriesPhone == ""){
+                listLoan.regDate = fifth_goal_name.text.toString()
+            }else{
+                listLoan.regDate = countriesPhone
+            }
+
+            if (goalPhone == ""){
+                listLoan.entryDate = date_entry.text.toString()
+            }else{
+                listLoan.entryDate = goalPhone
+            }
+
+            if (goalPosition == ""){
+                listLoan.entryGoal = ""
+            }else{
+                listLoan.entryGoal = goalId.toString()
+            }
+        }
+
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg
@@ -386,9 +444,13 @@ override fun onStart() {
                         fifth_ste_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            if (statusValue == true){
-                                requireActivity().onBackPressed()
-                            }else{
+                            if (applicationStatus == false){
+                                if (statusValue == true){
+                                    requireActivity().onBackPressed()
+                                }else{
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                                }
+                            } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                             }
                         }
@@ -426,9 +488,9 @@ override fun onStart() {
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "RUS") {
             fifth_2n.visibility = View.VISIBLE
-            fifth_potent.visibility = View.VISIBLE
-            fifth_receipt.visibility = View.VISIBLE
-            fifth_permission.visibility = View.VISIBLE
+            fifth_potent.visibility = View.GONE
+            fifth_receipt.visibility = View.GONE
+            fifth_permission.visibility = View.GONE
             layout_contract_type.visibility = View.GONE
             fifth_contract.visibility = View.GONE
         } else if (hidingLayout == "KGZ") {
@@ -516,9 +578,18 @@ override fun onStart() {
         }
 
         bottom_loan_fifth.setOnClickListener {
-            saveValidate = true
-            if (validate()) {
-                initSaveServer()
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                fifth_ste_no_connection.visibility = View.VISIBLE
+                layout_fifth.visibility = View.GONE
+                fifth_ste_technical_work.visibility = View.GONE
+                fifth_ste_access_restricted.visibility = View.GONE
+                fifth_ste_not_found.visibility = View.GONE
+            } else {
+                saveValidate = true
+                if (validate()) {
+                    initSaveServer()
+                }
             }
         }
 
@@ -528,7 +599,7 @@ override fun onStart() {
         }
 
         list_countries.setOnClickListener {
-            list_countries.isClickable = false
+            list_countries.isEnabled = false
             list_countries.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -548,7 +619,7 @@ override fun onStart() {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда")
+                initBottomSheet(itemDialog, goalPosition, "Укажите цель въезда", list_countries)
             }
         }
 
@@ -558,7 +629,7 @@ override fun onStart() {
 
 
         contract_type.setOnClickListener {
-            contract_type.isClickable = false
+            contract_type.isEnabled = false
             contract_type.error = null
             initClearList()
             //Мутод заполняет список данными дя адапера
@@ -581,77 +652,105 @@ override fun onStart() {
                 initBottomSheet(
                     itemDialog,
                     contractPosition,
-                    "Выберите тип вашего трудового договора"
+                    "Выберите тип вашего трудового договора", contract_type
                 )
             }
         }
 
         russian_federationA.setOnClickListener {
+            russian_federationA.isClickable = false
             imageKey = "russian_federationA"
             loadFiles()
         }
 
         russian_federationB.setOnClickListener {
+            russian_federationB.isClickable = false
             imageKey = "russian_federationB"
             loadFiles()
         }
 
 
         migration_cardA.setOnClickListener {
+            migration_cardA.isClickable = false
             imageKey = "migration_cardA"
             loadFiles()
         }
 
         migration_cardB.setOnClickListener {
+            migration_cardB.isClickable = false
             imageKey = "migration_cardB"
             loadFiles()
         }
 
         receipt_patent.setOnClickListener {
+            receipt_patent.isClickable = false
             imageKey = "receipt_patent"
             loadFiles()
         }
 
         work_permitA.setOnClickListener {
+            work_permitA.isClickable = false
             imageKey = "work_permitA"
             loadFiles()
         }
 
         work_permitB.setOnClickListener {
+            work_permitB.isClickable = false
             imageKey = "work_permitB"
             loadFiles()
         }
 
         photo_2NDFL.setOnClickListener {
+            photo_2NDFL.isClickable = false
             imageKey = "photo_2NDFL"
             loadFiles()
         }
 
         last_page_one.setOnClickListener {
             lastPageOne = true
+            last_page_one.isClickable = false
             imageKey = "last_page_one"
             loadFiles()
         }
 
         last_page_two.setOnClickListener {
+            last_page_two.isClickable = false
             imageKey = "last_page_two"
             loadFiles()
         }
 
         photo_RVP.setOnClickListener {
+            photo_RVP.isClickable = false
             imageKey = "photo_RVP"
             loadFiles()
         }
 
         photo_VNJ.setOnClickListener {
+            photo_VNJ.isClickable = false
             imageKey = "photo_VNJ"
             loadFiles()
         }
     }
 
+    //Делает фотографии гликабельной
+    private fun noBlock() {
+        russian_federationA.isClickable = true
+        russian_federationB.isClickable = true
+        migration_cardA.isClickable = true
+        migration_cardB.isClickable = true
+        receipt_patent.isClickable = true
+        work_permitA.isClickable = true
+        work_permitB.isClickable = true
+        photo_2NDFL.isClickable = true
+        last_page_one.isClickable = true
+        last_page_two.isClickable = true
+        photo_RVP.isClickable = true
+        photo_VNJ.isClickable = true
+    }
+
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listEntryGoal") {
-            list_countries.isClickable = true
+            list_countries.isEnabled = true
             list_countries.setText(listEntryGoal[model.position].name)
             goalPosition = listEntryGoal[model.position].name.toString()
             goalId = model.id!!
@@ -659,7 +758,7 @@ override fun onStart() {
         }
 
         if (model.key == "listTypeContract") {
-            contract_type.isClickable = true
+            contract_type.isEnabled = true
             contract_type.setText(listTypeContract[model.position].name)
             contractPosition = listTypeContract[model.position].name.toString()
             contractTypeId = model.id!!
@@ -690,9 +789,10 @@ override fun onStart() {
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -728,14 +828,12 @@ override fun onStart() {
     private fun getMyFile() {
         val file = "photo"
         val dtoregDirectiry: File? = requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        //Отключение тамера
+        initSuspendTime()
         try {
             val files = File.createTempFile(file, ".jpg", dtoregDirectiry)
             currentPhotoPath = files.absolutePath
-            val imagUri: Uri = FileProvider.getUriForFile(
-                requireContext(),
-                "com.example.kotlincashloan",
-                files
-            )
+            val imagUri: Uri = FileProvider.getUriForFile(requireContext(), "com.example.kotlincashloan", files)
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imagUri)
             startActivityForResult(takePictureIntent, IMAGE_PICK_CODE)
@@ -974,13 +1072,10 @@ override fun onStart() {
     }
 
     private fun iniData() {
+
         if (countriesList.size != 0) {
             if (countriesList[0].key == "fifth_goal_name") {
-                val calendarDta = GregorianCalendar(
-                    countriesList[0].year,
-                    countriesList[0].monthOfYear,
-                    countriesList[0].dayOfMonth
-                )
+                val calendarDta = GregorianCalendar(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth)
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 fifth_goal_name.setText(MyUtils.toMyDate(calendar))
                 countriesPhone = calendar
@@ -989,15 +1084,14 @@ override fun onStart() {
 
 
         fifth_goal_name.setOnClickListener(View.OnClickListener { v: View? ->
+            fifth_goal_name.isEnabled = false
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                fifth_goal_name.isEnabled = true
+            }, 900)
+
             fifth_goal_name.error = null
             keyData = "fifth_goal_name"
-            if (countriesList.size != 0) {
-                showDate(
-                    countriesList[0].year,
-                    countriesList[0].monthOfYear,
-                    countriesList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+            if (countriesList.size != 0) { showDate(countriesList[0].year, countriesList[0].monthOfYear, countriesList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -1008,11 +1102,7 @@ override fun onStart() {
 
         if (goalList.size != 0) {
             if (goalList[0].key == "date_entry") {
-                val calendarDta = GregorianCalendar(
-                    goalList[0].year,
-                    goalList[0].monthOfYear,
-                    goalList[0].dayOfMonth
-                )
+                val calendarDta = GregorianCalendar(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth)
                 val calendar = simpleDateFormat.format(calendarDta.time)
                 date_entry.setText(MyUtils.toMyDate(calendar))
                 goalPhone = calendar
@@ -1020,15 +1110,14 @@ override fun onStart() {
         }
 
         date_entry.setOnClickListener {
+            date_entry.isEnabled = false
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                date_entry.isEnabled = true
+            }, 900)
             date_entry.error = null
             keyData = "date_entry"
             if (goalList.size != 0) {
-                showDate(
-                    goalList[0].year,
-                    goalList[0].monthOfYear,
-                    goalList[0].dayOfMonth,
-                    R.style.DatePickerSpinner
-                )
+                showDate(goalList[0].year, goalList[0].monthOfYear, goalList[0].dayOfMonth, R.style.DatePickerSpinner)
             } else {
                 showDate(1990, 0, 1, R.style.DatePickerSpinner)
                 val calendarDta = GregorianCalendar(1990, 0, 1)
@@ -1136,15 +1225,22 @@ override fun onStart() {
 
 
                     //preparing database files, it will be downloaded from network only one time and stored on user device
-                    DocumentReader.Instance().prepareDatabase(requireContext(), "Full", object : IDocumentReaderPrepareCompletion {
+                    DocumentReader.Instance().prepareDatabase(
+                        requireContext(),
+                        "Full",
+                        object : IDocumentReaderPrepareCompletion {
                             override fun onPrepareProgressChanged(progress: Int) {
                                 try {
                                     text.setText("Загрузка базы данных: $progress%")
-                                }catch (e:Exception){
+                                } catch (e: Exception) {
                                     e.printStackTrace()
                                 }
                             }
-                            override fun onPrepareCompleted(p0: Boolean, p1: DocumentReaderException?) {
+
+                            override fun onPrepareCompleted(
+                                p0: Boolean,
+                                p1: DocumentReaderException?
+                            ) {
                                 //Initializing the reader
                                 DocumentReader.Instance().initializeReader(
                                     requireContext(),
@@ -1158,28 +1254,25 @@ override fun onStart() {
                                         e.printStackTrace()
                                     }
                                     DocumentReader.Instance().customization().edit()
-                                        .setShowHelpAnimation(
-                                            false
-                                        ).apply()
+                                        .setShowHelpAnimation(false).apply()
                                     DocumentReader.Instance().functionality().edit()
-                                        .setShowSkipNextPageButton(
-                                            false
-                                        ).apply()
+                                        .setShowSkipNextPageButton(false).apply()
                                     if (success) {
                                         //initialization successful
-                                        fifth_potent.setOnClickListener(View.OnClickListener {
-                                            //starting video processing
-                                            DocumentReader.Instance().showScanner(
-                                                requireContext(),
-                                                completion
-                                            )
-                                            DocumentReader.Instance()
-                                                .processParams().multipageProcessing = true
-                                        })
+                                        try {
+                                            fifth_potent.setOnClickListener(View.OnClickListener {
+                                                //остонавливате таймер
+                                                initSuspendTime()
+                                                //starting video processing
+                                                DocumentReader.Instance().showScanner(requireContext(), completion)
+                                                DocumentReader.Instance().processParams().multipageProcessing = true
+                                            })
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
 
                                         //getting current processing scenario and loading available scenarios to ListView
-                                        var currentScenario =
-                                            DocumentReader.Instance().processParams().scenario
+                                        var currentScenario = DocumentReader.Instance().processParams().scenario
                                         val scenarios = ArrayList<String>()
                                         for (scenario in DocumentReader.Instance().availableScenarios) {
                                             scenarios.add(scenario.name)
@@ -1196,11 +1289,7 @@ override fun onStart() {
                                         //добавил трай что бы непадал
                                         try {
                                             //Initialization was not successful
-                                            Toast.makeText(
-                                                requireContext(),
-                                                "Init failed:$p1",
-                                                Toast.LENGTH_LONG
-                                            ).show()
+                                            Toast.makeText(requireContext(), "Init failed:$p1", Toast.LENGTH_LONG).show()
                                         } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
@@ -1215,6 +1304,8 @@ override fun onStart() {
                 }
             } else {
                 fifth_potent.setOnClickListener(View.OnClickListener {
+                    //остонавливате таймер
+                    initSuspendTime()
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion)
                     DocumentReader.Instance().processParams().multipageProcessing = true
@@ -1603,7 +1694,7 @@ override fun onStart() {
             }
         }
 
-        if (layout_contract_type.visibility != View.GONE) {
+        if (fifth_contract.visibility != View.GONE) {
             if (contract_type.text.length == 0) {
                 if (contract_type.text.isEmpty()) {
                     editUtils(contract_type, contract_type_error, "Выберите из списка", true, null)
@@ -1673,6 +1764,7 @@ override fun onStart() {
 
     override fun onResume() {
         super.onResume()
+        noBlock()
         initTextValidation()
     }
 }

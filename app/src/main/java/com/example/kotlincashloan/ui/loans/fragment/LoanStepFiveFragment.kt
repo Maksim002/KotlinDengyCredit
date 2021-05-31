@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -28,13 +29,17 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_get_loan.*
+import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) :
+    Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListWorkDta = ""
@@ -81,9 +86,18 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
-        if (permission == 4){
+
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
+        if (permission == 4) {
             alert.show()
         }
+
         initRestart()
         initClick()
         initView()
@@ -109,23 +123,22 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        initRestart()
-    }
-
     override fun onResume() {
         super.onResume()
         if (additionalId == "-1") {
             fire_additional_amount.visibility = View.GONE
         }
-        //В поле длинная строка. Если поле непустое удоляет hide
-        if (fire_work_experience.text.isNotEmpty()) {
-            fire_work_experience.hint = null
-        }
     }
 
     private fun initClick() {
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            fire_ste_no_connection.visibility = View.VISIBLE
+            layout_fire.visibility = View.GONE
+            fire_ste_technical_work.visibility = View.GONE
+            fire_ste_access_restricted.visibility = View.GONE
+            fire_ste_not_found.visibility = View.GONE
+        } else {
         bottom_loan_fire.setOnClickListener {
             if (fire_additional_amount.visibility == View.GONE) {
                 additionalId = "-1"
@@ -133,6 +146,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             if (validate()) {
                 initSaveLoan()
             }
+        }
         }
 
         access_restricted.setOnClickListener {
@@ -157,7 +171,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         fire_post.setOnClickListener {
-            fire_post.isClickable = false
+            fire_post.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -165,23 +179,21 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                     if (i <= listTypeWork.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listTypeWork[i - 1].name.toString(),
-                                "listTypeWork",
-                                i - 1,
-                                0,
-                                listTypeWork[i - 1].name.toString()
-                            )
+                                listTypeWork[i - 1].name.toString(), "listTypeWork", i - 1, listTypeWork[i - 1].id!!.toInt(), listTypeWork[i - 1].name.toString())
                         )
+                    }
+                    if (i == listTypeWork.size) {
+                        itemDialog.add(GeneralDialogModel("Другое", "listTypeWork", i, 0, "Другое"))
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeWorkPosition, "Кем вы работаете?")
+                initBottomSheet(itemDialog, typeWorkPosition, "Кем Вы работаете?", fire_post)
             }
         }
 
         fire_work_experience_r_f.setOnClickListener {
-            fire_work_experience_r_f.isClickable = false
+            fire_work_experience_r_f.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -200,12 +212,12 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Сколько вы работаете в России?")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько Вы работаете в России?", fire_work_experience_r_f)
             }
         }
 
         fire_work_experience.setOnClickListener {
-            fire_work_experience.isClickable = false
+            fire_work_experience.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -241,13 +253,13 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 initBottomSheet(
                     itemDialog,
                     experiencePosition,
-                    "Сколько вы работаете на последнем месте работы в России?"
+                    "Сколько Вы работаете на последнем месте работы в России?", fire_work_experience
                 )
             }
         }
 
         fire_list_income.setOnClickListener {
-            fire_list_income.isClickable = false
+            fire_list_income.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -266,12 +278,12 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomePosition, "Ежемесячный доход")
+                initBottomSheet(itemDialog, incomePosition, "Ежемесячный доход", fire_list_income)
             }
         }
 
         fire_additional_income.setOnClickListener {
-            fire_additional_income.isClickable = false
+            fire_additional_income.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -290,12 +302,12 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typeIncomePosition, "Дополнительный доход")
+                initBottomSheet(itemDialog, typeIncomePosition, "Дополнительный доход", fire_additional_income)
             }
         }
 
         fire_additional_amount.setOnClickListener {
-            fire_additional_amount.isClickable = false
+            fire_additional_amount.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -314,7 +326,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, incomeAdditionalPosition, "Сумма доп. дохода")
+                initBottomSheet(itemDialog, incomeAdditionalPosition, "Сумма доп. дохода", fire_additional_amount)
             }
         }
     }
@@ -328,15 +340,27 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun listenerClickResult(model: GeneralDialogModel) {
 
         if (model.key == "listTypeWork") {
-            fire_post.isClickable = true
-            fire_post.error = null
-            fire_post.setText(listTypeWork[model.position].name)
-            typeWorkPosition = listTypeWork[model.position].name.toString()
-            typeId = listTypeWork[model.position].id!!
+            if (itemDialog.first { it.id == model.id }.name == "Другое") {
+                fire_post.isEnabled = true
+                fire_post.error = null
+                fire_post.setText("Другое")
+                typeWorkPosition = "Другое"
+                typeId = "9999"
+                five_layout_text.visibility = View.VISIBLE
+            } else {
+                fire_post.isEnabled = true
+                fire_post.error = null
+                fire_post.setText(listTypeWork[model.position].name)
+                typeWorkPosition = listTypeWork[model.position].name.toString()
+                typeId = listTypeWork[model.position].id!!
+                five_layout_text.visibility = View.GONE
+                fire_step_four_working.setText("")
+                editUtils(fire_step_four_working, step_four_working_error, "", false)
+            }
         }
 
         if (model.key == "listYears") {
-            fire_work_experience_r_f.isClickable = true
+            fire_work_experience_r_f.isEnabled = true
             fire_work_experience_r_f.error = null
             fire_work_experience_r_f.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -358,7 +382,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listWorkExperience") {
-            fire_work_experience.isClickable = true
+            fire_work_experience.isEnabled = true
             fire_work_experience.error = null
             fire_work_experience.hint = ""
             fire_work_experience.setText(listWorkExperience[model.position].name)
@@ -367,7 +391,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listIncome") {
-            fire_list_income.isClickable = true
+            fire_list_income.isEnabled = true
             fire_list_income.error = null
             fire_list_income.setText(listIncome[model.position].name)
             incomePosition = listIncome[model.position].name.toString()
@@ -375,7 +399,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listTypeIncome") {
-            fire_additional_income.isClickable = true
+            fire_additional_income.isEnabled = true
             fire_additional_income.error = null
             fire_additional_income.setText(listTypeIncome[model.position].name)
             typeIncomePosition = listTypeIncome[model.position].name.toString()
@@ -389,7 +413,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listIncomeAdditional") {
-            fire_additional_amount.isClickable = true
+            fire_additional_amount.isEnabled = true
             fire_additional_amount.error = null
             fire_additional_amount.setText(listIncomeAdditional[model.position].name)
             incomeAdditionalPosition = listIncomeAdditional[model.position].name.toString()
@@ -400,35 +424,65 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            bottom_loan_fire.setText("Сохранить")
-            five_cross_back.visibility = View.GONE
-
+            //Если applicationStatus == true меняем текст на кнопки
+            if (applicationStatus == false) {
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                bottom_loan_fire.setText("Сохранить")
+                five_cross_back.visibility = View.GONE
+            }else{
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            }
+            try {
             //place_work
             fire_step_four_residence.setText(listLoan.placeWork)
             //type_work
-            fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
-            typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
-            typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+            if (listLoan.typeWork == "9999") {
+                fire_post.setText("Другое")
+                fire_step_four_working.setText(listLoan.otherTypeWork)
+                typeWorkPosition = "Другое"
+                typeId = listLoan.typeWork.toString()
+                five_layout_text.visibility = View.VISIBLE
+            } else {
+                fire_post.setText(listTypeWork.first { it.id == listLoan.typeWork }.name)
+                typeWorkPosition = listTypeWork.first { it.id == listLoan.typeWork }.name.toString()
+                typeId = listTypeWork.first { it.id == listLoan.typeWork }.id!!
+                five_layout_text.visibility = View.GONE
+            }
             //work_exp_ru
             fire_work_experience_r_f.setText(listYears.first { it.id == listLoan.workExpRu }.name)
             yearsPosition = listYears.first { it.id == listLoan.workExpRu }.name.toString()
             yearsRfId = listYears.first { it.id == listLoan.workExpRu }.id!!
             //work_exp_last
-            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast}.name)
-            experiencePosition = listWorkExperience.first { it.id == listLoan.workExpLast}.name.toString()
-            yearsId = listWorkExperience.first{it.id == listLoan.workExpLast}.id!!
+            fire_work_experience.setText(listWorkExperience.first { it.id == listLoan.workExpLast }.name)
+            experiencePosition =
+                listWorkExperience.first { it.id == listLoan.workExpLast }.name.toString()
+            yearsId = listWorkExperience.first { it.id == listLoan.workExpLast }.id!!
             //income
-            fire_list_income.setText(listIncome.first { it.id == listLoan.income}.name)
-            incomePosition = listIncome.first { it.id == listLoan.income}.name.toString()
-            incomeId = listIncome.first { it.id == listLoan.income}.id!!
+            fire_list_income.setText(listIncome.first { it.id == listLoan.income }.name)
+            incomePosition = listIncome.first { it.id == listLoan.income }.name.toString()
+            incomeId = listIncome.first { it.id == listLoan.income }.id!!
             //sub_income_id
-            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId}.name)
-            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId}.name.toString()
-            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId}.id!!
+            fire_additional_income.setText(listTypeIncome.first { it.id == listLoan.subIncomeId }.name)
+            typeIncomePosition = listTypeIncome.first { it.id == listLoan.subIncomeId }.name.toString()
+            typeIncomeId = listTypeIncome.first { it.id == listLoan.subIncomeId }.id!!
+            if (typeIncomeId == "1"){ additionalId = "-1"}
             //sub_income_sum
-            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name)
-            incomeAdditionalPosition = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.name.toString()
-            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum}.id!!
+            fire_additional_amount.setText(listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name)
+            incomeAdditionalPosition =
+                listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.name.toString()
+            additionalId = listIncomeAdditional.first { it.id == listLoan.subIncomeSum }.id!!
+
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+            //В поле длинная строка. Если поле непустое удоляет hide
+            if (fire_work_experience.text.isNotEmpty()) {
+                fire_work_experience.hint = null
+            }
+            if (additionalId == "-1") {
+                fire_additional_amount.visibility = View.GONE
+            }
         }
     }
 
@@ -636,6 +690,11 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.applicationId.toString()
         mapSave["type_work"] = typeId
+
+        if (fire_step_four_working.text.isNotEmpty()) {
+            mapSave["other_type_work"] = fire_step_four_working.text.toString()
+        }
+
         mapSave["work_exp_ru"] = yearsRfId
         mapSave["work_exp_last"] = yearsId
         mapSave["income"] = incomeId
@@ -648,6 +707,25 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave["place_work"] = fire_step_four_residence.text.toString()
         mapSave["step"] = "4"
 
+        if (status == true){
+            //Сохроняет измененные данные в масив
+            listLoan.typeWork = typeId
+            if (fire_step_four_working.text.isNotEmpty()) {
+                listLoan.otherTypeWork = fire_step_four_working.text.toString()
+            }
+            listLoan.workExpRu = yearsRfId
+            listLoan.workExpLast = yearsId
+            listLoan.income = incomeId
+            listLoan.subIncomeId = typeIncomeId
+            if (additionalId == "-1") {
+                listLoan.subIncomeSum = ""
+            } else {
+                listLoan.subIncomeSum = additionalId
+            }
+            listLoan.placeWork = fire_step_four_residence.text.toString()
+        }
+
+
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg
@@ -659,9 +737,13 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                         fire_ste_no_connection.visibility = View.GONE
                         fire_ste_access_restricted.visibility = View.GONE
                         fire_ste_not_found.visibility = View.GONE
-                        if (status == true){
-                            requireActivity().onBackPressed()
-                        }else{
+                        if (applicationStatus == false) {
+                            if (status == true) {
+                                requireActivity().onBackPressed()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                            }
+                        } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
                         }
 
@@ -687,9 +769,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -715,10 +798,15 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
     }
 
-    private fun getErrorCode(error: Int){
-        listListResult(error,fire_ste_technical_work as LinearLayout,fire_ste_no_connection
-                as LinearLayout,layout_fire as ConstraintLayout,fire_ste_access_restricted
-                as LinearLayout,fire_ste_not_found as LinearLayout,requireActivity())
+    private fun getErrorCode(error: Int) {
+        if (error != 0){
+            listListResult(
+                error, fire_ste_technical_work as LinearLayout, fire_ste_no_connection
+                        as LinearLayout, layout_fire as ConstraintLayout, fire_ste_access_restricted
+                        as LinearLayout, fire_ste_not_found as LinearLayout, requireActivity(), true
+            )
+        }
+
     }
 
     //Метотд для скрытия клавиатуры
@@ -740,6 +828,14 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             editUtils(fire_step_four_residence, step_four_residence_error, "Заполните поле", true)
             valid = false
         }
+
+        if (five_layout_text.visibility != View.GONE) {
+            if (fire_step_four_working.text.isEmpty()) {
+                editUtils(fire_step_four_working, step_four_working_error, "Заполните поле", true)
+                valid = false
+            }
+        }
+
         if (fire_post.text.isEmpty()) {
             editUtils(fire_post, fire_post_error, "Выберите из списка", true)
             valid = false
@@ -780,6 +876,10 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     private fun initView() {
+        fire_step_four_working.addTextChangedListener {
+            editUtils(fire_step_four_working, step_four_working_error, "", false)
+        }
+
         fire_step_four_residence.addTextChangedListener {
             editUtils(fire_step_four_residence, step_four_residence_error, "", false)
         }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -28,13 +29,15 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(),
+class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) : Fragment(),
     ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
@@ -59,6 +62,14 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
+
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
         if (permission == 5){
             alert.show()
         }
@@ -102,26 +113,19 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         six_loan_family.setOnClickListener {
-            six_loan_family.isClickable = false
+            six_loan_family.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listFamily.size) {
                     if (i <= listFamily.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listFamily[i - 1].name.toString(),
-                                "listFamily",
-                                i - 1,
-                                0,
-                                listFamily[i - 1].name.toString()
-                            )
-                        )
+                            GeneralDialogModel(listFamily[i - 1].name.toString(), "listFamily", i - 1, 0, listFamily[i - 1].name.toString()))
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, familyPosition, "Кем приходится")
+                initBottomSheet(itemDialog, familyPosition, "Кем приходится", six_loan_family)
             }
         }
     }
@@ -143,19 +147,13 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         } else {
             viewModel.errorSaveLoan.value = null
             initListFamily()
-//            initAvailableCountry()
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        initRestart()
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listFamily") {
-            six_loan_family.isClickable = true
+            six_loan_family.isEnabled = true
             six_loan_family.setText(listFamily[model.position].name)
             familyPosition = listFamily[model.position].name.toString()
             family = listFamily[model.position].id.toString()
@@ -166,8 +164,16 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     //Получает данные на редактирование заёма
     private fun getLists() {
         if (status == true) {
-            bottom_loan_six.setText("Сохранить")
-            four_cross_six.visibility = View.GONE
+            //Если applicationStatus == true меняем текст на кнопки
+            if (applicationStatus == false){
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                bottom_loan_six.setText("Сохранить")
+                four_cross_six.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            }
+            try {
             //reLastName
             six_loan_surname.setText(listLoan.reLastName)
             //reFirstName
@@ -180,6 +186,9 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             family = listFamily.first{ it.id == listLoan.reType }.id.toString()
             //rePhone
             six_loan_phone.setText(listLoan.rePhone)
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
             alert.hide()
         }
     }
@@ -215,58 +224,83 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
-        val mapSave = mutableMapOf<String, String>()
-        mapSave["login"] = AppPreferences.login.toString()
-        mapSave["token"] = AppPreferences.token.toString()
-        mapSave["id"] = AppPreferences.applicationId.toString()
-        mapSave["last_name"] = six_loan_surname.text.toString()
-        mapSave["first_name"] = six_loan_name.text.toString()
-        mapSave["second_name"] = six_loan_middle_name.text.toString()
-        mapSave["type"] = family
-        mapSave["phone"] = six_loan_phone.text.toString()
-        mapSave["step"] = "5"
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            six_ste_no_connection.visibility = View.VISIBLE
+            layout_loan_six.visibility = View.GONE
+            six_ste_technical_work.visibility = View.GONE
+            six_ste_access_restricted.visibility = View.GONE
+            six_ste_not_found.visibility = View.GONE
+        } else {
+            GetLoanActivity.alert.show()
+            val mapSave = mutableMapOf<String, String>()
+            mapSave["login"] = AppPreferences.login.toString()
+            mapSave["token"] = AppPreferences.token.toString()
+            mapSave["id"] = AppPreferences.applicationId.toString()
+            mapSave["last_name"] = six_loan_surname.text.toString()
+            mapSave["first_name"] = six_loan_name.text.toString()
+            mapSave["second_name"] = six_loan_middle_name.text.toString()
+            mapSave["type"] = family
+            mapSave["phone"] = six_loan_phone.text.toString()
+            mapSave["step"] = "5"
 
-        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
-            val data = result.data
-            val msg = result.msg
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        layout_loan_six.visibility = View.VISIBLE
-                        six_ste_technical_work.visibility = View.GONE
-                        six_ste_no_connection.visibility = View.GONE
-                        six_ste_access_restricted.visibility = View.GONE
-                        six_ste_not_found.visibility = View.GONE
-                        if (status == true){
-                            requireActivity().finish()
-                        }else{
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+            if (status == true){
+                //Сохроняет обновленные данные в смасив
+                listLoan.reLastName = six_loan_surname.text.toString()
+                listLoan.reFirstName = six_loan_name.text.toString()
+                listLoan.reSecondName = six_loan_middle_name.text.toString()
+                listLoan.reType = family
+                listLoan.rePhone = six_loan_phone.text.toString()
+            }
+
+            viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+                val data = result.data
+                val msg = result.msg
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            layout_loan_six.visibility = View.VISIBLE
+                            six_ste_technical_work.visibility = View.GONE
+                            six_ste_no_connection.visibility = View.GONE
+                            six_ste_access_restricted.visibility = View.GONE
+                            six_ste_not_found.visibility = View.GONE
+                            if (applicationStatus == false) {
+                                if (status == true) {
+                                    requireActivity().finish()
+                                } else {
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                        6
+                                }
+                            } else {
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
+                                    6
+                            }
+                        } else if (data.error.code != null) {
+                            listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                        } else if (data.reject != null) {
+                            initBottomSheet(data.reject.message.toString())
                         }
-                    } else if (data.error.code != null) {
-                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    } else if (data.reject != null) {
-                        initBottomSheet(data.reject.message.toString())
+                    }
+                    Status.ERROR -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
+                    }
+                    Status.NETWORK -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                Status.ERROR -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-                Status.NETWORK -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-            }
-            GetLoanActivity.alert.hide()
-        })
+                GetLoanActivity.alert.hide()
+            })
+        }
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
         list: ArrayList<GeneralDialogModel>,
         selectionPosition: String,
-        title: String
+        title: String, id: AutoCompleteTextView
     ) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -332,7 +366,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             editUtils(six_loan_phone, six_loan_phone_error, "Заполните поле", true)
             valid = false
         } else if (six_loan_phone.text.toString().toFullPhone().length != 20) {
-            editUtils(six_loan_phone, six_loan_phone_error, "Ввидите правильный номер", true)
+            editUtils(six_loan_phone, six_loan_phone_error, "Введите правильный номер", true)
             valid = false
         }
         return valid

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -87,8 +88,7 @@ public class DatePickerDialog extends AlertDialog implements OnClickListener,
         setButton(BUTTON_NEGATIVE, context.getText(android.R.string.cancel),
                 this);
 
-        LayoutInflater inflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.date_picker_dialog_container, null);
         setView(view);
         mDatePicker = new DatePicker((ViewGroup) view, spinnerTheme);

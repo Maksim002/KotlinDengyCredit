@@ -158,7 +158,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                                 }
                             }
                             Status.NETWORK ->{
-                                if (msg == "600"){
+                                if (msg == "600" || msg == "601"){
                                     pin_verification_code.setText(initpin)
                                     currentPinInput = ""
                                     loadingMistake(activity as AppCompatActivity)

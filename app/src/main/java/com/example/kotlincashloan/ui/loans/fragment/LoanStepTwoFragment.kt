@@ -33,8 +33,10 @@ import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
+import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -43,7 +45,11 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
+class LoanStepTwoFragment(
+    var status: Boolean,
+    var listLoan: GetLoanModel,
+    var applicationStatus: Boolean
+) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -62,13 +68,11 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
     private var totalCounter = 0
     private var totalRate = 0.0
 
+    private var seekbarValue = ""
+
     val handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_loan_step_two, container, false)
     }
 
@@ -76,9 +80,15 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
         super.onViewCreated(view, savedInstanceState)
         initClick()
         initRestart()
+
+        if (status == true) {
+            totalCounter = listLoan.loanTerm!!.toInt()
+            loan_step_sum.text = listLoan.loanSum
+        }
     }
 
     private fun initClick() {
+
         no_connection_repeat.setOnClickListener {
             initRestart()
         }
@@ -102,30 +112,50 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
 
     override fun onResume() {
         super.onResume()
-        if (status == true){
-            bottom_step_two.setText("Сохранить")
-        }else{
+        if (applicationStatus == false) {
+            if (status == true) {
+                bottom_step_two.setText("Сохранить")
+            } else {
+                bottom_step_two.text = "Следующий шаг"
+            }
+        } else {
             bottom_step_two.text = "Следующий шаг"
         }
     }
 
     private fun initСounter() {
         //Если запрос счётчика прошол успешно
-        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result->
+        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
                 sumMin = result.result.minSum.toString().toDouble().toInt()
                 sumMax = result.result.maxSum.toString().toDouble().toInt()
+
                 maxCounter = result.result.maxCount.toString().toInt()
                 minCounter = result.result.minCount.toString().toInt()
 
                 totalRate = result.result.rate!!.toDouble()
 
                 position = minCounter
-                progressBarr(sumMin.toString())
 
-                totalCounter = result.result.minCount.toString().toInt()
-                totalSum = result.result.minSum!!.toDouble().toInt()
+                if (status) {
+                    if (listLoan.loanSum != null) {
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            step_item_list.smoothScrollToPosition(listLoan.loanTerm!!.toInt() - minCounter)
+                            progressBarr(listLoan.loanSum!!.toDouble().toInt().toString())
+                            loan_step_seek.progress =
+                                listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
+                        }, 1200)
+                    } else {
+                        progressBarr(sumMin.toString())
+                    }
+                } else {
+                    progressBarr(sumMin.toString())
+                }
 
+                if (!status){
+                    totalCounter = result.result.minCount.toString().toInt()
+                    totalSum = result.result.minSum!!.toDouble().toInt()
+                }
                 minCounterLoan.setText(minCounter.toString())
                 maxCounterLoan.setText(maxCounter.toString())
 
@@ -142,7 +172,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
                 totalSum()
                 initResiscler()
                 initSeekBar()
-            }else{
+            } else {
                 if (result.error.code != null) {
                     initErrorResult(result.error.code!!)
                 }
@@ -150,62 +180,81 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
         })
 
 
-        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error->
-            if (error != null){
+        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error ->
+            if (error != null) {
                 initError(error)
             }
         })
     }
 
-
     //Сохронение на сервер данных
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
-        val mapSave = mutableMapOf<String, String>()
-        mapSave.put("login", AppPreferences.login.toString())
-        mapSave.put("token", AppPreferences.token.toString())
-        mapSave.put("loan_type", "2");
-        mapSave.put("loan_term", totalCounter.toString())
-        mapSave.put("loan_sum", loan_step_sum.text.toString())
-        mapSave.put("step", "1")
+        ObservedInternet().observedInternet(requireContext())
+        if (!AppPreferences.observedInternet) {
+            loans_two_connection.visibility = View.VISIBLE
+            layout_two.visibility = View.GONE
+            loans_two_work.visibility = View.GONE
+            loans_two_restricted.visibility = View.GONE
+            loans_two_found.visibility = View.GONE
+        } else {
+            GetLoanActivity.alert.show()
+            val mapSave = mutableMapOf<String, String>()
+            mapSave.put("login", AppPreferences.login.toString())
+            mapSave.put("token", AppPreferences.token.toString())
+            mapSave.put("loan_type", "2");
+            mapSave.put("loan_term", totalCounter.toString())
+            mapSave.put("loan_sum", loan_step_sum.text.toString())
+            mapSave.put("step", "1")
 
-        viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
-            val data = result.data
-            val msg = result.msg
-            when (result.status) {
-                Status.SUCCESS -> {
-                    if (data!!.result != null) {
-                        layout_two.visibility = View.VISIBLE
-                        loans_two_work.visibility = View.GONE
-                        loans_two_connection.visibility = View.GONE
-                        loans_two_restricted.visibility = View.GONE
-                        loans_two_found.visibility = View.GONE
-                        AppPreferences.applicationId = data.result.id.toString()
-                        if (status == true){
-                            requireActivity().finish()
-                        }else{
-                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+            if (status == true) {
+                listLoan.loanTerm = totalCounter.toString()
+                listLoan.loanSum = loan_step_sum.text.toString()
+            }
+
+            viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
+                val data = result.data
+                val msg = result.msg
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        if (data!!.result != null) {
+                            layout_two.visibility = View.VISIBLE
+                            loans_two_work.visibility = View.GONE
+                            loans_two_connection.visibility = View.GONE
+                            loans_two_restricted.visibility = View.GONE
+                            loans_two_found.visibility = View.GONE
+                            AppPreferences.applicationId = data.result.id.toString()
+                            if (applicationStatus == false) {
+                                if (status == true) {
+                                    requireActivity().finish()
+                                } else {
+//                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                                }
+                            } else {
+//                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                            }
+                        } else if (data.error.code != null) {
+                            listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
+                        } else if (data.reject != null) {
+                            initBottomSheet(data.reject.message!!)
+                            layout_two.visibility = View.VISIBLE
+                            loans_two_work.visibility = View.GONE
+                            loans_two_connection.visibility = View.GONE
+                            loans_two_restricted.visibility = View.GONE
+                            loans_two_found.visibility = View.GONE
                         }
-                    }else if (data.error.code != null) {
-                        listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    }else if (data.reject != null) {
-                        initBottomSheet(data.reject.message!!)
-                        layout_two.visibility = View.VISIBLE
-                        loans_two_work.visibility = View.GONE
-                        loans_two_connection.visibility = View.GONE
-                        loans_two_restricted.visibility = View.GONE
-                        loans_two_found.visibility = View.GONE
+                    }
+                    Status.ERROR -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
+                    }
+                    Status.NETWORK -> {
+                        listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                Status.ERROR -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-                Status.NETWORK -> {
-                    listListResult(msg!!, activity as AppCompatActivity)
-                }
-            }
-            GetLoanActivity.alert.hide()
-        })
+                GetLoanActivity.alert.hide()
+            })
+        }
     }
 
     override fun onClickStepListener() {
@@ -234,7 +283,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
             step_item_list.setViewsToChangeColor(listOf(R.id.loan_step_number, R.id.loan_step_number))
             myAdapter.update(list)
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -246,7 +295,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
                     val position = getCurrentItem()
                     loan_step_month_seek.progress = position
                 }
-                if (newState == RecyclerView.SCREEN_STATE_ON){
+                if (newState == RecyclerView.SCREEN_STATE_ON) {
                     val position = getCurrentItem()
                     AppPreferences.isSeekBar = position
                 }
@@ -254,14 +303,13 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
         })
     }
 
-    private fun totalSum(){
-        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), - totalCounter.toDouble())))
+    private fun totalSum() {
+        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), -totalCounter.toDouble())))
         totalSumLoans.setText(equ.toInt().toString())
     }
 
     operator fun hasNext(): Boolean {
-        return step_item_list.getAdapter() != null &&
-                getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
+        return step_item_list.getAdapter() != null && getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
     }
 
     operator fun next() {
@@ -286,7 +334,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
         loan_step_seek.max = sumMax / 1000 - 5
         loan_step_seek.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                val seekbarValue = i.toString()
+                seekbarValue = i.toString()
                 var resultSum = 0
                 resultSum = seekbarValue.toInt() * 1000 + sumMin
                 progressBarr(resultSum.toString())
@@ -309,7 +357,8 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
                 AppPreferences.isSeekBar = position
             }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
 //                step_item_list.smoothScrollToPosition(position)
 //                AppPreferences.isSeekBar = position
@@ -414,13 +463,14 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
     }
 
     private fun initError(error: String) {
-        if (error == "601") {
-            loans_two_connection.visibility = View.VISIBLE
-            layout_two.visibility = View.GONE
-            loans_two_restricted.visibility = View.GONE
-            loans_two_found.visibility = View.GONE
-            loans_two_work.visibility = View.GONE
-        } else if (error == "403") {
+//        if (error == "601") {
+//            loans_two_connection.visibility = View.VISIBLE
+//            layout_two.visibility = View.GONE
+//            loans_two_restricted.visibility = View.GONE
+//            loans_two_found.visibility = View.GONE
+//            loans_two_work.visibility = View.GONE
+//        } else
+        if (error == "403") {
             loans_two_restricted.visibility = View.VISIBLE
             loans_two_found.visibility = View.GONE
             loans_two_work.visibility = View.GONE
@@ -434,7 +484,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
             loans_two_restricted.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
-        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600") {
+        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
             loans_two_work.visibility = View.VISIBLE
             loans_two_connection.visibility = View.GONE
             layout_two.visibility = View.GONE
@@ -449,7 +499,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
         startActivity(intent)
     }
 
-    private fun initRestart(){
+    private fun initRestart() {
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("loan_type", "1")
@@ -461,7 +511,7 @@ class LoanStepTwoFragment(var status: Boolean) : Fragment(), StepClickListener {
             layout_two.visibility = View.GONE
             loans_two_restricted.visibility = View.GONE
             loans_two_found.visibility = View.GONE
-        }else{
+        } else {
             viewModel.getInfo(map)
             initСounter()
         }

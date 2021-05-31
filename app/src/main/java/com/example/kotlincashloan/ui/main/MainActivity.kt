@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.android.navigationadvancedsample.ClickPushNotification
 import com.example.android.navigationadvancedsample.setupWithNavController
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.TimerListener
@@ -116,15 +118,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setTitle(title: String?, color: Int) {
+    fun setTitle(title: String?, color: Int, textOnline: String? = null) {
         if (main_toolBar != null) {
             main_toolBar.setText(title)
             main_toolBar.setTextColor(color)
+            main_online.setText(textOnline)
+            main_online.setTextColor(color)
+            if (main_online.text != ""){
+                main_online.visibility = View.VISIBLE
+            }else{
+                main_online.visibility = View.GONE
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
+        initClear()
+        //если токен пуст то выходи из приложения
+        if (AppPreferences.token == ""){
+            finish()
+        }
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             timer.timeStop()
         }, 2000)
@@ -138,15 +152,5 @@ class MainActivity : AppCompatActivity() {
                 AppPreferences.isNumber = false
             }, 200)
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        if (AppPreferences.token != "") {
-//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                timer.timeStart()
-//                AppPreferences.isNumber = false
-//            }, 200)
-//        }
     }
 }

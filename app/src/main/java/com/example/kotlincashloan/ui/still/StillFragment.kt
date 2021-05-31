@@ -36,8 +36,7 @@ class StillFragment : Fragment() {
 
     private fun initClick() {
         still_exit.setOnClickListener {
-            val myDialogFragment =
-                ExitDialogFragment()
+            val myDialogFragment = ExitDialogFragment()
             val manager = requireActivity().supportFragmentManager
             myDialogFragment.isCancelable = false;
             myDialogFragment.show(manager, "exitDialog")

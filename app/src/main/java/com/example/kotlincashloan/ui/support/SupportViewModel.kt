@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.support
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.extension.generateUrl
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlinscreenscanner.service.model.CommonResponse
@@ -22,7 +23,7 @@ class SupportViewModel : ViewModel(){
     var listFaqDta = MutableLiveData<CommonResponse<ArrayList<ListFaqResultModel>>>()
 
     fun listFaq(map: Map<String, String>){
-        RetrofitService.apiService().listFaq(map).enqueue(object :
+        RetrofitService.apiService().listFaq(map, generateUrl("listFaq")).enqueue(object :
             Callback<CommonResponse<ArrayList<ListFaqResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFaqResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -41,9 +42,6 @@ class SupportViewModel : ViewModel(){
                 }else{
                     error.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
-                },400)
             }
         })
     }

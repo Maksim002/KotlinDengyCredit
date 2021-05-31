@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_error_outline_24"
                     android:drawablePadding="10dp"
-                    android:text="Неверный логин или пароль"
+                    android:text="Отсканируйте лицо повторно"
                     android:textColor="@color/colorRed"
                     android:visibility="gone" />
             </LinearLayout>

@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textColor="@color/blackColor"
-        android:gravity="center"
+        android:justificationMode="inter_word"
         android:text="@string/Full_name_is_already_busy"/>
 
     <LinearLayout

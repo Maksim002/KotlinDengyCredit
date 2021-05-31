@@ -2,6 +2,7 @@ package com.example.kotlincashloan.common
 
 import android.os.Bundle
 import android.view.*
+import android.widget.AutoCompleteTextView
 import androidx.core.widget.addTextChangedListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.GeneralDialogAdapter
@@ -13,7 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_general_dialog.*
 
 
-class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: String, var title: String) : BottomSheetDialogFragment(), ListenerGeneralDialog {
+class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: ArrayList<GeneralDialogModel>, var position: String, var title: String, var idText: AutoCompleteTextView) : BottomSheetDialogFragment(), ListenerGeneralDialog {
     private var adapterDialog = GeneralDialogAdapter(position, this)
 
     override fun onCreateView(
@@ -38,6 +39,7 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
 
     private fun initClick() {
         home_enter.setOnClickListener {
+            idText.isEnabled = true
             dismiss()
         }
 
@@ -53,14 +55,25 @@ class GeneralDialogFragment(var listener: ListenerGeneralResult, var list: Array
             dialog_text.visibility = View.GONE
         }
 
-        val params: ViewGroup.LayoutParams = recycler_dialog.getLayoutParams()
-        if (list.size == 2){
-            params.height = 360
-        }else if (list.size == 3){
-            params.height = 620
+        val params: ViewGroup.LayoutParams = recycler_dialog.layoutParams
+        if (params.height <= 400){
+            if (list.size == 2){
+                params.height = 260
+            }else if (list.size == 3){
+                params.height = 380
+            }else{
+                params.height = params.height
+            }
         }else{
-            params.height = 580
+            if (list.size == 2){
+                params.height = 360
+            }else if (list.size == 3){
+                params.height = 620
+            }else{
+                params.height = params.height
+            }
         }
+
         recycler_dialog.layoutParams = params
 
         adapterDialog.update(list)

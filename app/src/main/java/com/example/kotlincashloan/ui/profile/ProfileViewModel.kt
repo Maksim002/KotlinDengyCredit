@@ -7,6 +7,7 @@ import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.extension.generateUrl
 import com.example.kotlincashloan.service.model.Loans.SixNumResultModel
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.service.model.profile.*
@@ -31,7 +32,7 @@ class ProfileViewModel : ViewModel(){
     var listListOperationDta = MutableLiveData<CommonResponse<ArrayList<ResultOperationModel>>>()
 
     fun listOperation(map: Map<String, String>){
-        RetrofitService.apiService().listOperation(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultOperationModel>>> {
+        RetrofitService.apiService().listOperation(map, generateUrl("listOperation")).enqueue(object : Callback<CommonResponse<ArrayList<ResultOperationModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultOperationModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListOperation.postValue( "601")
@@ -58,7 +59,7 @@ class ProfileViewModel : ViewModel(){
     var listListApplicationDta = MutableLiveData<CommonResponse<ArrayList<ResultApplicationModel>>>()
 
     fun listApplication(map: Map<String, String>){
-        RetrofitService.apiService().listLoan(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultApplicationModel>>> {
+        RetrofitService.apiService().listLoan(map, generateUrl("listLoan")).enqueue(object : Callback<CommonResponse<ArrayList<ResultApplicationModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListApplication.postValue( "601")
@@ -85,7 +86,7 @@ class ProfileViewModel : ViewModel(){
     var listGetOperationDta = MutableLiveData<CommonResponse<GetResultOperationModel>>()
 
     fun getOperation(map: Map<String, String>){
-        RetrofitService.apiService().getOperation(map).enqueue(object : Callback<CommonResponse<GetResultOperationModel>> {
+        RetrofitService.apiService().getOperation(map, generateUrl("getOperation")).enqueue(object : Callback<CommonResponse<GetResultOperationModel>> {
             override fun onFailure(call: Call<CommonResponse<GetResultOperationModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorGetOperation.postValue( "601")
@@ -114,7 +115,7 @@ class ProfileViewModel : ViewModel(){
     var listClientInfoDta = MutableLiveData<CommonResponse<ClientInfoResultModel>>()
 
     fun clientInfo(map: Map<String, String>){
-        RetrofitService.apiService().clientInfo(map).enqueue(object : Callback<CommonResponse<ClientInfoResultModel>> {
+        RetrofitService.apiService().clientInfo(map, generateUrl("clientInfo")).enqueue(object : Callback<CommonResponse<ClientInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<ClientInfoResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorClientInfo.postValue( "601")
@@ -143,7 +144,7 @@ class ProfileViewModel : ViewModel(){
     var listGenderDta = MutableLiveData<CommonResponse<ArrayList<ListGenderResultModel>>>()
 
     fun listGender(map: Map<String, String>){
-        RetrofitService.apiService().listGender(map).enqueue(object : Callback<CommonResponse<ArrayList<ListGenderResultModel>>> {
+        RetrofitService.apiService().listGender(map, generateUrl("listGender")).enqueue(object : Callback<CommonResponse<ArrayList<ListGenderResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListGenderResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListGender.postValue( "601")
@@ -172,7 +173,7 @@ class ProfileViewModel : ViewModel(){
     var listNationalityDta = MutableLiveData<CommonResponse<ArrayList<ListNationalityResultModel>>>()
 
     fun getListNationality(map: Map<String, String>){
-        RetrofitService.apiService().getListNationality(map).enqueue(object : Callback<CommonResponse<ArrayList<ListNationalityResultModel>>> {
+        RetrofitService.apiService().getListNationality(map, generateUrl("listNationality")).enqueue(object : Callback<CommonResponse<ArrayList<ListNationalityResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNationalityResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListNationality.postValue( "601")
@@ -198,7 +199,7 @@ class ProfileViewModel : ViewModel(){
     var listAvailableCountryDta = MutableLiveData<CommonResponse<ArrayList<CounterNumResultModel>>>()
 
     fun listAvailableCountry(map: Map<String, String>){
-        RetrofitService.apiService().listAvailableCountry(map).enqueue(object : Callback<CommonResponse<ArrayList<CounterNumResultModel>>> {
+        RetrofitService.apiService().listAvailableCountry(map, generateUrl("listAvailableCountry")).enqueue(object : Callback<CommonResponse<ArrayList<CounterNumResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<CounterNumResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListAvailableCountry.postValue( "601")
@@ -224,7 +225,7 @@ class ProfileViewModel : ViewModel(){
     var listSecretQuestionDta = MutableLiveData<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>()
 
     fun listSecretQuestion(map: Map<String, String>){
-        RetrofitService.apiService().listSecretQuestion(map).enqueue(object : Callback<CommonResponse<ArrayList<ListSecretQuestionResultModel>>> {
+        RetrofitService.apiService().listSecretQuestion(map, generateUrl("listSecretQuestion")).enqueue(object : Callback<CommonResponse<ArrayList<ListSecretQuestionResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListSecretQuestion.postValue( "601")
@@ -250,7 +251,7 @@ class ProfileViewModel : ViewModel(){
     var listSaveProfileDta = MutableLiveData<CommonResponse<SaveProfileResultModel>>()
 
     fun saveProfile(map: Map<String, String>){
-        RetrofitService.apiService().saveProfile(map).enqueue(object : Callback<CommonResponse<SaveProfileResultModel>> {
+        RetrofitService.apiService().saveProfile(map, generateUrl("saveProfile")).enqueue(object : Callback<CommonResponse<SaveProfileResultModel>> {
             override fun onFailure(call: Call<CommonResponse<SaveProfileResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorSaveProfile.postValue( "601")
@@ -272,37 +273,43 @@ class ProfileViewModel : ViewModel(){
         })
     }
 
-    val errorCheckPassword = MutableLiveData<String>()
-    var listCheckPasswordDta = MutableLiveData<CommonResponse<CheckPasswordResultModel>>()
 
-    fun checkPassword(map: Map<String, String>){
-        RetrofitService.apiService().checkPassword(map).enqueue(object : Callback<CommonResponse<CheckPasswordResultModel>> {
-            override fun onFailure(call: Call<CommonResponse<CheckPasswordResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
-                    errorCheckPassword.postValue( "601")
-                }else{
-                    errorCheckPassword.postValue( "600")
-                }
-            }
-            override fun onResponse(call: Call<CommonResponse<CheckPasswordResultModel>>, response: Response<CommonResponse<CheckPasswordResultModel>>) {
-                if (response.isSuccessful) {
-                    if (response.body()!!.code == 200){
-                        listCheckPasswordDta.postValue(response.body())
-                    }else{
-                        errorCheckPassword.postValue(response.body()!!.code.toString())
-                    }
-                }else{
-                    errorCheckPassword.postValue(response.raw().code.toString())
-                }
-            }
-        })
+    fun checkPassword(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponse<CheckPasswordResultModel>>> {
+        return repository.checkPassword(phone)
     }
+
+
+//    val errorCheckPassword = MutableLiveData<String>()
+//    var listCheckPasswordDta = MutableLiveData<CommonResponse<CheckPasswordResultModel>>()
+//
+//    fun checkPassword(map: Map<String, String>){
+//        RetrofitService.apiService().checkPassword(map, generateUrl("checkPassword")).enqueue(object : Callback<CommonResponse<CheckPasswordResultModel>> {
+//            override fun onFailure(call: Call<CommonResponse<CheckPasswordResultModel>>, t: Throwable) {
+//                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+//                    errorCheckPassword.postValue( "601")
+//                }else{
+//                    errorCheckPassword.postValue( "600")
+//                }
+//            }
+//            override fun onResponse(call: Call<CommonResponse<CheckPasswordResultModel>>, response: Response<CommonResponse<CheckPasswordResultModel>>) {
+//                if (response.isSuccessful) {
+//                    if (response.body()!!.code == 200){
+//                        listCheckPasswordDta.postValue(response.body())
+//                    }else{
+//                        errorCheckPassword.postValue(response.body()!!.code.toString())
+//                    }
+//                }else{
+//                    errorCheckPassword.postValue(response.raw().code.toString())
+//                }
+//            }
+//        })
+//    }
 
     val errorGetImg = MutableLiveData<String>()
     var listGetImgDta = MutableLiveData<CommonResponse<GetImgResultModel>>()
 
     fun getImg(map: Map<String, String>){
-        RetrofitService.apiService().getImg(map).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
+        RetrofitService.apiService().getImg(map, generateUrl("getImg")).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetImgResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorGetImg.postValue( "601")
@@ -320,9 +327,6 @@ class ProfileViewModel : ViewModel(){
                 }else{
                     errorGetImg.postValue(response.raw().code.toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    MainActivity.alert.hide()
-                },500)
             }
         })
     }
@@ -337,7 +341,7 @@ class ProfileViewModel : ViewModel(){
     var listUploadImgDta = MutableLiveData<CommonResponse<UploadImgResultModel>>()
 
     fun uploadImg(map: Map<String, String>){
-        RetrofitService.apiService().uploadImg(map).enqueue(object : Callback<CommonResponse<UploadImgResultModel>> {
+        RetrofitService.apiService().uploadImg(map, generateUrl("uploadImg")).enqueue(object : Callback<CommonResponse<UploadImgResultModel>> {
             override fun onFailure(call: Call<CommonResponse<UploadImgResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorUploadImg.postValue( "601")

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowId
+import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -27,6 +29,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -34,7 +37,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -84,7 +87,15 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         alert = LoadingAlert(requireActivity())
-        if (permission == 3){
+
+        if (applicationStatus == false){
+            // Отоброожает кнопку если статус true видем закрытия
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+        }else{
+            (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+        }
+
+        if (permission == 3) {
             alert.show()
         }
 
@@ -94,7 +105,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
     private fun initClick() {
         six_number_phone.addTextChangedListener {
-            editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
+            editUtils(layout_phone_number, six_number_phone, six_number_phone_error, "", false)
             initCleaningRoom()
         }
 
@@ -116,8 +127,17 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         bottom_loan_four.setOnClickListener {
-            if (validate()){
-                initSaveLoan()
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                loans_ste_no_connection.visibility = View.VISIBLE
+                loans_step_layout.visibility = View.GONE
+                loans_ste_technical_work.visibility = View.GONE
+                loans_ste_access_restricted.visibility = View.GONE
+                loans_ste_not_found.visibility = View.GONE
+            } else {
+                if (validate()) {
+                    initSaveLoan()
+                }
             }
         }
 
@@ -127,76 +147,96 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         six_available_country.setOnClickListener {
-            six_available_country.isClickable = false
+            six_available_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listAvailableSix.size) {
                     if (i <= listAvailableSix.size) {
                         itemDialog.add(
-                            GeneralDialogModel(
-                                listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
+                            GeneralDialogModel(listAvailableSix[i - 1].name.toString(), "listAvailableSix", i - 1, 0, listAvailableSix[i - 1].name.toString()))
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, sixPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, sixPosition, "Список доступных стран", six_available_country)
             }
         }
 
         loans_step_four_city.setOnClickListener {
-            loans_step_four_city.isClickable = false
+            loans_step_four_city.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listCity.size) {
                     if (i <= listCity.size) {
                         itemDialog.add(
-                            GeneralDialogModel(listCity[i - 1].name.toString(), "listCity", i - 1,0, listCity[i - 1].name.toString()))
+                            GeneralDialogModel(
+                                listCity[i - 1].name.toString(),
+                                "listCity",
+                                i - 1,
+                                0,
+                                listCity[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, cityPosition, "В каком городе России вы живете?")
+                initBottomSheet(itemDialog, cityPosition, "В каком городе России Вы живете?", loans_step_four_city)
             }
         }
 
         loans_step_four_status.setOnClickListener {
-            loans_step_four_status.isClickable = false
+            loans_step_four_status.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listFamilyStatus.size) {
                     if (i <= listFamilyStatus.size) {
                         itemDialog.add(
-                            GeneralDialogModel(listFamilyStatus[i - 1].name.toString(), "listFamilyStatus", i - 1, 0, listFamilyStatus[i - 1].name.toString()))
+                            GeneralDialogModel(
+                                listFamilyStatus[i - 1].name.toString(),
+                                "listFamilyStatus",
+                                i - 1,
+                                0,
+                                listFamilyStatus[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, familyPosition, "Семейное положение")
+                initBottomSheet(itemDialog, familyPosition, "Семейное положение", loans_step_four_status)
             }
         }
 
         loans_step_four_family.setOnClickListener {
-            loans_step_four_family.isClickable = false
+            loans_step_four_family.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
                 for (i in 1..listNumbers.size) {
                     if (i <= listNumbers.size) {
                         itemDialog.add(
-                            GeneralDialogModel(listNumbers[i - 1].name.toString(), "listNumbers", i - 1, 0, listNumbers[i - 1].name.toString()))
+                            GeneralDialogModel(
+                                listNumbers[i - 1].name.toString(),
+                                "listNumbers",
+                                i - 1,
+                                0,
+                                listNumbers[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, numbersPosition, "Количество членов семьи")
+                initBottomSheet(itemDialog, numbersPosition, "Количество членов семьи" , loans_step_four_family)
             }
         }
 
         loans_step_four_children.setOnClickListener {
-            loans_step_four_children.isClickable = false
+            loans_step_four_children.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -207,19 +247,19 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                                 listNumbersChildren[i - 1].name.toString(),
                                 "listNumbersChildren",
                                 i - 1,
-                            0, listNumbersChildren[i - 1].name.toString()
+                                0, listNumbersChildren[i - 1].name.toString()
                             )
                         )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у вас в семье?")
+                initBottomSheet(itemDialog, childrenPosition, "Сколько человек работает у Вас в семье?", loans_step_four_children)
             }
         }
 
         loans_step_four_federation.setOnClickListener {
-            loans_step_four_federation.isClickable = false
+            loans_step_four_federation.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -237,12 +277,12 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, yearsPosition, "Сколько лет проживаете в РФ")
+                initBottomSheet(itemDialog, yearsPosition, "Сколько лет проживаете в РФ", loans_step_four_federation)
             }
         }
 
         loans_step_four_card.setOnClickListener {
-            loans_step_four_card.isClickable = false
+            loans_step_four_card.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -250,12 +290,18 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                     if (i <= listCatsNames.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listCatsNames[i - 1], "listCatsNames", i - 1, 0,  listCatsNames[i - 1]))
+                                listCatsNames[i - 1],
+                                "listCatsNames",
+                                i - 1,
+                                0,
+                                listCatsNames[i - 1]
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, catsNamesPosition, "Есть банковская карта")
+                initBottomSheet(itemDialog, catsNamesPosition, "Есть банковская карта", loans_step_four_card)
             }
         }
     }
@@ -263,7 +309,8 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //метод удаляет все символы из строки
     private fun initCleaningRoom() {
         if (six_number_phone.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = six_available_country.text.toString() + six_number_phone.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = six_available_country.text.toString() + six_number_phone.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
@@ -274,62 +321,80 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     //очещает список
-    private fun initClearList(){
+    private fun initClearList() {
         itemDialog.clear()
     }
 
     //Получает данные на редактирование заёма
     private fun getLists() {
-        if (status == true){
-            bottom_loan_four.setText("Сохранить")
-            four_cross_back.visibility = View.GONE
+        if (status == true) {
+            //Если applicationStatus == true меняем текст на кнопки
+            if (applicationStatus == false) {
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
+                bottom_loan_four.setText("Сохранить")
+                four_cross_back.visibility = View.GONE
+            }else{
+                // Отоброожает кнопку если статус видем закрытия
+                (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
+            }
+            try {
             //city
-            loans_step_four_city.setText(listCity.first { it.id == listLoan.city}.name)
-            cityPosition = listCity.first { it.id == listLoan.city}.name.toString()
-            cityId = listCity.first { it.id == listLoan.city}.id!!
+            loans_step_four_city.setText(listCity.first { it.id == listLoan.city }.name)
+            cityPosition = listCity.first { it.id == listLoan.city }.name.toString()
+            cityId = listCity.first { it.id == listLoan.city }.id!!
             //address
             loans_step_four_residence.setText(listLoan.address.toString())
             //familyStatus
-            loans_step_four_status.setText(listFamilyStatus.first { it.id == listLoan.familyStatus}.name)
-            familyPosition = listFamilyStatus.first { it.id == listLoan.familyStatus}.name.toString()
-            statusId = listFamilyStatus.first { it.id == listLoan.familyStatus}.id!!
+            loans_step_four_status.setText(listFamilyStatus.first { it.id == listLoan.familyStatus }.name)
+            familyPosition =
+                listFamilyStatus.first { it.id == listLoan.familyStatus }.name.toString()
+            statusId = listFamilyStatus.first { it.id == listLoan.familyStatus }.id!!
             //countFamily
-            loans_step_four_family.setText(listNumbers.first{ it.id == listLoan.countFamily}.name)
-            numbersPosition = listNumbers.first{ it.id == listLoan.countFamily}.name.toString()
-            familyId = listNumbers.first{ it.id == listLoan.countFamily}.id!!
+            loans_step_four_family.setText(listNumbers.first { it.id == listLoan.countFamily }.name)
+            numbersPosition =
+                listNumbers.first { it.id == listLoan.countFamily }.name.toString()
+            familyId = listNumbers.first { it.id == listLoan.countFamily }.id!!
             //countFamilyWork
-            loans_step_four_children.setText(listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.name)
-            childrenPosition = listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.name.toString()
-            childrenId = listNumbersChildren.first{ it.id == listLoan.countFamilyWork}.id!!
+            loans_step_four_children.setText(listNumbersChildren.first { it.id == listLoan.countFamilyWork }.name)
+            childrenPosition =
+                listNumbersChildren.first { it.id == listLoan.countFamilyWork }.name.toString()
+            childrenId = listNumbersChildren.first { it.id == listLoan.countFamilyWork }.id!!
             //liveInRu
-            loans_step_four_federation.setText(listYears.first{ it.id == listLoan.liveInRu}.name)
-            yearsPosition = listYears.first{ it.id == listLoan.liveInRu}.name.toString()
-            liveId = listYears.first{ it.id == listLoan.liveInRu}.id!!
+            loans_step_four_federation.setText(listYears.first { it.id == listLoan.liveInRu }.name)
+            yearsPosition = listYears.first { it.id == listLoan.liveInRu }.name.toString()
+            liveId = listYears.first { it.id == listLoan.liveInRu }.id!!
             //bankCard
             loans_step_four_card.setText(listCatsNames[listLoan.bankCard!!.toInt()])
             catsNamesPosition = listCatsNames[listLoan.bankCard!!.toInt()]
             cardId = listLoan.bankCard.toString()
             //second_phone_country_id
-            if (listLoan.second_phone_country_id != "0"){
-            six_available_country.isClickable = true
-            six_number_phone.error = null
-            //Очещает старую маску при выборе новой
-            six_number_phone.mask = ""
-                sixPosition = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.name.toString()
-                phoneLength = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneLength.toString()
-                val l = MyUtils.toServerDate(listLoan.secondPhone.toString(), phoneLength.toInt())
-                six_available_country.setText("+" + listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneCode)
-                six_number_phone.mask = listAvailableSix.first {it.id == listLoan.second_phone_country_id!!.toInt()}.phoneMaskSmall
+            if (listLoan.second_phone_country_id != "0") {
+                six_available_country.isClickable = true
+                six_number_phone.error = null
+                //Очещает старую маску при выборе новой
+                six_number_phone.mask = ""
+                sixPosition =
+                    listAvailableSix.first { it.id == listLoan.second_phone_country_id!!.toInt() }.name.toString()
+                phoneLength =
+                    listAvailableSix.first { it.id == listLoan.second_phone_country_id!!.toInt() }.phoneLength.toString()
+                val l =
+                    MyUtils.toServerDate(listLoan.secondPhone.toString(), phoneLength.toInt())
+                six_available_country.setText("+" + listAvailableSix.first { it.id == listLoan.second_phone_country_id!!.toInt() }.phoneCode)
+                six_number_phone.mask =
+                    listAvailableSix.first { it.id == listLoan.second_phone_country_id!!.toInt() }.phoneMaskSmall
                 six_number_phone.setText(l)
-                alert.hide()
             }
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+            alert.hide()
         }
     }
 
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableSix") {
-            six_available_country.isClickable = true
+            six_available_country.isEnabled = true
             six_number_phone.error = null
             //Очещает старую маску при выборе новой
             six_number_phone.mask = ""
@@ -342,14 +407,14 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listCity") {
-            loans_step_four_city.isClickable = true
+            loans_step_four_city.isEnabled = true
             loans_step_four_city.error = null
             loans_step_four_city.setText(listCity[model.position].name)
             cityPosition = listCity[model.position].name.toString()
             cityId = listCity[model.position].id!!
         }
         if (model.key == "listFamilyStatus") {
-            loans_step_four_status.isClickable = true
+            loans_step_four_status.isEnabled = true
             loans_step_four_status.error = null
             loans_step_four_status.setText(listFamilyStatus[model.position].name)
             familyPosition = listFamilyStatus[model.position].name.toString()
@@ -357,7 +422,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listNumbers") {
-            loans_step_four_family.isClickable = true
+            loans_step_four_family.isEnabled = true
             loans_step_four_family.error = null
             loans_step_four_family.setText(listNumbers[model.position].name)
             numbersPosition = listNumbers[model.position].name.toString()
@@ -365,7 +430,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listNumbersChildren") {
-            loans_step_four_children.isClickable = true
+            loans_step_four_children.isEnabled = true
             loans_step_four_children.error = null
             loans_step_four_children.setText(listNumbersChildren[model.position].name)
             childrenPosition = listNumbersChildren[model.position].name.toString()
@@ -373,7 +438,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listYears") {
-            loans_step_four_federation.isClickable = true
+            loans_step_four_federation.isEnabled = true
             loans_step_four_federation.error = null
             loans_step_four_federation.setText(listYears[model.position].name)
             yearsPosition = listYears[model.position].name.toString()
@@ -381,7 +446,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (model.key == "listCatsNames") {
-            loans_step_four_card.isClickable = true
+            loans_step_four_card.isEnabled = true
             loans_step_four_card.error = null
             loans_step_four_card.setText(listCatsNames[model.position])
             catsNamesPosition = listCatsNames[model.position]
@@ -430,6 +495,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getResultOk()
             } else {
                 getErrorCode(result.error.code!!)
+              alert.hide()
             }
         })
 
@@ -438,6 +504,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 listAvailableCountryDta = error
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -458,6 +525,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListCityDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -467,6 +535,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -487,6 +556,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListFamilyStatusDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -496,6 +566,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -516,6 +587,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -525,6 +597,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -546,6 +619,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -554,6 +628,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListNumbersDta = error
 
                 getErrorCode(error.toInt())
+                alert.hide()
             }
         })
     }
@@ -575,6 +650,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getListYearsDta = result.error.code.toString()
 
                 getErrorCode(result.error.code!!)
+                alert.hide()
             }
         })
 
@@ -584,6 +660,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
                 getErrorCode(error.toInt())
             }
+            alert.hide()
         })
     }
 
@@ -604,6 +681,18 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         mapSave.put("bank_card", cardId)
         mapSave.put("step", "3")
 
+        if (status == true){
+            //Сохроняет изменненые данные в масив
+            listLoan.city = cityId
+            listLoan.secondPhone = reNum
+            listLoan.address = loans_step_four_residence.text.toString()
+            listLoan.familyStatus = statusId
+            listLoan.countFamily = familyId
+            listLoan.countFamilyWork = childrenId
+            listLoan.liveInRu = liveId
+            listLoan.bankCard = cardId
+        }
+
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg
@@ -615,14 +704,18 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                         loans_ste_no_connection.visibility = View.GONE
                         loans_ste_access_restricted.visibility = View.GONE
                         loans_ste_not_found.visibility = View.GONE
-                        if (status == true){
-                            requireActivity().finish()
-                        }else{
+                        if (applicationStatus == false) {
+                            if (status == true) {
+                                requireActivity().finish()
+                            }else{
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                            }
+                        } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
                         }
-                    }else if (data.error.code != null) {
+                    } else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                    }else if (data.reject != null) {
+                    } else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
                         loans_step_layout.visibility = View.VISIBLE
                         loans_ste_technical_work.visibility = View.GONE
@@ -642,9 +735,9 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -673,10 +766,12 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
 
-    private fun getErrorCode(error: Int){
-        listListResult(error,loans_ste_technical_work as LinearLayout,loans_ste_no_connection
-                as LinearLayout,loans_step_layout as LinearLayout,loans_ste_access_restricted
-                as LinearLayout,loans_ste_not_found as LinearLayout,requireActivity())
+    private fun getErrorCode(error: Int) {
+        listListResult(
+            error, loans_ste_technical_work as LinearLayout, loans_ste_no_connection
+                    as LinearLayout, loans_step_layout as LinearLayout, loans_ste_access_restricted
+                    as LinearLayout, loans_ste_not_found as LinearLayout, requireActivity()
+        )
     }
 
     override fun onStart() {
@@ -707,12 +802,22 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (loans_step_four_children.text.isEmpty()) {
-            editUtils(loans_step_four_children, step_four_children_error, "Выберите из списка", true)
+            editUtils(
+                loans_step_four_children,
+                step_four_children_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
         }
 
         if (loans_step_four_federation.text.isEmpty()) {
-            editUtils(loans_step_four_federation, step_four_federation_error, "Выберите из списка", true)
+            editUtils(
+                loans_step_four_federation,
+                step_four_federation_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
         }
 
@@ -721,9 +826,15 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             valid = false
         }
 
-        if (six_number_phone.text!!.isNotEmpty()){
+        if (six_number_phone.text!!.isNotEmpty()) {
             if (phoneLength != reNum.length.toString()) {
-                editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "Ввидите правильный номер", true)
+                editUtils(
+                    layout_phone_number,
+                    six_number_phone,
+                    six_number_phone_error,
+                    "Введите правильный номер",
+                    true
+                )
                 valid = false
             }
         }
@@ -731,7 +842,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         return valid
     }
 
-    private fun initView(){
+    private fun initView() {
         loans_step_four_residence.addTextChangedListener {
             editUtils(loans_step_four_residence, loans_step_four_error, "", false)
         }
@@ -756,7 +867,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     }
 
     //проверяет если был откат назад отключает ошибки
-    private fun hidingErrors(){
+    private fun hidingErrors() {
         editUtils(loans_step_four_residence, loans_step_four_error, "", false)
         editUtils(loans_step_four_city, step_four_city_error, "", false)
         editUtils(loans_step_four_status, step_four_status_error, "", false)
@@ -764,7 +875,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         editUtils(loans_step_four_children, step_four_children_error, "", false)
         editUtils(loans_step_four_federation, step_four_federation_error, "", false)
         editUtils(loans_step_four_card, step_four_card_error, "", false)
-        editUtils(layout_phone_number,six_number_phone, six_number_phone_error, "", false)
+        editUtils(layout_phone_number, six_number_phone, six_number_phone_error, "", false)
     }
 
     override fun onClickStepListener() {

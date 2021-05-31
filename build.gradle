@@ -8,7 +8,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.2.0'
+        classpath 'com.google.gms:google-services:4.3.5'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -20,12 +20,21 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
+
         maven {
-            url "http://maven.regulaforensics.com/RegulaDocumentReader"
+            url "https://maven.regulaforensics.com/RegulaDocumentReader"
         }
         maven {
-            url "http://maven.regulaforensics.com/RegulaDocumentReader/Beta"
+            url "https://maven.regulaforensics.com/RegulaDocumentReader"
         }
+        maven {
+            url "https://maven.regulaforensics.com/RegulaDocumentReader/Beta"
+        }
+
+//        https://maven.regulaforensics.com/RegulaDocumentReader/com/regula/documentreader/api/5.4.3934/
+//
+//        https://maven.regulaforensics.com/RegulaDocumentReader/com/regula/documentreader/fullrfid/core/5.4.4342/
+//        https://maven.regulaforensics.com/RegulaDocumentReader/Beta/com/regula/documentreader/facesdk/5.4.655/
     }
 }
 

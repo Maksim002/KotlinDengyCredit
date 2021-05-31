@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.registration.recovery
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -66,7 +67,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         }
 
         questionnaire_phone_list_country.setOnClickListener {
-            questionnaire_phone_list_country.isClickable = false
+            questionnaire_phone_list_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -79,7 +80,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countryPosition, "Список доступных стран")
+                initBottomSheet(itemDialog, countryPosition, "Список доступных стран", questionnaire_phone_list_country)
             }
         }
 
@@ -113,7 +114,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listTypeWork") {
-            questionnaire_phone_list_country.isClickable = true
+            questionnaire_phone_list_country.isEnabled = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.error = null
             password_recovery_word.error = null
@@ -194,7 +195,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
@@ -314,7 +315,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600") {
+                            if (msg == "600" || msg == "601") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
@@ -336,8 +337,9 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 
@@ -354,7 +356,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()) {
             if (reNum.length != availableCountry) {
-                editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Ввидите правильный номер", true)
+                editUtils(layout_phone_additional, questionnaire_phone_additional, phone_additional_error, "Введите правильный номер", true)
                 valid = false
             }
         }else{

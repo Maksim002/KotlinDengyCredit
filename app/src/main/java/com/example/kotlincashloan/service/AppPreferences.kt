@@ -37,16 +37,29 @@ object AppPreferences {
             it.putString("nationality", value)
         }
 
+
+    var urlApi: String?
+        get() = preferences.getString("urlApi", "")
+        set(value) = preferences.edit {
+            it.putString("urlApi", value)
+        }
+
+    var tokenApi: String?
+        get() = preferences.getString("tokenApi", "")
+        set(value) = preferences.edit {
+            it.putString("tokenApi", value)
+        }
+
     var applicationId: String?
         get() = preferences.getString("applicationId", "")
         set(value) = preferences.edit {
             it.putString("applicationId", value)
         }
 
-    var idApplications: String?
-        get() = preferences.getString("idApplications", "")
+    var refreshWindow: String?
+        get() = preferences.getString("refreshWindow", "")
         set(value) = preferences.edit {
-            it.putString("idApplications", value)
+            it.putString("refreshWindow", value)
         }
 
 
@@ -111,10 +124,22 @@ object AppPreferences {
             it.putBoolean("errorCode", value)
         }
 
+    var updatingImage: Boolean
+        get() = preferences.getBoolean("updatingImage", false)
+        set(value) = preferences.edit {
+            it.putBoolean("updatingImage", value)
+        }
+
     var status: Boolean
         get() = preferences.getBoolean("status", false)
         set(value) = preferences.edit {
             it.putBoolean("status", value)
+        }
+
+    var applicationStatus: Boolean
+        get() = preferences.getBoolean("applicationStatus", false)
+        set(value) = preferences.edit {
+            it.putBoolean("applicationStatus", value)
         }
 
     var isFormatMask: String?

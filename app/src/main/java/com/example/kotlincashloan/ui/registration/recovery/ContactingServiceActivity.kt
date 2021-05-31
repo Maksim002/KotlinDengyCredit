@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
@@ -19,12 +20,14 @@ import com.example.kotlincashloan.extension.loadingMistake
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.ui.registration.recovery.fragment.BottomDialogListener
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListener
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.service.model.CounterResultModel
 import com.example.kotlinscreenscanner.ui.MainActivity
+import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.ShippedSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.YourApplicationFragment
 import com.example.myapplication.LoginViewModel
@@ -41,7 +44,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
+class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, BottomDialogListener {
     private var viewModel = LoginViewModel()
     private var numberCharacters: Int = 0
     private var myViewMode = PasswordViewMode()
@@ -50,6 +53,9 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private var profNumber = ""
     private var reNum = ""
     private var valod = false
+    private var discovery = false
+    private var countryCode = ""
+    private var typeCode = ""
 
     private var countryPosition = ""
     private var typePosition = ""
@@ -61,6 +67,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacting_service)
+
         //меняет цвет статус бара
         ColorWindows(this).statusBarTextColor()
         HomeActivity.alert = LoadingAlert(this)
@@ -69,7 +76,6 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         initArgument()
         initToolBar()
         getListCountry()
-        getType()
         initView()
         iniClick()
     }
@@ -83,12 +89,18 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     private fun iniClick() {
 
         questionnaire_phone_additional.addTextChangedListener {
-            editUtils(layout_phone_number,questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", false)
+            editUtils(
+                layout_phone_number,
+                questionnaire_phone_additional,
+                questionnaire_phone_additional_error,
+                "Введите правильный номер",
+                false
+            )
             initCleaningRoom()
         }
 
         questionnaire_phone_list_country.setOnClickListener {
-            questionnaire_phone_list_country.isClickable = false
+            questionnaire_phone_list_country.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -96,18 +108,28 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                     if (i <= listAvailableCountry.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listAvailableCountry[i - 1].name.toString(), "listAvailableCountry", i - 1, 0,  listAvailableCountry[i - 1].name.toString())
+                                listAvailableCountry[i - 1].name.toString(),
+                                "listAvailableCountry",
+                                i - 1,
+                                0,
+                                listAvailableCountry[i - 1].name.toString()
+                            )
                         )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, countryPosition, "Список доступных стран")
+                initBottomSheet(
+                    itemDialog,
+                    countryPosition,
+                    "Список доступных стран",
+                    questionnaire_phone_list_country
+                )
             }
         }
 
         password_recovery_type.setOnClickListener {
-            password_recovery_type.isClickable = false
+            password_recovery_type.isEnabled = false
             initClearList()
             //Мутод заполняет список данными дя адапера
             if (itemDialog.size == 0) {
@@ -115,12 +137,23 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                     if (i <= listSupportType.size) {
                         itemDialog.add(
                             GeneralDialogModel(
-                                listSupportType[i - 1].name.toString(), "listSupportType", i - 1, 0, listSupportType[i - 1].name.toString()))
+                                listSupportType[i - 1].name.toString(),
+                                "listSupportType",
+                                i - 1,
+                                0,
+                                listSupportType[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, typePosition, "Выберите тему обращения")
+                initBottomSheet(
+                    itemDialog,
+                    typePosition,
+                    "Выберите тему обращения",
+                    password_recovery_type
+                )
             }
         }
 
@@ -161,21 +194,23 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     // TODO: 21-2-12 Получает информацию из адаптера
     override fun listenerClickResult(model: GeneralDialogModel) {
         if (model.key == "listAvailableCountry") {
-            questionnaire_phone_list_country.isClickable = true
+            questionnaire_phone_list_country.isEnabled = true
             questionnaire_phone_list_country.error = null
             questionnaire_phone_additional.setText("")
             questionnaire_phone_additional.error = null
             questionnaire_phone_additional.mask = ""
             questionnaire_phone_list_country.setText("+" + listAvailableCountry[model.position].phoneCode.toString())
             countryPosition = listAvailableCountry[model.position].name.toString()
-            AppPreferences.numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
+            AppPreferences.numberCharacters =
+                listAvailableCountry[model.position].phoneLength!!.toInt()
             AppPreferences.isFormatMask = listAvailableCountry[model.position].phoneMaskSmall
             numberCharacters = listAvailableCountry[model.position].phoneLength!!.toInt()
-            questionnaire_phone_additional.mask = listAvailableCountry[model.position].phoneMaskSmall
+            questionnaire_phone_additional.mask =
+                listAvailableCountry[model.position].phoneMaskSmall
         }
 
         if (model.key == "listSupportType") {
-            password_recovery_type.isClickable = true
+            password_recovery_type.isEnabled = true
             password_recovery_type.error = null
             password_recovery_type.setText(listSupportType[model.position].name)
             typePosition = listSupportType[model.position].name.toString()
@@ -203,9 +238,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         if (view != null) {
             // now assign the system
             // service to InputMethodManager
-            val manager = this.getSystemService(
-                Context.INPUT_METHOD_SERVICE
-            ) as InputMethodManager?
+            val manager = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
             manager!!.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
@@ -243,7 +276,10 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             if (data.error.code == 500 || data.error.code == 400) {
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
-                                loadingMistake(this)
+                                if (!discovery) {
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                             } else if (data.error.code == 409) {
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
@@ -268,18 +304,27 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                         } else if (msg == "500" || msg == "400") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery) {
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                         } else {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery) {
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
+                        if (msg == "600" || msg == "601") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                            loadingMistake(this)
+                            if (!discovery) {
+                                loadingMistake(this, this, profNumber)
+                                discovery = true
+                            }
                         } else {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
@@ -333,14 +378,18 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                     when (result.status) {
                         Status.SUCCESS -> {
                             if (data!!.result != null) {
+                                countryCode = "200"
                                 listAvailableCountry = data.result
                                 countryPosition = data.result[0].name.toString()
                                 questionnaire_phone_list_country.setText("+" + result.data.result[0].phoneCode)
                                 questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
                                 numberCharacters = result.data.result[0].phoneLength!!.toInt()
-
-                                initVisibilities()
+//                                if (typeCode == "200" || countryCode == "200"){
+//                                    initVisibilities()
+//                                }
+                                getType()
                             } else {
+                                countryCode = data.error.code.toString()
                                 if (data.error.code == 403) {
                                     password_no_questionnaire.visibility = View.GONE
                                     password_access_restricted.visibility = View.VISIBLE
@@ -354,13 +403,19 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                                 } else if (data.error.code == 401) {
                                     initAuthorized()
                                 } else {
-                                    loadingMistake(this)
+                                    if (!discovery) {
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
                                     password_no_questionnaire.visibility = View.GONE
                                     contacting_layout.visibility = View.VISIBLE
                                 }
                             }
                         }
                         Status.ERROR -> {
+                            if (msg != null) {
+                                countryCode = msg
+                            }
                             if (msg == "404") {
                                 password_no_questionnaire.visibility = View.GONE
                                 password_not_found.visibility = View.VISIBLE
@@ -374,14 +429,20 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                             } else if (msg == "401") {
                                 initAuthorized()
                             } else {
-                                loadingMistake(this)
+                                if (!discovery) {
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600") {
-                                loadingMistake(this)
+                            if (msg == "600" || msg == "601") {
+                                if (!discovery) {
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             } else {
@@ -418,46 +479,62 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result != null) {
+                            typeCode = "200"
                             listSupportType = data.result
-                            initVisibilities()
+                            if (typeCode == "200" || countryCode == "200") {
+                                initVisibilities()
+                            }
                         } else {
+                            typeCode = data.error.code.toString()
                             if (data.error.code == 403) {
+                                password_no_questionnaire.visibility = View.GONE
                                 password_access_restricted.visibility = View.VISIBLE
                                 contacting_layout.visibility = View.GONE
-
                             } else if (data.error.code == 404) {
-                                password_not_found.visibility = View.VISIBLE
+                                password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.GONE
-
+                                password_not_found.visibility = View.VISIBLE
                             } else if (data.error.code == 401) {
                                 initAuthorized()
                             } else {
-                                loadingMistake(this)
+                                if (!discovery) {
+                                    loadingMistake(this, this)
+                                    discovery = true
+                                }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
                             }
                         }
                     }
                     Status.ERROR -> {
+                        if (msg != null) {
+                            typeCode = msg
+                        }
                         if (msg == "404") {
+                            password_no_questionnaire.visibility = View.GONE
                             password_not_found.visibility = View.VISIBLE
                             contacting_layout.visibility = View.GONE
-
                         } else if (msg == "403") {
-                            password_access_restricted.visibility = View.VISIBLE
+                            password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.GONE
-
+                            password_access_restricted.visibility = View.VISIBLE
                         } else if (msg == "401") {
                             initAuthorized()
                         } else {
-                            loadingMistake(this)
+                            if (!discovery) {
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600") {
-                            loadingMistake(this)
+                        if (msg == "600" || msg == "601") {
+                            if (!discovery) {
+                                loadingMistake(this, this)
+                                discovery = true
+                            }
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                         } else {
@@ -472,6 +549,13 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         }
     }
 
+    //Слушаеть на 2 открытие loadingMistake(this, this)
+    override fun bottomOnClickListener(boolean: Boolean) {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+        discovery = true
+    }
+
     //очещает список
     private fun initClearList() {
         itemDialog.clear()
@@ -479,20 +563,35 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
     private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String) {
-        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title)
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String,
+        id: AutoCompleteTextView
+    ) {
+        val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
+        stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
     }
 
     private fun validate(): Boolean {
         var valid = true
         if (questionnaire_phone_surnames.text.toString().isEmpty()) {
-            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", true)
+            editUtils(
+                questionnaire_phone_surnames,
+                questionnaire_phone_surnames_error,
+                "Заполните поле",
+                true
+            )
             valid = false
         }
 
         if (questionnaire_phone_name.text.toString().isEmpty()) {
-            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", true)
+            editUtils(
+                questionnaire_phone_name,
+                questionnaire_phone_name_error,
+                "Заполните поле",
+                true
+            )
             valid = false
         }
 
@@ -503,11 +602,23 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
 
         if (questionnaire_phone_additional.text!!.isNotEmpty()) {
             if (reNum.length != numberCharacters) {
-                editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Ввидите правильный номер", true)
+                editUtils(
+                    layout_phone_number,
+                    questionnaire_phone_additional,
+                    questionnaire_phone_additional_error,
+                    "Введите правильный номер",
+                    true
+                )
                 valid = false
             }
-        }else{
-            editUtils(layout_phone_number, questionnaire_phone_additional, questionnaire_phone_additional_error, "Заполните поле", true)
+        } else {
+            editUtils(
+                layout_phone_number,
+                questionnaire_phone_additional,
+                questionnaire_phone_additional_error,
+                "Заполните поле",
+                true
+            )
             valid = false
         }
 
@@ -521,11 +632,21 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
     //Метод слушает изменение в полях
     private fun initView() {
         questionnaire_phone_surnames.addTextChangedListener {
-            editUtils(questionnaire_phone_surnames, questionnaire_phone_surnames_error, "Заполните поле", false)
+            editUtils(
+                questionnaire_phone_surnames,
+                questionnaire_phone_surnames_error,
+                "Заполните поле",
+                false
+            )
         }
 
         questionnaire_phone_name.addTextChangedListener {
-            editUtils(questionnaire_phone_name, questionnaire_phone_name_error, "Заполните поле", false)
+            editUtils(
+                questionnaire_phone_name,
+                questionnaire_phone_name_error,
+                "Заполните поле",
+                false
+            )
         }
 
         password_recovery_type.addTextChangedListener {
@@ -538,7 +659,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult {
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             MainActivity.timer.timeStop()
         }, 2000)
-        if (!valod){
+        if (!valod) {
             TransitionAnimation(this).transitionRight(contacts_layout_anim)
             valod = true
         }

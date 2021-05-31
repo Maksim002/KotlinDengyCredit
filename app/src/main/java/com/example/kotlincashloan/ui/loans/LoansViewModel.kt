@@ -4,6 +4,7 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.extension.generateUrl
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel
@@ -19,6 +20,7 @@ import com.timelysoft.tsjdomcom.service.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Url
 
 class LoansViewModel: ViewModel() {
     private val repository = NetworkRepository()
@@ -30,7 +32,7 @@ class LoansViewModel: ViewModel() {
     var listNewsId: String = ""
 
     fun listNews(map: Map<String, String>){
-        RetrofitService.apiService().listNews(map).enqueue(object :
+        RetrofitService.apiService().listNews(map, generateUrl("listNews")).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
@@ -62,7 +64,7 @@ class LoansViewModel: ViewModel() {
     var listGetDta = MutableLiveData<CommonResponse<GetNewsResultModel>>()
 
     fun getNews(map: Map<String, String>){
-        RetrofitService.apiService().getNews(map).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
+        RetrofitService.apiService().getNews(map, generateUrl("getNews")).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorGet.postValue( "601")
@@ -92,7 +94,7 @@ class LoansViewModel: ViewModel() {
     var listLoanId: String = ""
 
     fun getLoanInfo(map: Map<String, String>){
-        RetrofitService.apiService().loanInfo(map).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
+        RetrofitService.apiService().loanInfo(map, generateUrl("loanInfo")).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInfoResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorLoanInfo.postValue( "601")
@@ -115,6 +117,7 @@ class LoansViewModel: ViewModel() {
                 }else{
                     errorLoanInfo.postValue(response.code().toString())
                 }
+                HomeActivity.alert.hide()
             }
         })
     }
@@ -124,7 +127,7 @@ class LoansViewModel: ViewModel() {
     var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
 
     fun getInfo(map: Map<String, String>){
-        RetrofitService.apiService().getLoanInfo(map).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
+        RetrofitService.apiService().getLoanInfo(map, generateUrl("getLoanInfo")).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorGetLoanInfo.postValue( "601")
@@ -155,7 +158,7 @@ class LoansViewModel: ViewModel() {
 
     fun defaultList(map: Map<String, String>){
         HomeActivity.alert.show()
-        RetrofitService.apiService().defaultList(map).enqueue(object : Callback<CommonResponse<ArrayList<DefaultListModel>>> {
+        RetrofitService.apiService().defaultList(map, generateUrl("defaultList")).enqueue(object : Callback<CommonResponse<ArrayList<DefaultListModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<DefaultListModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorDefaultList.postValue( "601")
@@ -183,7 +186,7 @@ class LoansViewModel: ViewModel() {
     var getListFamilyStatusDta = MutableLiveData<CommonResponse<ArrayList<ListFamilyStatusModel>>>()
 
     fun listFamilyStatus(map: Map<String, String>){
-        RetrofitService.apiService().listFamilyStatus(map).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyStatusModel>>> {
+        RetrofitService.apiService().listFamilyStatus(map, generateUrl("listFamilyStatus")).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyStatusModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyStatusModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListFamilyStatus.postValue( "601")
@@ -211,7 +214,7 @@ class LoansViewModel: ViewModel() {
     var getListIncomeDta = MutableLiveData<CommonResponse<ArrayList<ListIncomeResultModel>>>()
 
     fun listIncome(map: Map<String, String>){
-        RetrofitService.apiService().listIncome(map).enqueue(object : Callback<CommonResponse<ArrayList<ListIncomeResultModel>>> {
+        RetrofitService.apiService().listIncome(map, generateUrl("listIncome")).enqueue(object : Callback<CommonResponse<ArrayList<ListIncomeResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListIncomeResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListIncome.postValue( "601")
@@ -239,7 +242,7 @@ class LoansViewModel: ViewModel() {
     var getListNumbersDta = MutableLiveData<CommonResponse<ArrayList<ListNumbersResultModel>>>()
 
     fun listNumbers(map: Map<String, String>){
-        RetrofitService.apiService().listNumbers(map).enqueue(object : Callback<CommonResponse<ArrayList<ListNumbersResultModel>>> {
+        RetrofitService.apiService().listNumbers(map, generateUrl("listNumbers")).enqueue(object : Callback<CommonResponse<ArrayList<ListNumbersResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNumbersResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListNumbers.postValue( "601")
@@ -267,7 +270,7 @@ class LoansViewModel: ViewModel() {
     var getListTypeIncomeDta = MutableLiveData<CommonResponse<ArrayList<ListTypeIncomeModel>>>()
 
     fun listTypeIncome(map: Map<String, String>){
-        RetrofitService.apiService().listTypeIncome(map).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeIncomeModel>>> {
+        RetrofitService.apiService().listTypeIncome(map, generateUrl("listTypeIncome")).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeIncomeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeIncomeModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListTypeIncome.postValue( "601")
@@ -295,7 +298,7 @@ class LoansViewModel: ViewModel() {
     var getListYearsDta = MutableLiveData<CommonResponse<ArrayList<ListYearsResultModel>>>()
 
     fun listYears(map: Map<String, String>){
-        RetrofitService.apiService().listYears(map).enqueue(object : Callback<CommonResponse<ArrayList<ListYearsResultModel>>> {
+        RetrofitService.apiService().listYears(map, generateUrl("listYears")).enqueue(object : Callback<CommonResponse<ArrayList<ListYearsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListYearsResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListYears.postValue( "601")
@@ -323,7 +326,7 @@ class LoansViewModel: ViewModel() {
     var getListFamilyDta = MutableLiveData<CommonResponse<ArrayList<ListFamilyResultModel>>>()
 
     fun listFamily(map: Map<String, String>){
-        RetrofitService.apiService().listFamily(map).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyResultModel>>> {
+        RetrofitService.apiService().listFamily(map, generateUrl("listFamily")).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListFamily.postValue( "601")
@@ -351,7 +354,7 @@ class LoansViewModel: ViewModel() {
     var getListWorkDta = MutableLiveData<CommonResponse<ArrayList<ListWorkResultModel>>>()
 
     fun listWork(map: Map<String, String>){
-        RetrofitService.apiService().listWork(map).enqueue(object : Callback<CommonResponse<ArrayList<ListWorkResultModel>>> {
+        RetrofitService.apiService().listWork(map, generateUrl("listWork")).enqueue(object : Callback<CommonResponse<ArrayList<ListWorkResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListWorkResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListWork.postValue( "601")
@@ -379,7 +382,7 @@ class LoansViewModel: ViewModel() {
     var getListTypeWorkDta = MutableLiveData<CommonResponse<ArrayList<ListTypeWorkModel>>>()
 
     fun listTypeWork(map: Map<String, String>){
-        RetrofitService.apiService().listTypeWork(map).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeWorkModel>>> {
+        RetrofitService.apiService().listTypeWork(map, generateUrl("listTypeWork")).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeWorkModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeWorkModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListTypeWork.postValue( "601")
@@ -407,7 +410,7 @@ class LoansViewModel: ViewModel() {
     var getListCityDta = MutableLiveData<CommonResponse<ArrayList<ListCityResultModel>>>()
 
     fun listCity(map: Map<String, String>){
-        RetrofitService.apiService().listCity(map).enqueue(object : Callback<CommonResponse<ArrayList<ListCityResultModel>>> {
+        RetrofitService.apiService().listCity(map, generateUrl("listCity")).enqueue(object : Callback<CommonResponse<ArrayList<ListCityResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListCityResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListCity.postValue( "601")
@@ -436,7 +439,7 @@ class LoansViewModel: ViewModel() {
     var getSaveLoan = MutableLiveData<SaveLoanModel>()
 
     fun saveLoan(map: Map<String, String>){
-        RetrofitService.apiService().saveLoan(map).enqueue(object : Callback<SaveLoanModel> {
+        RetrofitService.apiService().saveLoan(map, generateUrl("saveLoan")).enqueue(object : Callback<SaveLoanModel> {
             override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorSaveLoan.postValue( "601")
@@ -468,7 +471,7 @@ class LoansViewModel: ViewModel() {
     var getSaveLoanImg = MutableLiveData<SaveLoanModel>()
 
     fun saveLoanImg(map: Map<String, String>){
-        RetrofitService.apiService().saveLoanImg(map).enqueue(object : Callback<SaveLoanModel> {
+        RetrofitService.apiService().saveLoanImg(map, generateUrl("saveLoan")).enqueue(object : Callback<SaveLoanModel> {
             override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorSaveLoanImg.postValue( "601")
@@ -496,7 +499,7 @@ class LoansViewModel: ViewModel() {
     var listAvailableSixDta = MutableLiveData<CommonResponse<ArrayList<SixNumResultModel>>>()
 
     fun listAvailableSix(map: Map<String, String>){
-        RetrofitService.apiService().listAvailableSix(map).enqueue(object : Callback<CommonResponse<ArrayList<SixNumResultModel>>> {
+        RetrofitService.apiService().listAvailableSix(map, generateUrl("listAvailableCountry")).enqueue(object : Callback<CommonResponse<ArrayList<SixNumResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<SixNumResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListAvailableSix.postValue( "601")
@@ -523,7 +526,7 @@ class LoansViewModel: ViewModel() {
     var listEntryGoal = MutableLiveData<CommonResponse<ArrayList<EntryGoalResultModel>>>()
 
     fun listEntryGoal(map: Map<String, String>){
-        RetrofitService.apiService().listEntryGoal(map).enqueue(object : Callback<CommonResponse<ArrayList<EntryGoalResultModel>>> {
+        RetrofitService.apiService().listEntryGoal(map, generateUrl("listEntryGoal")).enqueue(object : Callback<CommonResponse<ArrayList<EntryGoalResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<EntryGoalResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListEntryGoal.postValue( "601")
@@ -550,7 +553,7 @@ class LoansViewModel: ViewModel() {
     var listTypeContract = MutableLiveData<CommonResponse<ArrayList<TypeContractResultModel>>>()
 
     fun listTypeContract(map: Map<String, String>){
-        RetrofitService.apiService().listTypeContract(map).enqueue(object : Callback<CommonResponse<ArrayList<TypeContractResultModel>>> {
+        RetrofitService.apiService().listTypeContract(map, generateUrl("listTypeContract")).enqueue(object : Callback<CommonResponse<ArrayList<TypeContractResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<TypeContractResultModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorListTypeContract.postValue( "601")

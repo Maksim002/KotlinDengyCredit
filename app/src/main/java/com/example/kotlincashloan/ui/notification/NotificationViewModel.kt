@@ -3,6 +3,7 @@ package com.example.kotlincashloan.ui.notification
 import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.kotlincashloan.extension.generateUrl
 import com.example.kotlincashloan.service.model.Notification.ListNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
@@ -22,7 +23,7 @@ class NotificationViewModel : ViewModel(){
     var listNoticeDta = MutableLiveData<CommonResponse<ArrayList<ResultListNoticeModel>>>()
 
     fun listNotice(map: Map<String, String>){
-        RetrofitService.apiService().listNotice(map).enqueue(object : Callback<CommonResponse<ArrayList<ResultListNoticeModel>>> {
+        RetrofitService.apiService().listNotice(map, generateUrl("listNotice")).enqueue(object : Callback<CommonResponse<ArrayList<ResultListNoticeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultListNoticeModel>>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorNotice.postValue( "601")
@@ -40,9 +41,6 @@ class NotificationViewModel : ViewModel(){
                 }else{
                     errorNotice.postValue(response.code().toString())
                 }
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    HomeActivity.alert.hide()
-                },400)
             }
         })
     }
@@ -52,7 +50,7 @@ class NotificationViewModel : ViewModel(){
     var listNoticeDetailDta = MutableLiveData<CommonResponse<ResultDetailNoticeModel>>()
 
     fun getNotice(map: Map<String, String>){
-        RetrofitService.apiService().getNotice(map).enqueue(object : Callback<CommonResponse<ResultDetailNoticeModel>> {
+        RetrofitService.apiService().getNotice(map, generateUrl("getNotice")).enqueue(object : Callback<CommonResponse<ResultDetailNoticeModel>> {
             override fun onFailure(call: Call<CommonResponse<ResultDetailNoticeModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorDetailNotice.postValue( "601")

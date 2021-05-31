@@ -4,16 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_step_one_loan.*
 
 class LoanStepOneFragment() : Fragment() {
     private var viewModel = LoansViewModel()
+    private var application = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,11 +28,21 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initClick()
 //        initResult()
     }
 
     private fun initClick() {
+        try {
+            application = requireActivity().intent.extras!!.getBoolean("application")
+            if (application != false){
+                AppPreferences.refreshWindow = "true"
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
+        }
+
+
+        (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
 
         bottom_step_one.setOnClickListener {
            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(1)
@@ -38,6 +51,8 @@ class LoanStepOneFragment() : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        initClick()
+        requireActivity().onBackPressedDispatcher.addCallback(this) {}
         bottom_step_one.text = "Начать"
         AppPreferences.nationality = ""
         initRequest()

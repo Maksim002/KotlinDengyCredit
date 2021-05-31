@@ -10,4 +10,10 @@
         android:name="com.example.kotlincashloan.ui.support.SupportFragment"
         android:label=""
         tools:layout="@layout/fragment_support" />
+
+    <fragment
+        android:id="@+id/chat_navigation"
+        android:name="com.example.kotlincashloan.ui.support.ChatFragment"
+        android:label=""
+        tools:layout="@layout/fragment_chat" />
 </navigation>

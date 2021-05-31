@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Сфотографируйте бланк регистрации в РФ с двух сторон"
+                    android:text="Сфотографируйте бланк регистрации в РФ \n с двух сторон"
                     android:textColor="@color/blackColor"
                     android:textStyle="bold" />
 
@@ -257,7 +257,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Сфотографируйте миграционную карту с двух сторон"
+                    android:text="Сфотографируйте миграционную карту \n с двух сторон"
                     android:textColor="@color/blackColor"
                     android:textStyle="bold" />
 
