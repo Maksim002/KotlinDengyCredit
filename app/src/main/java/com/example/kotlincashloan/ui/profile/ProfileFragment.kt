@@ -22,6 +22,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.bitmapToFile
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.extension.sendPicture
@@ -36,6 +37,7 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
+import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -64,6 +66,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var errorNullAp = ""
     private var pagerPosition = -1
     private var addImage = true
+    private var genAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,7 +133,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
-                profile_swipe.visibility = View.GONE
+                layout_profile.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
                 profile_not_found.visibility = View.GONE
@@ -253,7 +256,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
-                profile_swipe.visibility = View.GONE
+                layout_profile.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
                 profile_not_found.visibility = View.GONE
@@ -272,15 +275,20 @@ class ProfileFragment : Fragment(), ApplicationListener {
                             image_profile.setImageBitmap(scaled)
                             bitmapToFile(decodedImage, requireContext())
                             addImage = false
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                try {
-                                    profile_swipe.isRefreshing = false
-                                }catch (e: Exception){
-                                    e.printStackTrace()
-                                }
-                            },500)
+                            if (genAnim){
+                                shimmer_profile.visibility = View.GONE
+                            }
+                            if (!genAnim) {
+                                //генерирует анимацию перехода
+                                animationGenerator(shimmer_profile, handler, requireActivity())
+                                genAnim = true
+                            }
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            try {
+                                profile_swipe.isRefreshing = false
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
                         } else {
                             if (result.error != null) {
                                 if (errorGetImg != result.error.code.toString()) {
@@ -294,11 +302,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                         errorGetImg = "200"
                                     }
                                 }
-                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                    MainActivity.alert.hide()
-                                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    profile_swipe.isRefreshing = false
-                                },500)
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                profile_swipe.isRefreshing = false
                             }
                         }
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
@@ -319,11 +324,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                 getErrorCode(error.toInt())
                             }
                             clearingDate()
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                profile_swipe.isRefreshing = false
-                            },500)
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            profile_swipe.isRefreshing = false
                         }
                         errorGetImg = error
                     } catch (e: Exception) {
@@ -342,7 +344,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
+            layout_profile.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -409,7 +411,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
-        profile_swipe.visibility = View.VISIBLE
+        layout_profile.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
@@ -425,7 +427,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     }
 
     private fun resultTrue() {
-        profile_swipe.visibility = View.VISIBLE
+        layout_profile.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
@@ -435,8 +437,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private fun getErrorCode(error: Int) {
         listListResult(
             error, profile_technical_work as LinearLayout, profile_no_connection as LinearLayout,
-            profile_swipe as SwipeRefreshLayout, profile_access_restricted as LinearLayout,
-            profile_not_found as LinearLayout, activity as AppCompatActivity
+            layout_profile, profile_access_restricted as LinearLayout,
+            profile_not_found as LinearLayout, activity as AppCompatActivity, true
         )
         MainActivity.alert.hide()
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -449,7 +451,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
+            layout_profile.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -543,14 +545,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 isRestart()
-                profile_pager.setCurrentItem(0)
+                // TODO: 02.06.2021 проверить
+                if (profile_pager.currentItem != 0){
+                    profile_pager.currentItem = 0
+                }
                 profile_bar_zero.visibility = View.VISIBLE
                 profile_bar_one.visibility = View.GONE
                 AppPreferences.reviewCode = 0
@@ -564,7 +566,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
-            profile_swipe.visibility = View.GONE
+            layout_profile.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -574,8 +576,10 @@ class ProfileFragment : Fragment(), ApplicationListener {
             if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null
 //                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null && viewModel.errorListApplication.value == null
             ) {
+                shimmer_profile.startShimmerAnimation()
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (!viewModel.refreshCode) {
-                    MainActivity.alert.show()
+//                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         clearingDate()

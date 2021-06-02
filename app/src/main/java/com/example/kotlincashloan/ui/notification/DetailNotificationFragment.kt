@@ -5,10 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -20,8 +21,8 @@ import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
-import java.util.HashMap
+import java.util.*
+
 
 class DetailNotificationFragment : Fragment() {
     private var notificationId = 0
@@ -31,9 +32,11 @@ class DetailNotificationFragment : Fragment() {
     val handler = Handler()
     private var errorCode = ""
     private var notificationAnimDetail = false
+    private var genAnim = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
@@ -43,6 +46,11 @@ class DetailNotificationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //notificationAnimDetail анимация для перехода с адного дествия в другое
+        if (!notificationAnimDetail) {
+            TransitionAnimation(activity as AppCompatActivity).transitionRight(notification_anim)
+            notificationAnimDetail = true
+        }
         initGetBundle()
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
@@ -91,19 +99,21 @@ class DetailNotificationFragment : Fragment() {
             d_notification_access_restricted.visibility = View.GONE
             d_notification_technical_work.visibility = View.GONE
             layout_detail.visibility = View.GONE
+            shimmer_detail_notification.visibility = View.GONE
             viewModel.errorDetailNotice.value = null
             errorCode = "601"
         } else {
-            MainActivity.alert.show()
             if (viewModel.listNoticeDetailDta.value == null) {
+                shimmer_detail_notification.startShimmerAnimation()
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.errorDetailNotice.value = null
                     viewModel.getNotice(map)
                     initRequest()
                 }, 500)
-            }else{
+            } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorDetailNotice.value != null){
+                    if (viewModel.errorDetailNotice.value != null) {
                         viewModel.errorDetailNotice.value = null
                         viewModel.listNoticeDetailDta.postValue(null)
                     }
@@ -118,83 +128,87 @@ class DetailNotificationFragment : Fragment() {
         viewModel.listNoticeDetailDta.observe(viewLifecycleOwner, Observer { result ->
             try {
                 if (result.result != null) {
-                    if (!notificationAnimDetail) {
-                        TransitionAnimation(activity as AppCompatActivity).transitionRight(notification_anim)
-                        notificationAnimDetail = true
+                    detail_notification_title.text = result.result.title
+                    detail_notification_data.text = result.result.date
+                    detail_notification_description.text = result.result.description
+                    detail_notification_text.loadMarkdown(result.result.text)
+                    if (genAnim){
+                        shimmer_detail_notification.visibility = View.GONE
                     }
                     d_notification_access_restricted.visibility = View.GONE
                     d_notification_no_connection.visibility = View.GONE
                     d_notification_technical_work.visibility = View.GONE
                     d_notification_not_found.visibility = View.GONE
                     layout_detail.visibility = View.VISIBLE
-
-                    detail_notification_title.text = result.result.title
-                    detail_notification_data.text = result.result.date
-                    detail_notification_description.text = result.result.description
-                    detail_notification_text.loadMarkdown(result.result.text)
-                    //notificationAnimDetail анимация для перехода с адного дествия в другое
                     errorCode = result.code.toString()
+                    if (!genAnim) {
+                        //генерирует анимацию перехода
+                        animationGenerator(shimmer_detail_notification, handler, requireActivity())
+                        genAnim = true
+                    }
                 } else {
                     if (result.error.code != null) {
                         errorCode = result.error.code.toString()
-                    }
-                    if (result.error.code == 400 || result.error.code == 500) {
-                        d_notification_technical_work.visibility = View.VISIBLE
-                        d_notification_access_restricted.visibility = View.GONE
-                        d_notification_no_connection.visibility = View.GONE
-                        d_notification_not_found.visibility = View.GONE
-                        layout_detail.visibility = View.GONE
-                    } else if (result.error.code == 403) {
-                        d_notification_access_restricted.visibility = View.VISIBLE
-                        d_notification_technical_work.visibility = View.GONE
-                        d_notification_no_connection.visibility = View.GONE
-                        d_notification_not_found.visibility = View.GONE
-                        layout_detail.visibility = View.GONE
-                    } else if (result.error.code == 404) {
-                        d_notification_not_found.visibility = View.VISIBLE
-                        d_notification_access_restricted.visibility = View.GONE
-                        d_notification_technical_work.visibility = View.GONE
-                        d_notification_no_connection.visibility = View.GONE
-                        layout_detail.visibility = View.GONE
-                    } else if (result.error.code == 401) {
-                        initAuthorized()
+                        if (result.error.code == 400 || result.error.code == 500) {
+                            d_notification_technical_work.visibility = View.VISIBLE
+                            d_notification_access_restricted.visibility = View.GONE
+                            d_notification_no_connection.visibility = View.GONE
+                            d_notification_not_found.visibility = View.GONE
+                            layout_detail.visibility = View.GONE
+                            shimmer_detail_notification.visibility = View.GONE
+                        } else if (result.error.code == 403) {
+                            d_notification_access_restricted.visibility = View.VISIBLE
+                            d_notification_technical_work.visibility = View.GONE
+                            d_notification_no_connection.visibility = View.GONE
+                            d_notification_not_found.visibility = View.GONE
+                            layout_detail.visibility = View.GONE
+                            shimmer_detail_notification.visibility = View.GONE
+                        } else if (result.error.code == 404) {
+                            d_notification_not_found.visibility = View.VISIBLE
+                            d_notification_access_restricted.visibility = View.GONE
+                            d_notification_technical_work.visibility = View.GONE
+                            d_notification_no_connection.visibility = View.GONE
+                            layout_detail.visibility = View.GONE
+                            shimmer_detail_notification.visibility = View.GONE
+                        } else if (result.error.code == 401) {
+                            initAuthorized()
+                        }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                 }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                MainActivity.alert.hide()
-            },450)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         })
         viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 errorCode = error
+                if (error == "400" || error == "500" || error == "600" || error == "601") {
+                    d_notification_technical_work.visibility = View.VISIBLE
+                    d_notification_access_restricted.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    d_notification_not_found.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                    shimmer_detail_notification.visibility = View.GONE
+                } else if (error == "403") {
+                    d_notification_access_restricted.visibility = View.VISIBLE
+                    d_notification_technical_work.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    d_notification_not_found.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                    shimmer_detail_notification.visibility = View.GONE
+                } else if (error == "404") {
+                    d_notification_not_found.visibility = View.VISIBLE
+                    d_notification_access_restricted.visibility = View.GONE
+                    d_notification_technical_work.visibility = View.GONE
+                    d_notification_no_connection.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                    shimmer_detail_notification.visibility = View.GONE
+                } else if (error == "401") {
+                    initAuthorized()
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
-            if (error == "400" || error == "500" || error == "600" || error == "601") {
-                d_notification_technical_work.visibility = View.VISIBLE
-                d_notification_access_restricted.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                d_notification_not_found.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            } else if (error == "403") {
-                d_notification_access_restricted.visibility = View.VISIBLE
-                d_notification_technical_work.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                d_notification_not_found.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            } else if (error == "404") {
-                d_notification_not_found.visibility = View.VISIBLE
-                d_notification_access_restricted.visibility = View.GONE
-                d_notification_technical_work.visibility = View.GONE
-                d_notification_no_connection.visibility = View.GONE
-                layout_detail.visibility = View.GONE
-            } else  if (error == "401") {
-                initAuthorized()
-            }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                MainActivity.alert.hide()
-            },450)
         })
     }
 
@@ -211,10 +225,9 @@ class DetailNotificationFragment : Fragment() {
                 initRequest()
             } else {
                 viewModel.refreshCode = false
-                notificationAnimDetail = false
                 initRestart()
             }
-        }else{
+        } else {
             initRestart()
         }
     }

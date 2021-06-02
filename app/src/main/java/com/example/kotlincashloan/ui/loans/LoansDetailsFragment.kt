@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +20,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -40,6 +43,7 @@ class LoansDetailsFragment : Fragment() {
     val handler = Handler()
     private var errorCode = ""
     private var loansAnim = false
+    private var genAnim = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,9 +55,14 @@ class LoansDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // animation перехода с одного фрагмента в друной
+        if (!loansAnim) {
+            TransitionAnimation(activity as AppCompatActivity).transitionRight(loans_layout)
+            loansAnim = true
+        }
         (activity as AppCompatActivity).supportActionBar?.show()
         iniArgument()
-        initRequest()
+//        initRequest()
         initClick()
     }
 
@@ -114,17 +123,20 @@ class LoansDetailsFragment : Fragment() {
             errorCode = "601"
         } else {
             if (viewModel.listGetDta.value == null) {
-                MainActivity.alert.show()
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                shimmer_detail_loan.startShimmerAnimation()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     viewModel.getNews(map)
                     initRequest()
                 }, 500)
             } else {
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorGet.value != null) {
-                        viewModel.errorGet.value = null
-                        viewModel.listGetDta.postValue(null)
-                    }
+//                    if (viewModel.errorGet.value != null) {
+//                        viewModel.errorGet.value = null
+//                        viewModel.listGetDta.postValue(null)
+//                    }
+                    viewModel.errorGet.value = null
+                    viewModel.listGetDta.postValue(null)
                     viewModel.getNews(map)
                     initRequest()
                 }, 500)
@@ -133,19 +145,9 @@ class LoansDetailsFragment : Fragment() {
     }
 
     private fun initRequest() {
-        map.put("login", AppPreferences.login.toString())
-        map.put("token", AppPreferences.token.toString())
-        map.put("id", isNews.toString())
         viewModel.listGetDta.observe(viewLifecycleOwner, Observer { result ->
             try {
-                if (result.code == 200 && result.result != null) {
-                    // animation перехода с одного фрагмента в друной
-                    if (!loansAnim) {
-                        TransitionAnimation(activity as AppCompatActivity).transitionRight(
-                            loans_layout
-                        )
-                        loansAnim = true
-                    }
+                if (result.result != null) {
                     loans_details_name.setText(result.result.name)
                     loans_details_description.setText(result.result.description)
                     loans_details_text.loadMarkdown(result.result.text)
@@ -154,80 +156,79 @@ class LoansDetailsFragment : Fragment() {
                         .load(result.result.thumbnail)
                         .into(loans_details_image)
                     errorCode = result.code.toString()
-                    loans_detail_layout.visibility = View.VISIBLE
                     loans_detail_no_connection.visibility = View.GONE
                     loans_detail_access_restricted.visibility = View.GONE
                     loans_detail_not_found.visibility = View.GONE
                     loans_detail_technical_work.visibility = View.GONE
+                    if (genAnim){
+                        shimmer_detail_loan.visibility = View.GONE
+                    }else{
+                        shimmer_detail_loan.visibility = View.VISIBLE
+                    }
+                    loans_detail_layout.visibility = View.VISIBLE
+                    if (!genAnim) {
+                        //генерирует анимацию перехода
+                        animationGenerator(shimmer_detail_loan, handler, requireActivity())
+                        genAnim = true
+                    }
                 } else {
                     if (result.error.code != null) {
                         errorCode = result.error.code.toString()
-                    }
-                    if (result.error.code == 403) {
-                        loans_detail_access_restricted.visibility = View.VISIBLE
-                        loans_detail_not_found.visibility = View.GONE
-                        loans_detail_no_connection.visibility = View.GONE
-                        loans_detail_layout.visibility = View.GONE
-                        loans_detail_technical_work.visibility = View.GONE
-                    } else if (result.error.code == 404) {
-                        loans_detail_not_found.visibility = View.VISIBLE
-                        loans_detail_no_connection.visibility = View.GONE
-                        loans_detail_layout.visibility = View.GONE
-                        loans_detail_access_restricted.visibility = View.GONE
-                        loans_detail_technical_work.visibility = View.GONE
-                    } else if (result.error.code == 401) {
-                        initAuthorized()
-                    } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
-                        loans_detail_technical_work.visibility = View.VISIBLE
-                        loans_detail_no_connection.visibility = View.GONE
-                        loans_detail_layout.visibility = View.GONE
-                        loans_detail_access_restricted.visibility = View.GONE
-                        loans_detail_not_found.visibility = View.GONE
+                        if (result.error.code == 403) {
+                            loans_detail_access_restricted.visibility = View.VISIBLE
+                            loans_detail_not_found.visibility = View.GONE
+                            loans_detail_no_connection.visibility = View.GONE
+                            loans_detail_layout.visibility = View.GONE
+                            loans_detail_technical_work.visibility = View.GONE
+                        } else if (result.error.code == 404) {
+                            loans_detail_not_found.visibility = View.VISIBLE
+                            loans_detail_no_connection.visibility = View.GONE
+                            loans_detail_layout.visibility = View.GONE
+                            loans_detail_access_restricted.visibility = View.GONE
+                            loans_detail_technical_work.visibility = View.GONE
+                        } else if (result.error.code == 401) {
+                            initAuthorized()
+                        } else if (result.error.code == 500 || result.error.code == 400 || result.error.code == 409 || result.error.code == 429) {
+                            loans_detail_technical_work.visibility = View.VISIBLE
+                            loans_detail_no_connection.visibility = View.GONE
+                            loans_detail_layout.visibility = View.GONE
+                            loans_detail_access_restricted.visibility = View.GONE
+                            loans_detail_not_found.visibility = View.GONE
+                        }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                MainActivity.alert.hide()
-            }, 400)
         })
 
         viewModel.errorGet.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 errorCode = error
+                if (error == "403") {
+                    loans_detail_access_restricted.visibility = View.VISIBLE
+                    loans_detail_not_found.visibility = View.GONE
+                    loans_detail_no_connection.visibility = View.GONE
+                    loans_detail_layout.visibility = View.GONE
+                    loans_detail_technical_work.visibility = View.GONE
+                } else if (error == "404") {
+                    loans_detail_not_found.visibility = View.VISIBLE
+                    loans_detail_no_connection.visibility = View.GONE
+                    loans_detail_layout.visibility = View.GONE
+                    loans_detail_access_restricted.visibility = View.GONE
+                    loans_detail_technical_work.visibility = View.GONE
+                } else if (error == "401") {
+                    initAuthorized()
+                } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
+                    loans_detail_technical_work.visibility = View.VISIBLE
+                    loans_detail_no_connection.visibility = View.GONE
+                    loans_detail_layout.visibility = View.GONE
+                    loans_detail_access_restricted.visibility = View.GONE
+                    loans_detail_not_found.visibility = View.GONE
+                }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
-            if (error == "403") {
-                loans_detail_access_restricted.visibility = View.VISIBLE
-                loans_detail_not_found.visibility = View.GONE
-                loans_detail_no_connection.visibility = View.GONE
-                loans_detail_layout.visibility = View.GONE
-                loans_detail_technical_work.visibility = View.GONE
-            } else if (error == "404") {
-                loans_detail_not_found.visibility = View.VISIBLE
-                loans_detail_no_connection.visibility = View.GONE
-                loans_detail_layout.visibility = View.GONE
-                loans_detail_access_restricted.visibility = View.GONE
-                loans_detail_technical_work.visibility = View.GONE
-            } else if (error == "401") {
-                initAuthorized()
-            } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
-                loans_detail_technical_work.visibility = View.VISIBLE
-                loans_detail_no_connection.visibility = View.GONE
-                loans_detail_layout.visibility = View.GONE
-                loans_detail_access_restricted.visibility = View.GONE
-                loans_detail_not_found.visibility = View.GONE
-            }
-//            else if (error == "601") {
-//                loans_detail_no_connection.visibility = View.VISIBLE
-//                loans_detail_layout.visibility = View.GONE
-//                loans_detail_access_restricted.visibility = View.GONE
-//                loans_detail_not_found.visibility = View.GONE
-//                loans_detail_technical_work.visibility = View.GONE
-//            }
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                MainActivity.alert.hide()
-            }, 400)
         })
     }
 
@@ -237,16 +238,19 @@ class LoansDetailsFragment : Fragment() {
         startActivity(intent)
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    override fun onStart() {
+        super.onStart()
+        map.put("login", AppPreferences.login.toString())
+        map.put("token", AppPreferences.token.toString())
+        map.put("id", isNews.toString())
         if (viewModel.listGetDta.value != null) {
             if (errorCode == "200") {
                 initRequest()
+            }else{
+                initRestart()
             }
         } else {
             initRestart()
-            loansAnim = false
         }
 
         //меняет цвета навигационной понели

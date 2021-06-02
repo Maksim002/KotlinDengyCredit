@@ -14,14 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
+import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
-import com.example.kotlincashloan.ui.registration.login.HomeActivity.Companion.alert
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
@@ -47,6 +46,7 @@ class LoansFragment : Fragment(), LoansListener {
     private var listLoanId: String = ""
     private var alertValid = false
     private var loansAnim = true
+    private var genAnim = false
 
     private var progressPositionMax = 0
     private var progressPositionRemains = 0
@@ -83,21 +83,22 @@ class LoansFragment : Fragment(), LoansListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 loans_no_connection.visibility = View.VISIBLE
-                loans_layout.visibility = View.GONE
+                loans_constraint.visibility = View.GONE
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                MainActivity.alert.hide()
-                alert.hide()
+//                MainActivity.alert.hide()
+//                alert.hide()
             } else {
                 viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
                     try {
                         if (result.error != null) {
                             listLoanId = result.error.code.toString()
                             initErrorResult(result.error.code!!)
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         } else {
                             initCode()
                             if (result.result != null) {
@@ -198,20 +199,18 @@ class LoansFragment : Fragment(), LoansListener {
 //                                loans_no_connection.visibility = View.GONE
                                     initRecycler()
                                 }
-                                alert.hide()
+//                                alert.hide()
                             }
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         loans_layout.isRefreshing = false
                         if (alertValid == false) {
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                alert.hide()
                                 alertValid = true
                             }, 650)
                         } else {
-                            MainActivity.alert.hide()
-                            alert.hide()
+//                            MainActivity.alert.hide()
+//                            alert.hide()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -223,10 +222,10 @@ class LoansFragment : Fragment(), LoansListener {
                         initError(error)
                         listLoanId = error
                         handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            MainActivity.alert.hide()
+//                            MainActivity.alert.hide()
                         }, 700)
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 })
             }
         } catch (e: Exception) {
@@ -454,15 +453,15 @@ class LoansFragment : Fragment(), LoansListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 loans_no_connection.visibility = View.VISIBLE
-                loans_layout.visibility = View.GONE
+                loans_constraint.visibility = View.GONE
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                alert.hide()
-                MainActivity.alert.hide()
+//                alert.hide()
+//                MainActivity.alert.hide()
             } else {
                 if (viewModel.listNewsDta.value != null) {
                     viewModel.errorNews.value = null
@@ -527,17 +526,17 @@ class LoansFragment : Fragment(), LoansListener {
                     getErrorCode(msg!!.toInt())
                 }
             }
-            MainActivity.alert.hide()
+//            MainActivity.alert.hide()
         })
     }
 
     private fun getErrorCode(error: Int) {
         listListResult(
             error, loans_technical_work as LinearLayout, loans_no_connection as LinearLayout,
-            loans_layout as SwipeRefreshLayout, loans_access_restricted as LinearLayout,
-            loans_not_found as LinearLayout, activity as AppCompatActivity
+            loans_constraint, loans_access_restricted as LinearLayout,
+            loans_not_found as LinearLayout, activity as AppCompatActivity, true
         )
-        MainActivity.alert.hide()
+//        MainActivity.alert.hide()
     }
 
     private fun initRefresh() {
@@ -565,7 +564,7 @@ class LoansFragment : Fragment(), LoansListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 loans_no_connection.visibility = View.VISIBLE
-                loans_layout.visibility = View.GONE
+                loans_constraint.visibility = View.GONE
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
@@ -580,30 +579,34 @@ class LoansFragment : Fragment(), LoansListener {
                                 loans_loans_null.visibility = View.VISIBLE
                                 loans_recycler.visibility = View.GONE
                             }
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         } else {
                             if (result.result != null) {
                                 initCode()
                                 if (listLoanId == "200" && listNewsId == "200") {
                                     myAdapter.update(result.result)
                                     loans_recycler.adapter = myAdapter
-                                    loans_layout.visibility = View.VISIBLE
+                                    if (genAnim){
+                                        shimmer_loan.visibility = View.GONE
+                                    }else{
+                                        shimmer_loan.visibility = View.VISIBLE
+                                    }
+                                    loans_constraint.visibility = View.VISIBLE
                                     loans_no_connection.visibility = View.GONE
                                     loans_loans_null.visibility = View.GONE
                                     loans_recycler.visibility = View.VISIBLE
+                                    if (!genAnim) {
+                                        //генерирует анимацию перехода
+                                        animationGenerator(shimmer_loan, handler, requireActivity())
+                                        genAnim = true
+                                    }
                                 } else {
                                     initResult()
                                 }
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                             }
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         loans_layout.isRefreshing = false
-//                        if (alertValid == false) {
-//                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                                MainActivity.alert.hide()
-//                                alert.hide()
-//                                alertValid = true
-//                            }, 650)
-//                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -618,8 +621,8 @@ class LoansFragment : Fragment(), LoansListener {
                             loans_loans_null.visibility = View.VISIBLE
                             loans_recycler.visibility = View.GONE
                         }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     }
-                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 })
             }
         } catch (e: Exception) {
@@ -652,20 +655,20 @@ class LoansFragment : Fragment(), LoansListener {
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.VISIBLE
         } else if (result == 404) {
             loans_not_found.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
         } else if (result == 500 || result == 400 || result == 409 || result == 429) {
             loans_technical_work.visibility = View.VISIBLE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
         }
@@ -678,19 +681,19 @@ class LoansFragment : Fragment(), LoansListener {
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
         } else if (error == "404") {
             loans_not_found.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
         } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
             loans_technical_work.visibility = View.VISIBLE
             loans_no_connection.visibility = View.GONE
-            loans_layout.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
         }
@@ -709,7 +712,7 @@ class LoansFragment : Fragment(), LoansListener {
             loansAnim = false
         }
         val handler = Handler()
-        MainActivity.alert.show()
+//        MainActivity.alert.show()
         if (AppPreferences.refreshWindow == "true") {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.errorNews.value = null
@@ -719,17 +722,19 @@ class LoansFragment : Fragment(), LoansListener {
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)
                 initResult()
-                initRecycler()
+//                initRecycler()
                 AppPreferences.refreshWindow = ""
             }, 800)
         } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            shimmer_loan.startShimmerAnimation()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.errorNews.value = null
                 viewModel.errorLoanInfo.value = null
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)
                 initResult()
-                initRecycler()
+//                initRecycler()
             }, 800)
         } else {
             if (listNewsId == "200" && listLoanId == "200") {
@@ -744,8 +749,28 @@ class LoansFragment : Fragment(), LoansListener {
         ColorWindows(activity as AppCompatActivity).noRollback()
     }
 
-//
-//    var b = false
+    var b = false
+    override fun onStart() {
+        super.onStart()
+        if (AppPreferences.refreshWindow == "true") {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            shimmer_loan.startShimmerAnimation()
+        }
+        if (b == false){
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
+                AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+            }, 30000)
+            b = true
+        }
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
+            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+        }, 60000)
+    }
+
+
+//   var b = false
 //    override fun onStart() {
 //       super.onStart()
 //       if (b == false){
@@ -754,11 +779,10 @@ class LoansFragment : Fragment(), LoansListener {
 //            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 //            }, 30000)
 //            b = true
-//        }
+//       }
 //        handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
-//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+//           AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 //        }, 60000)
-//
 //    }
 }

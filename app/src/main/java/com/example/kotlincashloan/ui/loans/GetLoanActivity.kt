@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.loans
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -294,6 +295,8 @@ class GetLoanActivity : AppCompatActivity() {
 
         loan_cross_clear.setOnClickListener {
             this.finish()
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
         }
 
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.notification.NotificationListener
+import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -20,6 +21,7 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -34,6 +36,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     val handler = Handler()
     private var errorCode = ""
     private var notificationAnim = false
+    private var genAnim = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,7 +81,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             notification_no_connection.visibility = View.VISIBLE
-            notification_swipe.visibility = View.GONE
+            notification_con.visibility = View.GONE
             notification_technical_work.visibility = View.GONE
             notification_access_restricted.visibility = View.GONE
             notification_not_found.visibility = View.GONE
@@ -86,7 +89,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         } else {
             if (viewModel.listNoticeDta.value == null || viewModel.errorNotice.value == null) {
                 if (!viewModel.refreshCode) {
-                    MainActivity.alert.show()
+                    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         viewModel.errorNotice.value = null
@@ -145,10 +148,11 @@ class NotificationFragment : Fragment(), NotificationListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 notification_no_connection.visibility = View.VISIBLE
-                notification_swipe.visibility = View.GONE
+                notification_con.visibility = View.GONE
                 notification_technical_work.visibility = View.GONE
                 notification_access_restricted.visibility = View.GONE
                 notification_not_found.visibility = View.GONE
+                shimmer_notification.visibility = View.GONE
                 errorCode = "601"
             } else {
                 viewModel.listNoticeDta.observe(viewLifecycleOwner, Observer { result ->
@@ -156,16 +160,23 @@ class NotificationFragment : Fragment(), NotificationListener {
                         if (result.result != null) {
                             myAdapter.update(result.result)
                             notification_recycler.adapter = myAdapter
-                            myAdapter.notifyDataSetChanged()
-                            notification_swipe.visibility = View.VISIBLE
+                            if (genAnim){
+                                shimmer_notification.visibility = View.GONE
+                            }
                             notification_technical_work.visibility = View.GONE
                             notification_access_restricted.visibility = View.GONE
                             notification_no_connection.visibility = View.GONE
                             notification_not_found.visibility = View.GONE
+                            notification_con.visibility = View.VISIBLE
                             errorCode = result.code.toString()
+                            if (!genAnim) {
+                                //генерирует анимацию перехода
+                                animationGenerator(shimmer_notification, handler, requireActivity())
+                                genAnim = true
+                            }
                             MainActivity.alert.hide()
                             notification_swipe.isRefreshing = false
-                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            myAdapter.notifyDataSetChanged()
                         } else {
                             if (result.error.code != null) {
                                 errorCode = ""
@@ -174,13 +185,15 @@ class NotificationFragment : Fragment(), NotificationListener {
                                     notification_access_restricted.visibility = View.GONE
                                     notification_no_connection.visibility = View.GONE
                                     notification_not_found.visibility = View.GONE
-                                    notification_swipe.visibility = View.GONE
+                                    notification_con.visibility = View.GONE
+                                    shimmer_notification.visibility = View.GONE
                                 } else if (result.error.code == 403) {
                                     notification_access_restricted.visibility = View.VISIBLE
                                     notification_technical_work.visibility = View.GONE
                                     notification_no_connection.visibility = View.GONE
                                     notification_not_found.visibility = View.GONE
-                                    notification_swipe.visibility = View.GONE
+                                    notification_con.visibility = View.GONE
+                                    shimmer_notification.visibility = View.GONE
                                 } else if (result.error.code == 404) {
                                     notification_notification_null.visibility = View.VISIBLE
                                     notification_recycler.visibility = View.GONE
@@ -188,15 +201,12 @@ class NotificationFragment : Fragment(), NotificationListener {
                                     notification_access_restricted.visibility = View.GONE
                                     notification_technical_work.visibility = View.GONE
                                     notification_no_connection.visibility = View.GONE
+                                    shimmer_notification.visibility = View.GONE
                                 } else if (result.error.code == 401) {
                                     initAuthorized()
                                 }
-                            }
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                notification_swipe.isRefreshing = false
                                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            }, 200)
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -211,13 +221,15 @@ class NotificationFragment : Fragment(), NotificationListener {
                             notification_access_restricted.visibility = View.GONE
                             notification_no_connection.visibility = View.GONE
                             notification_not_found.visibility = View.GONE
-                            notification_swipe.visibility = View.GONE
+                            notification_con.visibility = View.GONE
+                            shimmer_notification.visibility = View.GONE
                         } else if (error == "403") {
                             notification_access_restricted.visibility = View.VISIBLE
                             notification_technical_work.visibility = View.GONE
                             notification_no_connection.visibility = View.GONE
                             notification_not_found.visibility = View.GONE
-                            notification_swipe.visibility = View.GONE
+                            notification_con.visibility = View.GONE
+                            shimmer_notification.visibility = View.GONE
                         } else if (error == "404") {
                             notification_notification_null.visibility = View.VISIBLE
                             notification_recycler.visibility = View.GONE
@@ -225,21 +237,11 @@ class NotificationFragment : Fragment(), NotificationListener {
                             notification_access_restricted.visibility = View.GONE
                             notification_technical_work.visibility = View.GONE
                             notification_no_connection.visibility = View.GONE
+                            shimmer_notification.visibility = View.GONE
                         } else if (error == "401") {
                             initAuthorized()
                         }
-//            else if (error == "601") {
-//                notification_no_connection.visibility = View.VISIBLE
-//                notification_not_found.visibility = View.GONE
-//                notification_access_restricted.visibility = View.GONE
-//                notification_technical_work.visibility = View.GONE
-//                notification_swipe.visibility = View.GONE
-//            }
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            MainActivity.alert.hide()
-                            notification_swipe.isRefreshing = false
-                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        }, 200)
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                 })
                 notification_swipe.isRefreshing = false
@@ -273,11 +275,7 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onStart() {
         super.onStart()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
+        shimmer_notification.startShimmerAnimation()
         if (viewModel.listNoticeDta.value != null) {
             viewModel.errorNotice.value = null
             initRecycler()
@@ -289,9 +287,7 @@ class NotificationFragment : Fragment(), NotificationListener {
         }
         if (!notificationAnim) {
             //notificationAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(
-                notification_anim_layout
-            )
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)
             notificationAnim = true
         }
         //меняет цвета навигационной понели

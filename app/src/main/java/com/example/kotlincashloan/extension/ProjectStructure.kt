@@ -80,15 +80,7 @@ fun listListResult(
     }
 }
 
-fun listListResult(
-    result: Int,
-    technical_work: LinearLayout,
-    no_connection: LinearLayout,
-    layout_res: SwipeRefreshLayout,
-    access_restricted: LinearLayout,
-    not_found: LinearLayout,
-    activity: Activity
-) {
+fun listListResult(result: Int, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: SwipeRefreshLayout, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity) {
     if (result == 400 || result == 500 || result == 409 || result == 429 || result == 601) {
         technical_work.visibility = View.VISIBLE
         no_connection.visibility = View.GONE

@@ -8,75 +8,130 @@
     android:orientation="vertical"
     tools:context=".ui.support.SupportFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/support_swipe_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/support_constraint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/support_swipe_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/shimmer_support">
 
-            <include
-                android:id="@+id/layout_support_null"
-                layout="@layout/item_my_support_null"
-                android:visibility="gone" />
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/layout_liner"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_weight="1"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <include
+                    android:id="@+id/layout_support_null"
+                    layout="@layout/item_my_support_null"
+                    android:visibility="gone" />
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/layout_liner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_weight="1">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/profile_recycler"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:nestedScrollingEnabled="true"
-                        android:orientation="vertical"
-                        tools:listitem="@layout/item_support"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        android:orientation="vertical">
 
-                    <Button
-                        android:id="@+id/support_button_res"
-                        style="@style/RoundedOrangeBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginRight="72dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Техподдержка"
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/profile_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:nestedScrollingEnabled="true"
+                            android:orientation="vertical"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_support" />
 
-            <Button
-                android:id="@+id/support_button_lay"
-                style="@style/RoundedOrangeBackground"
+                        <Button
+                            android:id="@+id/support_button_res"
+                            style="@style/RoundedOrangeBackground"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="72dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="72dp"
+                            android:layout_marginBottom="16dp"
+                            android:text="Техподдержка"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+
+                <Button
+                    android:id="@+id/support_button_lay"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="72dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="72dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Техподдержка"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_support"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/whiteColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="72dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="72dp"
-                android:layout_marginBottom="16dp"
-                android:text="Техподдержка"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-        </LinearLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+                <include layout="@layout/item_support_shimmer" />
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/layout_access_restricted"

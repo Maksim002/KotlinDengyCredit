@@ -54,6 +54,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private lateinit var timer: TimerListener
     private var inputsAnim = false
     private var recPosition = 0
+    private var isEntrance = false
 
     companion object {
         var repeatedClick = 0
@@ -124,6 +125,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             loadingMistakeCode(this)
                         }
                     } else {
+                        if (isEntrance){
+                            isEntrance = false
+                            //todo проверить
+                            iniResult()
+                        }
                         alert.hide()
                     }
                 } else {
@@ -176,6 +182,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         }
 
         home_enter.setOnClickListener {
+            isEntrance = true
             if (validate()) {
                 if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
                     initApyService()

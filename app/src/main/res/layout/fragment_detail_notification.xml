@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/notification_anim"
     android:layout_width="match_parent"
@@ -8,70 +9,102 @@
     android:orientation="vertical"
     tools:context=".ui.notification.DetailNotificationFragment">
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="vertical">
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/detail_notification_title"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/blackColor"
-                    android:textSize="17sp"
-                    tools:text="title" />
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/detail_notification_data"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/detail_notification_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/blackColor"
+                            android:textSize="17sp"
+                            tools:text="title" />
+
+                        <TextView
+                            android:id="@+id/detail_notification_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:textSize="14sp"
+                            tools:text="26.10.2020" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/detail_notification_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14sp"
+                        tools:text="text" />
+
+                </LinearLayout>
+
+                <org.billthefarmer.markdown.MarkdownView
+                    android:id="@+id/detail_notification_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:textSize="14sp"
-                    tools:text="26.10.2020" />
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp" />
             </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-            <TextView
-                android:id="@+id/detail_notification_description"
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_detail_notification"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/whiteColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:textColor="@color/blackColor"
-                android:textSize="14sp"
-                tools:text="text" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <include layout="@layout/item_shimmer_detail_notification" />
 
-        <org.billthefarmer.markdown.MarkdownView
-            android:id="@+id/detail_notification_text"
-            android:layout_width="match_parent"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                <include layout="@layout/item_shimmer_detail_notification" />
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/item_access_restricted"
         android:id="@+id/d_notification_access_restricted"
