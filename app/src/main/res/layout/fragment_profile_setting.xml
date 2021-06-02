@@ -10,14 +10,15 @@
     tools:context=".ui.profile.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profile_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/profile_s_swipe"
             android:layout_width="0dp"
+            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -111,7 +112,6 @@
                             android:paddingRight="34dp"
                             android:textColor="@color/blackColor"
                             android:textSize="14dp"
-                            android:windowSoftInputMode="adjustResize"
                             tools:text="+996 700 700 540" />
 
                     </LinearLayout>
@@ -222,7 +222,6 @@
                                     android:inputType="textPersonName"
                                     android:textColor="@color/blackColor"
                                     android:textSize="17sp"
-                                    android:windowSoftInputMode="adjustResize"
                                     tools:text="Валерьевич" />
                             </LinearLayout>
                         </LinearLayout>
@@ -257,7 +256,6 @@
                                     android:inputType="textPersonName"
                                     android:textColor="@color/blackColor"
                                     android:textSize="17sp"
-                                    android:windowSoftInputMode="adjustResize"
                                     tools:text="05.07.1992" />
                             </LinearLayout>
                         </LinearLayout>
@@ -293,7 +291,6 @@
                                     android:inputType="textPersonName"
                                     android:textColor="@color/blackColor"
                                     android:textSize="17sp"
-                                    android:windowSoftInputMode="adjustResize"
                                     tools:text="Мужской" />
                             </LinearLayout>
                         </LinearLayout>
@@ -328,7 +325,6 @@
                                     android:inputType="textPersonName"
                                     android:textColor="@color/blackColor"
                                     android:textSize="17sp"
-                                    android:windowSoftInputMode="adjustResize"
                                     tools:text="Русский" />
                             </LinearLayout>
                         </LinearLayout>
@@ -377,7 +373,6 @@
                                         android:inputType="number"
                                         android:textColor="@color/blackColor"
                                         android:textSize="17sp"
-                                        android:windowSoftInputMode="adjustResize"
                                         tools:text="+996" />
                                 </LinearLayout>
 
@@ -434,7 +429,6 @@
                                                 android:inputType="number"
                                                 android:textColor="@color/blackColor"
                                                 android:textSize="17sp"
-                                                android:windowSoftInputMode="adjustResize"
                                                 tools:text="700 700 540" />
 
                                             <ImageView
@@ -501,7 +495,6 @@
                                         android:inputType="textMultiLine"
                                         android:textColor="@color/blackColor"
                                         android:textSize="17sp"
-                                        android:windowSoftInputMode="adjustResize"
                                         tools:text="Выберите секретный вопрос" />
 
                                     <ImageView
@@ -634,7 +627,6 @@
                                             android:inputType="text"
                                             android:textColor="@color/blackColor"
                                             android:textSize="17sp"
-                                            android:windowSoftInputMode="adjustResize"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintEnd_toEndOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
@@ -725,7 +717,6 @@
                                             android:inputType="text"
                                             android:textColor="@color/blackColor"
                                             android:textSize="17sp"
-                                            android:windowSoftInputMode="adjustResize"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintEnd_toEndOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
@@ -817,7 +808,6 @@
                                             android:inputType="text"
                                             android:textColor="@color/blackColor"
                                             android:textSize="17sp"
-                                            android:windowSoftInputMode="adjustResize"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintEnd_toEndOf="parent"
                                             app:layout_constraintTop_toTopOf="parent"

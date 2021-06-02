@@ -222,14 +222,12 @@ class SupportFragment : Fragment(), SupportListener {
                                 genAnim = true
                             }
                             errorCode = result.code.toString()
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                try {
-                                    support_swipe_layout.isRefreshing = false
-                                }catch (e: Exception){
-                                    e.printStackTrace()
-                                }
-                            },400)
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            try {
+                                support_swipe_layout.isRefreshing = false
+                            }catch (e: Exception){
+                                e.printStackTrace()
+                            }
                         } else {
                             if (result.error.code != null) {
                                 errorCode = result.error.code.toString()
@@ -242,14 +240,12 @@ class SupportFragment : Fragment(), SupportListener {
                                     support_not_found as LinearLayout,
                                     requireActivity(), true)
                                 shimmer_support.visibility = View.GONE
-                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    try {
-                                        support_swipe_layout.isRefreshing = false
-                                    }catch (e:Exception){
-                                        e.printStackTrace()
-                                    }
-                                }, 500)
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                try {
+                                    support_swipe_layout.isRefreshing = false
+                                }catch (e:Exception){
+                                    e.printStackTrace()
+                                }
                             }
                         }
                     } catch (e: Exception) {
@@ -268,10 +264,8 @@ class SupportFragment : Fragment(), SupportListener {
                             support_not_found as LinearLayout,
                             requireActivity(), true)
                         shimmer_support.visibility = View.GONE
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            support_swipe_layout.isRefreshing = false
-                        }, 500)
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        support_swipe_layout.isRefreshing = false
                     }
                 })
             }

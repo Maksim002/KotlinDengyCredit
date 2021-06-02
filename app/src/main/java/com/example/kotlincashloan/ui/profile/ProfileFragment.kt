@@ -283,7 +283,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                 animationGenerator(shimmer_profile, handler, requireActivity())
                                 genAnim = true
                             }
-                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             try {
                                 profile_swipe.isRefreshing = false
                             }catch (e: Exception){

@@ -107,20 +107,28 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     private val mapRegistration = HashMap<String, String>()
     private val mapQuestion = HashMap<String, String>()
     private val mapInfo = HashMap<String, String>()
+    private var genAnim = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile_setting, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPreloader()
+        if (!profileSettingAnim) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
+            profileSettingAnim = true
+        }
 
+        if (profileSettingAnimR) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+            profileSettingAnimR = false
+        }
+
+        initPreloader()
         //форма даты
         simpleDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.US)
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
@@ -128,7 +136,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         initView()
         initArgument()
         iniImageToServer()
-
     }
 
     private fun initPreloader() {
@@ -194,7 +201,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         mapInfo.put("login", AppPreferences.login.toString())
         mapInfo.put("token", AppPreferences.token.toString())
-
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -202,6 +208,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -213,8 +220,10 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             if (viewModel.listGenderDta.value == null && viewModel.listGenderDta.value == null && viewModel.listNationalityDta.value == null
                 && viewModel.listAvailableCountryDta.value == null && viewModel.listSecretQuestionDta.value == null && viewModel.listClientInfoDta.value == null
             ) {
+                shimmer_profile_setting.startShimmerAnimation()
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (!viewModel.refreshCode) {
-                    dialog.show()
+//                    dialog.show()
                 }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     clearingDate()
@@ -266,6 +275,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -310,6 +320,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -358,6 +369,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -464,6 +476,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -472,10 +485,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             viewModel.errorListSecretQuestion.value = null
             viewModel.errorSaveProfile.value = null
         } else {
-            viewModel.listSecretQuestionDta.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { result ->
-                    var list: ArrayList<Int> = arrayListOf()
+            viewModel.listSecretQuestionDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                     try {
                         if (result.result != null) {
                             question = result.result
@@ -498,14 +508,24 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
                             errorListSecretQuestion = result.code.toString()
                             resultSuccessfully()
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                dialog.dismiss()
-                            }, 500)
+
+                            if (genAnim){
+                                shimmer_profile_setting.visibility = View.GONE
+                            }
+                            if (!genAnim) {
+                                //генерирует анимацию перехода
+                                animationGenerator(shimmer_profile_setting, handler, requireActivity())
+                                genAnim = true
+                            }
+//                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                                dialog.dismiss()
+//                            }, 500)
                         } else {
                             listListResult(result.error.code!!)
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                dialog.dismiss()
-                            }, 500)
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                                dialog.dismiss()
+//                            }, 500)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -513,15 +533,14 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                     profile_s_swipe.isRefreshing = false
                 })
 
-            viewModel.errorListSecretQuestion.observe(
-                viewLifecycleOwner,
-                androidx.lifecycle.Observer { error ->
+            viewModel.errorListSecretQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
                     if (error != null) {
                         errorListSecretQuestion = error
                         errorList(error)
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                            dialog.dismiss()
-                        }, 500)
+//                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                            dialog.dismiss()
+//                        }, 500)
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                     profile_s_swipe.isRefreshing = false
                 })
@@ -536,6 +555,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_technical_work.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
             viewModel.errorClientInfo.value = null
             viewModel.errorListGender.value = null
@@ -607,6 +627,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 profile_s_technical_work.visibility = View.GONE
                 profile_s_access_restricted.visibility = View.GONE
                 profile_s_not_found.visibility = View.GONE
+                profile_setting.visibility = View.GONE
                 profile_s_swipe.visibility = View.GONE
                 viewModel.errorClientInfo.value = null
                 viewModel.errorListGender.value = null
@@ -616,9 +637,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                 viewModel.errorSaveProfile.value = null
             } else {
                 //если все успешно получает информацию о пользователе
-                viewModel.listClientInfoDta.observe(
-                    viewLifecycleOwner,
-                    androidx.lifecycle.Observer { result ->
+                viewModel.listClientInfoDta.observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                         try {
                             if (result.result != null) {
                                 clientResult = result.result
@@ -716,8 +735,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             // now assign the system
             // service to InputMethodManager
             try {
-                val manager =
-                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+                val manager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
                 manager!!.hideSoftInputFromWindow(view.windowToken, 0)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -1128,18 +1146,21 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         } else if (result == 403) {
             profile_s_access_restricted.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         } else if (result == 404) {
             profile_s_not_found.visibility = View.VISIBLE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
@@ -1153,18 +1174,21 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         } else if (error == "403") {
             profile_s_access_restricted.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         } else if (error == "404") {
             profile_s_not_found.visibility = View.VISIBLE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
+            profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
         }
 //        else if (error == "601") {
@@ -1219,38 +1243,19 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
+            profile_setting.visibility = View.VISIBLE
             profile_s_swipe.visibility = View.VISIBLE
             profile_s_technical_work.visibility = View.GONE
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
             profile_s_not_found.visibility = View.GONE
-
-            if (!profileSettingAnim) {
-                //profileAnim анимация для перехода с адного дествия в другое
-                TransitionAnimation(activity as AppCompatActivity).transitionRight(
-                    profile_setting_anim
-                )
-                profileSettingAnim = true
-            }
-
-            if (profileSettingAnimR) {
-                //profileAnim анимация для перехода с адного дествия в другое
-                TransitionAnimation(activity as AppCompatActivity).transitionLeft(
-                    profile_setting_anim
-                )
-                profileSettingAnimR = false
-            }
         }
     }
 
     //Метод выгружает картинку с памяти телефона
     private fun loadFiles() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(
                     requireActivity(),
                     arrayOf(Manifest.permission.CAMERA),
@@ -1374,12 +1379,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: String,
-        title: String,
-        id: AutoCompleteTextView
-    ) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -1395,8 +1395,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         profile_s_old_password.text = null
         profile_s_old_password.transformationMethod = PasswordTransformationMethod()
         if (viewModel.listGenderDta.value != null && viewModel.listGenderDta.value != null && viewModel.listNationalityDta.value != null
-            && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null
-        ) {
+            && viewModel.listAvailableCountryDta.value != null && viewModel.listSecretQuestionDta.value != null && viewModel.listClientInfoDta.value != null) {
             if (errorCodeGender == "200" && errorCodeNationality == "200" && errorListAvailableCountry == "200" && errorListSecretQuestion == "200" && errorClientInfo == "200") {
                 AppPreferences.reviewCode = 1
                 initResult()
@@ -1407,7 +1406,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             }
         } else {
             AppPreferences.reviewCode = 0
-            profileSettingAnim = false
+//            profileSettingAnim = false
             viewModel.refreshCode = false
             initRestart()
         }
@@ -1416,12 +1415,17 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         ColorWindows(activity as AppCompatActivity).rollback()
 
         val backArrow = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24)
-        backArrow.setColorFilter(
-            resources.getColor(android.R.color.white),
-            PorterDuff.Mode.SRC_ATOP
-        )
+        backArrow.setColorFilter(resources.getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP)
         (activity as AppCompatActivity?)!!.getSupportActionBar()!!.setHomeAsUpIndicator(backArrow)
         profile_s_owner.requestFocus()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // проверка если с timer приходит token null
+        if (AppPreferences.token == "") {
+            initAuthorized()
+        }
     }
 
     //Блакирует фокус на обекте
@@ -1449,19 +1453,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
         if (profile_setting_second_phone.text.toString() != "") {
             if (reNum.length != list[codeNationality].phoneLength!!.toInt()) {
-                editUtils(
-                    layout_profile_setting_second,
-                    profile_setting_second_phone,
-                    profile_setting_second_error,
-                    "Введите правильный номер",
-                    true
-                )
-                profile_optional_number.setTextColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.colorRed
-                    )
-                )
+                editUtils(layout_profile_setting_second, profile_setting_second_phone, profile_setting_second_error, "Введите правильный номер", true)
+                profile_optional_number.setTextColor(ContextCompat.getColor(requireContext(), R.color.colorRed))
                 valid = false
             }
         }
@@ -1649,14 +1642,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_two_password_show.setColorFilter(
                 ContextCompat.getColor(requireContext(), R.color.blackColor), PorterDuff.Mode.SRC_IN
             );
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // проверка если с timer приходит token null
-        if (AppPreferences.token == "") {
-            initAuthorized()
         }
     }
 }
