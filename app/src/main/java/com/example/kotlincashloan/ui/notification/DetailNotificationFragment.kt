@@ -34,11 +34,7 @@ class DetailNotificationFragment : Fragment() {
     private var notificationAnimDetail = false
     private var genAnim = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         (activity as AppCompatActivity).supportActionBar?.show()
         return inflater.inflate(R.layout.fragment_detail_notification, container, false)

@@ -22,6 +22,7 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
+import com.example.kotlincashloan.adapter.profile.TransferListener
 import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.bitmapToFile
 import com.example.kotlincashloan.extension.listListResult
@@ -40,6 +41,7 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -47,7 +49,7 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ProfileFragment : Fragment(), ApplicationListener {
+class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     private val mapImg = HashMap<String, String>()
@@ -67,11 +69,9 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var pagerPosition = -1
     private var addImage = true
     private var genAnim = false
+    private var constantAnimation = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -102,6 +102,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private fun initClick() {
 
         profile_your.setOnClickListener {
+            constantAnimation = true
             if (sendPicture != "") {
                 bundle.putString("sendPicture", sendPicture)
                 bundle.putBoolean("addImage", addImage)
@@ -134,6 +135,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
                 layout_profile.visibility = View.GONE
+                profile_swipe.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
                 profile_not_found.visibility = View.GONE
@@ -257,6 +259,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
                 layout_profile.visibility = View.GONE
+                profile_swipe.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
                 profile_not_found.visibility = View.GONE
@@ -277,13 +280,13 @@ class ProfileFragment : Fragment(), ApplicationListener {
                             addImage = false
                             if (genAnim){
                                 shimmer_profile.visibility = View.GONE
+                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }
                             if (!genAnim) {
                                 //генерирует анимацию перехода
                                 animationGenerator(shimmer_profile, handler, requireActivity())
                                 genAnim = true
                             }
-//                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             try {
                                 profile_swipe.isRefreshing = false
                             }catch (e: Exception){
@@ -345,6 +348,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
             layout_profile.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -412,13 +416,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
         layout_profile.visibility = View.VISIBLE
+        profile_swipe.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
         profile_not_found.visibility = View.GONE
         if (profAnim) {
             //profileAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
+//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
             inputsAnim = 0
             AppPreferences.inputsAnim = 0
             profAnim = false
@@ -428,6 +433,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     private fun resultTrue() {
         layout_profile.visibility = View.VISIBLE
+        profile_swipe.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
@@ -452,6 +458,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
             layout_profile.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -490,7 +497,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
+        adapter.addFragment(MyOperationFragment(listOperation, errorNull, this), "Мои операции")
         adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
         profile_pager.setAdapter(adapter)
 
@@ -521,11 +528,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         profile_bar_one.visibility = View.GONE
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 numberBar = position
             }
 
@@ -567,6 +570,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
             layout_profile.visibility = View.GONE
+            profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
             profile_not_found.visibility = View.GONE
@@ -664,6 +668,10 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
+    override fun transferClickListener() {
+        constantAnimation = true
+    }
+
     override fun onStop() {
         super.onStop()
         profAnim = false
@@ -671,6 +679,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     override fun onResume() {
         super.onResume()
+        if (constantAnimation) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeftActivity(layout_profile)
+            constantAnimation = false
+        }
         initArgument()
         errorValue()
         if (AppPreferences.inputsAnim != 0) {

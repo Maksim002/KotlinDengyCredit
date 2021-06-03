@@ -19,6 +19,12 @@ object AppPreferences {
         editor.apply()
     }
 
+    var singleAnimation: Boolean
+        get() = preferences.getBoolean("singleAnimation", false)
+        set(value) = preferences.edit {
+            it.putBoolean("singleAnimation", value)
+        }
+
     var passwordRecovery: String?
         get() = preferences.getString("passwordRecovery", "")
         set(value) = preferences.edit {

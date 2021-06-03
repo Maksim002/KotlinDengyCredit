@@ -116,16 +116,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Анимация преехода страницу профиля
         if (!profileSettingAnim) {
             //profileAnim анимация для перехода с адного дествия в другое
             TransitionAnimation(activity as AppCompatActivity).transitionRight(profile_setting_anim)
             profileSettingAnim = true
-        }
-
-        if (profileSettingAnimR) {
-            //profileAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
-            profileSettingAnimR = false
         }
 
         initPreloader()
@@ -1422,6 +1417,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
     override fun onStart() {
         super.onStart()
+        //анимация возврата со страчики служба поддержки
+        if (profileSettingAnimR) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_setting_anim)
+            profileSettingAnimR = false
+        }
         // проверка если с timer приходит token null
         if (AppPreferences.token == "") {
             initAuthorized()

@@ -756,17 +756,17 @@ class LoansFragment : Fragment(), LoansListener {
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             shimmer_loan.startShimmerAnimation()
         }
-        if (b == false){
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
-                AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
-            }, 30000)
-            b = true
-        }
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
-            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
-        }, 60000)
+//        if (b == false){
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
+//                AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+//            }, 30000)
+//            b = true
+//        }
+//        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
+//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+//        }, 60000)
     }
 
 
