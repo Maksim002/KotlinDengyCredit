@@ -164,6 +164,18 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         getLists()
     }
 
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                }
+            }
+        }, 500)
+    }
+
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -578,6 +590,7 @@ override fun onStart() {
         }
 
         bottom_loan_fifth.setOnClickListener {
+            AppPreferences.isRepeat = true
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 fifth_ste_no_connection.visibility = View.VISIBLE
@@ -594,6 +607,7 @@ override fun onStart() {
         }
 
         fifth_cross_six.setOnClickListener {
+            AppPreferences.isRepeat = true
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
             hidingErrors()
         }

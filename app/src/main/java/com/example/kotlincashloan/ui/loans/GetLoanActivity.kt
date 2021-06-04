@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.kotlincashloan.R
+import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.hashMapBitmap
 import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.extension.listListResult
@@ -52,6 +53,7 @@ class GetLoanActivity : AppCompatActivity() {
     private val getImList: ArrayList<String> = arrayListOf()
     private var permission = 0
     var mitmap = HashMap<String, Bitmap>()
+    var p = false
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -152,7 +154,7 @@ class GetLoanActivity : AppCompatActivity() {
                 if (applicationStatus == false) {
                     loan_cross_clear.visibility = View.GONE
                 }
-                alert.show()
+//                alert.show()
             }
             try {
                 if (listLoan.docs!!.size != 0) {
@@ -271,7 +273,7 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
+//        list.add(LoansListModel(LoanStepThreeFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment()))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus)))
@@ -319,6 +321,15 @@ class GetLoanActivity : AppCompatActivity() {
         AppPreferences.isSeekBar = 0
     }
 
+    override fun onStart() {
+        super.onStart()
+        shimmer_step_loan.startShimmerAnimation()
+        //Переключает флаг для работы анимации
+        AppPreferences.isRepeat = false
+
+//        AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
+//        AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+    }
 
     override fun onResume() {
         super.onResume()

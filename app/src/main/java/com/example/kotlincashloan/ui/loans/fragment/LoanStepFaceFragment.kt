@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.loans.fragment
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.StepClickListener
+import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.initSuspendTime
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -42,6 +44,8 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
     private lateinit var textViewLiveliness: String
     private var percent = 0.00
 
+    private var handler = Handler()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -61,6 +65,18 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
         initRestart()
         initClick()
+    }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                }
+            }
+        }, 500)
     }
 
     private fun initRestart() {
@@ -88,6 +104,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         }
 
         bottom_loan_face.setOnClickListener {
+            AppPreferences.isRepeat = true
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 face_no_connection.visibility = View.VISIBLE
@@ -120,6 +137,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         }
 
         face_cross_back.setOnClickListener {
+            AppPreferences.isRepeat = true
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
         }
     }

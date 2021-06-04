@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.loans.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.*
@@ -74,6 +76,8 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     private var listIncomeAdditional: ArrayList<ListIncomeResultModel> = arrayListOf()
     private lateinit var alert: LoadingAlert
 
+    private var handler = Handler()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -101,6 +105,18 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         initRestart()
         initClick()
         initView()
+    }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                }
+            }
+        }, 500)
     }
 
     private fun initRestart() {
@@ -140,6 +156,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             fire_ste_not_found.visibility = View.GONE
         } else {
         bottom_loan_fire.setOnClickListener {
+            AppPreferences.isRepeat = true
             if (fire_additional_amount.visibility == View.GONE) {
                 additionalId = "-1"
             }
@@ -166,6 +183,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         five_cross_back.setOnClickListener {
+            AppPreferences.isRepeat = true
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(3)
             hidingErrors()
         }

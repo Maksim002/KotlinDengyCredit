@@ -764,8 +764,8 @@ class LoansFragment : Fragment(), LoansListener {
 //            b = true
 //        }
 //        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
-//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
+            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 //        }, 60000)
     }
 

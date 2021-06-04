@@ -2,6 +2,7 @@ package com.example.kotlincashloan.ui.loans.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
@@ -50,6 +52,8 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
     private var listFamily: ArrayList<ListFamilyResultModel> = arrayListOf()
     private lateinit var alert: LoadingAlert
 
+    private var handler = Handler()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,6 +83,18 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         initView()
     }
 
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                }
+            }
+        }, 500)
+    }
+
     private fun initClick() {
 
         access_restricted.setOnClickListener {
@@ -90,6 +106,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         bottom_loan_six.setOnClickListener {
+            AppPreferences.isRepeat = true
             if (validate()) {
                 initSaveLoan()
             }
@@ -108,6 +125,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         four_cross_six.setOnClickListener {
+            AppPreferences.isRepeat = true
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
             hidingErrors()
         }

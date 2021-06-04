@@ -19,6 +19,12 @@ object AppPreferences {
         editor.apply()
     }
 
+    var isRepeat: Boolean
+        get() = preferences.getBoolean("isRepeat", false)
+        set(value) = preferences.edit {
+            it.putBoolean("isRepeat", value)
+        }
+
     var singleAnimation: Boolean
         get() = preferences.getBoolean("singleAnimation", false)
         set(value) = preferences.edit {

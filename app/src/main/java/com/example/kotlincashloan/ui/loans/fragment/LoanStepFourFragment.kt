@@ -1,6 +1,7 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.*
@@ -72,6 +74,8 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     private var listAvailableSix: ArrayList<SixNumResultModel> = arrayListOf()
     private lateinit var alert: LoadingAlert
 
+    private var handler = Handler()
+
     //Наличие банковской карты
     private var listCatsNames = arrayOf("Нет", "Да")
 
@@ -96,11 +100,24 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         if (permission == 3) {
-            alert.show()
+//            alert.show()
         }
 
         initClick()
         initView()
+    }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                }
+            }
+        }, 500)
+
     }
 
     private fun initClick() {
@@ -127,6 +144,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         bottom_loan_four.setOnClickListener {
+            AppPreferences.isRepeat = true
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 loans_ste_no_connection.visibility = View.VISIBLE
@@ -142,6 +160,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         four_cross_back.setOnClickListener {
+            AppPreferences.isRepeat = true
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
             hidingErrors()
         }
@@ -777,6 +796,10 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     override fun onStart() {
         super.onStart()
         initInternet()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun validate(): Boolean {

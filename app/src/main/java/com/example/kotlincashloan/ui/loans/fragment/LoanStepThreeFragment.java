@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
 import com.example.kotlincashloan.adapter.loans.StepClickListener;
+import com.example.kotlincashloan.extension.AnimKt;
 import com.example.kotlincashloan.extension.GetTimerKt;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel;
@@ -35,6 +36,7 @@ import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment;
 import com.example.kotlincashloan.ui.registration.login.HomeActivity;
 import com.example.kotlincashloan.utils.ObservedInternet;
 import com.example.kotlinscreenscanner.service.model.CommonResponseReject;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
@@ -58,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.logging.Handler;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
@@ -87,6 +90,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private final boolean doRfid = false;
     private AlertDialog loadingDialog;
 
+    private ShimmerFrameLayout shimmerFrameLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -113,9 +118,22 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         technical_work = view.findViewById(R.id.technical_work);
         not_found = view.findViewById(R.id.not_found);
 
+        shimmerFrameLayout = ((GetLoanActivity)getActivity()).findViewById(R.id.shimmer_step_loan);
+
         initInternet();
         initClick();
         getLists();
+    }
+
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        if (menuVisible && isResumed()){
+            if (!AppPreferences.INSTANCE.isRepeat()){
+                //генерирует анимацию перехода
+                AnimKt.animationLoanGenerator(shimmerFrameLayout, new android.os.Handler(), requireActivity());
+            }
+        }
     }
 
     //Получает данные на редактирование заёма
@@ -159,6 +177,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             @Override
             public void onClick(View v) {
                 ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
+                AppPreferences.INSTANCE.setRepeat(true);
             }
         });
     }
@@ -212,6 +231,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                     getActivity().finish();
                                 } else {
                                     ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                                    AppPreferences.INSTANCE.setRepeat(true);
                                 }
                             } else if (result.getData().getError() != null) {
                                 if (result.getData().getError().getCode() == 400) {

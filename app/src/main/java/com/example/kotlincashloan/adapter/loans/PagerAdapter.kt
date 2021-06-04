@@ -1,5 +1,6 @@
 package com.example.kotlinviewpager.adapter
 
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -21,7 +22,6 @@ class PagerAdapters (fm: FragmentManager): FragmentStatePagerAdapter(fm){
         fragmentList.add(fragment)
         titleList.add(title)
     }
-
 
     override fun getPageTitle(position: Int): CharSequence? {
         return titleList[position]

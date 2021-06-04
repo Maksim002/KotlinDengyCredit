@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.collection.arrayMapOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.timelysoft.tsjdomcom.service.AppPreferences.isRepeat
 import retrofit2.adapter.rxjava2.Result.response
 
 
