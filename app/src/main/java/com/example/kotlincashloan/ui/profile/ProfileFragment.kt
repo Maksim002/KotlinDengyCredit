@@ -70,6 +70,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var addImage = true
     private var genAnim = false
     private var constantAnimation = false
+    private var editorZarem = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -453,6 +454,9 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
 
     //Запрос на получение масива заявки
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
+        //Нуже ля проверки был ли в ход в заем
+        // Также поределяет стоет делать запрос на сервер после воззвтрата обратно
+        editorZarem = true
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
@@ -465,7 +469,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
             errorValue()
             clearError()
         } else {
-            HomeActivity.alert.show()
+//            HomeActivity.alert.show()
             val mapLOan = HashMap<String, String>()
             mapLOan.put("login", AppPreferences.login.toString())
             mapLOan.put("token", AppPreferences.token.toString())
@@ -577,9 +581,8 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
             errorValue()
             clearError()
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null
-//                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null && viewModel.errorListApplication.value == null
-            ) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null &&
+                viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null) {
                 shimmer_profile.startShimmerAnimation()
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (!viewModel.refreshCode) {
@@ -596,7 +599,9 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     }, 500)
                 }
             } else {
-                if (profile_swipe.isRefreshing == true) {
+                if (editorZarem) {
+                    shimmer_profile.startShimmerAnimation()
+                    shimmer_profile.visibility = View.VISIBLE
                     clearError()
                     clearingDate()
                     viewModel.listOperation(map)
@@ -606,12 +611,14 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     viewModel.getImg(mapImg)
                     initGetImgDta()
                     initRecycler()
-                }
+                    editorZarem = false
+                }else{
 //                clearError()
 //                viewModel.listGetImgDta.postValue(null)
 //                viewModel.getImg(mapImg)
-                initGetImgDta()
-                initRecycler()
+                    initGetImgDta()
+                    initRecycler()
+                }
             }
         }
     }

@@ -34,6 +34,8 @@ import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
+import kotlinx.android.synthetic.main.fragment_loan_step_four.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -161,6 +163,8 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 additionalId = "-1"
             }
             if (validate()) {
+                shimmer_step_five.startShimmerAnimation()
+                shimmer_step_five.visibility = View.VISIBLE
                 initSaveLoan()
             }
         }
@@ -702,7 +706,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
     // TODO: 21-2-8  Сохронение Данные о трудовой деятельности.
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
+//        GetLoanActivity.alert.show()
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
@@ -760,9 +764,11 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                                 requireActivity().onBackPressed()
                             }else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                                shimmer_step_five.visibility = View.GONE
                             }
                         } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
+                            shimmer_step_five.visibility = View.GONE
                         }
 
                     } else if (data.error.code != null) {

@@ -64,6 +64,7 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -366,7 +367,7 @@ override fun onStart() {
             }
         }
 
-        GetLoanActivity.alert.show()
+//        GetLoanActivity.alert.show()
         viewModel.saveLoanImg(mapImage)
         viewModel.getSaveLoanImg.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
@@ -400,7 +401,7 @@ override fun onStart() {
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveServer() {
-        GetLoanActivity.alert.show()
+//        GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.applicationId.toString()
@@ -461,9 +462,15 @@ override fun onStart() {
                                     requireActivity().onBackPressed()
                                 }else{
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                        shimmer_step_fifth.visibility = View.GONE
+                                    }, 200)
                                 }
                             } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                    shimmer_step_fifth.visibility = View.GONE
+                                }, 200)
                             }
                         }
                     } else if (data.error.code != null) {
@@ -601,6 +608,8 @@ override fun onStart() {
             } else {
                 saveValidate = true
                 if (validate()) {
+                    shimmer_step_fifth.startShimmerAnimation()
+                    shimmer_step_fifth.visibility = View.VISIBLE
                     initSaveServer()
                 }
             }

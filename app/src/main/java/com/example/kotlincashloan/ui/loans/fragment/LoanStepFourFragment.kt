@@ -34,6 +34,7 @@ import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -79,11 +80,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
     //Наличие банковской карты
     private var listCatsNames = arrayOf("Нет", "Да")
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_four, container, false)
     }
@@ -116,7 +113,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                     animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
                 }
             }
-        }, 500)
+        }, 1000)
 
     }
 
@@ -128,7 +125,6 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         access_restricted.setOnClickListener {
             initInternet()
-
         }
 
         no_connection_repeat.setOnClickListener {
@@ -154,6 +150,8 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 loans_ste_not_found.visibility = View.GONE
             } else {
                 if (validate()) {
+                    shimmer_step_four.startShimmerAnimation()
+                    shimmer_step_four.visibility = View.VISIBLE
                     initSaveLoan()
                 }
             }
@@ -685,7 +683,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
     //Сохронение на сервер данных
     private fun initSaveLoan() {
-        GetLoanActivity.alert.show()
+//        GetLoanActivity.alert.show()
         val mapSave = mutableMapOf<String, String>()
         mapSave.put("login", AppPreferences.login.toString())
         mapSave.put("token", AppPreferences.token.toString())
@@ -728,9 +726,11 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                                 requireActivity().finish()
                             }else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                                shimmer_step_four.visibility = View.GONE
                             }
                         } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
+                            shimmer_step_four.visibility = View.GONE
                         }
                     } else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)

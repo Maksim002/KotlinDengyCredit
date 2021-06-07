@@ -30,6 +30,7 @@ import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
+import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -46,9 +47,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     private var handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_loan_step_face, container, false)
     }
 
@@ -204,7 +203,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         //Метод сканироет лицо проверяет на живность
         Instance().startLivenessMatching(requireContext(), 1) { livenessResponse: LivenessResponse? ->
             if (livenessResponse != null && livenessResponse.bitmap != null) {
-                GetLoanActivity.alert.show()
+//                GetLoanActivity.alert.show()
                 //Если сканирование прошло успешно
                 if (livenessResponse.liveness == 0) {
                     imageFace = livenessResponse.bitmap!!
@@ -317,6 +316,8 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     //Сохронение Если совподение 99%
     private fun initSaveLoan() {
+        shimmer_step_face.startShimmerAnimation()
+        shimmer_step_face.visibility = View.VISIBLE
         val mapSaveLoan = HashMap<String, String>()
         mapSaveLoan.put("login", AppPreferences.login.toString())
         mapSaveLoan.put("token", AppPreferences.token.toString())
@@ -334,9 +335,11 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                                 requireActivity().finish()
                             }else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
+                                shimmer_step_face.visibility = View.GONE
                             }
                         }else{
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 8
+                            shimmer_step_face.visibility = View.GONE
                         }
                     } else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)

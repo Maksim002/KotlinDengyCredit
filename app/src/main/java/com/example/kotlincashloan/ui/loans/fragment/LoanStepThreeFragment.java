@@ -1,5 +1,7 @@
 package com.example.kotlincashloan.ui.loans.fragment;
 
+
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +15,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +64,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Handler;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
@@ -90,7 +93,9 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private final boolean doRfid = false;
     private AlertDialog loadingDialog;
 
-    private ShimmerFrameLayout shimmerFrameLayout;
+    private ShimmerFrameLayout shimmerFrameLayout , startShimmerAnimation;
+
+    private Handler mHandler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,21 +124,29 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         not_found = view.findViewById(R.id.not_found);
 
         shimmerFrameLayout = ((GetLoanActivity)getActivity()).findViewById(R.id.shimmer_step_loan);
+        startShimmerAnimation = view.findViewById(R.id.shimmer_step_thee);
 
         initInternet();
         initClick();
         getLists();
     }
 
+    @SuppressLint("HandlerLeak")
     @Override
     public void setMenuVisibility(boolean menuVisible) {
         super.setMenuVisibility(menuVisible);
-        if (menuVisible && isResumed()){
-            if (!AppPreferences.INSTANCE.isRepeat()){
-                //генерирует анимацию перехода
-                AnimKt.animationLoanGenerator(shimmerFrameLayout, new android.os.Handler(), requireActivity());
+         Handler s = new Handler(){
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                if (menuVisible && isResumed()){
+                    if (!AppPreferences.INSTANCE.isRepeat()){
+                        //генерирует анимацию перехода
+                        AnimKt.animationLoanGenerator(shimmerFrameLayout, new android.os.Handler(), requireActivity());
+                    }
+                }
             }
-        }
+        };
+        s.sendEmptyMessageDelayed(0, 1000);
     }
 
     //Получает данные на редактирование заёма
@@ -183,6 +196,9 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     }
 
     private void initResult() {
+        startShimmerAnimation.startShimmerAnimation();
+        startShimmerAnimation.setVisibility(View.VISIBLE);
+
         new ObservedInternet().observedInternet(requireContext());
         if (AppPreferences.INSTANCE.getObservedInternet()) {
             status_no_questionnaire.setVisibility(View.VISIBLE);
@@ -191,7 +207,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             status_not_found.setVisibility(View.GONE);
             theeIncorrect.setVisibility(View.GONE);
         } else {
-            GetLoanActivity.alert.show();
+//            GetLoanActivity.alert.show();
             map.put("login", AppPreferences.INSTANCE.getLogin());
             map.put("token", AppPreferences.INSTANCE.getToken());
 
@@ -231,6 +247,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                     getActivity().finish();
                                 } else {
                                     ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
+                                    startShimmerAnimation.setVisibility(View.GONE);
                                     AppPreferences.INSTANCE.setRepeat(true);
                                 }
                             } else if (result.getData().getError() != null) {

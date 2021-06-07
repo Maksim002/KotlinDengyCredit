@@ -46,11 +46,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(
-    var status: Boolean,
-    var listLoan: GetLoanModel,
-    var applicationStatus: Boolean
-) : Fragment(), StepClickListener {
+class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var applicationStatus: Boolean) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -73,11 +69,7 @@ class LoanStepTwoFragment(
 
     val handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_loan_step_two, container, false)
     }
 
@@ -115,8 +107,11 @@ class LoanStepTwoFragment(
         }
 
         bottom_step_two.setOnClickListener {
-            initSaveLoan()
+            shimmer_step_two.startShimmerAnimation()
+            shimmer_step_two.visibility = View.VISIBLE
+
             AppPreferences.isRepeat = true
+            initSaveLoan()
         }
     }
 
@@ -124,7 +119,7 @@ class LoanStepTwoFragment(
         super.onResume()
         if (applicationStatus == false) {
             if (status == true) {
-                bottom_step_two.setText("Сохранить")
+                bottom_step_two.text = "Сохранить"
             } else {
                 bottom_step_two.text = "Следующий шаг"
             }
@@ -223,7 +218,7 @@ class LoanStepTwoFragment(
             loans_two_restricted.visibility = View.GONE
             loans_two_found.visibility = View.GONE
         } else {
-            GetLoanActivity.alert.show()
+//            GetLoanActivity.alert.show()
             val mapSave = mutableMapOf<String, String>()
             mapSave.put("login", AppPreferences.login.toString())
             mapSave.put("token", AppPreferences.token.toString())
@@ -254,13 +249,13 @@ class LoanStepTwoFragment(
                                     requireActivity().finish()
                                 } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                        3
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                                    shimmer_step_two.visibility = View.GONE
                                 }
                             } else {
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
-                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                    3
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
+                                shimmer_step_two.visibility = View.GONE
                             }
                         } else if (data.error.code != null) {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)

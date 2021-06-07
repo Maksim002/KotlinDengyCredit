@@ -55,7 +55,7 @@ fun animationLoanGenerator(id: ShimmerFrameLayout, handler: Handler, activity: A
                             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         }
                     });
-            }, 1000)
+            }, 1500)
             thread.interrupt()
         }
         thread.start()

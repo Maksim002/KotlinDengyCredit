@@ -32,8 +32,8 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
+import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -54,11 +54,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
     private var handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_six, container, false)
     }
@@ -75,7 +71,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         if (permission == 5){
-            alert.show()
+//            alert.show()
         }
         six_loan_phone.mask = "+7 (###)-###-##-##"
         initRestart()
@@ -108,6 +104,8 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         bottom_loan_six.setOnClickListener {
             AppPreferences.isRepeat = true
             if (validate()) {
+                shimmer_step_six.startShimmerAnimation()
+                shimmer_step_six.visibility = View.VISIBLE
                 initSaveLoan()
             }
         }
@@ -250,7 +248,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             six_ste_access_restricted.visibility = View.GONE
             six_ste_not_found.visibility = View.GONE
         } else {
-            GetLoanActivity.alert.show()
+//            GetLoanActivity.alert.show()
             val mapSave = mutableMapOf<String, String>()
             mapSave["login"] = AppPreferences.login.toString()
             mapSave["token"] = AppPreferences.token.toString()
@@ -286,12 +284,12 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                                 if (status == true) {
                                     requireActivity().finish()
                                 } else {
-                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                        6
+                                    (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+                                    shimmer_step_six.visibility = View.GONE
                                 }
                             } else {
-                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem =
-                                    6
+                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
+                                shimmer_step_six.visibility = View.GONE
                             }
                         } else if (data.error.code != null) {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
