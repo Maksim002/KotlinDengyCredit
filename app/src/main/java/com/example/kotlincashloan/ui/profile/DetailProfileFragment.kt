@@ -50,6 +50,7 @@ class DetailProfileFragment : Fragment() {
         if (!singleAnimation) {
             //detailProfileAnim анимация для перехода с адного дествия в другое
             TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
+            shimmer_detail_profile.startShimmerAnimation()
             singleAnimation = true
         }
         initBundle()
@@ -58,15 +59,17 @@ class DetailProfileFragment : Fragment() {
         map.put("id", operationId.toString())
         initClick()
 
-        if (viewModel.listGetOperationDta.value != null) {
-            if (errorCode == "200") {
-                initResult()
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (viewModel.listGetOperationDta.value != null) {
+                if (errorCode == "200") {
+                    initResult()
+                } else {
+                    initRestart()
+                }
             } else {
                 initRestart()
             }
-        } else {
-            initRestart()
-        }
+        },500)
 
         setTitle(titlt, resources.getColor(R.color.whiteColor))
         //меняет цвета навигационной понели
@@ -215,7 +218,6 @@ class DetailProfileFragment : Fragment() {
         } else {
             if (viewModel.listGetOperationDta.value == null) {
                 viewModel.errorGetOperation.value = null
-                shimmer_detail_profile.startShimmerAnimation()
                 viewModel.getOperation(map)
                 initResult()
             } else {

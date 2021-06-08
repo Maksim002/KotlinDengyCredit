@@ -18,6 +18,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.extension.animationRediscovery
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
@@ -46,7 +47,10 @@ class LoansFragment : Fragment(), LoansListener {
     private var listLoanId: String = ""
     private var alertValid = false
     private var loansAnim = true
+    //Разоваое проверка анимации
     private var genAnim = false
+    // Постоянная проверка анимации
+    private var genAnimRediscovery = false
 
     private var progressPositionMax = 0
     private var progressPositionRemains = 0
@@ -56,7 +60,11 @@ class LoansFragment : Fragment(), LoansListener {
 
     private var loanCode = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loans, container, false)
     }
@@ -586,20 +594,30 @@ class LoansFragment : Fragment(), LoansListener {
                                 if (listLoanId == "200" && listNewsId == "200") {
                                     myAdapter.update(result.result)
                                     loans_recycler.adapter = myAdapter
-                                    if (genAnim){
+                                    if (genAnim) {
                                         shimmer_loan.visibility = View.GONE
-                                    }else{
+                                    } else {
                                         shimmer_loan.visibility = View.VISIBLE
                                     }
+
                                     loans_constraint.visibility = View.VISIBLE
                                     loans_no_connection.visibility = View.GONE
                                     loans_loans_null.visibility = View.GONE
                                     loans_recycler.visibility = View.VISIBLE
-                                    if (!genAnim) {
-                                        //генерирует анимацию перехода
-                                        animationGenerator(shimmer_loan, handler, requireActivity())
-                                        genAnim = true
+                                    if (AppPreferences.refreshWindow != "true") {
+                                        if (!genAnim) {
+                                            //генерирует анимацию перехода
+                                            animationGenerator(shimmer_loan, handler, requireActivity())
+                                            genAnim = true
+                                        }else{
+                                            if (!genAnimRediscovery){
+                                                shimmer_rediscovery_loan.stopShimmerAnimation()
+                                                shimmer_rediscovery_loan.visibility = View.GONE
+                                                genAnimRediscovery = true
+                                            }
+                                        }
                                     }
+
                                 } else {
                                     initResult()
                                 }
@@ -704,6 +722,7 @@ class LoansFragment : Fragment(), LoansListener {
         loansAnim = false
     }
 
+
     override fun onResume() {
         super.onResume()
         // animation перехода с одного фрагмента в друной
@@ -726,7 +745,10 @@ class LoansFragment : Fragment(), LoansListener {
                 AppPreferences.refreshWindow = ""
             }, 800)
         } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             shimmer_loan.startShimmerAnimation()
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.errorNews.value = null
@@ -753,8 +775,11 @@ class LoansFragment : Fragment(), LoansListener {
     override fun onStart() {
         super.onStart()
         if (AppPreferences.refreshWindow == "true") {
+            genAnimRediscovery = false
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            shimmer_loan.startShimmerAnimation()
+            shimmer_rediscovery_loan.startShimmerAnimation()
+            loans_constraint.visibility = View.GONE
+            shimmer_rediscovery_loan.visibility = View.VISIBLE
         }
 //        if (b == false){
 //            handler.postDelayed(Runnable { // Do something after 5s = 500ms
@@ -764,8 +789,8 @@ class LoansFragment : Fragment(), LoansListener {
 //            b = true
 //        }
 //        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
-            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
+//            AppPreferences.urlApi = "https://crm-api-dev.molbulak.ru/api/app/"
+//            AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
 //        }, 60000)
     }
 
