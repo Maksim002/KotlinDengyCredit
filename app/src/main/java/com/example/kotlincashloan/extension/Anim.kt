@@ -40,23 +40,39 @@ fun animationGenerator(id: ShimmerFrameLayout, handler: Handler, activity: Activ
     }
 }
 
-fun animationRediscovery(id: ShimmerFrameLayout, layout: ConstraintLayout ,handler: Handler, activity: Activity) {
+fun shimmerStop(id: ShimmerFrameLayout, activity: Activity) {
     try {
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
             id.stopShimmerAnimation()
             //In transition: (alpha from 1 to 0)
             id.alpha = 1f;
+            id.visibility = View.GONE;
             id.animate()
                 .alpha(0f)
                 .setDuration(200)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
-                        id.visibility = View.GONE
-                        layout.visibility = View.VISIBLE
+                        id.visibility = View.GONE;
                         activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                 });
-        }, 700)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+fun shimmerStart(id: ShimmerFrameLayout, activity: Activity) {
+    try {
+        id.startShimmerAnimation()
+        //In transition: (alpha from 0 to 1)
+        id.alpha = 1f;
+        id.visibility = View.VISIBLE;
+        id.animate()
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    id.visibility = View.VISIBLE;
+                    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
+            });
     } catch (e: Exception) {
         e.printStackTrace()
     }

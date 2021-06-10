@@ -18,7 +18,6 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.extension.animationGenerator
-import com.example.kotlincashloan.extension.animationRediscovery
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
@@ -60,11 +59,7 @@ class LoansFragment : Fragment(), LoansListener {
 
     private var loanCode = ""
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loans, container, false)
     }
@@ -114,6 +109,7 @@ class LoansFragment : Fragment(), LoansListener {
                                     if (loanCode != result.code.toString()) {
                                         val intent = Intent(context, GetLoanActivity::class.java)
                                         intent.putExtra("application", true)
+                                        intent.putExtra("firstStart", true)
                                         startActivity(intent)
                                     }
                                     loanCode = result.code.toString()
@@ -745,11 +741,8 @@ class LoansFragment : Fragment(), LoansListener {
                 AppPreferences.refreshWindow = ""
             }, 800)
         } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
             shimmer_loan.startShimmerAnimation()
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.errorNews.value = null
                 viewModel.errorLoanInfo.value = null

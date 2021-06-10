@@ -1,6 +1,5 @@
 package com.example.kotlincashloan.ui.loans
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.kotlincashloan.R
-import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.hashMapBitmap
 import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.extension.listListResult
@@ -22,7 +20,6 @@ import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.fragment.*
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.utils.ColorWindows
-import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
@@ -30,7 +27,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -48,12 +44,12 @@ class GetLoanActivity : AppCompatActivity() {
     var states = ArrayList<String>()
     private var statusValue = false
     private var applicationStatus = false
+    private var firstStartStatus = false
     private var errorCodeIm = ""
     private var position: Int = 0
     private val getImList: ArrayList<String> = arrayListOf()
     private var permission = 0
     var mitmap = HashMap<String, Bitmap>()
-    var p = false
 
     companion object {
         lateinit var timer: TimerListenerLoan
@@ -69,6 +65,8 @@ class GetLoanActivity : AppCompatActivity() {
 
         try {
             val valod = intent.extras!!.getBoolean("getBool")
+            val firstStart = intent.extras!!.getBoolean("firstStart")
+            firstStartStatus = firstStart
             val application = intent.extras!!.getBoolean("application")
             listLoan = intent.extras!!.getSerializable("getLOan") as GetLoanModel
             statusValue = valod
@@ -275,7 +273,7 @@ class GetLoanActivity : AppCompatActivity() {
     private fun initViewPager() {
 //        list.add(LoansListModel(LoanStepThreeFragment()))
 
-        list.add(LoansListModel(LoanStepOneFragment()))
+        list.add(LoansListModel(LoanStepOneFragment(firstStartStatus)))
         list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus)))
         list.add(LoansListModel(LoanStepThreeFragment()))
         list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))

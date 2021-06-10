@@ -3,9 +3,9 @@ package com.example.kotlincashloan.ui.registration.login
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -15,9 +15,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.extension.loadingMistakeCode
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -42,6 +40,8 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.home_forget_password
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_loans.*
+import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
@@ -55,6 +55,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var inputsAnim = false
     private var recPosition = 0
     private var isEntrance = false
+    private var genAnim = false
+    private lateinit var handler: Handler
 
     companion object {
         var repeatedClick = 0
@@ -83,6 +85,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         AppPreferences.init(application)
         alert = LoadingAlert(this)
         timer = TimerListener(this)
+        handler = Handler()
         initApyService()
         iniClick()
         initCheck()
@@ -95,11 +98,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         if (!AppPreferences.observedInternet) {
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
-        }else{
+        } else {
             home_layout.visibility = View.VISIBLE
             home_no_connection.visibility = View.GONE
-            if (AppPreferences.savePin == ""){
-                alert.show()
+            if (AppPreferences.savePin == "") {
+                shimmerStart(shimmer_home, this)
             }
             val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
             val configSettings = FirebaseRemoteConfigSettings.Builder().build()
@@ -114,23 +117,29 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     AppPreferences.urlApi = urlApi
                     AppPreferences.tokenApi = tokenApi
 
-//                    https://crm-api-dev.molbulak.ru/api/app/
-
                     if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                         if (recPosition <= 5) {
                             initApyService()
                             recPosition++
                         } else {
-                            alert.hide()
+                            if (!genAnim) {
+                                //генерирует анимацию перехода
+                                shimmerStop(shimmer_home, this)
+                                genAnim = true
+                            }
                             loadingMistakeCode(this)
                         }
                     } else {
-                        if (isEntrance){
+                        if (isEntrance) {
                             isEntrance = false
                             //todo проверить
                             iniResult()
                         }
-                        alert.hide()
+                        if (!genAnim) {
+                            //генерирует анимацию перехода
+                            shimmerStop(shimmer_home, this)
+                            genAnim = true
+                        }
                     }
                 } else {
                     Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
@@ -173,33 +182,42 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 iniTouchId()
                 home_incorrect.visibility = View.GONE
             } else {
-                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                     initApyService()
-                }else{
+                } else {
                     iniResult()
                 }
             }
         }
 
         home_enter.setOnClickListener {
+//            if (!home_login_code.isChecked){
+//                shimmer_home.startShimmerAnimation()
+//                shimmer_home.visibility = View.VISIBLE
+//            }
             isEntrance = true
             if (validate()) {
-                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                     initApyService()
-                }else{
+                } else {
                     iniResult()
                 }
             }
         }
     }
 
+    lateinit var t: Thread
     private fun iniResult() {
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
         } else {
-            alert.show()
+            if (!home_login_code.isChecked) {
+                shimmerStart(shimmer_home, this)
+            } else {
+                alert.show()
+            }
             val map = HashMap<String, String>()
             map.put("password", Hasher.hash(home_text_password.text.toString(), HashType.MD5))
             map.put("login", home_text_login.text.toString())
@@ -241,7 +259,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             } else {
                                 AppPreferences.token = data.result.token
                                 AppPreferences.login = data.result.login
-                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
+                                AppPreferences.password =
+                                    Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                                 if (AppPreferences.token != null) {
                                     home_incorrect.visibility = View.GONE
                                     startMainActivity()
@@ -252,7 +271,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 AppPreferences.isTouchId = home_touch_id.isChecked
                                 AppPreferences.isLoginCode = home_login_code.isChecked
                                 viewModel.save(home_text_login.text.toString(), data.result.token)
-                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
+                                AppPreferences.password =
+                                    Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                             } else {
                                 AppPreferences.isRemember = false
                                 AppPreferences.clearLogin()
@@ -278,15 +298,24 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
                             loadingMistake(this)
-                        }else{
+                        } else {
                             home_no_connection.visibility = View.VISIBLE
                             home_layout.visibility = View.GONE
                         }
                     }
                 }
                 home_enter.isEnabled = true
-                alert.hide()
+                if (home_login_code.isChecked) {
+                    alert.hide()
+                }
             })
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (!home_login_code.isChecked) {
+            shimmerStop(shimmer_home, this)
         }
     }
 
@@ -397,6 +426,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+//        if (!home_login_code.isChecked){
+//            shimmer_home.stopShimmerAnimation()
+//            shimmer_home.visibility = View.GONE
+//        }
     }
 
     override fun onStart() {
@@ -422,7 +455,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             } else {
                 AppPreferences.token = ""
             }
-        }else{
+        } else {
             if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
@@ -529,19 +562,30 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                     map.put("login", home_text_login.text.toString())
                     map.put("uid", AppPreferences.pushNotificationsId.toString())
                     map.put("system", "1")
-                    alert.show()
+                    if (!home_login_code.isChecked) {
+                        shimmerStart(shimmer_home, this@HomeActivity)
+                    } else {
+                        alert.show()
+                    }
                     viewModel.auth(map).observe(this@HomeActivity, Observer { result ->
                         val msg = result.msg
                         val data = result.data
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
-                                    Toast.makeText(this@HomeActivity, data.error.message, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        this@HomeActivity,
+                                        data.error.message,
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 } else {
                                     home_no_connection.visibility = View.GONE
                                     home_layout.visibility = View.VISIBLE
                                     tokenId = data.result.token
-                                    viewModel.save(home_text_login.text.toString(), data.result.token)
+                                    viewModel.save(
+                                        home_text_login.text.toString(),
+                                        data.result.token
+                                    )
                                     val intent = Intent(this@HomeActivity, MainActivity::class.java)
                                     startActivity(intent)
                                 }
@@ -550,15 +594,19 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 loadingMistake(this@HomeActivity)
                             }
                             Status.NETWORK -> {
-                                if(msg == "601") {
+                                if (msg == "601") {
                                     loadingMistake(this@HomeActivity)
-                                }else{
+                                } else {
                                     home_no_connection.visibility = View.VISIBLE
                                     home_layout.visibility = View.GONE
                                 }
                             }
                         }
-                        alert.hide()
+                        if (!home_login_code.isChecked) {
+                            shimmerStop(shimmer_home, this@HomeActivity)
+                        } else {
+                            alert.hide()
+                        }
                     })
                 }
 

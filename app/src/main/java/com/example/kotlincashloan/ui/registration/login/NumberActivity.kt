@@ -2,6 +2,7 @@ package com.example.kotlinscreenscanner.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.editUtils
 import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.shimmerStart
+import com.example.kotlincashloan.extension.shimmerStop
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -26,6 +29,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
@@ -42,6 +46,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     private var numberCharacters: Int = 0
     private var repeatAnim = false
     private var reNum = ""
+    private var genAnim = false
 
     val bottomSheetDialogFragment = NumberBusyBottomSheetFragment()
 
@@ -75,7 +80,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404) {
+                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404 || data.error.code == 403) {
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.VISIBLE
                                 loadingMistake(this)
@@ -90,14 +95,13 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                 initVisibilities()
                             }
                         } else {
-                            AppPreferences.number =
-                                number_list_country.text.toString() + number_phone.text.toString()
+                            AppPreferences.number = number_list_country.text.toString() + number_phone.text.toString()
                             initBottomSheet(data.result.id!!)
                             initVisibilities()
                         }
                     }
                     Status.ERROR -> {
-                        if (msg == "500" || msg == "400" || msg == "404" || msg == "429") {
+                        if (msg == "500" || msg == "400" || msg == "404" || msg == "429" || msg == "403") {
                             number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
@@ -255,9 +259,12 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         } else {
             val map = HashMap<String, Int>()
             map.put("id", 0)
-            HomeActivity.alert.show()
-            viewModel.listAvailableCountry(map)
-                .observe(this, androidx.lifecycle.Observer { result ->
+//            HomeActivity.alert.show()
+            if (!genAnim) {
+                //генерирует анимацию перехода
+                shimmerStart(shimmer_number, this)
+            }
+            viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
                     val msg = result.msg
                     val data = result.data
                     when (result.status) {
@@ -276,12 +283,10 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                     number_no_connection.visibility = View.GONE
                                     number_access_restricted.visibility = View.VISIBLE
                                     number_layout.visibility = View.GONE
-
                                 } else if (data.error.code == 404) {
                                     number_no_connection.visibility = View.GONE
                                     number_not_found.visibility = View.VISIBLE
                                     number_layout.visibility = View.GONE
-
                                 } else if (data.error.code == 401) {
                                     initAuthorized()
                                 } else {
@@ -327,7 +332,12 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                     }
-                    HomeActivity.alert.hide()
+//                    HomeActivity.alert.hide()
+                    if (!genAnim) {
+                        //генерирует анимацию перехода
+                        shimmerStop(shimmer_number ,this)
+                        genAnim = true
+                    }
                 })
         }
     }
@@ -357,11 +367,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: String,
-        title: String, id: AutoCompleteTextView
-    ) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)

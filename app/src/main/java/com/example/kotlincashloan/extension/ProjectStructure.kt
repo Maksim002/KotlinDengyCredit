@@ -136,8 +136,7 @@ fun listListResult(
     }
 }
 
-fun listListResult(
-    result: Int,
+fun listListResult(result: Int,
     technical_work: LinearLayout,
     no_connection: LinearLayout,
     layout_res: ConstraintLayout,

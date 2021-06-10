@@ -14,9 +14,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingConnection
-import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.recovery.ListSupportTypeResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
@@ -370,7 +368,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
         } else {
             val map = HashMap<String, Int>()
             map.put("id", 0)
-            HomeActivity.alert.show()
+            shimmerStart(shimmer_service, this)
+//            HomeActivity.alert.show()
             viewModel.listAvailableCountry(map)
                 .observe(this, androidx.lifecycle.Observer { result ->
                     val msg = result.msg
@@ -452,7 +451,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                             }
                         }
                     }
-                    HomeActivity.alert.hide()
+//                    HomeActivity.alert.hide()
                 })
         }
     }
@@ -472,7 +471,7 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
         } else {
             val map = HashMap<String, Int>()
             map.put("id", 0)
-            HomeActivity.alert.show()
+//            HomeActivity.alert.show()
             myViewMode.listSupportType(map).observe(this, androidx.lifecycle.Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -544,7 +543,8 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                         }
                     }
                 }
-                HomeActivity.alert.hide()
+                shimmerStop(shimmer_service, this)
+//                HomeActivity.alert.hide()
             })
         }
     }

@@ -22,6 +22,7 @@ class ExitDialogFragment: DialogFragment() {
                     val intent = Intent(context, HomeActivity::class.java)
                     AppPreferences.isPinCode = false
                     AppPreferences.token = ""
+                    AppPreferences.isNumber = false
                     if (AppPreferences.resultPassword == ""){
                         AppPreferences.password = ""
                     }

@@ -15,6 +15,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.shimmerStop
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -86,22 +88,22 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
 
     private fun initClick() {
 
-        no_connection_repeat.setOnClickListener {
+        (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
 //            initRestart()
             requireActivity().finish()
         }
 
-        access_restricted.setOnClickListener {
+        (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
 //            initRestart()
             requireActivity().finish()
         }
 
-        not_found.setOnClickListener {
+        (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
 //            initRestart()
             requireActivity().finish()
         }
 
-        technical_work.setOnClickListener {
+        (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
 //            initRestart()
             requireActivity().finish()
         }
@@ -466,11 +468,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         }
     }
 
-    private fun nestedImage(
-        number: Int,
-        pairs: Array<ImageView?> = arrayOfNulls(0),
-        params: LinearLayout.LayoutParams
-    ) {
+    private fun nestedImage(number: Int, pairs: Array<ImageView?> = arrayOfNulls(0), params: LinearLayout.LayoutParams) {
         pairs[number] = ImageView(context)
         pairs[number]!!.layoutParams = params
         pairs[number]!!.id = number
@@ -478,11 +476,14 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     }
 
     private fun getErrorCode(error: Int) {
-        listListResult(
-            error, loans_two_work as LinearLayout, loans_two_connection
-                    as LinearLayout, layout_two as LinearLayout, loans_two_restricted
-                    as LinearLayout, loans_two_found as LinearLayout, requireActivity()
-        )
+
+//        listListResult(error, loans_two_work as LinearLayout, loans_two_connection
+//                    as LinearLayout, layout_two as LinearLayout, loans_two_restricted
+//                    as LinearLayout, loans_two_found as LinearLayout, requireActivity())
+
+        listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
+                    as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
+                    as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
     }
 
     private fun initRestart() {
