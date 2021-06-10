@@ -40,7 +40,7 @@ class TimerListenerLoan(var activity: Activity){
                         AppPreferences.password = ""
                     }
                     HomeActivity.repeatedClick = 1
-                    AppPreferences.isNumber = false
+                    AppPreferences.isNumber = true
                     AppPreferences.isPinCode = true
                     activity.finish()
                 }

@@ -22,10 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.adapter.loans.StepClickListener
-import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.shimmerStart
-import com.example.kotlincashloan.extension.shimmerStop
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity

@@ -65,6 +65,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import retrofit2.http.Header;
+
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
 import static com.regula.documentreader.api.enums.LCID.KYRGYZ_CYRILICK;
@@ -113,9 +115,9 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         docImageIv = view.findViewById(R.id.documentImageIv);
 
         layout_status = view.findViewById(R.id.layout_status);
-        status_technical_work = view.findViewById(R.id.status_technical_work);
-        status_no_questionnaire = view.findViewById(R.id.status_no_questionnaire);
-        status_not_found = view.findViewById(R.id.status_not_found);
+        status_technical_work = ((GetLoanActivity)getActivity()).findViewById(R.id.status_technical_work);
+        status_no_questionnaire = ((GetLoanActivity)getActivity()).findViewById(R.id.status_no_questionnaire);
+        status_not_found = ((GetLoanActivity)getActivity()).findViewById(R.id.status_not_found);
         theeIncorrect = view.findViewById(R.id.thee_incorrect);
         threeCrossBack = view.findViewById(R.id.three_cross_back);
 
@@ -140,7 +142,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                 if (menuVisible && isResumed()){
                     if (!AppPreferences.INSTANCE.isRepeat()){
                         //генерирует анимацию перехода
-                        AnimKt.animationLoanGenerator(shimmerFrameLayout, new android.os.Handler(), requireActivity());
+                        AnimKt.animationGenerator(shimmerFrameLayout, new Handler(), requireActivity());
                     }
                     initInternet();
                 }
@@ -151,12 +153,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
     //Получает данные на редактирование заёма
     private void getLists() {
-//        if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
-//            if (AppPreferences.INSTANCE.getStatus() == true) {
-//                threeCrossBack.setVisibility(View.GONE);
-//            }
-//        }
-
         if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
             threeCrossBack.setVisibility(View.GONE);
         }else {
@@ -190,8 +186,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             @Override
             public void onClick(View v) {
                 AppPreferences.INSTANCE.setRepeat(false);
-                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
                 AnimKt.shimmerStart(shimmerFrameLayout, requireActivity());
+                ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
             }
         });
     }
@@ -247,9 +243,9 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                 if (AppPreferences.INSTANCE.getStatus() == true) {
                                     getActivity().finish();
                                 } else {
-                                    ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-//                                    startShimmerAnimation.setVisibility(View.GONE);
                                     AppPreferences.INSTANCE.setRepeat(true);
+                                    AnimKt.shimmerStart(shimmerFrameLayout, requireActivity());
+                                    ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
                                 }
                             } else if (result.getData().getError() != null) {
                                 if (result.getData().getError().getCode() == 400) {

@@ -12,10 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.StepClickListener
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.initSuspendTime
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -177,11 +175,12 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                 (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
                 (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
                 (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
                 if (!AppPreferences.isRepeat) {
                     //генерирует анимацию перехода
-                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                    animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                    AppPreferences.isRepeat = true
                 }
-                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
             } else if (msg != null) {
                 listListResult(
                     result.error.code!!.toInt(),
@@ -336,8 +335,6 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     //Сохронение Если совподение 99%
     private fun initSaveLoan() {
-        shimmer_step_face.startShimmerAnimation()
-        shimmer_step_face.visibility = View.VISIBLE
         val mapSaveLoan = HashMap<String, String>()
         mapSaveLoan.put("login", AppPreferences.login.toString())
         mapSaveLoan.put("token", AppPreferences.token.toString())

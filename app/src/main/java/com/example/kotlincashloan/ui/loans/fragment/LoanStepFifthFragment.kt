@@ -196,7 +196,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
             }
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
             }
         }
     }
@@ -368,7 +368,7 @@ override fun onStart() {
             }
         }
 
-//        GetLoanActivity.alert.show()
+        GetLoanActivity.alert.show()
         viewModel.saveLoanImg(mapImage)
         viewModel.getSaveLoanImg.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
@@ -464,13 +464,11 @@ override fun onStart() {
                                 }else{
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                        shimmer_step_fifth.visibility = View.GONE
                                     }, 200)
                                 }
                             } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
                                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                    shimmer_step_fifth.visibility = View.GONE
                                 }, 200)
                             }
                         }

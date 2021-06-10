@@ -342,10 +342,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 home_touch_id.isChecked = false
                 home_remember_username.isChecked = true
                 home_remember_username.isClickable = false
+                AppPreferences.isNumber = false
             } else {
                 home_remember_username.isClickable = true
                 AppPreferences.isLoginCode = false
                 AppPreferences.resultPassword = "2"
+                AppPreferences.isNumber = true
             }
         }
 

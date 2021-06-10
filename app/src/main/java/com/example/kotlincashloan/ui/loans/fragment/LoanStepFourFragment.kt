@@ -144,7 +144,6 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             } else {
                 if (validate()) {
                     AppPreferences.isRepeat = false
-                    shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
                     initSaveLoan()
                 }
             }
@@ -703,7 +702,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             listLoan.liveInRu = liveId
             listLoan.bankCard = cardId
         }
-
+        shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
         viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
             val data = result.data
             val msg = result.msg
@@ -768,7 +767,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
         }

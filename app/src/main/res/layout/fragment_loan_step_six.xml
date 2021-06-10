@@ -275,47 +275,5 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_step_six"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/whiteColor"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <include layout="@layout/item_step_shimmer" />
-
-            </LinearLayout>
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    <include-->
-<!--        android:id="@+id/six_ste_access_restricted"-->
-<!--        layout="@layout/item_access_restricted"-->
-<!--        android:visibility="gone" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/six_ste_no_connection"-->
-<!--        layout="@layout/item_no_connection"-->
-<!--        android:visibility="gone" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/six_ste_technical_work"-->
-<!--        layout="@layout/item_technical_work"-->
-<!--        android:visibility="gone" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/six_ste_not_found"-->
-<!--        layout="@layout/item_not_found"-->
-<!--        android:visibility="gone" />-->
 </LinearLayout>

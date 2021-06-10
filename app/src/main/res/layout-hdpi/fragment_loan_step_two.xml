@@ -5,252 +5,200 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/layout_two"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/whiteColor">
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:text="Выберите сумму и срок:"
+            android:textColor="@color/blackColor"
+            android:textSize="@dimen/_17sdp" />
+
+        <TextView
+            android:id="@+id/loan_step_sum"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_black"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/orangeColor"
+            android:textSize="@dimen/_70sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="рублей"
+            android:textColor="@color/orangeColor"
+            android:textSize="@dimen/_13sdp" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:id="@+id/loan_layout_parallel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_17sdp"
+            android:orientation="horizontal" />
+
+        <SeekBar
+            android:id="@+id/loan_step_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_4sdp"
+            android:progressDrawable="@drawable/progress_drawable"
+            android:thumb="@drawable/thumb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:text="Выберите сумму и срок:"
-                android:textColor="@color/blackColor"
-                android:textSize="@dimen/_17sdp" />
-
-            <TextView
-                android:id="@+id/loan_step_sum"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:fontFamily="@font/roboto_black"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/orangeColor"
-                android:textSize="@dimen/_70sdp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="рублей"
-                android:textColor="@color/orangeColor"
-                android:textSize="@dimen/_13sdp" />
-
-            <LinearLayout
-                android:id="@+id/loan_layout_parallel"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_15sdp"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_17sdp"
-                android:orientation="horizontal" />
-
-            <SeekBar
-                android:id="@+id/loan_step_seek"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_4sdp"
-                android:progressDrawable="@drawable/progress_drawable"
-                android:thumb="@drawable/thumb" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_16sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:text="5000"
-                    android:textColor="@color/blackColor"
-                    android:textSize="@dimen/_12sdp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="25 000"
-                    android:textColor="@color/blackColor"
-                    android:textSize="@dimen/_12sdp" />
-            </LinearLayout>
-
-            <com.example.kotlincashloan.common.HorizontalCarouselRecyclerView
-                android:id="@+id/step_item_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/_3sdp"
-                android:layout_weight="1"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="месяцев"
-                android:textColor="@color/orangeColor"
-                android:textSize="@dimen/_13sdp" />
-
-            <LinearLayout
-                android:id="@+id/loan_layout_month"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_15sdp"
-                android:layout_marginLeft="@dimen/_14sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_16sdp"
-                android:orientation="horizontal" />
-
-            <SeekBar
-                android:id="@+id/loan_step_month_seek"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_8sdp"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginRight="@dimen/_8sdp"
-                android:progressDrawable="@drawable/progress_drawable"
-                android:thumb="@drawable/thumb" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="24dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/minCounterLoan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="left"
-                    android:text="1"
-                    android:textColor="@color/blackColor"
-                    android:textSize="@dimen/_12sdp" />
-
-                <TextView
-                    android:id="@+id/maxCounterLoan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="12"
-                    android:textColor="@color/blackColor"
-                    android:textSize="@dimen/_12sdp" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:gravity="center"
-                android:text="@string/_3_637"
+                android:gravity="left"
+                android:text="5000"
                 android:textColor="@color/blackColor"
-                android:textSize="@dimen/_17sdp" />
+                android:textSize="@dimen/_12sdp" />
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/totalSumLoans"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="right"
-                    android:text="3 637"
-                    android:textColor="@color/orangeColor"
-                    android:textSize="@dimen/_20sdp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_weight="1"
-                    android:text="руб."
-                    android:textColor="@color/orangeColor"
-                    android:textSize="@dimen/_20sdp" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/bottom_step_two"
-                style="@style/RoundedOrangeBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:layout_marginBottom="10dp"
-                android:paddingLeft="75dp"
-                android:paddingRight="75dp"
-                android:text="Начать"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="25 000"
+                android:textColor="@color/blackColor"
+                android:textSize="@dimen/_12sdp" />
         </LinearLayout>
 
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmer_step_two"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/whiteColor"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <com.example.kotlincashloan.common.HorizontalCarouselRecyclerView
+            android:id="@+id/step_item_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never" />
 
-            <LinearLayout
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="месяцев"
+            android:textColor="@color/orangeColor"
+            android:textSize="@dimen/_13sdp" />
+
+        <LinearLayout
+            android:id="@+id/loan_layout_month"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_14sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:orientation="horizontal" />
+
+        <SeekBar
+            android:id="@+id/loan_step_month_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:progressDrawable="@drawable/progress_drawable"
+            android:thumb="@drawable/thumb" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="24dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/minCounterLoan"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="1"
+                android:textColor="@color/blackColor"
+                android:textSize="@dimen/_12sdp" />
 
-                <include layout="@layout/item_step_shimmer" />
+            <TextView
+                android:id="@+id/maxCounterLoan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="12"
+                android:textColor="@color/blackColor"
+                android:textSize="@dimen/_12sdp" />
+        </LinearLayout>
 
-            </LinearLayout>
-        </com.facebook.shimmer.ShimmerFrameLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:gravity="center"
+            android:text="@string/_3_637"
+            android:textColor="@color/blackColor"
+            android:textSize="@dimen/_17sdp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-<!--    <include-->
-<!--        android:id="@+id/loans_two_connection"-->
-<!--        layout="@layout/item_no_connection"-->
-<!--        android:visibility="gone" />-->
+            <TextView
+                android:id="@+id/totalSumLoans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="3 637"
+                android:textColor="@color/orangeColor"
+                android:textSize="@dimen/_20sdp" />
 
-<!--    <include-->
-<!--        android:id="@+id/loans_two_restricted"-->
-<!--        layout="@layout/item_access_restricted"-->
-<!--        android:visibility="gone" />-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="руб."
+                android:textColor="@color/orangeColor"
+                android:textSize="@dimen/_20sdp" />
+        </LinearLayout>
 
-<!--    <include-->
-<!--        android:id="@+id/loans_two_found"-->
-<!--        layout="@layout/item_not_found"-->
-<!--        android:visibility="gone" />-->
-
-<!--    <include-->
-<!--        android:id="@+id/loans_two_work"-->
-<!--        layout="@layout/item_technical_work"-->
-<!--        android:visibility="gone" />-->
+        <Button
+            android:id="@+id/bottom_step_two"
+            style="@style/RoundedOrangeBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginBottom="10dp"
+            android:paddingLeft="75dp"
+            android:paddingRight="75dp"
+            android:text="Начать"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
 </LinearLayout>

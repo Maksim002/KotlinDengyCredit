@@ -18,10 +18,8 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -816,7 +814,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
         }

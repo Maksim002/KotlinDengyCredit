@@ -17,10 +17,8 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -101,9 +99,8 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         }
 
         bottom_loan_six.setOnClickListener {
-            AppPreferences.isRepeat = false
-            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             if (validate()) {
+                AppPreferences.isRepeat = false
                 initSaveLoan()
             }
         }
@@ -269,7 +266,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                 listLoan.reType = family
                 listLoan.rePhone = six_loan_phone.text.toString()
             }
-
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             viewModel.saveLoans(mapSave).observe(viewLifecycleOwner, Observer { result ->
                 val data = result.data
                 val msg = result.msg
@@ -339,7 +336,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
         }
