@@ -266,24 +266,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/loans_two_connection"
-        layout="@layout/item_no_connection"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_two_connection"-->
+<!--        layout="@layout/item_no_connection"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_two_restricted"
-        layout="@layout/item_access_restricted"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_two_restricted"-->
+<!--        layout="@layout/item_access_restricted"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_two_found"
-        layout="@layout/item_not_found"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_two_found"-->
+<!--        layout="@layout/item_not_found"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_two_work"
-        layout="@layout/item_technical_work"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_two_work"-->
+<!--        layout="@layout/item_technical_work"-->
+<!--        android:visibility="gone" />-->
 
 </LinearLayout>

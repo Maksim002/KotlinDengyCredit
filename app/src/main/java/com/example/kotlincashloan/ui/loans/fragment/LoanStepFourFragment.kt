@@ -5,7 +5,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowId
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -16,31 +15,26 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_four.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 
-class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, StepClickListener {
+class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var permission: Int, var applicationStatus: Boolean, var listener: LoanClearListener) : Fragment(), ListenerGeneralResult, StepClickListener {
     private var viewModel = LoansViewModel()
 
     private var getListCityDta = ""
@@ -108,13 +102,9 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
-                if (!AppPreferences.isRepeat){
-                    //генерирует анимацию перехода
-                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
-                }
+                initInternet()
             }
         }, 1000)
-
     }
 
     private fun initClick() {
@@ -123,42 +113,46 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             initCleaningRoom()
         }
 
-        access_restricted.setOnClickListener {
-            initInternet()
+        (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
+            listener.loanClearClickListener()
+//            initInternet()
         }
 
-        no_connection_repeat.setOnClickListener {
-            initInternet()
+        (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
+            listener.loanClearClickListener()
+//            initInternet()
         }
 
-        technical_work.setOnClickListener {
-            initInternet()
+        (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
+            listener.loanClearClickListener()
+//            initInternet()
         }
 
-        not_found.setOnClickListener {
-            initInternet()
+        (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
+            listener.loanClearClickListener()
+//            initInternet()
         }
 
         bottom_loan_four.setOnClickListener {
-            AppPreferences.isRepeat = true
+            AppPreferences.isRepeat = false
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
-                loans_ste_no_connection.visibility = View.VISIBLE
-                loans_step_layout.visibility = View.GONE
-                loans_ste_technical_work.visibility = View.GONE
-                loans_ste_access_restricted.visibility = View.GONE
-                loans_ste_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
             } else {
                 if (validate()) {
-                    shimmer_step_four.startShimmerAnimation()
-                    shimmer_step_four.visibility = View.VISIBLE
                     initSaveLoan()
                 }
             }
         }
 
         four_cross_back.setOnClickListener {
-            AppPreferences.isRepeat = true
+            AppPreferences.isRepeat = false
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(2)
             hidingErrors()
         }
@@ -475,11 +469,11 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         getValueNull()
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            loans_ste_no_connection.visibility = View.VISIBLE
-            loans_step_layout.visibility = View.GONE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
             viewModel.errorSaveLoan.value = null
             initListCity()
@@ -716,30 +710,28 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        loans_step_layout.visibility = View.VISIBLE
-                        loans_ste_technical_work.visibility = View.GONE
-                        loans_ste_no_connection.visibility = View.GONE
-                        loans_ste_access_restricted.visibility = View.GONE
-                        loans_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                        (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
                         if (applicationStatus == false) {
                             if (status == true) {
                                 requireActivity().finish()
                             }else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
-                                shimmer_step_four.visibility = View.GONE
                             }
                         } else {
                             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(4)
-                            shimmer_step_four.visibility = View.GONE
                         }
                     } else if (data.error.code != null) {
                         listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                     } else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
-                        loans_step_layout.visibility = View.VISIBLE
-                        loans_ste_technical_work.visibility = View.GONE
-                        loans_ste_no_connection.visibility = View.GONE
-                        loans_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                        (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
                     }
                 }
                 Status.ERROR -> {
@@ -768,12 +760,17 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
     private fun getResultOk() {
         if (getListCityDta == "200" && getListFamilyStatusDta == "200" && getListNumbersDta == "200" && getListYearsDta == "200" && listAvailableCountryDta == "200") {
-            loans_step_layout.visibility = View.VISIBLE
-            loans_ste_technical_work.visibility = View.GONE
-            loans_ste_no_connection.visibility = View.GONE
-            loans_ste_access_restricted.visibility = View.GONE
-            loans_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
             getLists()
+            if (!AppPreferences.isRepeat){
+                //генерирует анимацию перехода
+                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                AppPreferences.isRepeat = true
+            }
         }
     }
 
@@ -786,20 +783,9 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
 
     private fun getErrorCode(error: Int) {
-        listListResult(
-            error, loans_ste_technical_work as LinearLayout, loans_ste_no_connection
-                    as LinearLayout, loans_step_layout as LinearLayout, loans_ste_access_restricted
-                    as LinearLayout, loans_ste_not_found as LinearLayout, requireActivity()
-        )
-    }
-
-    override fun onStart() {
-        super.onStart()
-        initInternet()
-    }
-
-    override fun onResume() {
-        super.onResume()
+        listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
+                as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
+                as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
     }
 
     private fun validate(): Boolean {

@@ -42,11 +42,7 @@ class LoanStepOneFragment(var status: Boolean) : Fragment() {
                 if (menuVisible && isResumed) {
                     if (!AppPreferences.isRepeat) {
                         //генерирует анимацию перехода
-                        animationLoanGenerator(
-                            (activity as GetLoanActivity?)!!.shimmer_step_loan,
-                            handler,
-                            requireActivity()
-                        )
+                        animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
                     }
                 }
             }, 500)

@@ -156,7 +156,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         //формат даты
         simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-        initRestart()
+
         initClick()
         iniData()
         initHidingFields()
@@ -173,6 +173,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                     //генерирует анимацию перехода
                     animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
                 }
+                initRestart()
             }
         }, 500)
     }
@@ -180,11 +181,11 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            six_ste_no_connection.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
+            fifth_ste_no_connection.visibility = View.VISIBLE
+            layout_fifth.visibility = View.GONE
+            fifth_ste_technical_work.visibility = View.GONE
+            fifth_ste_access_restricted.visibility = View.GONE
+            fifth_ste_not_found.visibility = View.GONE
         } else {
             viewModel.errorSaveLoan.value = null
             initListEntryGoal()

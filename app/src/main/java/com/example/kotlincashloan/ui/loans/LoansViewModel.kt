@@ -127,7 +127,7 @@ class LoansViewModel: ViewModel() {
     var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
 
     fun getInfo(map: Map<String, String>){
-        RetrofitService.apiService().getLoanInfo(map, generateUrl("error403")).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
+        RetrofitService.apiService().getLoanInfo(map, generateUrl("getLoanInfo")).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
                 if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
                     errorGetLoanInfo.postValue( "601")

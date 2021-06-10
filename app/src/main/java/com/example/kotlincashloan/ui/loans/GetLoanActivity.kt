@@ -15,6 +15,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.hashMapBitmap
 import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.fragment.*
@@ -34,7 +35,7 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class GetLoanActivity : AppCompatActivity() {
+class GetLoanActivity : AppCompatActivity(), LoanClearListener {
     private var list = mutableListOf<LoansListModel>()
     val handler = Handler()
     lateinit var get_loan_view_pagers: ViewPager
@@ -127,6 +128,11 @@ class GetLoanActivity : AppCompatActivity() {
             not_found.isClickable = false
         }
     }
+
+    override fun loanClearClickListener() {
+        this.finish()
+    }
+
 
     //проверяет какое деалог заработает
     private fun getPermission() {
@@ -274,11 +280,11 @@ class GetLoanActivity : AppCompatActivity() {
 //        list.add(LoansListModel(LoanStepThreeFragment()))
 
         list.add(LoansListModel(LoanStepOneFragment(firstStartStatus)))
-        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus)))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus, this)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus)))
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus, this)))
+        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus, this)))
+        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus, this)))
         list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)))
         list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
         list.add(LoansListModel(LoanStepPushFragment(statusValue, applicationStatus)))

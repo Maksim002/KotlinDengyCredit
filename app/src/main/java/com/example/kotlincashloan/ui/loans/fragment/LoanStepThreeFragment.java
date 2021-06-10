@@ -126,7 +126,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         shimmerFrameLayout = ((GetLoanActivity)getActivity()).findViewById(R.id.shimmer_step_loan);
         startShimmerAnimation = view.findViewById(R.id.shimmer_step_thee);
 
-        initInternet();
         initClick();
         getLists();
     }
@@ -143,6 +142,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                         //генерирует анимацию перехода
                         AnimKt.animationLoanGenerator(shimmerFrameLayout, new android.os.Handler(), requireActivity());
                     }
+                    initInternet();
                 }
             }
         };
@@ -189,15 +189,16 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         threeCrossBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppPreferences.INSTANCE.setRepeat(false);
                 ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
-                AppPreferences.INSTANCE.setRepeat(true);
+                AnimKt.shimmerStart(shimmerFrameLayout, requireActivity());
             }
         });
     }
 
     private void initResult() {
-        startShimmerAnimation.startShimmerAnimation();
-        startShimmerAnimation.setVisibility(View.VISIBLE);
+//        startShimmerAnimation.startShimmerAnimation();
+//        startShimmerAnimation.setVisibility(View.VISIBLE);
 
         new ObservedInternet().observedInternet(requireContext());
         if (AppPreferences.INSTANCE.getObservedInternet()) {
@@ -247,7 +248,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                     getActivity().finish();
                                 } else {
                                     ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
-                                    startShimmerAnimation.setVisibility(View.GONE);
+//                                    startShimmerAnimation.setVisibility(View.GONE);
                                     AppPreferences.INSTANCE.setRepeat(true);
                                 }
                             } else if (result.getData().getError() != null) {

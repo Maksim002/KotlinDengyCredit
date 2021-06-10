@@ -62,7 +62,6 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        initRestart()
         initClick()
     }
 
@@ -74,6 +73,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     //генерирует анимацию перехода
                     animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
                 }
+                initRestart()
             }
         }, 500)
     }

@@ -1,12 +1,12 @@
 package com.example.kotlincashloan.ui.loans.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -15,7 +15,6 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,23 +22,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.adapter.loans.StepClickListener
-import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.extension.shimmerStop
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_loan_step_two.*
-import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -48,7 +44,7 @@ import java.lang.Math.pow
 import kotlin.math.round
 
 
-class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var applicationStatus: Boolean) : Fragment(), StepClickListener {
+class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var applicationStatus: Boolean,  var listener: LoanClearListener) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
     val map = HashMap<String, String>()
@@ -78,7 +74,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
-        initRestart()
 
         if (status == true) {
             totalCounter = listLoan.loanTerm!!.toInt()
@@ -90,29 +85,30 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
 //            initRestart()
-            requireActivity().finish()
+            listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
 //            initRestart()
-            requireActivity().finish()
+            listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
 //            initRestart()
-            requireActivity().finish()
+            listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
 //            initRestart()
-            requireActivity().finish()
+            listener.loanClearClickListener()
         }
 
         bottom_step_two.setOnClickListener {
-            shimmer_step_two.startShimmerAnimation()
-            shimmer_step_two.visibility = View.VISIBLE
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
+//            shimmer_step_two.startShimmerAnimation()
+//            shimmer_step_two.visibility = View.VISIBLE
 
-            AppPreferences.isRepeat = true
+            AppPreferences.isRepeat = false
             initSaveLoan()
         }
     }
@@ -133,10 +129,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         if (menuVisible && isResumed) {
-            if (!AppPreferences.isRepeat){
-                //генерирует анимацию перехода
-                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
-            }
+            initRestart()
         }
     }
 
@@ -187,14 +180,17 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                 initResiscler()
                 initSeekBar()
 
-                loans_two_found.visibility = View.GONE
-                loans_two_work.visibility = View.GONE
-                loans_two_connection.visibility = View.GONE
-                loans_two_restricted.visibility = View.GONE
-//                if (genAnim){
-//                    (activity as GetLoanActivity?)!!.shimmer_step_loan.visibility = View.GONE
-//                }
-                layout_two.visibility = View.VISIBLE
+                (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                    AppPreferences.isRepeat = true
+                }
+
             } else {
                 if (result.error.code != null) {
                     getErrorCode(result.error.code!!)
@@ -214,11 +210,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     private fun initSaveLoan() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            loans_two_connection.visibility = View.VISIBLE
-            layout_two.visibility = View.GONE
-            loans_two_work.visibility = View.GONE
-            loans_two_restricted.visibility = View.GONE
-            loans_two_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
 //            GetLoanActivity.alert.show()
             val mapSave = mutableMapOf<String, String>()
@@ -240,11 +236,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result != null) {
-                            layout_two.visibility = View.VISIBLE
-                            loans_two_work.visibility = View.GONE
-                            loans_two_connection.visibility = View.GONE
-                            loans_two_restricted.visibility = View.GONE
-                            loans_two_found.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
                             AppPreferences.applicationId = data.result.id.toString()
                             if (applicationStatus == false) {
                                 if (status == true) {
@@ -252,22 +248,22 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                                 } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
-                                    shimmer_step_two.visibility = View.GONE
+//                                    shimmer_step_two.visibility = View.GONE
                                 }
                             } else {
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
-                                shimmer_step_two.visibility = View.GONE
+//                                shimmer_step_two.visibility = View.GONE
                             }
                         } else if (data.error.code != null) {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
                         } else if (data.reject != null) {
                             initBottomSheet(data.reject.message!!)
-                            layout_two.visibility = View.VISIBLE
-                            loans_two_work.visibility = View.GONE
-                            loans_two_connection.visibility = View.GONE
-                            loans_two_restricted.visibility = View.GONE
-                            loans_two_found.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
                         }
                     }
                     Status.ERROR -> {
@@ -493,11 +489,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
 
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            loans_two_connection.visibility = View.VISIBLE
-            loans_two_work.visibility = View.GONE
-            layout_two.visibility = View.GONE
-            loans_two_restricted.visibility = View.GONE
-            loans_two_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
             viewModel.getInfo(map)
             initСounter()

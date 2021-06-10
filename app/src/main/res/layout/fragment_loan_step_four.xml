@@ -482,23 +482,23 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/loans_ste_access_restricted"
-        layout="@layout/item_access_restricted"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_ste_access_restricted"-->
+<!--        layout="@layout/item_access_restricted"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_ste_no_connection"
-        layout="@layout/item_no_connection"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_ste_no_connection"-->
+<!--        layout="@layout/item_no_connection"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_ste_technical_work"
-        layout="@layout/item_technical_work"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_ste_technical_work"-->
+<!--        layout="@layout/item_technical_work"-->
+<!--        android:visibility="gone" />-->
 
-    <include
-        android:id="@+id/loans_ste_not_found"
-        layout="@layout/item_not_found"
-        android:visibility="gone" />
+<!--    <include-->
+<!--        android:id="@+id/loans_ste_not_found"-->
+<!--        layout="@layout/item_not_found"-->
+<!--        android:visibility="gone" />-->
 </LinearLayout>
