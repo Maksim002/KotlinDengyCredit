@@ -134,8 +134,6 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         bottom_loan_four.setOnClickListener {
-            AppPreferences.isRepeat = false
-            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
@@ -145,6 +143,8 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
             } else {
                 if (validate()) {
+                    AppPreferences.isRepeat = false
+                    shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
                     initSaveLoan()
                 }
             }

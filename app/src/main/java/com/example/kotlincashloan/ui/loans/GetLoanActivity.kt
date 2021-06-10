@@ -193,7 +193,7 @@ class GetLoanActivity : AppCompatActivity(), LoanClearListener {
                                                         initGetLoan()
                                                     } else if (mitmap.size == states.size - 1) {
                                                         convert(data.result.data.toString())
-                                                        LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)
+                                                        LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus,this)
                                                         transition()
                                                         alert.hide()
                                                     }
@@ -285,8 +285,8 @@ class GetLoanActivity : AppCompatActivity(), LoanClearListener {
         list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus, this)))
         list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus, this)))
         list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus, this)))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus,this)))
+        list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus, this)))
         list.add(LoansListModel(LoanStepPushFragment(statusValue, applicationStatus)))
 
         get_loan_view_pagers.isEnabled = true

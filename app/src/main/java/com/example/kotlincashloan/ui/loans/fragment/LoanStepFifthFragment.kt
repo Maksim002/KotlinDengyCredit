@@ -74,7 +74,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean, var listener: LoanClearListener) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
     private var viewModel = LoansViewModel()
     private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
@@ -169,10 +169,6 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
-                if (!AppPreferences.isRepeat){
-                    //генерирует анимацию перехода
-                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
-                }
                 initRestart()
             }
         }, 500)
@@ -181,11 +177,11 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            fifth_ste_no_connection.visibility = View.VISIBLE
-            layout_fifth.visibility = View.GONE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
         } else {
             viewModel.errorSaveLoan.value = null
             initListEntryGoal()
@@ -197,6 +193,10 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 }
                 thread = Thread(runnable)
                 thread!!.start()
+            }
+            if (!AppPreferences.isRepeat){
+                //генерирует анимацию перехода
+                animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
             }
         }
     }
@@ -451,11 +451,11 @@ override fun onStart() {
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        layout_fifth.visibility = View.VISIBLE
-                        fifth_ste_technical_work.visibility = View.GONE
-                        fifth_ste_no_connection.visibility = View.GONE
-                        fifth_ste_access_restricted.visibility = View.GONE
-                        fifth_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                        (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
                             if (applicationStatus == false){
@@ -581,43 +581,47 @@ override fun onStart() {
 
     private fun initClick() {
 
-        access_restricted.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
+            listener.loanClearClickListener()
+//            initRestart()
         }
 
-        no_connection_repeat.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
+            listener.loanClearClickListener()
+//            initRestart()
         }
 
-        technical_work.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
+            listener.loanClearClickListener()
+//            initRestart()
         }
 
-        not_found.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
+            listener.loanClearClickListener()
+//            initRestart()
         }
 
         bottom_loan_fifth.setOnClickListener {
-            AppPreferences.isRepeat = true
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
-                fifth_ste_no_connection.visibility = View.VISIBLE
-                layout_fifth.visibility = View.GONE
-                fifth_ste_technical_work.visibility = View.GONE
-                fifth_ste_access_restricted.visibility = View.GONE
-                fifth_ste_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
             } else {
                 saveValidate = true
                 if (validate()) {
-                    shimmer_step_fifth.startShimmerAnimation()
-                    shimmer_step_fifth.visibility = View.VISIBLE
+                    AppPreferences.isRepeat = false
+                    shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
                     initSaveServer()
                 }
             }
         }
 
         fifth_cross_six.setOnClickListener {
-            AppPreferences.isRepeat = true
+            AppPreferences.isRepeat = false
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
             hidingErrors()
         }
@@ -1218,18 +1222,18 @@ override fun onStart() {
 
     private fun getResultOk() {
         if (listEntryError == "200" && listContractError == "200") {
-            layout_fifth.visibility = View.VISIBLE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
         }
     }
 
     private fun getErrorCode(error: Int){
-        listListResult(error,fifth_ste_technical_work as LinearLayout,fifth_ste_no_connection
-                as LinearLayout,layout_fifth as NestedScrollView,fifth_ste_access_restricted
-                as LinearLayout,fifth_ste_not_found as LinearLayout,requireActivity())
+        listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
+                as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
+                as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
     }
 
     private fun initDocumentReader() {
