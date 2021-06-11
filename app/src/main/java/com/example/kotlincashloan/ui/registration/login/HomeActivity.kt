@@ -142,7 +142,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                         }
                     }
                 } else {
-                    Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Фаербэйс не работает " + task, Toast.LENGTH_LONG).show()
                 }
             })
         }
@@ -307,6 +307,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 home_enter.isEnabled = true
                 if (home_login_code.isChecked) {
                     alert.hide()
+                } else {
+                    shimmerStop(shimmer_home, this)
                 }
             })
         }

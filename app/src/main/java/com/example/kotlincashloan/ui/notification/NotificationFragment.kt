@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.notification.NotificationListener
-import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.extension.animationNoMargaritas
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -21,7 +21,6 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -169,7 +168,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                             errorCode = result.code.toString()
                             if (!genAnim) {
                                 //генерирует анимацию перехода
-                                animationGenerator(shimmer_notification, handler, requireActivity())
+                                animationNoMargaritas(shimmer_notification, handler, requireActivity())
                                 genAnim = true
                             }
                             MainActivity.alert.hide()

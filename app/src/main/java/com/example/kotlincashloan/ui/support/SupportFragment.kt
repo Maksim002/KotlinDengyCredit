@@ -1,7 +1,6 @@
 package com.example.kotlincashloan.ui.support
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -18,15 +17,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.adapter.support.SupportListener
-import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.extension.animationNoMargaritas
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -218,7 +215,7 @@ class SupportFragment : Fragment(), SupportListener {
                             support_constraint.visibility = View.VISIBLE
                             if (!genAnim) {
                                 //генерирует анимацию перехода
-                                animationGenerator(shimmer_support, handler, requireActivity())
+                                animationNoMargaritas(shimmer_support, handler, requireActivity())
                                 genAnim = true
                             }
                             errorCode = result.code.toString()

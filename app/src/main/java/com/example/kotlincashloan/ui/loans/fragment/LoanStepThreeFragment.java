@@ -360,9 +360,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
 //            final AlertDialog initDialog = showDialog("Инициализация");
-            showScanner.setText("Ожидайте, идет загрузка...");
-            showScanner.setClickable(false);
-
+            try {
+                showScanner.setText("Ожидайте, идет загрузка...");
+                showScanner.setClickable(false);
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
 
             //Reading the license from raw resource file
             try {
@@ -376,8 +379,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                 DocumentReader.Instance().prepareDatabase(requireContext(), "Full", new IDocumentReaderPrepareCompletion() {
                     @Override
                     public void onPrepareProgressChanged(int progress) {
+                        try {
+                            showScanner.setText("Загрузка базы данных: " + progress + "%");
+                        }catch (Exception e){
+                            e.fillInStackTrace();
+                        }
 //                        initDialog.setTitle("Загрузка базы данных: " + progress + "%");
-                        showScanner.setText("Загрузка базы данных: " + progress + "%");
                     }
 
                     @Override

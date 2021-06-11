@@ -179,8 +179,7 @@ class GetLoanActivity : AppCompatActivity(), LoanClearListener {
                                 mapImg.put("type_id", states[position])
                                 getImList.add(position.toString())
 
-                                viewModel.getImgLoan(mapImg)
-                                    .observe(this, androidx.lifecycle.Observer { result ->
+                                viewModel.getImgLoan(mapImg).observe(this, androidx.lifecycle.Observer { result ->
                                         val msg = result.msg
                                         val data = result.data
                                         when (result.status) {

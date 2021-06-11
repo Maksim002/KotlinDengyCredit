@@ -46,6 +46,15 @@ class LoanStepOneFragment(var status: Boolean) : Fragment() {
                     }
                 }
             }, 500)
+        }else{
+//            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                if (menuVisible && isResumed) {
+//                    if (!AppPreferences.isRepeat) {
+//                        //генерирует анимацию перехода
+//                        animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+//                    }
+//                }
+//            }, 500)
         }
     }
 

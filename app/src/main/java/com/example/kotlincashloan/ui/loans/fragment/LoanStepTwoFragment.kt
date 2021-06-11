@@ -75,6 +75,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         if (status == true) {
             totalCounter = listLoan.loanTerm!!.toInt()
             loan_step_sum.text = listLoan.loanSum
+            totalSum = listLoan.loanSum!!.toFloat().toInt()
         }
     }
 
@@ -327,18 +328,12 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     }
 
     private fun totalSum() {
-        val equ = round(
-            (totalSum * (totalRate / 100)) / (1 - pow(
-                (1 + (totalRate / 100)),
-                -totalCounter.toDouble()
-            ))
-        )
+        val equ = round((totalSum * (totalRate / 100)) / (1 - pow((1 + (totalRate / 100)), -totalCounter.toDouble())))
         totalSumLoans.setText(equ.toInt().toString())
     }
 
     operator fun hasNext(): Boolean {
-        return step_item_list.getAdapter() != null && getCurrentItem() < step_item_list.getAdapter()!!
-            .getItemCount() - 1
+        return step_item_list.getAdapter() != null && getCurrentItem() < step_item_list.getAdapter()!!.getItemCount() - 1
     }
 
     operator fun next() {
