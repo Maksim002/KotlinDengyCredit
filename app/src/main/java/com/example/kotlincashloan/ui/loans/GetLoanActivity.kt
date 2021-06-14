@@ -329,9 +329,6 @@ class GetLoanActivity : AppCompatActivity(), LoanClearListener {
         shimmer_step_loan.startShimmerAnimation()
         //Переключает флаг для работы анимации
         AppPreferences.isRepeat = false
-
-//        AppPreferences.urlApi = "https://crm-api-dev.molbulak2.ru/api/app/"
-//        AppPreferences.tokenApi = "/?token=oYyxhIFgJjAb"
     }
 
     override fun onResume() {

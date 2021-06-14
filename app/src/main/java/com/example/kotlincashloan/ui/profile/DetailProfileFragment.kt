@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
@@ -18,14 +19,13 @@ import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
-import kotlinx.android.synthetic.main.fragment_detail_notification.*
 import kotlinx.android.synthetic.main.fragment_detail_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
-import java.lang.Exception
 import java.util.HashMap
+import kotlin.Exception
 
 class DetailProfileFragment : Fragment() {
     private var operationId = 0
@@ -50,7 +50,6 @@ class DetailProfileFragment : Fragment() {
         if (!singleAnimation) {
             //detailProfileAnim анимация для перехода с адного дествия в другое
             TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
-            shimmer_detail_profile.startShimmerAnimation()
             singleAnimation = true
         }
         initBundle()
@@ -58,22 +57,6 @@ class DetailProfileFragment : Fragment() {
         map.put("token", AppPreferences.token.toString())
         map.put("id", operationId.toString())
         initClick()
-
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            if (viewModel.listGetOperationDta.value != null) {
-                if (errorCode == "200") {
-                    initResult()
-                } else {
-                    initRestart()
-                }
-            } else {
-                initRestart()
-            }
-        },500)
-
-        setTitle(titlt, resources.getColor(R.color.whiteColor))
-        //меняет цвета навигационной понели
-        ColorWindows(activity as AppCompatActivity).rollback()
     }
 
     private fun initClick() {
@@ -127,11 +110,6 @@ class DetailProfileFragment : Fragment() {
                     d_profile_description.text = result.result.description
                     d_profile_text.loadMarkdown(result.result.text)
                     errorCode = result.code.toString()
-                    if (genAnim) {
-                        shimmer_detail_profile.visibility = View.GONE
-                    }else{
-                        shimmer_detail_profile.visibility = View.VISIBLE
-                    }
                     d_profile_access_restricted.visibility = View.GONE
                     d_profile_no_connection.visibility = View.GONE
                     d_profile_technical_work.visibility = View.GONE
@@ -142,6 +120,7 @@ class DetailProfileFragment : Fragment() {
                         animationGenerator(shimmer_detail_profile, handler, requireActivity())
                         genAnim = true
                     }
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 } else {
                     if (result.error.code != null) {
                         errorCode = result.error.code.toString()
@@ -169,6 +148,7 @@ class DetailProfileFragment : Fragment() {
                         } else if (result.error.code == 401) {
                             initAuthorized()
                         }
+                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     }
                 }
             })
@@ -200,36 +180,41 @@ class DetailProfileFragment : Fragment() {
                     } else if (error == "401") {
                         initAuthorized()
                     }
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
             })
         }
     }
 
     private fun initRestart() {
-        ObservedInternet().observedInternet(requireContext())
-        if (!AppPreferences.observedInternet) {
-            d_profile_no_connection.visibility = View.VISIBLE
-            d_profile_technical_work.visibility = View.GONE
-            d_profile_profile.visibility = View.GONE
-            d_profile_access_restricted.visibility = View.GONE
-            d_profile_not_found.visibility = View.GONE
-            viewModel.errorGetOperation.value = null
-            errorCode = "601"
-        } else {
-            if (viewModel.listGetOperationDta.value == null) {
+        try {
+            ObservedInternet().observedInternet(requireContext())
+            if (!AppPreferences.observedInternet) {
+                d_profile_no_connection.visibility = View.VISIBLE
+                d_profile_technical_work.visibility = View.GONE
+                d_profile_profile.visibility = View.GONE
+                d_profile_access_restricted.visibility = View.GONE
+                d_profile_not_found.visibility = View.GONE
                 viewModel.errorGetOperation.value = null
-                viewModel.getOperation(map)
-                initResult()
+                errorCode = "601"
             } else {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorGetOperation.value != null) {
-                        viewModel.errorGetOperation.value = null
-                        viewModel.listGetOperationDta.postValue(null)
-                    }
+                if (viewModel.listGetOperationDta.value == null) {
+                    viewModel.errorGetOperation.value = null
                     viewModel.getOperation(map)
                     initResult()
-                }, 500)
+                } else {
+                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                        if (viewModel.errorGetOperation.value != null) {
+                            viewModel.errorGetOperation.value = null
+                            viewModel.listGetOperationDta.postValue(null)
+                        }
+                        viewModel.getOperation(map)
+                        initResult()
+                    }, 500)
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -238,6 +223,35 @@ class DetailProfileFragment : Fragment() {
         if (activity is MainActivity) {
             activity.setTitle(title, color)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+
+        if (viewModel.listGetOperationDta.value != null) {
+            if (errorCode == "200") {
+                shimmer_detail_profile.visibility = View.GONE
+                initResult()
+            } else {
+                shimmer_detail_profile.startShimmerAnimation()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    initRestart()
+                }, 500)
+            }
+        } else {
+            shimmer_detail_profile.startShimmerAnimation()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                initRestart()
+            }, 500)
+        }
+
+        setTitle(titlt, resources.getColor(R.color.whiteColor))
+        //меняет цвета навигационной понели
+        ColorWindows(activity as AppCompatActivity).rollback()
     }
 
     private fun initAuthorized() {
