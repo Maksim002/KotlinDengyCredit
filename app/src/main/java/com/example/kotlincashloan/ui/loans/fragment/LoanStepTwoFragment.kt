@@ -23,6 +23,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansStepAdapter
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.extension.*
+import com.example.kotlincashloan.service.model.Loans.LoanInResultModel
 import com.example.kotlincashloan.service.model.Loans.LoansStepTwoModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -44,6 +45,7 @@ import kotlin.math.round
 class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var applicationStatus: Boolean,  var listener: LoanClearListener) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
+    private var list = LoanInResultModel()
     val map = HashMap<String, String>()
 
     private var maxCounter = 0
@@ -71,12 +73,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initClick()
-
-        if (listLoan.loanTerm != null && listLoan.loanSum != null){
-            totalCounter = listLoan.loanTerm!!.toInt()
-            loan_step_sum.text = listLoan.loanSum
-            totalSum = listLoan.loanSum!!.toFloat().toInt()
-        }
     }
 
     private fun initClick() {
@@ -127,6 +123,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         if (menuVisible && isResumed) {
+            if (listLoan.loanTerm != null && listLoan.loanSum != null){
+                totalCounter = listLoan.loanTerm!!.toInt()
+                loan_step_sum.text = listLoan.loanSum
+                totalSum = listLoan.loanSum!!.toFloat().toInt()
+            }
             if (viewModel.getLoanInfoDta.value == null){
                 initRestart()
             }else{
@@ -147,6 +148,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                 } else {
                     progressBarr(sumMin.toString())
                 }
+
+                minCounterLoan.setText(minCounter.toString())
+                maxCounterLoan.setText(maxCounter.toString())
+
+                monthMax = list.maxCount!!.toInt() - 1
 
                 initImageSum()
                 initImagMonth()
@@ -172,6 +178,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         //Если запрос счётчика прошол успешно
         viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result ->
             if (result.result != null) {
+                list = result.result
                 sumMin = result.result.minSum.toString().toDouble().toInt()
                 sumMax = result.result.maxSum.toString().toDouble().toInt()
 

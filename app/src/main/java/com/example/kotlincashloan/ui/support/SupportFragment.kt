@@ -205,7 +205,7 @@ class SupportFragment : Fragment(), SupportListener {
                             list = result.result
                             myAdapter.update(list)
                             profile_recycler.adapter = myAdapter
-                            initVisibilities()
+//                            initVisibilities()
                             layout_support_null.visibility = View.GONE
                             if (genAnim){
                                 shimmer_support.visibility = View.GONE
@@ -272,77 +272,77 @@ class SupportFragment : Fragment(), SupportListener {
     }
 
     override fun onClickListener(item: ListFaqResultModel) {
-        try {
-            if (!item.clicked) {
-                foresight = true
-                if (!primaryInput) {
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        isSwitchingFalse()
-                        primaryInput = true
-                    }, 600)
-                } else {
-                    isSwitchingFalse()
-                }
-            } else {
-                foresight = false
-                isSwitchingTrue()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        try {
+//            if (!item.clicked) {
+//                foresight = true
+//                if (!primaryInput) {
+//                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                        isSwitchingFalse()
+//                        primaryInput = true
+//                    }, 600)
+//                } else {
+//                    isSwitchingFalse()
+//                }
+//            } else {
+//                foresight = false
+//                isSwitchingTrue()
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
     }
 
-    //Метод запрашивает и сравнивает размеры окон
-    fun fitView(recyclerView: RecyclerView? = null) {
-        // запрашивает размер NestedScrollView
-        layout_liner.post {
-            heightLiner = layout_liner.height
-            // запрашивает размер RecyclerView
-            recyclerView!!.post {
-                heightRecycler = profile_recycler.height
-                // проверяет если это первичный старт
-                // Отрезмера NestedScrollView отнемает -240
-                if (!firstStart) {
-                    heightSize = heightLiner - 240
-                    firstStart = true
-                }
-                // Сравнивает размер окон
-                if (heightRecycler >= heightSize) {
-                    isSwitchingFalse()
-                } else {
-                    isSwitchingTrue()
-                }
-            }
-        }
-    }
+//    //Метод запрашивает и сравнивает размеры окон
+//    fun fitView(recyclerView: RecyclerView? = null) {
+//        // запрашивает размер NestedScrollView
+//        layout_liner.post {
+//            heightLiner = layout_liner.height
+//            // запрашивает размер RecyclerView
+//            recyclerView!!.post {
+//                heightRecycler = profile_recycler.height
+//                // проверяет если это первичный старт
+//                // Отрезмера NestedScrollView отнемает -240
+//                if (!firstStart) {
+//                    heightSize = heightLiner - 240
+//                    firstStart = true
+//                }
+//                // Сравнивает размер окон
+//                if (heightRecycler >= heightSize) {
+//                    isSwitchingFalse()
+//                } else {
+//                    isSwitchingTrue()
+//                }
+//            }
+//        }
+//    }
 
-    private fun isSwitchingTrue() {
-        support_button_res.visibility = View.GONE
-        support_button_lay.visibility = View.VISIBLE
-    }
+//    private fun isSwitchingTrue() {
+//        support_button_res.visibility = View.GONE
+//        support_button_lay.visibility = View.VISIBLE
+//    }
+//
+//    private fun isSwitchingFalse() {
+//        support_button_res.visibility = View.VISIBLE
+//        support_button_lay.visibility = View.GONE
+//    }
 
-    private fun isSwitchingFalse() {
-        support_button_res.visibility = View.VISIBLE
-        support_button_lay.visibility = View.GONE
-    }
-
-    fun initVisibilities() {
-        support_no_connection.visibility = View.GONE
-        layout_access_restricted.visibility = View.GONE
-        support_technical_work.visibility = View.GONE
-        support_not_found.visibility = View.GONE
-        if (!foresight) {
-            if (myAdapter.itemCount == list.size) {
-                fitView(profile_recycler)
-            }
-        } else {
-            if (myAdapter.itemCount == list.size) {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    fitView(profile_recycler)
-                }, 300)
-            }
-        }
-    }
+//    fun initVisibilities() {
+//        support_no_connection.visibility = View.GONE
+//        layout_access_restricted.visibility = View.GONE
+//        support_technical_work.visibility = View.GONE
+//        support_not_found.visibility = View.GONE
+//        if (!foresight) {
+//            if (myAdapter.itemCount == list.size) {
+//                fitView(profile_recycler)
+//            }
+//        } else {
+//            if (myAdapter.itemCount == list.size) {
+//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                    fitView(profile_recycler)
+//                }, 300)
+//            }
+//        }
+//    }
 
     override fun onStart() {
         super.onStart()
