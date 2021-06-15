@@ -72,7 +72,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         super.onViewCreated(view, savedInstanceState)
         initClick()
 
-        if (status == true) {
+        if (listLoan.loanTerm != null && listLoan.loanSum != null){
             totalCounter = listLoan.loanTerm!!.toInt()
             loan_step_sum.text = listLoan.loanSum
             totalSum = listLoan.loanSum!!.toFloat().toInt()
@@ -507,8 +507,8 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
 //                    as LinearLayout, loans_two_found as LinearLayout, requireActivity())
 
         listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
-                    as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
-                    as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
+                as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
+                as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
     }
 
     private fun initRestart() {
