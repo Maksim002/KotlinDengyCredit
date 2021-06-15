@@ -127,7 +127,44 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         if (menuVisible && isResumed) {
-            initRestart()
+            if (viewModel.getLoanInfoDta.value == null){
+                initRestart()
+            }else{
+                if (status) {
+                    if (listLoan.loanSum != null) {
+                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                            try {
+                                step_item_list.smoothScrollToPosition(listLoan.loanTerm!!.toInt() - minCounter)
+                                progressBarr(listLoan.loanSum!!.toDouble().toInt().toString())
+                                loan_step_seek.progress = listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }, 1200)
+                    } else {
+                        progressBarr(sumMin.toString())
+                    }
+                } else {
+                    progressBarr(sumMin.toString())
+                }
+
+                initImageSum()
+                initImagMonth()
+                totalSum()
+                initResiscler()
+                initSeekBar()
+
+                (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                if (!AppPreferences.isRepeat){
+                    //генерирует анимацию перехода
+                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                    AppPreferences.isRepeat = true
+                }
+            }
         }
     }
 
