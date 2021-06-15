@@ -179,10 +179,10 @@ interface ApiService {
     @POST
     fun uploadImg(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<UploadImgResultModel>>
 
-    @Headers("Content-Type: application/x-www-form-urlencoded")
-    @FormUrlEncoded
-    @POST
-    fun getLoanInfo(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<LoanInResultModel>>
+//    @Headers("Content-Type: application/x-www-form-urlencoded")
+//    @FormUrlEncoded
+//    @POST
+//    fun getLoanInfo(@FieldMap params: Map<String, String>, @Url string: String):Call<CommonResponse<LoanInResultModel>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
@@ -263,6 +263,11 @@ interface ApiService {
     @FormUrlEncoded
     @POST
     suspend fun saveLoans(@FieldMap params: Map<String, String>, @Url string: String): Response<CommonResponseReject<SaveLoanResultModel>>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @FormUrlEncoded
+    @POST
+    suspend fun  getLoanInfoDta(@FieldMap params: Map<String, String>, @Url string: String): Response<CommonResponseReject<LoanInResultModel>>
 
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
