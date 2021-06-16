@@ -490,6 +490,7 @@ override fun onStart() {
                     listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             GetLoanActivity.alert.hide()
         })
     }

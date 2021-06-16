@@ -48,11 +48,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     private var handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_loan_step_face, container, false)
     }
 
@@ -226,10 +222,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     private fun requestFace() {
         //Метод сканироет лицо проверяет на живность
-        Instance().startLivenessMatching(
-            requireContext(),
-            1
-        ) { livenessResponse: LivenessResponse? ->
+        Instance().startLivenessMatching(requireContext(), 1) { livenessResponse: LivenessResponse? ->
             if (livenessResponse != null && livenessResponse.bitmap != null) {
 //                GetLoanActivity.alert.show()
                 //Если сканирование прошло успешно
@@ -242,6 +235,9 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                 }
             } else {
                 GetLoanActivity.alert.hide()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }, 500)
             }
             Instance().stopLivenessProcessing(requireContext());
         }
