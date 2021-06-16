@@ -3,12 +3,9 @@ package com.example.kotlincashloan.ui.loans.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.GONE
 import android.view.View.OnTouchListener
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -121,6 +118,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         if (menuVisible && isResumed) {
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             initRestart()
         }
     }
@@ -165,11 +163,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                         } else {
                             progressBarr(sumMin.toString())
                         }
-
-//                        if (!status) {
-//                            totalCounter = data.result.minCount.toString().toInt()
-//                            totalSum = data.result.minSum!!.toDouble().toInt()
-//                        }
                         minCounterLoan.setText(minCounter.toString())
                         maxCounterLoan.setText(maxCounter.toString())
 
@@ -205,78 +198,8 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                     getErrorCode(msg!!.toInt())
                 }
             }
-//            GetLoanActivity.alert.hide()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
-
-//        viewModel.getLoanInfoDta.observe(viewLifecycleOwner, Observer { result ->
-//            if (result.result != null) {
-//                sumMin = result.result.minSum.toString().toDouble().toInt()
-//                sumMax = result.result.maxSum.toString().toDouble().toInt()
-//
-//                maxCounter = result.result.maxCount.toString().toInt()
-//                minCounter = result.result.minCount.toString().toInt()
-//
-//                totalRate = result.result.rate!!.toDouble()
-//
-//                position = minCounter
-//
-//                if (status) {
-//                    if (listLoan.loanSum != null) {
-//                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                            try {
-//                                step_item_list.smoothScrollToPosition(listLoan.loanTerm!!.toInt() - minCounter)
-//                                progressBarr(listLoan.loanSum!!.toDouble().toInt().toString())
-//                                loan_step_seek.progress = listLoan.loanSum!!.toDouble().toInt() / 1000 - 5
-//                            } catch (e: Exception) {
-//                                e.printStackTrace()
-//                            }
-//                        }, 1200)
-//                    } else {
-//                        progressBarr(sumMin.toString())
-//                    }
-//                } else {
-//                    progressBarr(sumMin.toString())
-//                }
-//
-//                if (!status) {
-//                    totalCounter = result.result.minCount.toString().toInt()
-//                    totalSum = result.result.minSum!!.toDouble().toInt()
-//                }
-//                minCounterLoan.setText(minCounter.toString())
-//                maxCounterLoan.setText(maxCounter.toString())
-//
-//                monthMax = result.result.maxCount!!.toInt() - 1
-//
-//                initImageSum()
-//                initImagMonth()
-//                totalSum()
-//                initResiscler()
-//                initSeekBar()
-//
-//                (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
-//                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
-//                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
-//                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
-//                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
-//                if (!AppPreferences.isRepeat){
-//                    //генерирует анимацию перехода
-//                    animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
-//                    AppPreferences.isRepeat = true
-//                }
-//
-//            } else {
-//                if (result.error.code != null) {
-//                    getErrorCode(result.error.code!!)
-//                }
-//            }
-//        })
-//
-//
-//        viewModel.errorGetLoanInfo.observe(viewLifecycleOwner, Observer { error ->
-//            if (error != null) {
-//                getErrorCode(error.toInt())
-//            }
-//        })
     }
 
     //Сохронение на сервер данных
@@ -537,11 +460,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     }
 
     private fun getErrorCode(error: Int) {
-
-//        listListResult(error, loans_two_work as LinearLayout, loans_two_connection
-//                    as LinearLayout, layout_two as LinearLayout, loans_two_restricted
-//                    as LinearLayout, loans_two_found as LinearLayout, requireActivity())
-
         listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
                     as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
                     as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)

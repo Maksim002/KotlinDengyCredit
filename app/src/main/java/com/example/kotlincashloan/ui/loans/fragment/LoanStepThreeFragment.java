@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +42,7 @@ import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment;
 import com.example.kotlincashloan.ui.registration.login.HomeActivity;
 import com.example.kotlincashloan.utils.ObservedInternet;
 import com.example.kotlinscreenscanner.service.model.CommonResponseReject;
+import com.example.kotlinscreenscanner.ui.MainActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
@@ -130,6 +133,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
         initClick();
         getLists();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @SuppressLint("HandlerLeak")
@@ -429,6 +438,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                         currentScenario = scenarios.get(3);
                                         DocumentReader.Instance().processParams().scenario = currentScenario;
                                     }
+                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                                 //Initialization was not successful
                                 else {
@@ -437,6 +447,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                     } catch (Exception el) {
                                         el.printStackTrace();
                                     }
+                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                             }
 
@@ -463,6 +474,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion);
                     DocumentReader.Instance().processParams().multipageProcessing = true;
+                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             });
         }

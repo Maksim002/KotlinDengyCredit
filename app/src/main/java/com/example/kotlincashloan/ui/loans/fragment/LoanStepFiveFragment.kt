@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
@@ -101,6 +102,11 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         initClick()
         initView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
@@ -684,6 +690,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 listIncomeAdditional = result.result
                 getResultOk()
             } else {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 getListAdditionalDta = result.error.code.toString()
                 getErrorCode(result.error.code!!)
             }
@@ -691,6 +698,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         viewModel.errorListIncome.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 getListAdditionalDta = error
                 getErrorCode(error.toInt())
             }
@@ -817,6 +825,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 

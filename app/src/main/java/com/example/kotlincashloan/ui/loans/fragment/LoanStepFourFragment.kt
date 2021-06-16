@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -96,6 +97,11 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         initClick()
         initView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
@@ -504,6 +510,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 }
                 getResultOk()
             } else {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 getErrorCode(result.error.code!!)
               alert.hide()
             }
@@ -511,6 +518,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         viewModel.errorListAvailableSix.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 listAvailableCountryDta = error
                 getErrorCode(error.toInt())
             }
@@ -770,6 +778,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 

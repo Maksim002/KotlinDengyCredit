@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -198,6 +199,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 //генерирует анимацию перехода
                 animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
             }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 
@@ -290,6 +292,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
 
 override fun onStart() {
     super.onStart()
+    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     if (fifth_goal_name.text.isNotEmpty()) {
         fifth_goal_name.hint = null
     }
@@ -385,6 +388,7 @@ override fun onStart() {
                 }
             }
             imageString.clear()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
 
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
@@ -397,6 +401,7 @@ override fun onStart() {
             }
             imageString.clear()
             GetLoanActivity.alert.hide()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
     }
 
@@ -1002,6 +1007,10 @@ override fun onStart() {
                 // TODO: 31.03.21 Проверить ещё раз нужин ли он тут
                 dataImage()
             }
+        }else{
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }, 900)
         }
 
         if (requestCode == REQUEST_BROWSE_PICTURE) {

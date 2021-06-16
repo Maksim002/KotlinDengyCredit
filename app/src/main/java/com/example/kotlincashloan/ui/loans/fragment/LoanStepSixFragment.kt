@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
@@ -75,6 +76,11 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
         six_loan_phone.mask = "+7 (###)-###-##-##"
         initClick()
         initView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
@@ -222,6 +228,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                 listFamily = result.result
                 getResultOk()
             } else {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 getListFamilyDta = result.error.code!!.toString()
                 getErrorCode(result.error.code!!)
             }
@@ -230,6 +237,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
         viewModel.errorListFamily.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 getListFamilyDta = error
                 getErrorCode(error.toInt())
             }

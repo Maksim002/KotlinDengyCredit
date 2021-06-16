@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -146,6 +147,11 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
     override fun onResume() {
         super.onResume()
         if (statusValue == true) {
@@ -181,6 +187,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                     AppPreferences.isRepeat = true
                 }
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             } else if (msg != null) {
                 listListResult(
                     result.error.code!!.toInt(),
@@ -194,6 +201,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     requireActivity(),
                     true
                 )
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
 
@@ -211,6 +219,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     requireActivity(),
                     true
                 )
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
     }

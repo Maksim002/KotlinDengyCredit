@@ -128,35 +128,6 @@ class LoansViewModel: ViewModel() {
         return repository.getLoanInfoDta(phone)
     }
 
-//    val errorGetLoanInfo = MutableLiveData<String>()
-//    var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
-//
-//    fun getInfo(map: Map<String, String>){
-//        RetrofitService.apiService().getLoanInfo(map, generateUrl("getLoanInfo")).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
-//            override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
-//                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
-//                    errorGetLoanInfo.postValue( "601")
-//                }else{
-//                    errorGetLoanInfo.postValue( "600")
-//                }
-//            }
-//            override fun onResponse(call: Call<CommonResponse<LoanInResultModel>>, response: Response<CommonResponse<LoanInResultModel>>) {
-//                if (response.isSuccessful) {
-//                    if (response.body()!!.code == 200){
-//                        getLoanInfoDta.postValue(response.body())
-//                    }else{
-//                        errorGetLoanInfo.postValue(response.body()!!.code.toString())
-//                    }
-//                }else{
-//                    errorGetLoanInfo.postValue(response.code().toString())
-//                }
-////                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-////                    HomeActivity.alert.hide()
-////                },400)
-//            }
-//        })
-//    }
-
     //defaultList Стандартный список ответов.
     val errorDefaultList = MutableLiveData<String>()
     var getDefaultListDta = MutableLiveData<CommonResponse<ArrayList<DefaultListModel>>>()
