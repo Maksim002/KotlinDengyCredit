@@ -501,7 +501,7 @@
                             android:layout_marginBottom="15dp"
                             android:gravity="center"
                             android:text="Уже зарегистрированы?"
-                            android:textColor="#FF9900"
+                            android:textColor="@color/orangeColor"
                             android:textSize="15sp" />
                     </LinearLayout>
 

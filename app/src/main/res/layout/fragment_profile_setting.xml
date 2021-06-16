@@ -881,7 +881,7 @@
                             android:layout_marginTop="15dp"
                             android:gravity="center"
                             android:text="Обратиться в службу поддержки"
-                            android:textColor="#FF9900"
+                            android:textColor="@color/orangeColor"
                             android:textSize="15sp" />
                     </LinearLayout>
 

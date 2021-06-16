@@ -24,7 +24,7 @@
                 android:layout_width="137dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/ic_paper_clip"
+                android:src="@drawable/ic_money_loan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -207,7 +207,7 @@
                     android:layout_marginTop="15dp"
                     android:gravity="center"
                     android:text="Забыли пароль?"
-                    android:textColor="#FF9900"
+                    android:textColor="@color/orangeColor"
                     android:textSize="15sp" />
 
                 <TextView
@@ -217,7 +217,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="center"
                     android:text="Регистрация"
-                    android:textColor="#FF9900"
+                    android:textColor="@color/orangeColor"
                     android:textSize="15sp" />
             </LinearLayout>
 

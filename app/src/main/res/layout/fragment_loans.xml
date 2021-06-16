@@ -154,7 +154,8 @@
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center"
                                                 android:layout_marginTop="3dp"
-                                                android:theme="@style/SCBSwitch" />
+                                                android:theme="@style/SCBSwitch"
+                                                tools:ignore="UseSwitchCompatOrMaterialXml" />
                                         </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>

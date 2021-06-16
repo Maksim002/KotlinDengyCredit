@@ -13,7 +13,7 @@
         android:layout_height="40dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="26dp"
-        android:src="@drawable/ic_paper_clip"
+        android:src="@drawable/ic_money_loan"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
             <ImageView
                 android:layout_width="300dp"
                 android:layout_height="90dp"
-                android:src="@drawable/ic_paper_clip"
+                android:src="@drawable/ic_money_loan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

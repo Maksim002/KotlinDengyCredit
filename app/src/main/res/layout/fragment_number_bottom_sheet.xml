@@ -78,7 +78,7 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:text="Я не получил код"
-        android:textColor="#FF9900"
+        android:textColor="#FF8C03"
         android:textSize="16sp" />
 
 </LinearLayout>
