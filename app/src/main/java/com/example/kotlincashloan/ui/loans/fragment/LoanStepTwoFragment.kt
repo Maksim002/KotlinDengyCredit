@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.lang.Math.pow
 import kotlin.math.round
 
-
 class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var applicationStatus: Boolean,  var listener: LoanClearListener) : Fragment(), StepClickListener {
     private var myAdapter = LoansStepAdapter()
     private var viewModel = LoansViewModel()
