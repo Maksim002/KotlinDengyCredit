@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.animationGenerator
-import com.example.kotlincashloan.extension.animationLoanGenerator
-import com.example.kotlincashloan.extension.shimmerStop
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_push.*

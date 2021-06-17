@@ -19,7 +19,6 @@ import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.*
-import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.service.model.Loans.ListFamilyResultModel
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -32,7 +31,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loan_step_five.*
 import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
@@ -70,9 +68,6 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        if (permission == 5){
-//            alert.show()
-        }
         six_loan_phone.mask = "+7 (###)-###-##-##"
         initClick()
         initView()
@@ -80,13 +75,14 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 initRestart()
             }
         }, 500)
@@ -96,12 +92,10 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
         (activity as GetLoanActivity?)!!. access_restricted.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         (activity as GetLoanActivity?)!!. no_connection_repeat.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         bottom_loan_six.setOnClickListener {
@@ -113,16 +107,10 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
             listener.loanClearClickListener()
-//            if (validate()) {
-//                initSaveLoan()
-//            }
         }
 
         (activity as GetLoanActivity?)!!. not_found.setOnClickListener {
             listener.loanClearClickListener()
-//            if (validate()) {
-//                initSaveLoan()
-//            }
         }
 
         four_cross_six.setOnClickListener {
@@ -254,7 +242,6 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
             (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
-//            GetLoanActivity.alert.show()
             val mapSave = mutableMapOf<String, String>()
             mapSave["login"] = AppPreferences.login.toString()
             mapSave["token"] = AppPreferences.token.toString()
@@ -308,17 +295,12 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
                         listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                GetLoanActivity.alert.hide()
             })
         }
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: String,
-        title: String, id: AutoCompleteTextView
-    ) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -344,7 +326,7 @@ class LoanStepSixFragment(var status: Boolean, var listLoan: GetLoanModel, var p
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
         }

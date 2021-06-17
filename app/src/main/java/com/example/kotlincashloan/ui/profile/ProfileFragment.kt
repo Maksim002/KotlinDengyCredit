@@ -22,10 +22,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.adapter.profile.TransferListener
-import com.example.kotlincashloan.extension.animationGenerator
-import com.example.kotlincashloan.extension.bitmapToFile
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.sendPicture
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -257,7 +254,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                 // запрос для выгрузки изоброжение с сервира
                 viewModel.listGetImgDta.observe(viewLifecycleOwner, Observer { result ->
                     try {
-                         if (result.result != null) {
+                        if (result.result != null) {
                             errorGetImg = result.code.toString()
                             val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
                             val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -266,8 +263,8 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                             image_profile.setImageBitmap(scaled)
                             bitmapToFile(decodedImage, requireContext())
                             addImage = false
-                             //Проверка как запускать анимацию
-                             errorGenAnim()
+                            //Проверка как запускать анимацию
+                            errorGenAnim()
                             try {
                                 profile_swipe.isRefreshing = false
                             }catch (e: Exception){
@@ -390,15 +387,18 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     }
 
     private fun errorGenAnim(){
-        if (genAnim){
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+         if (genAnim){
+            if (!AppPreferences.isRestart){
                 shimmer_profile.visibility = View.GONE
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            }, 700)
+            }else{
+                animationGeneratorProfile(shimmer_profile, handler, requireActivity())
+                AppPreferences.isRestart = false
+            }
         }
         if (!genAnim) {
             //генерирует анимацию перехода
-            animationGenerator(shimmer_profile, handler, requireActivity())
+            animationGeneratorProfile(shimmer_profile, handler, requireActivity())
             genAnim = true
         }
     }
@@ -456,7 +456,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
             errorValue()
             clearError()
         } else {
-//            HomeActivity.alert.show()
             val mapLOan = HashMap<String, String>()
             mapLOan.put("login", AppPreferences.login.toString())
             mapLOan.put("token", AppPreferences.token.toString())
@@ -481,7 +480,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                         getErrorCode(msg!!.toInt())
                     }
                 }
-                MainActivity.alert.hide()
             })
         }
     }
@@ -490,7 +488,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         val adapter = ProfilePagerAdapter(childFragmentManager)
         adapter.addFragment(MyOperationFragment(listOperation, errorNull, this), "Мои операции")
         adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
-        profile_pager.setAdapter(adapter)
+        profile_pager.adapter = adapter
 
         profile_pager.isEnabled = false
 

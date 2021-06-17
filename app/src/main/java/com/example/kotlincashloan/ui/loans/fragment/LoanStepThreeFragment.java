@@ -100,8 +100,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
     private ShimmerFrameLayout shimmerFrameLayout , startShimmerAnimation;
 
-    private Handler mHandler;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -138,7 +136,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     @Override
     public void onStart() {
         super.onStart();
-        requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     @SuppressLint("HandlerLeak")
@@ -149,9 +147,10 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             public void handleMessage(Message msg){
                 super.handleMessage(msg);
                 if (menuVisible && isResumed()){
+                    requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     if (!AppPreferences.INSTANCE.isRepeat()){
                         //генерирует анимацию перехода
-                        AnimKt.animationGenerator(shimmerFrameLayout, new Handler(), requireActivity());
+                        AnimKt.animationGeneratorLoan(shimmerFrameLayout, new Handler(), requireActivity());
                     }
                     initInternet();
                 }
@@ -202,9 +201,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     }
 
     private void initResult() {
-//        startShimmerAnimation.startShimmerAnimation();
-//        startShimmerAnimation.setVisibility(View.VISIBLE);
-
         new ObservedInternet().observedInternet(requireContext());
         if (AppPreferences.INSTANCE.getObservedInternet()) {
             status_no_questionnaire.setVisibility(View.VISIBLE);
@@ -213,7 +209,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             status_not_found.setVisibility(View.GONE);
             theeIncorrect.setVisibility(View.GONE);
         } else {
-//            GetLoanActivity.alert.show();
             map.put("login", AppPreferences.INSTANCE.getLogin());
             map.put("token", AppPreferences.INSTANCE.getToken());
 
@@ -296,7 +291,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                             }
                         }
                     }
-                    GetLoanActivity.alert.hide();
                 }
             });
         }
@@ -474,7 +468,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                     //starting video processing
                     DocumentReader.Instance().showScanner(requireContext(), completion);
                     DocumentReader.Instance().processParams().multipageProcessing = true;
-                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             });
         }

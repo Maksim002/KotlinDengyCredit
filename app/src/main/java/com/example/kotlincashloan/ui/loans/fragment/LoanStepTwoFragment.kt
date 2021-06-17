@@ -72,29 +72,23 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
     private fun initClick() {
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         bottom_step_two.setOnClickListener {
             shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
-//            shimmer_step_two.startShimmerAnimation()
-//            shimmer_step_two.visibility = View.VISIBLE
 
             AppPreferences.isRepeat = false
             initSaveLoan()
@@ -112,6 +106,11 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         } else {
             bottom_step_two.text = "Следующий шаг"
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
@@ -180,7 +179,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                         (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
                         if (!AppPreferences.isRepeat){
                             //генерирует анимацию перехода
-                            animationLoanGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
+                            animationGeneratorTwo((activity as GetLoanActivity?)!!.shimmer_step_loan, handler, requireActivity())
                             AppPreferences.isRepeat = true
                         }
 
@@ -211,7 +210,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
             (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
             (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
-//            GetLoanActivity.alert.show()
             val mapSave = mutableMapOf<String, String>()
             mapSave.put("login", AppPreferences.login.toString())
             mapSave.put("token", AppPreferences.token.toString())
@@ -241,12 +239,10 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                                 } else {
 //                                (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
-//                                    shimmer_step_two.visibility = View.GONE
                                 }
                             } else {
 //                            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 2
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 3
-//                                shimmer_step_two.visibility = View.GONE
                             }
                         } else if (data.error.code != null) {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
@@ -266,7 +262,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
                         listListResult(msg!!, activity as AppCompatActivity)
                     }
                 }
-                GetLoanActivity.alert.hide()
             })
         }
     }
@@ -295,11 +290,7 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
         try {
             step_item_list.initialize(myAdapter)
             step_item_list.setViewsToChangeColor(
-                listOf(
-                    R.id.loan_step_number,
-                    R.id.loan_step_number
-                )
-            )
+                listOf(R.id.loan_step_number, R.id.loan_step_number))
             myAdapter.update(list)
 
         } catch (e: Exception) {
@@ -380,8 +371,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//                step_item_list.smoothScrollToPosition(position)
-//                AppPreferences.isSeekBar = position
             }
         })
     }
@@ -477,7 +466,6 @@ class LoanStepTwoFragment(var status: Boolean, var listLoan: GetLoanModel, var a
             (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
             (activity as GetLoanActivity?)!!.get_loan_not_found.visibility = View.GONE
         } else {
-//            viewModel.getInfo(map)
             initСounter()
         }
     }

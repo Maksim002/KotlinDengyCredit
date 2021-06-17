@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -60,12 +59,9 @@ import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
-import kotlinx.android.synthetic.main.fragment_loan_step_six.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -127,22 +123,16 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private val mapSave = mutableMapOf<String, String>()
     private lateinit var idImage: ImageView
     private lateinit var idImageIc: ImageView
-    private lateinit var alert: LoadingAlert
     private var visibilityIm = 0
     private val handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_fifth, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alert = LoadingAlert(requireActivity())
 
         if (applicationStatus == false){
             // Отоброожает кнопку если статус true видем закрытия
@@ -151,9 +141,6 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        if (permission == 6){
-            alert.show()
-        }
         //формат даты
         simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
@@ -170,6 +157,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 initRestart()
             }
         }, 500)
@@ -197,7 +185,7 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
             }
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
@@ -246,11 +234,9 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 imageViewModel.updateBitmaps(imageMap)
                 // После добовлния удолят bitmap кортинок получаемых с сервира
                 mitmap.clear()
-                alert.hide()
             }
             else{
                 dataImage()
-                alert.hide()
             }
             //при редактирование сравнивает спрятать поля или нет
             if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
@@ -292,14 +278,13 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
 
 override fun onStart() {
     super.onStart()
-    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     if (fifth_goal_name.text.isNotEmpty()) {
         fifth_goal_name.hint = null
     }
     if (contract_type.text.isNotEmpty()) {
         contract_type.hint = null
     }
-//    initRestart()
 }
 
     //Сохронение картинки на сервер
@@ -407,7 +392,6 @@ override fun onStart() {
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveServer() {
-//        GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.applicationId.toString()
@@ -463,8 +447,8 @@ override fun onStart() {
                         (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            if (applicationStatus == false){
-                                if (statusValue == true){
+                            if (!applicationStatus){
+                                if (statusValue){
                                     requireActivity().onBackPressed()
                                 }else{
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
@@ -491,13 +475,12 @@ override fun onStart() {
                 }
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            GetLoanActivity.alert.hide()
         })
     }
 
     //Скрытие полей
     private fun initHidingFields() {
-        if (statusValue == true){
+        if (statusValue){
             hidingLayout = listLoan.nationality_ocr.toString()
         }else{
             hidingLayout = AppPreferences.nationality.toString()
@@ -569,7 +552,6 @@ override fun onStart() {
                 listTypeContract = result.result
                 getListsText()
             } else {
-//                listResult(result.error.code!!)
                 getErrorCode(result.error.code!!)
             }
         })
@@ -577,7 +559,6 @@ override fun onStart() {
         viewModel.errorListTypeContract.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listContractError = error
-//                errorList(error)
                 getErrorCode(error.toInt())
             }
         })
@@ -587,22 +568,18 @@ override fun onStart() {
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
             listener.loanClearClickListener()
-//            initRestart()
         }
 
         bottom_loan_fifth.setOnClickListener {
@@ -818,11 +795,7 @@ override fun onStart() {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: String,
-        title: String, id: AutoCompleteTextView
-    ) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -1018,8 +991,6 @@ override fun onStart() {
             if (data!!.data != null) {
                 val selectedImage = data.data
                 val bmp: Bitmap? = selectedImage?.let { getBitmap(it, 1920, 1080) }
-//                russian_patent.setText("Processing image")
-                //                    loadingDialog = showDialog("Processing image");
                 if (bmp != null) {
                     DocumentReader.Instance().recognizeImage(bmp, completion)
                 }
@@ -1248,8 +1219,8 @@ override fun onStart() {
         try {
 
             if (!DocumentReader.Instance().documentReaderIsReady) {
-                text.setText("Ожидайте, идет загрузка...")
-                fifth_potent.setClickable(false)
+                text.text = "Ожидайте, идет загрузка..."
+                fifth_potent.isClickable = false
 
 
                 //Reading the license from raw resource file
@@ -1278,13 +1249,10 @@ override fun onStart() {
                                 p1: DocumentReaderException?
                             ) {
                                 //Initializing the reader
-                                DocumentReader.Instance().initializeReader(
-                                    requireContext(),
-                                    license
-                                ) { success, error_initializeReader ->
+                                DocumentReader.Instance().initializeReader(requireContext(), license) { success, error_initializeReader ->
                                     //добавил трай что бы непадал
                                     try {
-                                        text.setText("Фото патента РФ:")
+                                        text.text = "Фото патента РФ:"
                                         fifth_potent.isClickable = true
                                     } catch (e: Exception) {
                                         e.printStackTrace()

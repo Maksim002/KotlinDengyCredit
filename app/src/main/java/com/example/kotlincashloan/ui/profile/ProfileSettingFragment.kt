@@ -1417,6 +1417,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
     override fun onStart() {
         super.onStart()
+        AppPreferences.isRestart = true
         //анимация возврата со страчики служба поддержки
         if (profileSettingAnimR) {
             //profileAnim анимация для перехода с адного дествия в другое

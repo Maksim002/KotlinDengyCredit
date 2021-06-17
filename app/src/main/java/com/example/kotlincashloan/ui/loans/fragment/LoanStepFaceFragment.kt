@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.extension.*
-import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.example.kotlincashloan.ui.loans.LoansViewModel
 import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment
@@ -29,9 +28,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_face.*
-import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -54,9 +50,9 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Instance().setServiceUrl("https://faceapi.molbulak.com")
+        Instance().serviceUrl = "https://faceapi.molbulak.com"
 
-        if (applicationStatus == false) {
+        if (!applicationStatus) {
             // Отоброожает кнопку если статус true видем закрытия
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
         } else {
@@ -70,6 +66,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 initRestart()
             }
         }, 500)
@@ -117,41 +114,37 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         }
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.face_cross_back.setOnClickListener {
             AppPreferences.isRepeat = false
             shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
-            (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(6)
+            (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 6
         }
     }
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun onResume() {
         super.onResume()
-        if (statusValue == true) {
-            if (applicationStatus == false) {
+        if (statusValue) {
+            if (!applicationStatus) {
                 face_cross_back.visibility = View.GONE
             }
         }
@@ -180,7 +173,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                 (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
                 if (!AppPreferences.isRepeat) {
                     //генерирует анимацию перехода
-                    animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                    animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                     AppPreferences.isRepeat = true
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -213,8 +206,7 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                             as LinearLayout,
                     (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout,
                     requireActivity(),
-                    true
-                )
+                    true)
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
         })
@@ -224,17 +216,13 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
         //Метод сканироет лицо проверяет на живность
         Instance().startLivenessMatching(requireContext(), 1) { livenessResponse: LivenessResponse? ->
             if (livenessResponse != null && livenessResponse.bitmap != null) {
-//                GetLoanActivity.alert.show()
                 //Если сканирование прошло успешно
                 if (livenessResponse.liveness == 0) {
                     imageFace = livenessResponse.bitmap!!
                     imageConverter(livenessResponse.bitmap!!)
                     comparingPhotos()
-                } else if (livenessResponse.liveness == 1) {
-                    GetLoanActivity.alert.hide()
                 }
             } else {
-                GetLoanActivity.alert.hide()
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }, 500)
@@ -295,7 +283,6 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
             initSaveImage()
         } else {
             thee_incorrect_face.visibility = View.VISIBLE
-            GetLoanActivity.alert.hide()
         }
     }
 
@@ -318,20 +305,16 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     } else if (data.error.code != null) {
                         if (data.error.code == 409) {
                             thee_incorrect_face.visibility = View.VISIBLE
-                            GetLoanActivity.alert.hide()
                         } else {
                             listListResult(data.error.code!!.toInt(), activity as AppCompatActivity)
-                            GetLoanActivity.alert.hide()
                         }
                     } else if (data.reject != null) {
                         initBottomSheet(data.reject.message!!)
-                        GetLoanActivity.alert.hide()
                     }
                 }
                 Status.ERROR, Status.NETWORK -> {
                     if (msg != null) {
                         listListResult(msg, activity as AppCompatActivity)
-                        GetLoanActivity.alert.hide()
                     }
                 }
             }
@@ -375,7 +358,6 @@ class LoanStepFaceFragment(var statusValue: Boolean, var applicationStatus: Bool
                     }
                 }
             }
-            GetLoanActivity.alert.hide()
         })
     }
 

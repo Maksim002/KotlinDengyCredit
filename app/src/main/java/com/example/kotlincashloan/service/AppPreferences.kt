@@ -19,6 +19,12 @@ object AppPreferences {
         editor.apply()
     }
 
+    var isRestart: Boolean
+        get() = preferences.getBoolean("isRestart", false)
+        set(value) = preferences.edit {
+            it.putBoolean("isRestart", value)
+        }
+
     var isRepeat: Boolean
         get() = preferences.getBoolean("isRepeat", false)
         set(value) = preferences.edit {

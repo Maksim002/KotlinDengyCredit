@@ -91,23 +91,20 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        if (permission == 3) {
-//            alert.show()
-        }
-
         initClick()
         initView()
     }
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 initInternet()
             }
         }, 1000)
@@ -121,22 +118,18 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
             listener.loanClearClickListener()
-//            initInternet()
         }
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
             listener.loanClearClickListener()
-//            initInternet()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
             listener.loanClearClickListener()
-//            initInternet()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
             listener.loanClearClickListener()
-//            initInternet()
         }
 
         bottom_loan_four.setOnClickListener {
@@ -775,7 +768,7 @@ class LoanStepFourFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)

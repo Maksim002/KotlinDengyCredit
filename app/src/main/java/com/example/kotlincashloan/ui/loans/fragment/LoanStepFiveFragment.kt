@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,7 +19,6 @@ import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.adapter.loans.StepClickListener
 import com.example.kotlincashloan.common.GeneralDialogFragment
 import com.example.kotlincashloan.extension.*
-import com.example.kotlincashloan.extension.animationLoanGenerator
 import com.example.kotlincashloan.service.model.Loans.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
@@ -32,11 +30,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loan_step_fifth.view.*
 import kotlinx.android.synthetic.main.fragment_loan_step_five.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
-import kotlinx.android.synthetic.main.fragment_loan_step_two.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -96,23 +90,20 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        if (permission == 4) {
-//            alert.show()
-        }
-
         initClick()
         initView()
     }
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     override fun setMenuVisibility(menuVisible: Boolean) {
         super.setMenuVisibility(menuVisible)
         handler.postDelayed(Runnable { // Do something after 5s = 500ms
             if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 initRestart()
             }
         }, 500)
@@ -167,22 +158,18 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         }
 
         (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
         (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
-//            initRestart()
             listener.loanClearClickListener()
         }
 
@@ -524,7 +511,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                 getResultOk()
             } else {
                 getListWorkDta = result.error.code.toString()
-//                listResult(result.error.code!!)
                 getErrorCode(result.error.code!!)
             }
         })
@@ -532,7 +518,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
         viewModel.errorListWork.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 getListWorkDta = error
-//                errorList(error)
                 getErrorCode(error.toInt())
             }
         })
@@ -709,7 +694,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
 
     // TODO: 21-2-8  Сохронение Данные о трудовой деятельности.
     private fun initSaveLoan() {
-//        GetLoanActivity.alert.show()
         val mapSave = mutableMapOf<String, String>()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
@@ -785,7 +769,6 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
                     listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
-            GetLoanActivity.alert.hide()
         })
     }
 
@@ -822,7 +805,7 @@ class LoanStepFiveFragment(var status: Boolean, var listLoan: GetLoanModel, var 
             getLists()
             if (!AppPreferences.isRepeat){
                 //генерирует анимацию перехода
-                animationGenerator((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+                animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
                 AppPreferences.isRepeat = true
             }
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
