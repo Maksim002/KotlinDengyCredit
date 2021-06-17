@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
@@ -30,18 +29,13 @@ import com.example.kotlincashloan.extension.sendPicture
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import kotlinx.android.synthetic.main.fragment_detail_notification.*
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -168,9 +162,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                             resultSuccessfully()
                         }
-//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    profile_swipe.isRefreshing = false
-
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -203,8 +194,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
                 })
 
 
@@ -243,8 +232,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
                 })
             }
         } catch (e: Exception) {
@@ -307,8 +294,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                             resultSuccessfully()
                         }
-//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                        profile_swipe.isRefreshing = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -330,7 +315,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 })
             }
         } catch (e: Exception) {
@@ -377,8 +361,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                         resultSuccessfully()
                     }
-//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    profile_swipe.isRefreshing = false
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -403,16 +385,16 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
             })
         }
     }
 
     private fun errorGenAnim(){
         if (genAnim){
-            shimmer_profile.visibility = View.GONE
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                shimmer_profile.visibility = View.GONE
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            }, 700)
         }
         if (!genAnim) {
             //генерирует анимацию перехода
@@ -430,8 +412,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         profile_access_restricted.visibility = View.GONE
         profile_not_found.visibility = View.GONE
         if (profAnim) {
-            //profileAnim анимация для перехода с адного дествия в другое
-//            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
             inputsAnim = 0
             AppPreferences.inputsAnim = 0
             profAnim = false
@@ -592,7 +572,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                 shimmer_profile.startShimmerAnimation()
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (!viewModel.refreshCode) {
-//                    MainActivity.alert.show()
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
                         clearingDate()
@@ -619,9 +598,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     initRecycler()
                     editorZarem = false
                 }else{
-//                clearError()
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
                     initGetImgDta()
                     initRecycler()
                 }
@@ -709,27 +685,19 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
             AppPreferences.updatingImage = false
         }
 
-        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null
-//            || viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null || viewModel.errorListApplication.value != null
-        ) {
+        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null) {
             if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
                 AppPreferences.reviewCode = 0
                 AppPreferences.reviewCodeAp = 0
                 if (inputsAnim != 0) {
                     profAnim = true
                 }
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
                 initGetImgDta()
                 initRecycler()
             } else {
                 AppPreferences.reviewCode = 0
                 AppPreferences.reviewCodeAp = 0
                 initRestart()
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
-//                initGetImgDta()
-//                initRecycler()
             }
         } else {
             AppPreferences.reviewCode = 1
