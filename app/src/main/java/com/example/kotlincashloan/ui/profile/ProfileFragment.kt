@@ -388,13 +388,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
 
     private fun errorGenAnim(){
          if (genAnim){
-            if (!AppPreferences.isRestart){
-                shimmer_profile.visibility = View.GONE
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            }else{
-                animationGeneratorProfile(shimmer_profile, handler, requireActivity())
-                AppPreferences.isRestart = false
-            }
+             shimmer_profile.visibility = View.GONE
         }
         if (!genAnim) {
             //генерирует анимацию перехода
