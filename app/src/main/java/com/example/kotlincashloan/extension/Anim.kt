@@ -56,7 +56,7 @@ fun animationGeneratorProfile(id: ShimmerFrameLayout, handler: Handler, activity
                             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         }
                     });
-            }, 700)
+            }, 800)
             thread.interrupt()
         }
         thread.start()

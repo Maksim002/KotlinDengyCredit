@@ -22,7 +22,10 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.adapter.profile.TransferListener
-import com.example.kotlincashloan.extension.*
+import com.example.kotlincashloan.extension.animationGeneratorProfile
+import com.example.kotlincashloan.extension.bitmapToFile
+import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.sendPicture
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -38,7 +41,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var viewModel = ProfileViewModel()
@@ -63,7 +66,11 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var constantAnimation = false
     private var editorZarem = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -73,6 +80,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
+
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
 
@@ -85,6 +93,42 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initRefresh()
         initClick()
+
+        if (AppPreferences.updatingImage) {
+            viewModel.listGetImgDta.postValue(null)
+            viewModel.getImg(mapImg)
+            AppPreferences.updatingImage = false
+        }
+
+        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null) {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
+                if (inputsAnim != 0) {
+                    profAnim = true
+                }
+                initGetImgDta()
+                initRecycler()
+            } else {
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
+                initRestart()
+            }
+        } else {
+            AppPreferences.reviewCode = 1
+            AppPreferences.reviewCodeAp = 1
+            viewModel.refreshCode = false
+            initRestart()
+        }
+
+        if (numberBar != 0) {
+            profile_pager.currentItem = numberBar
+            profile_bar_one.visibility = View.VISIBLE
+            profile_bar_zero.visibility = View.GONE
+        } else {
+            profile_bar_zero.visibility = View.VISIBLE
+            profile_bar_one.visibility = View.GONE
+        }
     }
 
     private fun initArgument() {
@@ -257,7 +301,8 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                         if (result.result != null) {
                             errorGetImg = result.code.toString()
                             val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
-                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val decodedImage =
+                                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                             val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
                             val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
                             image_profile.setImageBitmap(scaled)
@@ -267,7 +312,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                             errorGenAnim()
                             try {
                                 profile_swipe.isRefreshing = false
-                            }catch (e: Exception){
+                            } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                         } else {
@@ -386,14 +431,13 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         }
     }
 
-    private fun errorGenAnim(){
-         if (genAnim){
-             shimmer_profile.visibility = View.GONE
-        }
+    private fun errorGenAnim() {
         if (!genAnim) {
             //генерирует анимацию перехода
             animationGeneratorProfile(shimmer_profile, handler, requireActivity())
             genAnim = true
+        }else{
+            shimmer_profile.visibility = View.GONE
         }
     }
 
@@ -511,7 +555,11 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         profile_bar_one.visibility = View.GONE
 
         profile_pager.setOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
                 numberBar = position
             }
 
@@ -531,12 +579,15 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            requireActivity().window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 isRestart()
                 // TODO: 02.06.2021 проверить
-                if (profile_pager.currentItem != 0){
+                if (profile_pager.currentItem != 0) {
                     profile_pager.currentItem = 0
                 }
                 profile_bar_zero.visibility = View.VISIBLE
@@ -562,7 +613,10 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         } else {
             if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listListApplicationDta.value == null) {
                 shimmer_profile.startShimmerAnimation()
-                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                requireActivity().window.setFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                )
                 if (!viewModel.refreshCode) {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
@@ -589,7 +643,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     initGetImgDta()
                     initRecycler()
                     editorZarem = false
-                }else{
+                } else {
                     initGetImgDta()
                     initRecycler()
                 }
@@ -669,42 +723,6 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         errorValue()
         if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
-        }
-        if (AppPreferences.updatingImage) {
-            viewModel.listGetImgDta.postValue(null)
-            viewModel.getImg(mapImg)
-            initGetImgDta()
-            AppPreferences.updatingImage = false
-        }
-
-        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null) {
-            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
-                AppPreferences.reviewCode = 0
-                AppPreferences.reviewCodeAp = 0
-                if (inputsAnim != 0) {
-                    profAnim = true
-                }
-                initGetImgDta()
-                initRecycler()
-            } else {
-                AppPreferences.reviewCode = 0
-                AppPreferences.reviewCodeAp = 0
-                initRestart()
-            }
-        } else {
-            AppPreferences.reviewCode = 1
-            AppPreferences.reviewCodeAp = 1
-            viewModel.refreshCode = false
-            initRestart()
-        }
-
-        if (numberBar != 0) {
-            profile_pager.currentItem = numberBar
-            profile_bar_one.visibility = View.VISIBLE
-            profile_bar_zero.visibility = View.GONE
-        } else {
-            profile_bar_zero.visibility = View.VISIBLE
-            profile_bar_one.visibility = View.GONE
         }
 
         //меняет цвета навигационной понели
