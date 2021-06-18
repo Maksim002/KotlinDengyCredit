@@ -11,7 +11,7 @@
     tools:context=".ui.registration.login.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/notification_con"
+        android:id="@+id/notification_con_lay"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

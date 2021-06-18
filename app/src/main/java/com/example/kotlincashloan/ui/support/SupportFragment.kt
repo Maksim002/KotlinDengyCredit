@@ -67,14 +67,6 @@ class SupportFragment : Fragment(), SupportListener {
 
         iniClick()
         initRefresh()
-
-        shimmer_support.startShimmerAnimation()
-        if (viewModel.listFaqDta.value != null) {
-            initRecycler()
-        } else {
-            viewModel.refreshCode = false
-            initRestart()
-        }
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -347,6 +339,16 @@ class SupportFragment : Fragment(), SupportListener {
 //        }
 //    }
 
+    override fun onStart() {
+        super.onStart()
+        shimmer_support.startShimmerAnimation()
+        if (viewModel.listFaqDta.value != null) {
+            initRecycler()
+        } else {
+            viewModel.refreshCode = false
+            initRestart()
+        }
+    }
 
     override fun onResume() {
         super.onResume()

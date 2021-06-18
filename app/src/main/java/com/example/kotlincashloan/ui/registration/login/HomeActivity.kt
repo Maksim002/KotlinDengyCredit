@@ -57,6 +57,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
     private var isEntrance = false
     private var genAnim = false
     private lateinit var handler: Handler
+    private var splash = false
 
     companion object {
         var repeatedClick = 0
@@ -90,6 +91,15 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         iniClick()
         initCheck()
         initView()
+
+        if (!AppPreferences.isRestart){
+            splash = intent.extras!!.getBoolean("splash")
+            if (splash && !home_login_code.isChecked){
+                //profileAnim анимация для перехода с адного дествия в другое
+                TransitionAnimation(this).transitionRightActivity(notification_con_lay)
+            }
+            AppPreferences.isRestart = splash
+        }
     }
 
     // сервис получает логен токен с firebase
