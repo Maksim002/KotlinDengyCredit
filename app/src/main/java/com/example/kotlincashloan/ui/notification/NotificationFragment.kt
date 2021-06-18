@@ -36,6 +36,7 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var errorCode = ""
     private var notificationAnim = false
     private var genAnim = false
+    private lateinit var thread: Thread
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -54,6 +55,17 @@ class NotificationFragment : Fragment(), NotificationListener {
 
         initRefresh()
         initClick()
+
+        shimmer_notification.startShimmerAnimation()
+        if (viewModel.listNoticeDta.value != null) {
+            viewModel.errorNotice.value = null
+            initRecycler()
+            myAdapter.numberResult(0)
+        } else {
+            viewModel.refreshCode = false
+            notificationAnim = true
+            initRestart()
+        }
     }
 
     private fun initClick() {
@@ -87,12 +99,10 @@ class NotificationFragment : Fragment(), NotificationListener {
             if (viewModel.listNoticeDta.value == null || viewModel.errorNotice.value == null) {
                 if (!viewModel.refreshCode) {
                     requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        viewModel.refreshCode = false
-                        viewModel.errorNotice.value = null
-                        viewModel.listNotice(map)
-                        initRecycler()
-                    }, 500)
+                    viewModel.refreshCode = false
+                    viewModel.errorNotice.value = null
+                    viewModel.listNotice(map)
+                    initRecycler()
                 } else {
                     handler.postDelayed(Runnable { // Do something after 5s = 500ms
                         viewModel.refreshCode = false
@@ -102,14 +112,12 @@ class NotificationFragment : Fragment(), NotificationListener {
                     }, 500)
                 }
             } else {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.errorNotice.value != null) {
-                        viewModel.errorNotice.value = null
-                        viewModel.listNoticeDta.postValue(null)
-                    }
-                    viewModel.listNotice(map)
-                    initRecycler()
-                }, 500)
+                if (viewModel.errorNotice.value != null) {
+                    viewModel.errorNotice.value = null
+                    viewModel.listNoticeDta.postValue(null)
+                }
+                viewModel.listNotice(map)
+                initRecycler()
             }
         }
     }
@@ -272,16 +280,6 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     override fun onStart() {
         super.onStart()
-        shimmer_notification.startShimmerAnimation()
-        if (viewModel.listNoticeDta.value != null) {
-            viewModel.errorNotice.value = null
-            initRecycler()
-            myAdapter.numberResult(0)
-        } else {
-            viewModel.refreshCode = false
-            notificationAnim = true
-            initRestart()
-        }
         if (!notificationAnim) {
             //notificationAnim анимация для перехода с адного дествия в другое
             TransitionAnimation(activity as AppCompatActivity).transitionLeft(notification_anim_layout)

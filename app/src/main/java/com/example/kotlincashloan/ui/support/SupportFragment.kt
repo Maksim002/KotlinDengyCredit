@@ -67,6 +67,14 @@ class SupportFragment : Fragment(), SupportListener {
 
         iniClick()
         initRefresh()
+
+        shimmer_support.startShimmerAnimation()
+        if (viewModel.listFaqDta.value != null) {
+            initRecycler()
+        } else {
+            viewModel.refreshCode = false
+            initRestart()
+        }
     }
 
     fun setTitle(title: String?, color: Int) {
@@ -92,19 +100,16 @@ class SupportFragment : Fragment(), SupportListener {
             if (viewModel.listFaqDta.value == null) {
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 if (!viewModel.refreshCode) {
-//                    MainActivity.alert.show()
                     swipe()
                 } else {
                     swipe()
                 }
             } else {
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    if (viewModel.error.value != null) {
-                        viewModel.listFaqDta.postValue(null)
-                        viewModel.error.value = null
-                    }
-                    viewModel.listFaq(map)
-                }, 500)
+                if (viewModel.error.value != null) {
+                    viewModel.listFaqDta.postValue(null)
+                    viewModel.error.value = null
+                }
+                viewModel.listFaq(map)
             }
         }
     }
@@ -140,12 +145,10 @@ class SupportFragment : Fragment(), SupportListener {
 
     // отправлет model и возврощает ответ
     private fun swipe() {
-        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-            viewModel.refreshCode = false
-            viewModel.error.value = null
-            viewModel.listFaq(map)
-            initRecycler()
-        }, 500)
+        viewModel.refreshCode = false
+        viewModel.error.value = null
+        viewModel.listFaq(map)
+        initRecycler()
     }
 
     private fun iniClick() {
@@ -344,19 +347,9 @@ class SupportFragment : Fragment(), SupportListener {
 //        }
 //    }
 
-    override fun onStart() {
-        super.onStart()
-        shimmer_support.startShimmerAnimation()
-    }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.listFaqDta.value != null) {
-            initRecycler()
-        } else {
-            viewModel.refreshCode = false
-            initRestart()
-        }
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

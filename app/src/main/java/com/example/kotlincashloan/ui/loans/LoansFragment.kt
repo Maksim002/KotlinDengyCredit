@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
-import com.example.kotlincashloan.extension.animationGenerator
 import com.example.kotlincashloan.extension.animationNoMargaritas
 import com.example.kotlincashloan.extension.listListResult
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
@@ -96,8 +95,6 @@ class LoansFragment : Fragment(), LoansListener {
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                MainActivity.alert.hide()
-//                alert.hide()
             } else {
                 viewModel.listLoanInfo.observe(viewLifecycleOwner, Observer { result ->
                     try {
@@ -124,18 +121,13 @@ class LoansFragment : Fragment(), LoansListener {
                                 } else {
                                     isLogicLoan(result)
                                 }
-//                                alert.hide()
                             }
                         }
-//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         loans_layout.isRefreshing = false
                         if (alertValid == false) {
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                                 alertValid = true
                             }, 650)
-                        } else {
-//                            MainActivity.alert.hide()
-//                            alert.hide()
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -146,9 +138,6 @@ class LoansFragment : Fragment(), LoansListener {
                     if (error != null) {
                         initError(error)
                         listLoanId = error
-                        handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                            MainActivity.alert.hide()
-                        }, 700)
                         layout_shimmer_frame.visibility = View.GONE
                         shimmer_rediscovery_loan.stopShimmerAnimation()
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -481,8 +470,6 @@ class LoansFragment : Fragment(), LoansListener {
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                alert.hide()
-//                MainActivity.alert.hide()
             } else {
                 if (viewModel.listNewsDta.value != null) {
                     viewModel.errorNews.value = null
@@ -513,7 +500,6 @@ class LoansFragment : Fragment(), LoansListener {
 
     //Запрос на получение масива заявки
     private fun continueApplication() {
-//        alert.show()
         val mapLOan = java.util.HashMap<String, String>()
         mapLOan.put("login", AppPreferences.login.toString())
         mapLOan.put("token", AppPreferences.token.toString())
@@ -547,7 +533,6 @@ class LoansFragment : Fragment(), LoansListener {
                     getErrorCode(msg!!.toInt())
                 }
             }
-//            MainActivity.alert.hide()
         })
     }
 
@@ -557,7 +542,6 @@ class LoansFragment : Fragment(), LoansListener {
             loans_constraint, loans_access_restricted as LinearLayout,
             loans_not_found as LinearLayout, activity as AppCompatActivity, true
         )
-//        MainActivity.alert.hide()
     }
 
     private fun initRefresh() {
@@ -748,7 +732,6 @@ class LoansFragment : Fragment(), LoansListener {
             loansAnim = false
         }
         val handler = Handler()
-//        MainActivity.alert.show()
         if (AppPreferences.refreshWindow == "true") {
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.errorNews.value = null
@@ -758,21 +741,17 @@ class LoansFragment : Fragment(), LoansListener {
                 viewModel.listNews(map)
                 viewModel.getLoanInfo(map)
                 initResult()
-//                initRecycler()
                 AppPreferences.refreshWindow = ""
             }, 800)
         } else if (viewModel.listNewsDta.value == null && viewModel.listLoanInfo.value == null) {
             shimmer_loan.startShimmerAnimation()
             shimmer_loan.visibility = View.VISIBLE
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                viewModel.errorNews.value = null
-                viewModel.errorLoanInfo.value = null
-                viewModel.listNews(map)
-                viewModel.getLoanInfo(map)
-                initResult()
-//                initRecycler()
-            }, 800)
+            viewModel.errorNews.value = null
+            viewModel.errorLoanInfo.value = null
+            viewModel.listNews(map)
+            viewModel.getLoanInfo(map)
+            initResult()
         } else {
             if (listNewsId == "200" && listLoanId == "200") {
                 initRecycler()
@@ -781,7 +760,6 @@ class LoansFragment : Fragment(), LoansListener {
                 initRepeat()
             }
         }
-
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).noRollback()
     }

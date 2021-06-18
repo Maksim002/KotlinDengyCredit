@@ -44,16 +44,29 @@ class DetailProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!singleAnimation) {
-            //detailProfileAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
-            singleAnimation = true
-        }
         initBundle()
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
         map.put("id", operationId.toString())
         initClick()
+
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        if (viewModel.listGetOperationDta.value != null) {
+            if (errorCode == "200") {
+                shimmer_detail_profile.visibility = View.GONE
+                initResult()
+            } else {
+                shimmer_detail_profile.startShimmerAnimation()
+                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                    initRestart()
+                }, 500)
+            }
+        } else {
+            shimmer_detail_profile.startShimmerAnimation()
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                initRestart()
+            }, 500)
+        }
     }
 
     private fun initClick() {
@@ -224,28 +237,15 @@ class DetailProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-
-        if (viewModel.listGetOperationDta.value != null) {
-            if (errorCode == "200") {
-                shimmer_detail_profile.visibility = View.GONE
-                initResult()
-            } else {
-                shimmer_detail_profile.startShimmerAnimation()
-                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                    initRestart()
-                }, 500)
-            }
-        } else {
-            shimmer_detail_profile.startShimmerAnimation()
-            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                initRestart()
-            }, 500)
+         if (!singleAnimation) {
+            //detailProfileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionRight(detail_profile_anim)
+            singleAnimation = true
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         setTitle(titlt, resources.getColor(R.color.whiteColor))
         //меняет цвета навигационной понели
         ColorWindows(activity as AppCompatActivity).rollback()

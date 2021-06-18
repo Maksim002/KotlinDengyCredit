@@ -438,6 +438,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
             genAnim = true
         }else{
             shimmer_profile.visibility = View.GONE
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 
@@ -579,10 +580,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 isRestart()
@@ -618,16 +616,14 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                 )
                 if (!viewModel.refreshCode) {
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        viewModel.refreshCode = false
-                        clearingDate()
-                        viewModel.listOperation(map)
-                        viewModel.clientInfo(map)
-                        viewModel.listApplication(map)
-                        viewModel.getImg(mapImg)
-                        initRecycler()
-                        initGetImgDta()
-                    }, 500)
+                    viewModel.refreshCode = false
+                    clearingDate()
+                    viewModel.listOperation(map)
+                    viewModel.clientInfo(map)
+                    viewModel.listApplication(map)
+                    viewModel.getImg(mapImg)
+                    initRecycler()
+                    initGetImgDta()
                 }
             } else {
                 if (editorZarem) {
