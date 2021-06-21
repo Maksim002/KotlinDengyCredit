@@ -92,6 +92,7 @@ class LoansFragment : Fragment(), LoansListener {
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
+                layout_shimmer_frame.visibility = View.GONE
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -467,6 +468,7 @@ class LoansFragment : Fragment(), LoansListener {
                 loans_access_restricted.visibility = View.GONE
                 loans_not_found.visibility = View.GONE
                 loans_technical_work.visibility = View.GONE
+                layout_shimmer_frame.visibility = View.GONE
                 listNewsId = "601"
                 listLoanId = "601"
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -675,6 +677,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
             loans_access_restricted.visibility = View.VISIBLE
         } else if (result == 404) {
             loans_not_found.visibility = View.VISIBLE
@@ -682,6 +685,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
         } else if (result == 500 || result == 400 || result == 409 || result == 429) {
@@ -690,6 +694,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }
@@ -701,12 +706,14 @@ class LoansFragment : Fragment(), LoansListener {
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
         } else if (error == "404") {
             loans_not_found.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
         } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
@@ -715,6 +722,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }

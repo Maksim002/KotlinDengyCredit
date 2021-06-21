@@ -47,8 +47,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
-class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
-    ExistingBottomListener {
+class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
@@ -117,8 +116,10 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
             val configSettings = FirebaseRemoteConfigSettings.Builder().build()
             remoteConfig.setConfigSettingsAsync(configSettings);
-            AppPreferences.urlApi = ""
-            AppPreferences.tokenApi = ""
+            if (AppPreferences.token == ""){
+                AppPreferences.urlApi = ""
+                AppPreferences.tokenApi = ""
+            }
             remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
                 if (task.isSuccessful) {
                     remoteConfig.fetchAndActivate()
@@ -269,8 +270,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             } else {
                                 AppPreferences.token = data.result.token
                                 AppPreferences.login = data.result.login
-                                AppPreferences.password =
-                                    Hasher.hash(home_text_password.text.toString(), HashType.MD5)
+                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                                 if (AppPreferences.token != null) {
                                     home_incorrect.visibility = View.GONE
                                     startMainActivity()
