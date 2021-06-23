@@ -56,8 +56,8 @@ object MyUtils {
         }
     }
 
-    fun toServerNumber(date: String): String {
-        return date.substring(1, 4) + date.substring(6, 12)
+    fun toCodeNumber(date: String): String {
+        return date.substring(0, 4)
     }
 
     fun toServerMaskCode(date: String): String {

@@ -2,6 +2,7 @@ package com.timelysoft.tsjdomcom.service
 
 import androidx.lifecycle.liveData
 import com.example.kotlincashloan.extension.generateUrl
+import com.example.kotlincashloan.utils.MessageCode
 import kotlinx.coroutines.Dispatchers
 
 
@@ -22,7 +23,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -46,7 +47,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -70,7 +71,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -94,7 +95,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -118,7 +119,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -142,7 +143,11 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            emit(ResultStatus.netwrok("600", null))
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
+                emit(ResultStatus.netwrok("601", null))
+            }else{
+                emit(ResultStatus.netwrok("600", null))
+            }
         }
     }
 
@@ -162,7 +167,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -186,7 +191,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -210,7 +215,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -234,7 +239,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -258,7 +263,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -282,7 +287,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -306,7 +311,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -330,7 +335,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -354,7 +359,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -379,7 +384,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))
@@ -403,7 +408,7 @@ class NetworkRepository {
                 }
             }
         } catch (e: Exception) {
-            if (e.localizedMessage != "End of input at line 1 column 1 path \$"){
+            if (e.localizedMessage == MessageCode.MESSAGE_1.toString() || e.localizedMessage == MessageCode.MESSAGE_2.toString()){
                 emit(ResultStatus.netwrok("601", null))
             }else{
                 emit(ResultStatus.netwrok("600", null))

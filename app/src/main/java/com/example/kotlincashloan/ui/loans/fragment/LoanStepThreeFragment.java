@@ -1,6 +1,5 @@
 package com.example.kotlincashloan.ui.loans.fragment;
 
-
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
