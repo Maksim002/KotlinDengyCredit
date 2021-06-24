@@ -11,10 +11,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.extension.shimmerStart
-import com.example.kotlincashloan.extension.shimmerStop
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -62,6 +59,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         initClick()
         initViews()
         initToolBar()
+        getListCountry()
     }
 
     private fun initResult() {
@@ -81,17 +79,14 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
                             if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404 || data.error.code == 403) {
-                                number_no_connection.visibility = View.GONE
-                                number_layout.visibility = View.VISIBLE
+                                initVisibilities()
                                 loadingMistake(this)
                             } else if (data.error.code == 401) {
                                 initAuthorized()
                             } else if (data.error.code == 409) {
-                                initBusyBottomSheet()
                                 initVisibilities()
+                                initBusyBottomSheet()
                             } else {
-                                number_no_connection.visibility = View.GONE
-                                number_layout.visibility = View.VISIBLE
                                 initVisibilities()
                             }
                         } else {
@@ -102,28 +97,25 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                     }
                     Status.ERROR -> {
                         if (msg == "500" || msg == "400" || msg == "404" || msg == "429" || msg == "403") {
-                            number_layout.visibility = View.GONE
                             initVisibilities()
                             loadingMistake(this)
                         } else if (msg == "401") {
                             initAuthorized()
                         } else if (msg == "409") {
-                            initBusyBottomSheet()
                             initVisibilities()
+                            initBusyBottomSheet()
                         } else {
+                            initVisibilities()
                             loadingMistake(this)
-                            number_no_connection.visibility = View.GONE
-                            number_layout.visibility = View.VISIBLE
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
-                            number_layout.visibility = View.GONE
+                        if (msg == "601") {
                             initVisibilities()
                             loadingMistake(this)
-                        } else {
-                            number_no_connection.visibility = View.VISIBLE
-                            number_layout.visibility = View.GONE
+                        } else if (msg == "600"){
+                            initVisibilities()
+                            loadingConnection(this)
                         }
                     }
                 }
@@ -156,7 +148,6 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
         ColorWindows(this).statusBarTextColor()
 //        number_phone.visibility = View.GONE
         number_focus_text.requestFocus()
-        getListCountry()
     }
 
     private fun initClick() {
@@ -234,6 +225,9 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
     fun initVisibilities() {
         number_layout.visibility = View.VISIBLE
         number_no_connection.visibility = View.GONE
+        number_technical_work.visibility = View.GONE
+        number_access_restricted.visibility = View.GONE
+        number_not_found.visibility = View.GONE
     }
 
     //метод удаляет все символы из строки
@@ -316,7 +310,7 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "601" || msg == "600") {
+                            if (msg == "601") {
                                 number_technical_work.visibility = View.VISIBLE
                                 number_no_connection.visibility = View.GONE
                                 number_layout.visibility = View.GONE
@@ -325,10 +319,12 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                 if (bottomSheetDialogFragment.isResumed == true) {
                                     bottomSheetDialogFragment.dismiss()
                                 }
-                            } else {
+                            } else if (msg == "600"){
                                 number_no_connection.visibility = View.VISIBLE
                                 number_technical_work.visibility = View.GONE
                                 number_layout.visibility = View.GONE
+                                number_access_restricted.visibility = View.GONE
+                                number_not_found.visibility = View.GONE
                             }
                         }
                     }

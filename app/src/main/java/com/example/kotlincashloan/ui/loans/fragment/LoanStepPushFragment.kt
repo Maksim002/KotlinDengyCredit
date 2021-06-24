@@ -1,4 +1,4 @@
-package com.example.kotlincashloan.ui.loans
+package com.example.kotlincashloan.ui.loans.fragment
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.ui.loans.GetLoanActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_push.*

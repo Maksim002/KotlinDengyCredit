@@ -15,7 +15,6 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.hashMapBitmap
 import com.example.kotlincashloan.extension.initClear
 import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.service.model.Loans.LoansListModel
 import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.fragment.*

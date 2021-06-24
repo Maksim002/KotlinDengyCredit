@@ -716,9 +716,16 @@ class LoansFragment : Fragment(), LoansListener {
             layout_shimmer_frame.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
-        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
+        } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "601") {
             loans_technical_work.visibility = View.VISIBLE
             loans_no_connection.visibility = View.GONE
+            loans_constraint.visibility = View.GONE
+            loans_access_restricted.visibility = View.GONE
+            loans_not_found.visibility = View.GONE
+            layout_shimmer_frame.visibility = View.GONE
+        }else if (error == "600"){
+            loans_no_connection.visibility = View.VISIBLE
+            loans_technical_work.visibility = View.GONE
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE

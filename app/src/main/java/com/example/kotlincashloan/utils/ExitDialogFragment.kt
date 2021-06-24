@@ -23,8 +23,6 @@ class ExitDialogFragment: DialogFragment() {
                     AppPreferences.isPinCode = false
                     AppPreferences.token = ""
                     AppPreferences.isNumber = true
-                    AppPreferences.urlApi = ""
-                    AppPreferences.tokenApi = ""
                     if (AppPreferences.resultPassword == ""){
                         AppPreferences.password = ""
                     }

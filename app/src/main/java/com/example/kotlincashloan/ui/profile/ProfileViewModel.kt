@@ -13,6 +13,7 @@ import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.service.model.profile.*
 import com.example.kotlincashloan.ui.loans.SharedViewModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.MessageCode
 import com.example.kotlinscreenscanner.service.model.*
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.NetworkRepository
@@ -34,7 +35,7 @@ class ProfileViewModel : ViewModel(){
     fun listOperation(map: Map<String, String>){
         RetrofitService.apiService().listOperation(map, generateUrl("listOperation")).enqueue(object : Callback<CommonResponse<ArrayList<ResultOperationModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultOperationModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListOperation.postValue( "601")
                 }else{
                     errorListOperation.postValue( "600")
@@ -61,7 +62,7 @@ class ProfileViewModel : ViewModel(){
     fun listApplication(map: Map<String, String>){
         RetrofitService.apiService().listLoan(map, generateUrl("listLoan")).enqueue(object : Callback<CommonResponse<ArrayList<ResultApplicationModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultApplicationModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListApplication.postValue( "601")
                 }else{
                     errorListApplication.postValue( "600")
@@ -88,7 +89,7 @@ class ProfileViewModel : ViewModel(){
     fun getOperation(map: Map<String, String>){
         RetrofitService.apiService().getOperation(map, generateUrl("getOperation")).enqueue(object : Callback<CommonResponse<GetResultOperationModel>> {
             override fun onFailure(call: Call<CommonResponse<GetResultOperationModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorGetOperation.postValue( "601")
                 }else{
                     errorGetOperation.postValue( "600")
@@ -117,7 +118,7 @@ class ProfileViewModel : ViewModel(){
     fun clientInfo(map: Map<String, String>){
         RetrofitService.apiService().clientInfo(map, generateUrl("clientInfo")).enqueue(object : Callback<CommonResponse<ClientInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<ClientInfoResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorClientInfo.postValue( "601")
                 }else{
                     errorClientInfo.postValue( "600")
@@ -146,7 +147,7 @@ class ProfileViewModel : ViewModel(){
     fun listGender(map: Map<String, String>){
         RetrofitService.apiService().listGender(map, generateUrl("listGender")).enqueue(object : Callback<CommonResponse<ArrayList<ListGenderResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListGenderResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListGender.postValue( "601")
                 }else{
                     errorListGender.postValue( "600")
@@ -175,7 +176,7 @@ class ProfileViewModel : ViewModel(){
     fun getListNationality(map: Map<String, String>){
         RetrofitService.apiService().getListNationality(map, generateUrl("listNationality")).enqueue(object : Callback<CommonResponse<ArrayList<ListNationalityResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNationalityResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListNationality.postValue( "601")
                 }else{
                     errorListNationality.postValue( "600")
@@ -201,7 +202,7 @@ class ProfileViewModel : ViewModel(){
     fun listAvailableCountry(map: Map<String, String>){
         RetrofitService.apiService().listAvailableCountry(map, generateUrl("listAvailableCountry")).enqueue(object : Callback<CommonResponse<ArrayList<CounterNumResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<CounterNumResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListAvailableCountry.postValue( "601")
                 }else{
                     errorListAvailableCountry.postValue( "600")
@@ -227,7 +228,7 @@ class ProfileViewModel : ViewModel(){
     fun listSecretQuestion(map: Map<String, String>){
         RetrofitService.apiService().listSecretQuestion(map, generateUrl("listSecretQuestion")).enqueue(object : Callback<CommonResponse<ArrayList<ListSecretQuestionResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListSecretQuestionResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListSecretQuestion.postValue( "601")
                 }else{
                     errorListSecretQuestion.postValue( "600")
@@ -253,7 +254,7 @@ class ProfileViewModel : ViewModel(){
     fun saveProfile(map: Map<String, String>){
         RetrofitService.apiService().saveProfile(map, generateUrl("saveProfile")).enqueue(object : Callback<CommonResponse<SaveProfileResultModel>> {
             override fun onFailure(call: Call<CommonResponse<SaveProfileResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorSaveProfile.postValue( "601")
                 }else{
                     errorSaveProfile.postValue( "600")
@@ -284,7 +285,7 @@ class ProfileViewModel : ViewModel(){
     fun getImg(map: Map<String, String>){
         RetrofitService.apiService().getImg(map, generateUrl("getImg")).enqueue(object : Callback<CommonResponse<GetImgResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetImgResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorGetImg.postValue( "601")
                 }else{
                     errorGetImg.postValue( "600")
@@ -316,7 +317,7 @@ class ProfileViewModel : ViewModel(){
     fun uploadImg(map: Map<String, String>){
         RetrofitService.apiService().uploadImg(map, generateUrl("uploadImg")).enqueue(object : Callback<CommonResponse<UploadImgResultModel>> {
             override fun onFailure(call: Call<CommonResponse<UploadImgResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorUploadImg.postValue( "601")
                 }else{
                     errorUploadImg.postValue( "600")

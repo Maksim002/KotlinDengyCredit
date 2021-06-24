@@ -62,13 +62,8 @@ class LoansDetailsFragment : Fragment() {
         }
         (activity as AppCompatActivity).supportActionBar?.show()
         iniArgument()
-//        initRequest()
         initClick()
     }
-
-//       fun newInstance(): LoansDetailsFragment? {
-//        return LoansDetailsFragment()
-//    }
 
     private fun initClick() {
         no_connection_repeat.setOnClickListener {
@@ -196,6 +191,11 @@ class LoansDetailsFragment : Fragment() {
                             loans_detail_not_found.visibility = View.GONE
                         }
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        if (!genAnim) {
+                            //генерирует анимацию перехода
+                            animationGenerator(shimmer_detail_loan, handler, requireActivity())
+                            genAnim = true
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -220,14 +220,25 @@ class LoansDetailsFragment : Fragment() {
                     loans_detail_technical_work.visibility = View.GONE
                 } else if (error == "401") {
                     initAuthorized()
-                } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "600" || error == "601") {
+                } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "601") {
                     loans_detail_technical_work.visibility = View.VISIBLE
                     loans_detail_no_connection.visibility = View.GONE
                     loans_detail_layout.visibility = View.GONE
                     loans_detail_access_restricted.visibility = View.GONE
                     loans_detail_not_found.visibility = View.GONE
+                }else if (error == "600"){
+                    loans_detail_no_connection.visibility = View.VISIBLE
+                    loans_detail_technical_work.visibility = View.GONE
+                    loans_detail_layout.visibility = View.GONE
+                    loans_detail_access_restricted.visibility = View.GONE
+                    loans_detail_not_found.visibility = View.GONE
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                if (!genAnim) {
+                    //генерирует анимацию перехода
+                    animationGenerator(shimmer_detail_loan, handler, requireActivity())
+                    genAnim = true
+                }
             }
         })
     }

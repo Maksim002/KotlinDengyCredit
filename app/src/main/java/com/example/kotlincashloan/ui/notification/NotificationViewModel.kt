@@ -8,6 +8,7 @@ import com.example.kotlincashloan.service.model.Notification.ListNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultDetailNoticeModel
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.MessageCode
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.RetrofitService
@@ -25,7 +26,7 @@ class NotificationViewModel : ViewModel(){
     fun listNotice(map: Map<String, String>){
         RetrofitService.apiService().listNotice(map, generateUrl("listNotice")).enqueue(object : Callback<CommonResponse<ArrayList<ResultListNoticeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ResultListNoticeModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorNotice.postValue( "601")
                 }else{
                     errorNotice.postValue( "600")
@@ -52,7 +53,7 @@ class NotificationViewModel : ViewModel(){
     fun getNotice(map: Map<String, String>){
         RetrofitService.apiService().getNotice(map, generateUrl("getNotice")).enqueue(object : Callback<CommonResponse<ResultDetailNoticeModel>> {
             override fun onFailure(call: Call<CommonResponse<ResultDetailNoticeModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorDetailNotice.postValue( "601")
                 }else{
                     errorDetailNotice.postValue( "600")

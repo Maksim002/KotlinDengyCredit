@@ -193,11 +193,11 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        } else {
+                        } else if (msg == "600"){
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingConnection(this)
@@ -260,8 +260,7 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
             map.put("id", 0)
 //            HomeActivity.alert.show()
             shimmerStart(shimmer_recovery, this)
-            viewModel.listAvailableCountry(map)
-                .observe(this, androidx.lifecycle.Observer { result ->
+            viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
                     val msg = result.msg
                     val data = result.data
 
@@ -314,11 +313,11 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600" || msg == "601") {
+                            if (msg == "601") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
-                            } else {
+                            } else if (msg == "600"){
                                 recovery_technical_work.visibility = View.GONE
                                 recovery_no_questionnaire.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE

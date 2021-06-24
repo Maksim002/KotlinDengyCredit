@@ -19,6 +19,7 @@ import com.example.kotlincashloan.adapter.support.SupportAdapter
 import com.example.kotlincashloan.adapter.support.SupportListener
 import com.example.kotlincashloan.extension.animationNoMargaritas
 import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.shimmerStart
 import com.example.kotlincashloan.service.model.support.ListFaqResultModel
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -145,18 +146,22 @@ class SupportFragment : Fragment(), SupportListener {
 
     private fun iniClick() {
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         access_restricted.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
@@ -266,6 +271,16 @@ class SupportFragment : Fragment(), SupportListener {
         }
     }
 
+    private fun initVisibilities() {
+        shimmerStart(shimmer_support, requireActivity())
+        layout_access_restricted.visibility = View.GONE
+        support_no_connection.visibility = View.GONE
+        support_technical_work.visibility = View.GONE
+        support_not_found.visibility = View.GONE
+        shimmer_support.visibility = View.VISIBLE
+        support_constraint.visibility = View.VISIBLE
+    }
+
     override fun onClickListener(item: ListFaqResultModel) {
 //        try {
 //            if (!item.clicked) {
@@ -341,10 +356,10 @@ class SupportFragment : Fragment(), SupportListener {
 
     override fun onStart() {
         super.onStart()
-        shimmer_support.startShimmerAnimation()
         if (viewModel.listFaqDta.value != null) {
             initRecycler()
         } else {
+            shimmer_support.startShimmerAnimation()
             viewModel.refreshCode = false
             initRestart()
         }

@@ -297,7 +297,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
     private void errorSaveLoan(String error) {
         if (error != null) {
-            if (error.equals("601") || error.equals("600")) {
+            if (error.equals("601")) {
                 status_technical_work.setVisibility(View.VISIBLE);
                 status_no_questionnaire.setVisibility(View.GONE);
                 layout_status.setVisibility(View.GONE);
@@ -323,6 +323,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             } else if (error.equals("400")) {
                 theeIncorrect.setText("Отсканируйте документ повторно");
                 theeIncorrect.setVisibility(View.VISIBLE);
+            }else if (error.equals("600")){
+                status_no_questionnaire.setVisibility(View.VISIBLE);
+                status_not_found.setVisibility(View.GONE);
+                status_technical_work.setVisibility(View.GONE);
+                layout_status.setVisibility(View.GONE);
+                theeIncorrect.setVisibility(View.GONE);
             }
         }
     }

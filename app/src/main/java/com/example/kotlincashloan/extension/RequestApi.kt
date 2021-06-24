@@ -10,20 +10,22 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 private var recPosition = 0
 
 fun getApi(activity: Activity, listener: GetApiListener) {
-    AppPreferences.urlApi = ""
-    AppPreferences.tokenApi = ""
     val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
     val configSettings = FirebaseRemoteConfigSettings.Builder().build()
     remoteConfig.setConfigSettingsAsync(configSettings);
     remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
         if (task.isSuccessful) {
             remoteConfig.fetchAndActivate()
-            val urlApi = remoteConfig.getString("url_dev")
+            val urlApi = remoteConfig.getString("url_dev1")
             val tokenApi = remoteConfig.getString("token_dev")
-            AppPreferences.urlApi = urlApi
-            AppPreferences.tokenApi = tokenApi
 
-            if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+            if (AppPreferences.urlApi != urlApi || AppPreferences.tokenApi != tokenApi) {
+                if (urlApi != "" && tokenApi != "") {
+                    AppPreferences.urlApi = urlApi
+                    AppPreferences.tokenApi = tokenApi
+                }
+                listener.onClickListenerApi()
+            }else if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                 if (recPosition <= 5) {
                     getApi(activity, listener)
                     recPosition++
@@ -34,7 +36,11 @@ fun getApi(activity: Activity, listener: GetApiListener) {
                 listener.onClickListenerApi()
             }
         } else {
-            listener.onClickListenerError()
+            if (AppPreferences.tokenApi != "" && AppPreferences.urlApi != ""){
+                listener.onClickListenerApi()
+            }else{
+                listener.onClickListenerError()
+            }
         }
     })
 }

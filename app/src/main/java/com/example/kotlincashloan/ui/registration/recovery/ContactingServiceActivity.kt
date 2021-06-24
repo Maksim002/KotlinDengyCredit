@@ -316,14 +316,14 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             if (!discovery) {
                                 loadingMistake(this, this, profNumber)
                                 discovery = true
                             }
-                        } else {
+                        } else if (msg == "600"){
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
                             loadingConnection(this)
@@ -437,14 +437,14 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600" || msg == "601") {
+                            if (msg == "601") {
                                 if (!discovery) {
                                     loadingMistake(this, this)
                                     discovery = true
                                 }
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
-                            } else {
+                            } else if (msg == "600"){
                                 loadingConnection(this)
                                 password_no_questionnaire.visibility = View.GONE
                                 contacting_layout.visibility = View.VISIBLE
@@ -529,14 +529,14 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             if (!discovery) {
                                 loadingMistake(this, this)
                                 discovery = true
                             }
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE
-                        } else {
+                        } else if (msg == "600"){
                             loadingConnection(this)
                             password_no_questionnaire.visibility = View.GONE
                             contacting_layout.visibility = View.VISIBLE

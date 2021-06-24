@@ -118,22 +118,25 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
 
     fun check() {
         if (currentPinInput.length == 4) {
+            HomeActivity.alert.show()
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 pin_verification_code.setText(initpin)
                 currentPinInput = ""
                 loadingConnection(activity as AppCompatActivity)
             } else {
-                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
-                    getApi(requireActivity(), this)
-                } else {
-                    pinCode()
-                }
+//                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+//                    getApi(requireActivity(), this)
+//                } else {
+//                    pinCode()
+//                }
+                getApi(requireActivity(), this)
             }
         }
     }
 
     private fun pinCode(){
+        HomeActivity.alert.show()
         val number = MyUtils.toCodeNumber(currentPinInput)
         if (AppPreferences.savePin == number) {
             val map = HashMap<String, String>()
@@ -141,7 +144,6 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
             map.put("login", AppPreferences.login.toString())
             map.put("uid", AppPreferences.pushNotificationsId.toString())
             map.put("system", "1")
-            HomeActivity.alert.show()
             viewModel.auth(map).observe(this, Observer { result ->
                 val msg = result.msg
                 val data = result.data
@@ -172,11 +174,11 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             pin_verification_code.setText(initpin)
                             currentPinInput = ""
                             loadingMistake(activity as AppCompatActivity)
-                        } else {
+                        } else if (msg == "600"){
                             pin_verification_code.setText(initpin)
                             currentPinInput = ""
                             loadingConnection(activity as AppCompatActivity)

@@ -77,6 +77,12 @@ fun listListResult(
         layout_res.visibility = View.GONE
     } else if (result == 401) {
         initAuthorized(activity)
+    }else if (result == 600){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        layout_res.visibility = View.GONE
     }
 }
 
@@ -101,6 +107,12 @@ fun listListResult(result: Int, technical_work: LinearLayout, no_connection: Lin
         layout_res.visibility = View.GONE
     } else if (result == 401) {
         initAuthorized(activity)
+    }else if (result == 600){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        layout_res.visibility = View.GONE
     }
 }
 
@@ -133,17 +145,16 @@ fun listListResult(
         layout_res.visibility = View.GONE
     } else if (result == 401) {
         initAuthorized(activity)
+    }else if (result == 600){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        layout_res.visibility = View.GONE
     }
 }
 
-fun listListResult(result: Int,
-    technical_work: LinearLayout,
-    no_connection: LinearLayout,
-    layout_res: ConstraintLayout,
-    access_restricted: LinearLayout,
-    not_found: LinearLayout,
-    activity: Activity,
-    boolean: Boolean? = null
+fun listListResult(result: Int, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: ConstraintLayout, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity, boolean: Boolean? = null
 ) {
     if (result == 400 || result == 500 || result == 409 || result == 429 || result == 601) {
         technical_work.visibility = View.VISIBLE
@@ -172,6 +183,14 @@ fun listListResult(result: Int,
         }
     } else if (result == 401) {
         initAuthorized(activity)
+    }else if (result == 600){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        if (boolean!!) {
+            layout_res.visibility = View.GONE
+        }
     }
 }
 
@@ -184,7 +203,7 @@ fun listListResult(
     not_found: LinearLayout,
     activity: Activity
 ) {
-    if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409" || error == "601") {
+    if (error == "400" || error == "500" || error == "429" || error == "409" || error == "601") {
         technical_work.visibility = View.VISIBLE
         no_connection.visibility = View.GONE
         layout_res.visibility = View.GONE
@@ -202,30 +221,19 @@ fun listListResult(
         technical_work.visibility = View.GONE
         no_connection.visibility = View.GONE
         layout_res.visibility = View.GONE
-    }
-//    else if (error == "601") {
-//        no_connection.visibility = View.VISIBLE
-//        layout_res.visibility = View.GONE
-//        technical_work.visibility = View.GONE
-//        access_restricted.visibility = View.GONE
-//        not_found.visibility = View.GONE
-//    }
-    else if (error == "401") {
+    }else if (error == "401") {
         initAuthorized(activity)
+    }else if ( error == "600"){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        layout_res.visibility = View.GONE
     }
 }
 
-fun listListResult(
-    error: String,
-    technical_work: LinearLayout,
-    no_connection: LinearLayout,
-    layout_res: ConstraintLayout,
-    access_restricted: LinearLayout,
-    not_found: LinearLayout,
-    activity: Activity,
-    boolean: Boolean? = null
-) {
-    if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409" || error == "601") {
+fun listListResult(error: String, technical_work: LinearLayout, no_connection: LinearLayout, layout_res: ConstraintLayout, access_restricted: LinearLayout, not_found: LinearLayout, activity: Activity, boolean: Boolean? = null) {
+    if (error == "400" || error == "500" || error == "429" || error == "409" || error == "601") {
         technical_work.visibility = View.VISIBLE
         no_connection.visibility = View.GONE
         if (boolean!!) {
@@ -249,18 +257,16 @@ fun listListResult(
         if (boolean!!) {
             layout_res.visibility = View.GONE
         }
-    }
-//    else if (error == "601") {
-//        no_connection.visibility = View.VISIBLE
-//        if (boolean!!){
-//            layout_res.visibility = View.GONE
-//        }
-//        technical_work.visibility = View.GONE
-//        access_restricted.visibility = View.GONE
-//        not_found.visibility = View.GONE
-//    }
-    else if (error == "401") {
+    } else if (error == "401") {
         initAuthorized(activity)
+    }else if (error == "600"){
+        no_connection.visibility = View.VISIBLE
+        not_found.visibility = View.GONE
+        access_restricted.visibility = View.GONE
+        technical_work.visibility = View.GONE
+        if (boolean!!) {
+            layout_res.visibility = View.GONE
+        }
     }
 }
 
@@ -271,65 +277,57 @@ private fun initAuthorized(activity: Activity) {
 }
 
 fun listListResult(error: String, activity: AppCompatActivity) {
-    if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409" || error == "601") {
+    if (error == "400" || error == "500" || error == "429" || error == "409" || error == "601") {
         loadingMistakeIm(activity)
     } else if (error == "403") {
         loadingMistakeIm(activity)
     } else if (error == "404") {
         loadingMistakeIm(activity)
-    }
-//    else if (error == "601") {
-//        loadingConnectionIm(activity)
-//    }
-    else if (error == "401") {
+    }else if (error == "401") {
         initAuthorized(activity)
+    }else if ( error == "600"){
+        loadingConnectionIm(activity)
     }
 }
 
 fun listListResult(error: Int, activity: AppCompatActivity) {
-    if (error == 400 || error == 500 || error == 600 || error == 429 || error == 409 || error == 601) {
+    if (error == 400 || error == 500 || error == 429 || error == 409 || error == 601) {
         loadingMistakeIm(activity)
     } else if (error == 403) {
         loadingMistakeIm(activity)
     } else if (error == 404) {
         loadingMistakeIm(activity)
-    }
-//    else if (error == 601) {
-//        loadingConnectionIm(activity)
-//    }
-    else if (error == 401) {
+    }else if (error == 401) {
         initAuthorized(activity)
+    }else if ( error == 600){
+        loadingConnectionIm(activity)
     }
 }
 
 fun listListResultHome(error: String, activity: AppCompatActivity) {
-    if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409" || error == "601") {
+    if (error == "400" || error == "500" || error == "429" || error == "409" || error == "601") {
         loadingMistake(activity)
     } else if (error == "403") {
         loadingMistake(activity)
     } else if (error == "404") {
         loadingMistake(activity)
-    }
-//    else if (error == "601") {
-//        loadingConnection(activity)
-//    }
-    else if (error == "401") {
+    }else if (error == "401") {
         initAuthorized(activity)
+    }else if (error == "600"){
+        loadingConnection(activity)
     }
 }
 
 fun listListResultHome(error: Int, activity: AppCompatActivity) {
-    if (error == 400 || error == 500 || error == 600 || error == 429 || error == 409 || error == 601) {
+    if (error == 400 || error == 500 || error == 429 || error == 409 || error == 601) {
         loadingMistake(activity)
     } else if (error == 403) {
         loadingMistake(activity)
     } else if (error == 404) {
         loadingMistake(activity)
-    }
-//    else if (error == 601) {
-//        loadingConnection(activity)
-//    }
-    else if (error == 401) {
+    }else if (error == 600) {
+        loadingConnection(activity)
+    }else if (error == 401) {
         initAuthorized(activity)
     }
 }

@@ -43,9 +43,7 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener,
-    ListenerGeneralResult {
+class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener, ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var data: String = ""
     private var idSex: Int = 0
@@ -206,10 +204,10 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                         }
                     }
                     Status.NETWORK ->{
-                        if (msg == "600" || msg == "601"){
+                        if (msg == "601"){
                             result()
                             loadingMistake(this)
-                        }else{
+                        }else if (msg == "600"){
                             result()
                             loadingConnection(this)
                         }
@@ -602,12 +600,12 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     private fun netWork(msg: String){
-        if (msg == "600" || msg == "601") {
+        if (msg == "601") {
             layout_questionnaire.visibility = View.GONE
             questionnaire_no_questionnaire.visibility = View.GONE
             questionnaire_layout.visibility = View.GONE
             questionnaire_technical_work.visibility = View.VISIBLE
-        } else {
+        } else if (msg == "600"){
             layout_questionnaire.visibility = View.GONE
             questionnaire_no_questionnaire.visibility = View.VISIBLE
             questionnaire_layout.visibility = View.GONE

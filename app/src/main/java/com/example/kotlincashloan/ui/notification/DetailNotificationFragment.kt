@@ -179,7 +179,7 @@ class DetailNotificationFragment : Fragment() {
         viewModel.errorDetailNotice.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 errorCode = error
-                if (error == "400" || error == "500" || error == "600" || error == "601") {
+                if (error == "400" || error == "500" || error == "601") {
                     d_notification_technical_work.visibility = View.VISIBLE
                     d_notification_access_restricted.visibility = View.GONE
                     d_notification_no_connection.visibility = View.GONE
@@ -202,6 +202,13 @@ class DetailNotificationFragment : Fragment() {
                     shimmer_detail_notification.visibility = View.GONE
                 } else if (error == "401") {
                     initAuthorized()
+                }else if (error == "600"){
+                    d_notification_no_connection.visibility = View.VISIBLE
+                    d_notification_access_restricted.visibility = View.GONE
+                    d_notification_technical_work.visibility = View.GONE
+                    d_notification_not_found.visibility = View.GONE
+                    layout_detail.visibility = View.GONE
+                    shimmer_detail_notification.visibility = View.GONE
                 }
                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }

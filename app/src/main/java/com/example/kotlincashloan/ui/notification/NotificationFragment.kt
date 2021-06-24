@@ -36,7 +36,6 @@ class NotificationFragment : Fragment(), NotificationListener {
     private var errorCode = ""
     private var notificationAnim = false
     private var genAnim = false
-    private lateinit var thread: Thread
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -221,7 +220,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                 viewModel.errorNotice.observe(viewLifecycleOwner, Observer { error ->
                     if (error != null) {
                         errorCode = ""
-                        if (error == "500" || error == "400" || error == "600" || error == "409" || error == "429" || error == "601") {
+                        if (error == "500" || error == "400" || error == "409" || error == "429" || error == "601") {
                             notification_technical_work.visibility = View.VISIBLE
                             notification_access_restricted.visibility = View.GONE
                             notification_no_connection.visibility = View.GONE
@@ -245,6 +244,13 @@ class NotificationFragment : Fragment(), NotificationListener {
                             shimmer_notification.visibility = View.GONE
                         } else if (error == "401") {
                             initAuthorized()
+                        }else if (error == "600"){
+                            notification_no_connection.visibility = View.VISIBLE
+                            notification_access_restricted.visibility = View.GONE
+                            notification_technical_work.visibility = View.GONE
+                            notification_not_found.visibility = View.GONE
+                            notification_con.visibility = View.GONE
+                            shimmer_notification.visibility = View.GONE
                         }
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
