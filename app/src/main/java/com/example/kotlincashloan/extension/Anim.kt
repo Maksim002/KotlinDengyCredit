@@ -156,6 +156,24 @@ fun shimmerStart(id: ShimmerFrameLayout, activity: Activity) {
     }
 }
 
+fun shimmerStartProfile(id: ShimmerFrameLayout, activity: Activity) {
+    try {
+        id.startShimmerAnimation()
+        //In transition: (alpha from 0 to 1)
+        id.alpha = 1f;
+        id.visibility = View.VISIBLE;
+        id.animate()
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    id.visibility = View.VISIBLE;
+                    activity.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                }
+            });
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
 fun animationLoanGenerator(id: ShimmerFrameLayout, handler: Handler, activity: Activity) {
     try {
         thread = Thread() {

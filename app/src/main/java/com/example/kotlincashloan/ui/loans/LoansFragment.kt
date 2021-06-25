@@ -19,6 +19,7 @@ import com.example.kotlincashloan.adapter.loans.LoansAdapter
 import com.example.kotlincashloan.adapter.loans.LoansListener
 import com.example.kotlincashloan.extension.animationNoMargaritas
 import com.example.kotlincashloan.extension.listListResult
+import com.example.kotlincashloan.extension.shimmerStartProfile
 import com.example.kotlincashloan.service.model.Loans.LoanInfoResultModel
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.utils.ColorWindows
@@ -30,6 +31,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_loans.*
 import kotlinx.android.synthetic.main.fragment_loans.loans_layout
+import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -125,7 +127,7 @@ class LoansFragment : Fragment(), LoansListener {
                             }
                         }
                         loans_layout.isRefreshing = false
-                        if (alertValid == false) {
+                        if (!alertValid) {
                             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                                 alertValid = true
                             }, 650)
@@ -435,18 +437,22 @@ class LoansFragment : Fragment(), LoansListener {
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             initRepeat()
         }
 
         access_restricted.setOnClickListener {
+            initVisibilities()
             initRepeat()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             initRepeat()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             initRepeat()
         }
 
@@ -457,6 +463,15 @@ class LoansFragment : Fragment(), LoansListener {
         loan_edit_parallel_loan.setOnClickListener {
             continueApplication()
         }
+    }
+
+    private fun initVisibilities() {
+        shimmerStartProfile(shimmer_loan, requireActivity())
+        loans_access_restricted.visibility = View.GONE
+        loans_no_connection.visibility = View.GONE
+        loans_technical_work.visibility = View.GONE
+        loans_not_found.visibility = View.GONE
+        loans_constraint.visibility = View.VISIBLE
     }
 
     private fun initRepeat() {
@@ -548,10 +563,11 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initRefresh() {
         loans_layout.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            viewModel.errorNews.value = null
+            viewModel.listNewsDta.postValue(null)
+            viewModel.errorLoanInfo.value = null
+            viewModel.listLoanInfo.postValue(null)
             handler.postDelayed(Runnable {
                 initRepeat()
             }, 700)
@@ -586,6 +602,7 @@ class LoansFragment : Fragment(), LoansListener {
                                 loans_loans_null.visibility = View.VISIBLE
                                 loans_recycler.visibility = View.GONE
                             }
+                            shimmer_loan.visibility = View.GONE
                             layout_shimmer_frame.visibility = View.GONE
                             shimmer_rediscovery_loan.stopShimmerAnimation()
                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -640,6 +657,7 @@ class LoansFragment : Fragment(), LoansListener {
                             loans_loans_null.visibility = View.VISIBLE
                             loans_recycler.visibility = View.GONE
                         }
+                        shimmer_loan.visibility = View.GONE
                         layout_shimmer_frame.visibility = View.GONE
                         shimmer_rediscovery_loan.stopShimmerAnimation()
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -673,12 +691,13 @@ class LoansFragment : Fragment(), LoansListener {
 
     private fun initErrorResult(result: Int) {
         if (result == 403) {
+            loans_access_restricted.visibility = View.VISIBLE
             loans_not_found.visibility = View.GONE
             loans_technical_work.visibility = View.GONE
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
-            loans_access_restricted.visibility = View.VISIBLE
+            shimmer_loan.visibility = View.GONE
         } else if (result == 404) {
             loans_not_found.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
@@ -686,6 +705,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         } else if (result == 401) {
             initAuthorized()
         } else if (result == 500 || result == 400 || result == 409 || result == 429) {
@@ -695,6 +715,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }
@@ -707,6 +728,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_no_connection.visibility = View.GONE
             loans_constraint.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         } else if (error == "404") {
             loans_not_found.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
@@ -714,6 +736,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_constraint.visibility = View.GONE
             loans_access_restricted.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         } else if (error == "401") {
             initAuthorized()
         } else if (error == "500" || error == "400" || error == "409" || error == "429" || error == "601") {
@@ -723,6 +746,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         }else if (error == "600"){
             loans_no_connection.visibility = View.VISIBLE
             loans_technical_work.visibility = View.GONE
@@ -730,6 +754,7 @@ class LoansFragment : Fragment(), LoansListener {
             loans_access_restricted.visibility = View.GONE
             loans_not_found.visibility = View.GONE
             layout_shimmer_frame.visibility = View.GONE
+            shimmer_loan.visibility = View.GONE
         }
         loans_layout.isRefreshing = false
     }

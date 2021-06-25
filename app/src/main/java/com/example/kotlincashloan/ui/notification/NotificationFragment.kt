@@ -14,6 +14,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.notification.NotificationAdapter
 import com.example.kotlincashloan.adapter.notification.NotificationListener
 import com.example.kotlincashloan.extension.animationNoMargaritas
+import com.example.kotlincashloan.extension.shimmerStartProfile
 import com.example.kotlincashloan.service.model.Notification.ResultListNoticeModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -22,6 +23,7 @@ import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_notification.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -69,23 +71,37 @@ class NotificationFragment : Fragment(), NotificationListener {
 
     private fun initClick() {
         access_restricted.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
     }
 
+    private fun initVisibilities() {
+        shimmerStartProfile(shimmer_notification, requireActivity())
+        notification_access_restricted.visibility = View.GONE
+        notification_no_connection.visibility = View.GONE
+        notification_technical_work.visibility = View.GONE
+        notification_not_found.visibility = View.GONE
+        notification_con.visibility = View.VISIBLE
+    }
+
     private fun initRestart() {
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             notification_no_connection.visibility = View.VISIBLE
@@ -94,10 +110,10 @@ class NotificationFragment : Fragment(), NotificationListener {
             notification_access_restricted.visibility = View.GONE
             notification_not_found.visibility = View.GONE
             errorCode = "601"
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         } else {
             if (viewModel.listNoticeDta.value == null || viewModel.errorNotice.value == null) {
                 if (!viewModel.refreshCode) {
-                    requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     viewModel.refreshCode = false
                     viewModel.errorNotice.value = null
                     viewModel.listNotice(map)
@@ -179,6 +195,7 @@ class NotificationFragment : Fragment(), NotificationListener {
                                 genAnim = true
                             }
                             MainActivity.alert.hide()
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             notification_swipe.isRefreshing = false
                             myAdapter.notifyDataSetChanged()
                         } else {
@@ -209,7 +226,13 @@ class NotificationFragment : Fragment(), NotificationListener {
                                 } else if (result.error.code == 401) {
                                     initAuthorized()
                                 }
+                                if (!genAnim) {
+                                    //генерирует анимацию перехода
+                                    animationNoMargaritas(shimmer_notification, handler, requireActivity())
+                                    genAnim = true
+                                }
                                 requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                notification_swipe.isRefreshing = false
                             }
                         }
                     } catch (e: Exception) {
@@ -252,11 +275,16 @@ class NotificationFragment : Fragment(), NotificationListener {
                             notification_con.visibility = View.GONE
                             shimmer_notification.visibility = View.GONE
                         }
+                        if (!genAnim) {
+                            //генерирует анимацию перехода
+                            animationNoMargaritas(shimmer_notification, handler, requireActivity())
+                            genAnim = true
+                        }
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        notification_swipe.isRefreshing = false
                     }
                 })
-                notification_swipe.isRefreshing = false
-                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.extension.shimmerStartProfile
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -20,6 +21,7 @@ import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_detail_profile.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -71,20 +73,33 @@ class DetailProfileFragment : Fragment() {
 
     private fun initClick() {
         access_restricted.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
+    }
+
+    private fun initVisibilities() {
+        shimmerStartProfile(shimmer_detail_profile, requireActivity())
+        d_profile_access_restricted.visibility = View.GONE
+        d_profile_no_connection.visibility = View.GONE
+        d_profile_technical_work.visibility = View.GONE
+        d_profile_not_found.visibility = View.GONE
+        profile_detail.visibility = View.VISIBLE
     }
 
     private fun initBundle() {
@@ -166,7 +181,7 @@ class DetailProfileFragment : Fragment() {
             viewModel.errorGetOperation.observe(viewLifecycleOwner, Observer { error ->
                 if (error != null) {
                     errorCode = error
-                    if (error == "400" || error == "500" || error == "600" || error == "601") {
+                    if (error == "400" || error == "500" || error == "601") {
                         d_profile_technical_work.visibility = View.VISIBLE
                         profile_detail.visibility = View.GONE
                         d_profile_access_restricted.visibility = View.GONE
@@ -189,6 +204,13 @@ class DetailProfileFragment : Fragment() {
                         shimmer_detail_profile.visibility = View.GONE
                     } else if (error == "401") {
                         initAuthorized()
+                    }else if (error == "600"){
+                        d_profile_no_connection.visibility = View.VISIBLE
+                        d_profile_not_found.visibility = View.GONE
+                        d_profile_access_restricted.visibility = View.GONE
+                        d_profile_technical_work.visibility = View.GONE
+                        profile_detail.visibility = View.GONE
+                        shimmer_detail_profile.visibility = View.GONE
                     }
                     requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }

@@ -22,10 +22,7 @@ import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
 import com.example.kotlincashloan.adapter.profile.TransferListener
-import com.example.kotlincashloan.extension.animationGeneratorProfile
-import com.example.kotlincashloan.extension.bitmapToFile
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.sendPicture
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
@@ -36,6 +33,7 @@ import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -66,11 +64,7 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var constantAnimation = false
     private var editorZarem = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -148,20 +142,37 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
         }
 
         access_restricted.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
+    }
+
+    private fun initVisibilities() {
+        errorCode = ""
+        errorCodeClient = ""
+        errorGetImg = ""
+        errorCodeAp = ""
+        shimmerStartProfile(shimmer_profile, requireActivity())
+        profile_access_restricted.visibility = View.GONE
+        profile_no_connection.visibility = View.GONE
+        profile_technical_work.visibility = View.GONE
+        profile_not_found.visibility = View.GONE
+        layout_profile.visibility = View.VISIBLE
     }
 
     private fun initRecycler() {
@@ -580,6 +591,10 @@ class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
+            errorCode = ""
+            errorCodeClient = ""
+            errorGetImg = ""
+            errorCodeAp = ""
             requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true

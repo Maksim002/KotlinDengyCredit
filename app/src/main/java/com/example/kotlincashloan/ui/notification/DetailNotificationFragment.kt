@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.extension.animationGenerator
+import com.example.kotlincashloan.extension.shimmerStartProfile
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -17,6 +18,7 @@ import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_detail_notification.*
+import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -56,20 +58,33 @@ class DetailNotificationFragment : Fragment() {
 
     private fun initClick() {
         access_restricted.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             initRestart()
         }
+    }
+
+    private fun initVisibilities() {
+        shimmerStartProfile(shimmer_detail_notification, requireActivity())
+        d_notification_access_restricted.visibility = View.GONE
+        d_notification_no_connection.visibility = View.GONE
+        d_notification_technical_work.visibility = View.GONE
+        d_notification_not_found.visibility = View.GONE
+        layout_detail.visibility = View.VISIBLE
     }
 
     private fun initGetBundle() {

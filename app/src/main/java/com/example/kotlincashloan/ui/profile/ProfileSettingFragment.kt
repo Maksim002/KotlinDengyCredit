@@ -51,6 +51,7 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.AppPreferences.toFullPhone
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.MyUtils
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.home_forget_password
 import kotlinx.android.synthetic.main.item_access_restricted.*
@@ -217,9 +218,6 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             ) {
                 shimmer_profile_setting.startShimmerAnimation()
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                if (!viewModel.refreshCode) {
-//                    dialog.show()
-                }
                 handler.postDelayed(Runnable { // Do something after 5s = 500ms
                     clearingDate()
                     viewModel.refreshCode = false
@@ -238,8 +236,18 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
         }
     }
 
+    private fun initVisibilities() {
+        shimmerStartProfile(shimmer_profile_setting, requireActivity())
+        profile_s_access_restricted.visibility = View.GONE
+        profile_s_no_connection.visibility = View.GONE
+        profile_s_technical_work.visibility = View.GONE
+        profile_s_not_found.visibility = View.GONE
+        profile_setting.visibility = View.VISIBLE
+    }
+
     private fun isRestart() {
         clearingDate()
+
         viewModel.clientInfo(mapInfo)
         viewModel.listGender(mapGender)
         viewModel.getListNationality(mapNationality)
@@ -249,6 +257,11 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun clearingDate() {
+        errorCodeGender = ""
+        errorCodeNationality = ""
+        errorListAvailableCountry = ""
+        errorListSecretQuestion = ""
+        errorClientInfo = ""
         viewModel.errorListGender.value = null
         viewModel.listGenderDta.value = null
         viewModel.errorListNationality.value = null
@@ -515,17 +528,20 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 //                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                                dialog.dismiss()
 //                            }, 500)
+                            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                            profile_s_swipe.isRefreshing = false
                         } else {
                             listListResult(result.error.code!!)
                             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
 //                                dialog.dismiss()
 //                            }, 500)
+                            profile_s_swipe.isRefreshing = false
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                    profile_s_swipe.isRefreshing = false
+
                 })
 
             viewModel.errorListSecretQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
@@ -536,8 +552,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 //                            dialog.dismiss()
 //                        }, 500)
                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        profile_s_swipe.isRefreshing = false
                     }
-                    profile_s_swipe.isRefreshing = false
                 })
         }
     }
@@ -560,8 +576,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             viewModel.errorSaveProfile.value = null
         } else {
             //проверка старого пороля
-            viewModel.checkPassword(mapProfilePassword)
-                .observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
+            viewModel.checkPassword(mapProfilePassword).observe(viewLifecycleOwner, androidx.lifecycle.Observer { result ->
                     val msg = result.msg
                     val date = result.data
                     when (result.status) {
@@ -663,14 +678,12 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        profile_s_swipe.isRefreshing = false
+//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                        profile_s_swipe.isRefreshing = false
                     })
 
                 //listClientInfoDta Проверка на ошибки
-                viewModel.errorClientInfo.observe(
-                    viewLifecycleOwner,
-                    androidx.lifecycle.Observer { error ->
+                viewModel.errorClientInfo.observe(viewLifecycleOwner, androidx.lifecycle.Observer { error ->
                         try {
                             errorClientInfo = error
                         } catch (e: Exception) {
@@ -682,8 +695,8 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
                                 dialog.dismiss()
                             }, 500)
                         }
-                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        profile_s_swipe.isRefreshing = false
+//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                        profile_s_swipe.isRefreshing = false
                     })
 
                 //результат о сохронение данных
@@ -843,11 +856,9 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
 
         profile_s_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
+//                gettingFloors()
                 viewModel.refreshCode = true
                 profile_s_one_password.text = null
                 profile_s_two_password.text = null
@@ -1063,18 +1074,22 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
 
 
         access_restricted.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
@@ -1164,7 +1179,7 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
     }
 
     private fun errorList(error: String) {
-        if (error == "400" || error == "500" || error == "600" || error == "429" || error == "409" || error == "601") {
+        if (error == "400" || error == "500" || error == "429" || error == "409" || error == "601") {
             profile_s_technical_work.visibility = View.VISIBLE
             profile_s_no_connection.visibility = View.GONE
             profile_s_access_restricted.visibility = View.GONE
@@ -1185,15 +1200,14 @@ class ProfileSettingFragment : Fragment(), ListenerGeneralResult {
             profile_s_no_connection.visibility = View.GONE
             profile_setting.visibility = View.GONE
             profile_s_swipe.visibility = View.GONE
-        }
-//        else if (error == "601") {
-//            profile_s_no_connection.visibility = View.VISIBLE
-//            profile_s_technical_work.visibility = View.GONE
-//            profile_s_access_restricted.visibility = View.GONE
-//            profile_s_not_found.visibility = View.GONE
-//            profile_s_swipe.visibility = View.GONE
-//        }
-        else if (error == "401") {
+        }else if (error == "600") {
+            profile_s_no_connection.visibility = View.VISIBLE
+            profile_s_technical_work.visibility = View.GONE
+            profile_s_access_restricted.visibility = View.GONE
+            profile_s_not_found.visibility = View.GONE
+            profile_setting.visibility = View.GONE
+            profile_s_swipe.visibility = View.GONE
+        }else if (error == "401") {
             initAuthorized()
         }
         MainActivity.alert.hide()
