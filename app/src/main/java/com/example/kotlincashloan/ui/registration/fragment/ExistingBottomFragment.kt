@@ -124,6 +124,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                 pin_verification_code.setText(initpin)
                 currentPinInput = ""
                 loadingConnection(activity as AppCompatActivity)
+                HomeActivity.alert.hide()
             } else {
 //                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
 //                    getApi(requireActivity(), this)
@@ -136,7 +137,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
     }
 
     private fun pinCode(){
-        HomeActivity.alert.show()
+//        HomeActivity.alert.show()
         val number = MyUtils.toCodeNumber(currentPinInput)
         if (AppPreferences.savePin == number) {
             val map = HashMap<String, String>()
