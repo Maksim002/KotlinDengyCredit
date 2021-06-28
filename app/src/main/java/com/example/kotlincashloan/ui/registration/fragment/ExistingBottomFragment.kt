@@ -192,6 +192,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
             currentPinInput = ""
             pin_verification_code.setText(initpin)
             existing_liner_anim.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake))
+            HomeActivity.alert.hide()
         }
     }
 

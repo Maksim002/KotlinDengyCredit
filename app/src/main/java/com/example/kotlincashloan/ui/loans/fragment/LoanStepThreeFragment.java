@@ -443,13 +443,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                 else {
                                     try {
                                         Toast.makeText(requireContext(), "Init failed:" + e, Toast.LENGTH_LONG).show();
+                                        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     } catch (Exception el) {
                                         el.printStackTrace();
                                     }
-                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                             }
-
                         });
                     }
                 });

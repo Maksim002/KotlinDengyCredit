@@ -319,15 +319,18 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                                 loadingMistake(this)
                             } else if (data.error.code == 400) {
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                             } else {
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
                                 home_incorrect.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                                 loadingMistake(this)
                             }
                         } else {
@@ -338,6 +341,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             if (home_login_code.isChecked) {
                                 home_incorrect.visibility = View.GONE
                                 if (!AppPreferences.isNumber) {
+                                    //генерирует анимацию перехода
+                                    shimmerStop(shimmer_home, this)
                                     initBottomSheet()
                                     AppPreferences.isNumber = true
                                 }
@@ -356,8 +361,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                                 AppPreferences.isTouchId = home_touch_id.isChecked
                                 AppPreferences.isLoginCode = home_login_code.isChecked
                                 viewModel.save(home_text_login.text.toString(), data.result.token)
-                                AppPreferences.password =
-                                    Hasher.hash(home_text_password.text.toString(), HashType.MD5)
+                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                             } else {
                                 AppPreferences.isRemember = false
                                 AppPreferences.clearLogin()
@@ -369,11 +373,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             home_incorrect.visibility = View.VISIBLE
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
                         } else {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
                         }
                     }
@@ -382,11 +388,13 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
                         } else if (msg == "600"){
                             home_no_connection.visibility = View.GONE
                             home_incorrect.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingConnection(this)
                         }
                     }
