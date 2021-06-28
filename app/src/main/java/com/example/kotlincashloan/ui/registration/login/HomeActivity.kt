@@ -139,11 +139,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             AppPreferences.tokenApi = tokenApi
                         }
                         selectedInput()
-                        if (!genAnim) {
-                            //генерирует анимацию перехода
-                            shimmerStop(shimmer_home, this)
-                            genAnim = true
-                        }
+//                        if (!genAnim) {
+//                            //генерирует анимацию перехода
+//                            shimmerStop(shimmer_home, this)
+//                            genAnim = true
+//                        }
                         alert.hide()
                     }else if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                         AppPreferences.urlApi = urlApi
@@ -164,11 +164,11 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                         }
                     } else {
                         selectedInput()
-                        if (!genAnim) {
-                            //генерирует анимацию перехода
-                            shimmerStop(shimmer_home, this)
-                            genAnim = true
-                        }
+//                        if (!genAnim) {
+//                            //генерирует анимацию перехода
+//                            shimmerStop(shimmer_home, this)
+//                            genAnim = true
+//                        }
                         alert.hide()
                     }
                 } else {
@@ -385,7 +385,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             loadingMistake(this)
                         } else if (msg == "600"){
                             home_no_connection.visibility = View.GONE
-                            home_layout.visibility = View.GONE
+                            home_incorrect.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
                             loadingConnection(this)
                         }
                     }
@@ -396,7 +397,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                 } else {
                     shimmerStop(shimmer_home, this)
                 }
-                this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                 this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             })
         }
     }
