@@ -277,6 +277,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
         inputsAnim = true
         home_touch_id.isChecked = false
         home_login_code.isChecked = false
+        shimmerStop(shimmer_home, this)
         startActivity(intent)
     }
 
@@ -287,6 +288,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
         inputsAnim = true
         home_touch_id.isChecked = false
         home_login_code.isChecked = false
+        shimmerStop(shimmer_home, this)
         startActivity(intent)
     }
 
