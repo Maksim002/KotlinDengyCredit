@@ -33,11 +33,7 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
     var currentPinInput = ""
     var initpin = ""
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_existing_bottom, container, false)
     }
 
@@ -126,18 +122,12 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                 loadingConnection(activity as AppCompatActivity)
                 HomeActivity.alert.hide()
             } else {
-//                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
-//                    getApi(requireActivity(), this)
-//                } else {
-//                    pinCode()
-//                }
                 getApi(requireActivity(), this)
             }
         }
     }
 
     private fun pinCode(){
-//        HomeActivity.alert.show()
         val number = MyUtils.toCodeNumber(currentPinInput)
         if (AppPreferences.savePin == number) {
             val map = HashMap<String, String>()

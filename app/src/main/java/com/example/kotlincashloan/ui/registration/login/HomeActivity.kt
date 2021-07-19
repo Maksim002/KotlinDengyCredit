@@ -49,8 +49,7 @@ import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
-class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener,
-    ListenerApiInternet {
+class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener, ListenerApiInternet {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
@@ -139,11 +138,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             AppPreferences.tokenApi = tokenApi
                         }
                         selectedInput()
-//                        if (!genAnim) {
-//                            //генерирует анимацию перехода
-//                            shimmerStop(shimmer_home, this)
-//                            genAnim = true
-//                        }
                         alert.hide()
                     }else if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                         AppPreferences.urlApi = urlApi
@@ -164,11 +158,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                         }
                     } else {
                         selectedInput()
-//                        if (!genAnim) {
-//                            //генерирует анимацию перехода
-//                            shimmerStop(shimmer_home, this)
-//                            genAnim = true
-//                        }
                         alert.hide()
                     }
                 } else {
@@ -260,11 +249,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
             isEntrance = true
             if (validate()) {
                 this.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
-//                    initApyService()
-//                } else {
-//                    iniResult()
-//                }
                 initApyService()
             }
         }
@@ -351,8 +335,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                             } else {
                                 AppPreferences.token = data.result.token
                                 AppPreferences.login = data.result.login
-                                AppPreferences.password =
-                                    Hasher.hash(home_text_password.text.toString(), HashType.MD5)
+                                AppPreferences.password = Hasher.hash(home_text_password.text.toString(), HashType.MD5)
                                 if (AppPreferences.token != null) {
                                     home_incorrect.visibility = View.GONE
                                     startMainActivity()
@@ -539,10 +522,6 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-//        if (!home_login_code.isChecked){
-//            shimmer_home.stopShimmerAnimation()
-//            shimmer_home.visibility = View.GONE
-//        }
     }
 
     override fun onStart() {

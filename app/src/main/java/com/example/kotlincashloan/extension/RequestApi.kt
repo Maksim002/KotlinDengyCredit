@@ -16,7 +16,7 @@ fun getApi(activity: Activity, listener: GetApiListener) {
     remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
         if (task.isSuccessful) {
             remoteConfig.fetchAndActivate()
-            val urlApi = remoteConfig.getString("url_dev1")
+            val urlApi = remoteConfig.getString("url_dev")
             val tokenApi = remoteConfig.getString("token_dev")
 
             if (AppPreferences.urlApi != urlApi || AppPreferences.tokenApi != tokenApi) {
