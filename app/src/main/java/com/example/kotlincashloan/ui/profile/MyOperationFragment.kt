@@ -9,12 +9,13 @@ import androidx.navigation.fragment.findNavController
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.MyOperationAdapter
 import com.example.kotlincashloan.adapter.profile.OperationListener
+import com.example.kotlincashloan.adapter.profile.TransferListener
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import kotlinx.android.synthetic.main.fragment_my_operation.*
 
-class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf(), var error: String) : Fragment(), OperationListener {
+class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListOf(), var error: String, var listener: TransferListener) : Fragment(), OperationListener {
     private var myAdapter = MyOperationAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,6 +41,7 @@ class MyOperationFragment(var list: ArrayList<ResultOperationModel> = arrayListO
     }
 
     override fun operationClickListener(int: Int, item: ResultOperationModel) {
+        listener.transferClickListener()
         val bundle = Bundle()
         bundle.putInt("operationId", item.id!!)
         bundle.putString("title", item.title)

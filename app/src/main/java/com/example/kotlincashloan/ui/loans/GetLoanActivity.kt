@@ -20,7 +20,6 @@ import com.example.kotlincashloan.service.model.profile.GetLoanModel
 import com.example.kotlincashloan.ui.loans.fragment.*
 import com.example.kotlincashloan.ui.profile.ProfileViewModel
 import com.example.kotlincashloan.utils.ColorWindows
-import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TimerListenerLoan
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.example.kotlinviewpager.adapter.PagerAdapters
@@ -28,7 +27,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
 import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import kotlinx.android.synthetic.main.activity_get_loan.*
-import kotlinx.android.synthetic.main.fragment_loans_details.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -36,7 +34,7 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class GetLoanActivity : AppCompatActivity() {
+class GetLoanActivity : AppCompatActivity(), LoanClearListener {
     private var list = mutableListOf<LoansListModel>()
     val handler = Handler()
     lateinit var get_loan_view_pagers: ViewPager
@@ -46,6 +44,7 @@ class GetLoanActivity : AppCompatActivity() {
     var states = ArrayList<String>()
     private var statusValue = false
     private var applicationStatus = false
+    private var firstStartStatus = false
     private var errorCodeIm = ""
     private var position: Int = 0
     private val getImList: ArrayList<String> = arrayListOf()
@@ -66,6 +65,8 @@ class GetLoanActivity : AppCompatActivity() {
 
         try {
             val valod = intent.extras!!.getBoolean("getBool")
+            val firstStart = intent.extras!!.getBoolean("firstStart")
+            firstStartStatus = firstStart
             val application = intent.extras!!.getBoolean("application")
             listLoan = intent.extras!!.getSerializable("getLOan") as GetLoanModel
             statusValue = valod
@@ -127,6 +128,11 @@ class GetLoanActivity : AppCompatActivity() {
         }
     }
 
+    override fun loanClearClickListener() {
+        this.finish()
+    }
+
+
     //проверяет какое деалог заработает
     private fun getPermission() {
         if (listLoan.step == "1") {
@@ -151,7 +157,7 @@ class GetLoanActivity : AppCompatActivity() {
                 if (applicationStatus == false) {
                     loan_cross_clear.visibility = View.GONE
                 }
-                alert.show()
+//                alert.show()
             }
             try {
                 if (listLoan.docs!!.size != 0) {
@@ -172,8 +178,7 @@ class GetLoanActivity : AppCompatActivity() {
                                 mapImg.put("type_id", states[position])
                                 getImList.add(position.toString())
 
-                                viewModel.getImgLoan(mapImg)
-                                    .observe(this, androidx.lifecycle.Observer { result ->
+                                viewModel.getImgLoan(mapImg).observe(this, androidx.lifecycle.Observer { result ->
                                         val msg = result.msg
                                         val data = result.data
                                         when (result.status) {
@@ -186,7 +191,7 @@ class GetLoanActivity : AppCompatActivity() {
                                                         initGetLoan()
                                                     } else if (mitmap.size == states.size - 1) {
                                                         convert(data.result.data.toString())
-                                                        LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)
+                                                        LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus,this)
                                                         transition()
                                                         alert.hide()
                                                     }
@@ -270,16 +275,16 @@ class GetLoanActivity : AppCompatActivity() {
     }
 
     private fun initViewPager() {
-//        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission)))
+//        list.add(LoansListModel(LoanStepThreeFragment()))
 
-        list.add(LoansListModel(LoanStepOneFragment()))
-        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus)))
+        list.add(LoansListModel(LoanStepOneFragment(firstStartStatus)))
+        list.add(LoansListModel(LoanStepTwoFragment(statusValue, listLoan, applicationStatus, this)))
         list.add(LoansListModel(LoanStepThreeFragment()))
-        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus)))
-        list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus)))
+        list.add(LoansListModel(LoanStepFourFragment(statusValue, listLoan, permission, applicationStatus, this)))
+        list.add(LoansListModel(LoanStepFiveFragment(statusValue, listLoan, permission, applicationStatus, this)))
+        list.add(LoansListModel(LoanStepSixFragment(statusValue, listLoan, permission, applicationStatus, this)))
+        list.add(LoansListModel(LoanStepFifthFragment(statusValue, mitmap, listLoan, permission, applicationStatus,this)))
+        list.add(LoansListModel(LoanStepFaceFragment(statusValue, applicationStatus, this)))
         list.add(LoansListModel(LoanStepPushFragment(statusValue, applicationStatus)))
 
         get_loan_view_pagers.isEnabled = true
@@ -294,6 +299,8 @@ class GetLoanActivity : AppCompatActivity() {
 
         loan_cross_clear.setOnClickListener {
             this.finish()
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
         }
 
         get_loan_stepper_indicator.setViewPager(get_loan_view_pagers);
@@ -316,6 +323,12 @@ class GetLoanActivity : AppCompatActivity() {
         AppPreferences.isSeekBar = 0
     }
 
+    override fun onStart() {
+        super.onStart()
+        shimmer_step_loan.startShimmerAnimation()
+        //Переключает флаг для работы анимации
+        AppPreferences.isRepeat = false
+    }
 
     override fun onResume() {
         super.onResume()

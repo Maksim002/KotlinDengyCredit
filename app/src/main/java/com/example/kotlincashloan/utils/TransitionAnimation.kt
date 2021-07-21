@@ -1,12 +1,15 @@
 package com.example.kotlincashloan.utils
 
 import android.view.View
+import android.view.WindowId
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.kotlincashloan.R
+import com.facebook.shimmer.ShimmerFrameLayout
+import java.util.logging.Handler
 
 class TransitionAnimation(var activity: AppCompatActivity) {
     

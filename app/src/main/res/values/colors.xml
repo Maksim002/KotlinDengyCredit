@@ -4,12 +4,12 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
-    <color name="orangeColor">#FFA800</color>
+    <color name="orangeColor">#FF8C03</color>
     <color name="blackColor">#444444</color>
-    <color name="orangeGray">#6A6868</color>
+    <color name="orangeGray">#4D4B4C</color>
     <color name="blueColor">#B67123</color>
     <color name="whiteColor">#FFF</color>
-    <color name="colorDrawer">#FFA800</color>
+    <color name="colorDrawer">#FF8C03</color>
     <color name="colorRed">#F60621</color>
     <color name="colorGrey">#f3f3f3</color>
     <color name="colorLightGrey">#F1F1F1</color>

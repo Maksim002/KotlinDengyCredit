@@ -17,35 +17,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.profile.ApplicationListener
 import com.example.kotlincashloan.adapter.profile.ProfilePagerAdapter
-import com.example.kotlincashloan.extension.bitmapToFile
-import com.example.kotlincashloan.extension.listListResult
-import com.example.kotlincashloan.extension.sendPicture
+import com.example.kotlincashloan.adapter.profile.TransferListener
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.profile.ResultApplicationModel
 import com.example.kotlincashloan.service.model.profile.ResultOperationModel
 import com.example.kotlincashloan.ui.loans.GetLoanActivity
-import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
 import com.example.kotlincashloan.utils.TransitionAnimation
 import com.example.kotlinscreenscanner.ui.MainActivity
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
-import kotlinx.android.synthetic.main.fragment_loan_step_four.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.fragment_support.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
 import kotlinx.android.synthetic.main.item_technical_work.*
 import java.util.*
-import kotlin.collections.ArrayList
 
-class ProfileFragment : Fragment(), ApplicationListener {
+
+class ProfileFragment : Fragment(), ApplicationListener, TransferListener {
     private var viewModel = ProfileViewModel()
     private val map = HashMap<String, String>()
     private val mapImg = HashMap<String, String>()
@@ -64,11 +60,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private var errorNullAp = ""
     private var pagerPosition = -1
     private var addImage = true
+    private var genAnim = false
+    private var constantAnimation = false
+    private var editorZarem = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
@@ -78,6 +74,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).supportActionBar?.show()
         requireActivity().onBackPressedDispatcher.addCallback(this) {}
+
         map.put("login", AppPreferences.login.toString())
         map.put("token", AppPreferences.token.toString())
 
@@ -90,6 +87,42 @@ class ProfileFragment : Fragment(), ApplicationListener {
         setTitle("Профиль", resources.getColor(R.color.whiteColor))
         initRefresh()
         initClick()
+
+        if (AppPreferences.updatingImage) {
+            viewModel.listGetImgDta.postValue(null)
+            viewModel.getImg(mapImg)
+            AppPreferences.updatingImage = false
+        }
+
+        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null) {
+            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
+                if (inputsAnim != 0) {
+                    profAnim = true
+                }
+                initGetImgDta()
+                initRecycler()
+            } else {
+                AppPreferences.reviewCode = 0
+                AppPreferences.reviewCodeAp = 0
+                initRestart()
+            }
+        } else {
+            AppPreferences.reviewCode = 1
+            AppPreferences.reviewCodeAp = 1
+            viewModel.refreshCode = false
+            initRestart()
+        }
+
+        if (numberBar != 0) {
+            profile_pager.currentItem = numberBar
+            profile_bar_one.visibility = View.VISIBLE
+            profile_bar_zero.visibility = View.GONE
+        } else {
+            profile_bar_zero.visibility = View.VISIBLE
+            profile_bar_one.visibility = View.GONE
+        }
     }
 
     private fun initArgument() {
@@ -99,6 +132,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private fun initClick() {
 
         profile_your.setOnClickListener {
+            constantAnimation = true
             if (sendPicture != "") {
                 bundle.putString("sendPicture", sendPicture)
                 bundle.putBoolean("addImage", addImage)
@@ -108,20 +142,37 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
 
         access_restricted.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         no_connection_repeat.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         technical_work.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
 
         not_found.setOnClickListener {
+            initVisibilities()
             isRestart()
         }
+    }
+
+    private fun initVisibilities() {
+        errorCode = ""
+        errorCodeClient = ""
+        errorGetImg = ""
+        errorCodeAp = ""
+        shimmerStartProfile(shimmer_profile, requireActivity())
+        profile_access_restricted.visibility = View.GONE
+        profile_no_connection.visibility = View.GONE
+        profile_technical_work.visibility = View.GONE
+        profile_not_found.visibility = View.GONE
+        layout_profile.visibility = View.VISIBLE
     }
 
     private fun initRecycler() {
@@ -130,6 +181,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
+                layout_profile.visibility = View.GONE
                 profile_swipe.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
@@ -162,9 +214,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                             resultSuccessfully()
                         }
-//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    profile_swipe.isRefreshing = false
-
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -197,8 +246,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
                 })
 
 
@@ -237,8 +284,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
                 })
             }
         } catch (e: Exception) {
@@ -253,6 +298,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
                 profile_no_connection.visibility = View.VISIBLE
+                layout_profile.visibility = View.GONE
                 profile_swipe.visibility = View.GONE
                 profile_technical_work.visibility = View.GONE
                 profile_access_restricted.visibility = View.GONE
@@ -266,21 +312,20 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         if (result.result != null) {
                             errorGetImg = result.code.toString()
                             val imageBytes = Base64.decode(result.result.data, Base64.DEFAULT)
-                            val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            val decodedImage =
+                                BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                             val nh = (decodedImage.height * (512.0 / decodedImage.width)).toInt()
                             val scaled = Bitmap.createScaledBitmap(decodedImage, 512, nh, true)
                             image_profile.setImageBitmap(scaled)
                             bitmapToFile(decodedImage, requireContext())
                             addImage = false
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                try {
-                                    profile_swipe.isRefreshing = false
-                                }catch (e: Exception){
-                                    e.printStackTrace()
-                                }
-                            },500)
+                            //Проверка как запускать анимацию
+                            errorGenAnim()
+                            try {
+                                profile_swipe.isRefreshing = false
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         } else {
                             if (result.error != null) {
                                 if (errorGetImg != result.error.code.toString()) {
@@ -294,18 +339,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                         errorGetImg = "200"
                                     }
                                 }
-                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                    MainActivity.alert.hide()
-                                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                    profile_swipe.isRefreshing = false
-                                },500)
+                                //Проверка как запускать анимацию
+                                errorGenAnim()
+                                profile_swipe.isRefreshing = false
                             }
                         }
                         if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                             resultSuccessfully()
                         }
-//                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                        profile_swipe.isRefreshing = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -319,17 +360,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
                                 getErrorCode(error.toInt())
                             }
                             clearingDate()
-                            handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                                MainActivity.alert.hide()
-                                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                profile_swipe.isRefreshing = false
-                            },500)
+                            //Проверка как запускать анимацию
+                            errorGenAnim()
+                            profile_swipe.isRefreshing = false
                         }
                         errorGetImg = error
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 })
             }
         } catch (e: Exception) {
@@ -342,6 +380,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
+            layout_profile.visibility = View.GONE
             profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
@@ -375,8 +414,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     if (errorCode == "200" && errorCodeClient == "200" && errorGetImg == "200" && errorCodeAp == "200") {
                         resultSuccessfully()
                     }
-//                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    profile_swipe.isRefreshing = false
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -401,22 +438,30 @@ class ProfileFragment : Fragment(), ApplicationListener {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-//                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                profile_swipe.isRefreshing = false
             })
+        }
+    }
+
+    private fun errorGenAnim() {
+        if (!genAnim) {
+            //генерирует анимацию перехода
+            animationGeneratorProfile(shimmer_profile, handler, requireActivity())
+            genAnim = true
+        }else{
+            shimmer_profile.visibility = View.GONE
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         }
     }
 
     // проверка если errorCode и errorCodeClient == 200
     private fun resultSuccessfully() {
+        layout_profile.visibility = View.VISIBLE
         profile_swipe.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
         profile_access_restricted.visibility = View.GONE
         profile_not_found.visibility = View.GONE
         if (profAnim) {
-            //profileAnim анимация для перехода с адного дествия в другое
-            TransitionAnimation(activity as AppCompatActivity).transitionLeft(profile_anim)
             inputsAnim = 0
             AppPreferences.inputsAnim = 0
             profAnim = false
@@ -425,6 +470,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
     }
 
     private fun resultTrue() {
+        layout_profile.visibility = View.VISIBLE
         profile_swipe.visibility = View.VISIBLE
         profile_technical_work.visibility = View.GONE
         profile_no_connection.visibility = View.GONE
@@ -435,8 +481,8 @@ class ProfileFragment : Fragment(), ApplicationListener {
     private fun getErrorCode(error: Int) {
         listListResult(
             error, profile_technical_work as LinearLayout, profile_no_connection as LinearLayout,
-            profile_swipe as SwipeRefreshLayout, profile_access_restricted as LinearLayout,
-            profile_not_found as LinearLayout, activity as AppCompatActivity
+            layout_profile, profile_access_restricted as LinearLayout,
+            profile_not_found as LinearLayout, activity as AppCompatActivity, true
         )
         MainActivity.alert.hide()
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -445,10 +491,14 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     //Запрос на получение масива заявки
     override fun applicationListener(int: Int, item: ResultApplicationModel) {
+        //Нуже ля проверки был ли в ход в заем
+        // Также поределяет стоет делать запрос на сервер после воззвтрата обратно
+        editorZarem = true
         //проверка на интернет
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
+            layout_profile.visibility = View.GONE
             profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
@@ -456,7 +506,6 @@ class ProfileFragment : Fragment(), ApplicationListener {
             errorValue()
             clearError()
         } else {
-            HomeActivity.alert.show()
             val mapLOan = HashMap<String, String>()
             mapLOan.put("login", AppPreferences.login.toString())
             mapLOan.put("token", AppPreferences.token.toString())
@@ -481,16 +530,15 @@ class ProfileFragment : Fragment(), ApplicationListener {
                         getErrorCode(msg!!.toInt())
                     }
                 }
-                MainActivity.alert.hide()
             })
         }
     }
 
     private fun initPager() {
         val adapter = ProfilePagerAdapter(childFragmentManager)
-        adapter.addFragment(MyOperationFragment(listOperation, errorNull), "Мои операции")
+        adapter.addFragment(MyOperationFragment(listOperation, errorNull, this), "Мои операции")
         adapter.addFragment(MyApplicationFragment(this, listApplication, errorNullAp), "Мои заявки")
-        profile_pager.setAdapter(adapter)
+        profile_pager.adapter = adapter
 
         profile_pager.isEnabled = false
 
@@ -543,14 +591,18 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     private fun initRefresh() {
         profile_swipe.setOnRefreshListener {
-            requireActivity().window.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-            )
+            errorCode = ""
+            errorCodeClient = ""
+            errorGetImg = ""
+            errorCodeAp = ""
+            requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             handler.postDelayed(Runnable { // Do something after 5s = 500ms
                 viewModel.refreshCode = true
                 isRestart()
-                profile_pager.setCurrentItem(0)
+                // TODO: 02.06.2021 проверить
+                if (profile_pager.currentItem != 0) {
+                    profile_pager.currentItem = 0
+                }
                 profile_bar_zero.visibility = View.VISIBLE
                 profile_bar_one.visibility = View.GONE
                 AppPreferences.reviewCode = 0
@@ -564,6 +616,7 @@ class ProfileFragment : Fragment(), ApplicationListener {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
             profile_no_connection.visibility = View.VISIBLE
+            layout_profile.visibility = View.GONE
             profile_swipe.visibility = View.GONE
             profile_technical_work.visibility = View.GONE
             profile_access_restricted.visibility = View.GONE
@@ -571,24 +624,26 @@ class ProfileFragment : Fragment(), ApplicationListener {
             errorValue()
             clearError()
         } else {
-            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listGetImgDta.value == null && viewModel.listListApplicationDta.value == null
-//                && viewModel.errorListOperation.value == null && viewModel.errorClientInfo.value == null && viewModel.errorGetImg.value == null && viewModel.errorListApplication.value == null
-            ) {
+            if (viewModel.listListOperationDta.value == null && viewModel.listClientInfoDta.value == null && viewModel.listListApplicationDta.value == null) {
+                shimmer_profile.startShimmerAnimation()
+                requireActivity().window.setFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                )
                 if (!viewModel.refreshCode) {
-                    MainActivity.alert.show()
-                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-                        viewModel.refreshCode = false
-                        clearingDate()
-                        viewModel.listOperation(map)
-                        viewModel.clientInfo(map)
-                        viewModel.listApplication(map)
-                        viewModel.getImg(mapImg)
-                        initRecycler()
-                        initGetImgDta()
-                    }, 500)
+                    viewModel.refreshCode = false
+                    clearingDate()
+                    viewModel.listOperation(map)
+                    viewModel.clientInfo(map)
+                    viewModel.listApplication(map)
+                    viewModel.getImg(mapImg)
+                    initRecycler()
+                    initGetImgDta()
                 }
             } else {
-                if (profile_swipe.isRefreshing == true) {
+                if (editorZarem) {
+                    shimmer_profile.startShimmerAnimation()
+                    shimmer_profile.visibility = View.VISIBLE
                     clearError()
                     clearingDate()
                     viewModel.listOperation(map)
@@ -598,12 +653,11 @@ class ProfileFragment : Fragment(), ApplicationListener {
                     viewModel.getImg(mapImg)
                     initGetImgDta()
                     initRecycler()
+                    editorZarem = false
+                } else {
+                    initGetImgDta()
+                    initRecycler()
                 }
-//                clearError()
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
-                initGetImgDta()
-                initRecycler()
             }
         }
     }
@@ -660,6 +714,10 @@ class ProfileFragment : Fragment(), ApplicationListener {
         }
     }
 
+    override fun transferClickListener() {
+        constantAnimation = true
+    }
+
     override fun onStop() {
         super.onStop()
         profAnim = false
@@ -667,54 +725,15 @@ class ProfileFragment : Fragment(), ApplicationListener {
 
     override fun onResume() {
         super.onResume()
+        if (constantAnimation) {
+            //profileAnim анимация для перехода с адного дествия в другое
+            TransitionAnimation(activity as AppCompatActivity).transitionLeftActivity(layout_profile)
+            constantAnimation = false
+        }
         initArgument()
         errorValue()
         if (AppPreferences.inputsAnim != 0) {
             inputsAnim = AppPreferences.inputsAnim
-        }
-        if (AppPreferences.updatingImage) {
-            viewModel.listGetImgDta.postValue(null)
-            viewModel.getImg(mapImg)
-            initGetImgDta()
-            AppPreferences.updatingImage = false
-        }
-
-        if (viewModel.listListOperationDta.value != null || viewModel.errorListOperation.value != null || viewModel.listClientInfoDta.value != null || viewModel.listListApplicationDta.value != null
-//            || viewModel.errorClientInfo.value != null || viewModel.listGetImgDta.value != null || viewModel.errorGetImg.value != null || viewModel.errorListApplication.value != null
-        ) {
-            if (errorCode == "200" || errorCodeClient == "200" || errorGetImg == "200" || errorCodeAp == "200") {
-                AppPreferences.reviewCode = 0
-                AppPreferences.reviewCodeAp = 0
-                if (inputsAnim != 0) {
-                    profAnim = true
-                }
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
-                initGetImgDta()
-                initRecycler()
-            } else {
-                AppPreferences.reviewCode = 0
-                AppPreferences.reviewCodeAp = 0
-                initRestart()
-//                viewModel.listGetImgDta.postValue(null)
-//                viewModel.getImg(mapImg)
-//                initGetImgDta()
-//                initRecycler()
-            }
-        } else {
-            AppPreferences.reviewCode = 1
-            AppPreferences.reviewCodeAp = 1
-            viewModel.refreshCode = false
-            initRestart()
-        }
-
-        if (numberBar != 0) {
-            profile_pager.currentItem = numberBar
-            profile_bar_one.visibility = View.VISIBLE
-            profile_bar_zero.visibility = View.GONE
-        } else {
-            profile_bar_zero.visibility = View.VISIBLE
-            profile_bar_one.visibility = View.GONE
         }
 
         //меняет цвета навигационной понели

@@ -9,7 +9,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 
 class TimerListenerLoan(var activity: Activity){
     private lateinit var timer: CountDownTimer
-    private val handler = Handler()
     var numberContractions = 0
 
     init {
@@ -21,20 +20,6 @@ class TimerListenerLoan(var activity: Activity){
                 }
 
                 override fun onFinish() {
-//                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                        MainActivity.timer.timeStart()
-//                    }, 2200)
-//                    AppPreferences.token = ""
-//                    if (AppPreferences.resultPassword == ""){
-//                        AppPreferences.password = ""
-//                    }
-//                    HomeActivity.repeatedClick = 1
-//                    AppPreferences.isNumber = true
-//                    AppPreferences.isPinCode = true
-//                    DocumentReader.Instance().stopScanner(activity.applicationContext);
-//                    activity.finishAffinity();
-//                    System.exit(0);
-
                     AppPreferences.token = ""
                     if (AppPreferences.resultPassword == ""){
                         AppPreferences.password = ""

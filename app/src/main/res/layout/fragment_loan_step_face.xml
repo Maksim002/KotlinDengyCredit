@@ -7,114 +7,104 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_face"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:text="Сканирование лица"
-                android:textColor="@color/blackColor"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/face_cross_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_baseline_arrow_back_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="MissingConstraints" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        android:background="@color/whiteColor">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="16dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_marginBottom="10dp"
+            android:id="@+id/layout_face"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:justificationMode="inter_word"
-                android:textSize="14sp"
-                android:textColor="@color/blackColor"
-                android:background="@drawable/circle_orange_background_layout"
-                android:text="@string/face_anigdot"
-                android:padding="16dp"/>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Сканирование лица"
+                    android:textColor="@color/blackColor"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/face_cross_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_baseline_arrow_back_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:padding="@dimen/_8sdp"
-                android:layout_height="@dimen/_40sdp">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/thee_incorrect_face"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/circle_orange_background_layout"
+                    android:justificationMode="inter_word"
+                    android:padding="16dp"
+                    android:text="@string/face_anigdot"
+                    android:textColor="@color/blackColor"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp">
+
+                    <TextView
+                        android:id="@+id/thee_incorrect_face"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                        android:drawablePadding="10dp"
+                        android:text="Отсканируйте лицо повторно"
+                        android:textColor="@color/colorRed"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/bottom_loan_face"
+                    style="@style/RoundedOrangeBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-                    android:drawablePadding="10dp"
-                    android:text="Отсканируйте лицо повторно"
-                    android:textColor="@color/colorRed"
-                    android:visibility="gone" />
+                    android:layout_marginTop="0dp"
+                    android:paddingLeft="75dp"
+                    android:paddingRight="75dp"
+                    android:text="Сканировать"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
             </LinearLayout>
-
-            <Button
-                android:id="@+id/bottom_loan_face"
-                style="@style/RoundedOrangeBackground"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                android:paddingLeft="75dp"
-                android:paddingRight="75dp"
-                android:text="Сканировать"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
-
         </LinearLayout>
-    </LinearLayout>
-
-    <include
-        android:id="@+id/face_access_restricted"
-        layout="@layout/item_access_restricted"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/face_no_connection"
-        layout="@layout/item_no_connection"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/face_technical_work"
-        layout="@layout/item_technical_work"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/face_not_found"
-        layout="@layout/item_not_found"
-        android:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

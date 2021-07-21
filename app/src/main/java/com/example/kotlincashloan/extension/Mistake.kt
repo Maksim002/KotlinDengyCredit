@@ -2,9 +2,11 @@ package com.example.kotlincashloan.extension
 
 
 import androidx.appcompat.app.AppCompatActivity
+import com.example.kotlincashloan.adapter.listener.ListenerApiInternet
 import com.example.kotlincashloan.ui.loans.dialogue.ConnectionBottomLoanFragment
 import com.example.kotlincashloan.ui.loans.dialogue.LoanBottomSheetFragment
 import com.example.kotlincashloan.ui.registration.recovery.fragment.BottomDialogListener
+import com.example.kotlinscreenscanner.ui.login.fragment.ConnectionApiSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.ConnectionBottomSheetFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomDialogFragment
 import com.example.kotlinscreenscanner.ui.login.fragment.MistakeBottomSheetFragment
@@ -58,6 +60,20 @@ fun loadingConnectionIm(activity: AppCompatActivity){
     try {
         connectionSheetDialogFragment.isCancelable = false;
         connectionSheetDialogFragment.show(activity.supportFragmentManager, connectionSheetDialogFragment.tag)
+    } catch (e: Exception) {
+        println()
+    }
+}
+
+fun apiConnection(activity: AppCompatActivity, listener: ListenerApiInternet, boolean: Boolean? = null){
+    val connectionSheetDialogFragment = ConnectionApiSheetFragment(listener)
+    try {
+        if (boolean == true){
+            connectionSheetDialogFragment.dismiss()
+        }else{
+            connectionSheetDialogFragment.isCancelable = false;
+            connectionSheetDialogFragment.show(activity.supportFragmentManager, connectionSheetDialogFragment.tag)
+        }
     } catch (e: Exception) {
         println()
     }

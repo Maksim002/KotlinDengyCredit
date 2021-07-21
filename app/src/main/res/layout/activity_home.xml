@@ -10,210 +10,243 @@
     android:padding="16dp"
     tools:context=".ui.registration.login.HomeActivity">
 
-    <ImageView
-        android:layout_width="137dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_money_loan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/home_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notification_con_lay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center|left"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Вход"
-            android:textColor="@color/blackColor"
-            android:textSize="20sp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <AutoCompleteTextView
-                android:id="@+id/home_text_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/circle_orange_background_grey"
-                android:hint="Логин"
-                android:imeOptions="actionNext"
-                android:inputType="number"
-                android:padding="16dp"
-                android:textColor="@color/blackColor"
-                android:textSize="14dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+            <ImageView
+                android:layout_width="137dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_money_loan"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/home_login_error"
+            <LinearLayout
+                android:id="@+id/home_layout"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:gravity="right"
-                android:text="error"
-                android:textSize="@dimen/_8sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/circle_orange_background_grey"
-                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <AutoCompleteTextView
-                    android:id="@+id/home_text_password"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:hint="Пароль"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:padding="16dp"
-                    android:textColor="@color/blackColor"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/home_show"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:src="@drawable/ic_baseline_remove_red_eye_24"
-                    android:textColor="#FF9900"
-                    android:textSize="14sp"
+                    android:text="Вход"
+                    android:textColor="@color/blackColor"
+                    android:textSize="20sp" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/home_text_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:hint="Логин"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:padding="16dp"
+                        android:textColor="@color/blackColor"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/home_login_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/circle_orange_background_grey"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/home_text_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:hint="Пароль"
+                            android:imeOptions="actionDone"
+                            android:inputType="textPassword"
+                            android:padding="16dp"
+                            android:textColor="@color/blackColor"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/home_show"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="10dp"
+                            android:gravity="center"
+                            android:src="@drawable/ic_baseline_remove_red_eye_24"
+                            android:textColor="#FF9900"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:id="@+id/home_show_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:layout_marginBottom="@dimen/_3sdp"
+                        android:gravity="right"
+                        android:text="error"
+                        android:textSize="@dimen/_8sdp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/home_incorrect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:drawableLeft="@drawable/ic_baseline_error_outline_24"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:text="Неверный логин или пароль"
+                    android:textColor="@color/colorRed"
+                    android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/home_remember_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Запомнить логин"
+                    android:textColor="@color/blackColor"
+                    android:textSize="12sp"
+                    tools:layout_editor_absoluteX="114dp"
+                    tools:layout_editor_absoluteY="105dp" />
+
+                <CheckBox
+                    android:id="@+id/home_login_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Вход по пин-коду"
+                    android:textColor="@color/blackColor"
+                    android:textSize="12sp"
+                    tools:layout_editor_absoluteX="114dp"
+                    tools:layout_editor_absoluteY="105dp" />
+
+                <CheckBox
+                    android:id="@+id/home_touch_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Вход с помощью отпечатка"
+                    android:textColor="@color/blackColor"
+                    android:textSize="12sp"
+                    tools:layout_editor_absoluteX="114dp"
+                    tools:layout_editor_absoluteY="105dp" />
+
+                <Button
+                    android:id="@+id/home_enter"
+                    style="@style/RoundedOrangeBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="Войти"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
 
-            <TextView
-                android:id="@+id/home_show_error"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginRight="@dimen/_10sdp"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:gravity="right"
-                android:text="error"
-                android:textSize="@dimen/_8sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/home_forget_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center"
+                    android:text="Забыли пароль?"
+                    android:textColor="@color/orangeColor"
+                    android:textSize="15sp" />
 
-        <TextView
-            android:id="@+id/home_incorrect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:drawableLeft="@drawable/ic_baseline_error_outline_24"
-            android:drawablePadding="10dp"
-            android:gravity="center"
-            android:text="Неверный логин или пароль"
-            android:textColor="@color/colorRed"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/home_registration"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Регистрация"
+                    android:textColor="@color/orangeColor"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
-        <CheckBox
-            android:id="@+id/home_remember_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Запомнить логин"
-            android:textColor="@color/blackColor"
-            android:textSize="12sp"
-            tools:layout_editor_absoluteX="114dp"
-            tools:layout_editor_absoluteY="105dp" />
 
-        <CheckBox
-            android:id="@+id/home_login_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Вход по пин-коду"
-            android:textColor="@color/blackColor"
-            android:textSize="12sp"
-            tools:layout_editor_absoluteX="114dp"
-            tools:layout_editor_absoluteY="105dp" />
+            <include
+                android:id="@+id/home_no_connection"
+                layout="@layout/item_no_connection"
+                android:visibility="gone" />
 
-        <CheckBox
-            android:id="@+id/home_touch_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Вход с помощью отпечатка"
-            android:textColor="@color/blackColor"
-            android:textSize="12sp"
-            tools:layout_editor_absoluteX="114dp"
-            tools:layout_editor_absoluteY="105dp" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/home_enter"
-            style="@style/RoundedOrangeBackground"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Войти"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_home"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/whiteColor"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/home_forget_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:gravity="center"
-            android:text="Забыли пароль?"
-            android:textColor="#FF9900"
-            android:textSize="15sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/home_registration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="Регистрация"
-            android:textColor="#FF9900"
-            android:textSize="15sp" />
-    </LinearLayout>
-
-
-    <include
-        android:id="@+id/home_no_connection"
-        layout="@layout/item_no_connection"
-        android:visibility="gone" />
+                <include layout="@layout/item_shimmer_home" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

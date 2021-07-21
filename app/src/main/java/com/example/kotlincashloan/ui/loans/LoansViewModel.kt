@@ -10,6 +10,7 @@ import com.example.kotlincashloan.service.model.login.SaveLoanModel
 import com.example.kotlincashloan.service.model.login.SaveLoanRejectModel
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
+import com.example.kotlincashloan.utils.MessageCode
 import com.example.kotlinscreenscanner.service.model.CommonResponse
 import com.example.kotlinscreenscanner.service.model.CommonResponseReject
 import com.example.kotlinscreenscanner.service.model.ResultPhoneModel
@@ -35,7 +36,7 @@ class LoansViewModel: ViewModel() {
         RetrofitService.apiService().listNews(map, generateUrl("listNews")).enqueue(object :
             Callback<CommonResponse<ArrayList<ListNewsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNewsResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorNews.postValue( "601")
                 }else{
                     errorNews.postValue( "600")
@@ -66,7 +67,7 @@ class LoansViewModel: ViewModel() {
     fun getNews(map: Map<String, String>){
         RetrofitService.apiService().getNews(map, generateUrl("getNews")).enqueue(object : Callback<CommonResponse<GetNewsResultModel>> {
             override fun onFailure(call: Call<CommonResponse<GetNewsResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorGet.postValue( "601")
                 }else{
                     errorGet.postValue( "600")
@@ -96,7 +97,7 @@ class LoansViewModel: ViewModel() {
     fun getLoanInfo(map: Map<String, String>){
         RetrofitService.apiService().loanInfo(map, generateUrl("loanInfo")).enqueue(object : Callback<CommonResponse<LoanInfoResultModel>> {
             override fun onFailure(call: Call<CommonResponse<LoanInfoResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorLoanInfo.postValue( "601")
                 }else{
                     errorLoanInfo.postValue( "600")
@@ -123,33 +124,9 @@ class LoansViewModel: ViewModel() {
     }
 
 
-    val errorGetLoanInfo = MutableLiveData<String>()
-    var getLoanInfoDta = MutableLiveData<CommonResponse<LoanInResultModel>>()
 
-    fun getInfo(map: Map<String, String>){
-        RetrofitService.apiService().getLoanInfo(map, generateUrl("getLoanInfo")).enqueue(object : Callback<CommonResponse<LoanInResultModel>> {
-            override fun onFailure(call: Call<CommonResponse<LoanInResultModel>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
-                    errorGetLoanInfo.postValue( "601")
-                }else{
-                    errorGetLoanInfo.postValue( "600")
-                }
-            }
-            override fun onResponse(call: Call<CommonResponse<LoanInResultModel>>, response: Response<CommonResponse<LoanInResultModel>>) {
-                if (response.isSuccessful) {
-                    if (response.body()!!.code == 200){
-                        getLoanInfoDta.postValue(response.body())
-                    }else{
-                        errorGetLoanInfo.postValue(response.body()!!.code.toString())
-                    }
-                }else{
-                    errorGetLoanInfo.postValue(response.code().toString())
-                }
-//                handler.postDelayed(Runnable { // Do something after 5s = 500ms
-//                    HomeActivity.alert.hide()
-//                },400)
-            }
-        })
+    fun getLoanInfoDta(phone:  Map<String, String>): LiveData<ResultStatus<CommonResponseReject<LoanInResultModel>>> {
+        return repository.getLoanInfoDta(phone)
     }
 
     //defaultList Стандартный список ответов.
@@ -160,7 +137,7 @@ class LoansViewModel: ViewModel() {
         HomeActivity.alert.show()
         RetrofitService.apiService().defaultList(map, generateUrl("defaultList")).enqueue(object : Callback<CommonResponse<ArrayList<DefaultListModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<DefaultListModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorDefaultList.postValue( "601")
                 }else{
                     errorDefaultList.postValue( "600")
@@ -188,7 +165,7 @@ class LoansViewModel: ViewModel() {
     fun listFamilyStatus(map: Map<String, String>){
         RetrofitService.apiService().listFamilyStatus(map, generateUrl("listFamilyStatus")).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyStatusModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyStatusModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListFamilyStatus.postValue( "601")
                 }else{
                     errorListFamilyStatus.postValue( "600")
@@ -216,7 +193,7 @@ class LoansViewModel: ViewModel() {
     fun listIncome(map: Map<String, String>){
         RetrofitService.apiService().listIncome(map, generateUrl("listIncome")).enqueue(object : Callback<CommonResponse<ArrayList<ListIncomeResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListIncomeResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListIncome.postValue( "601")
                 }else{
                     errorListIncome.postValue( "600")
@@ -244,7 +221,7 @@ class LoansViewModel: ViewModel() {
     fun listNumbers(map: Map<String, String>){
         RetrofitService.apiService().listNumbers(map, generateUrl("listNumbers")).enqueue(object : Callback<CommonResponse<ArrayList<ListNumbersResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListNumbersResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListNumbers.postValue( "601")
                 }else{
                     errorListNumbers.postValue( "600")
@@ -272,7 +249,7 @@ class LoansViewModel: ViewModel() {
     fun listTypeIncome(map: Map<String, String>){
         RetrofitService.apiService().listTypeIncome(map, generateUrl("listTypeIncome")).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeIncomeModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeIncomeModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListTypeIncome.postValue( "601")
                 }else{
                     errorListTypeIncome.postValue( "600")
@@ -300,7 +277,7 @@ class LoansViewModel: ViewModel() {
     fun listYears(map: Map<String, String>){
         RetrofitService.apiService().listYears(map, generateUrl("listYears")).enqueue(object : Callback<CommonResponse<ArrayList<ListYearsResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListYearsResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListYears.postValue( "601")
                 }else{
                     errorListYears.postValue( "600")
@@ -328,7 +305,7 @@ class LoansViewModel: ViewModel() {
     fun listFamily(map: Map<String, String>){
         RetrofitService.apiService().listFamily(map, generateUrl("listFamily")).enqueue(object : Callback<CommonResponse<ArrayList<ListFamilyResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListFamilyResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListFamily.postValue( "601")
                 }else{
                     errorListFamily.postValue( "600")
@@ -356,7 +333,7 @@ class LoansViewModel: ViewModel() {
     fun listWork(map: Map<String, String>){
         RetrofitService.apiService().listWork(map, generateUrl("listWork")).enqueue(object : Callback<CommonResponse<ArrayList<ListWorkResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListWorkResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListWork.postValue( "601")
                 }else{
                     errorListWork.postValue( "600")
@@ -384,7 +361,7 @@ class LoansViewModel: ViewModel() {
     fun listTypeWork(map: Map<String, String>){
         RetrofitService.apiService().listTypeWork(map, generateUrl("listTypeWork")).enqueue(object : Callback<CommonResponse<ArrayList<ListTypeWorkModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListTypeWorkModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListTypeWork.postValue( "601")
                 }else{
                     errorListTypeWork.postValue( "600")
@@ -412,7 +389,7 @@ class LoansViewModel: ViewModel() {
     fun listCity(map: Map<String, String>){
         RetrofitService.apiService().listCity(map, generateUrl("listCity")).enqueue(object : Callback<CommonResponse<ArrayList<ListCityResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<ListCityResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListCity.postValue( "601")
                 }else{
                     errorListCity.postValue( "600")
@@ -441,7 +418,7 @@ class LoansViewModel: ViewModel() {
     fun saveLoan(map: Map<String, String>){
         RetrofitService.apiService().saveLoan(map, generateUrl("saveLoan")).enqueue(object : Callback<SaveLoanModel> {
             override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorSaveLoan.postValue( "601")
                 }else{
                     errorSaveLoan.postValue( "600")
@@ -473,7 +450,7 @@ class LoansViewModel: ViewModel() {
     fun saveLoanImg(map: Map<String, String>){
         RetrofitService.apiService().saveLoanImg(map, generateUrl("saveLoan")).enqueue(object : Callback<SaveLoanModel> {
             override fun onFailure(call: Call<SaveLoanModel>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorSaveLoanImg.postValue( "601")
                 }else{
                     errorSaveLoanImg.postValue( "600")
@@ -501,7 +478,7 @@ class LoansViewModel: ViewModel() {
     fun listAvailableSix(map: Map<String, String>){
         RetrofitService.apiService().listAvailableSix(map, generateUrl("listAvailableCountry")).enqueue(object : Callback<CommonResponse<ArrayList<SixNumResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<SixNumResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListAvailableSix.postValue( "601")
                 }else{
                     errorListAvailableSix.postValue( "600")
@@ -528,7 +505,7 @@ class LoansViewModel: ViewModel() {
     fun listEntryGoal(map: Map<String, String>){
         RetrofitService.apiService().listEntryGoal(map, generateUrl("listEntryGoal")).enqueue(object : Callback<CommonResponse<ArrayList<EntryGoalResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<EntryGoalResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListEntryGoal.postValue( "601")
                 }else{
                     errorListEntryGoal.postValue( "600")
@@ -555,7 +532,7 @@ class LoansViewModel: ViewModel() {
     fun listTypeContract(map: Map<String, String>){
         RetrofitService.apiService().listTypeContract(map, generateUrl("listTypeContract")).enqueue(object : Callback<CommonResponse<ArrayList<TypeContractResultModel>>> {
             override fun onFailure(call: Call<CommonResponse<ArrayList<TypeContractResultModel>>>, t: Throwable) {
-                if (t.localizedMessage != "End of input at line 1 column 1 path \$"){
+                if (t.localizedMessage == MessageCode.MESSAGE_1.toString() || t.localizedMessage == MessageCode.MESSAGE_2.toString()){
                     errorListTypeContract.postValue( "601")
                 }else{
                     errorListTypeContract.postValue( "600")

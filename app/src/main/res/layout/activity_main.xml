@@ -18,12 +18,12 @@
             android:background="@color/whiteColor"
             android:gravity="center"
             android:theme="@style/ToolBarStyle"
-            app:layout_constraintBottom_toTopOf="@+id/registration_viewpager"
+            app:layout_constraintBottom_toTopOf="@+id/nav_host_container"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:titleTextAppearance="@style/Toolbar.TitleText"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints,NotSibling" />
 
         <LinearLayout
             android:layout_width="match_parent"

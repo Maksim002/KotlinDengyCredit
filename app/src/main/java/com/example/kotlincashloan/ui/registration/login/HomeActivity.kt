@@ -3,9 +3,10 @@ package com.example.kotlincashloan.ui.registration.login
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.Handler
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.Button
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -15,9 +16,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.listener.ExistingBottomListener
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingMistake
-import com.example.kotlincashloan.extension.loadingMistakeCode
+import com.example.kotlincashloan.adapter.listener.ListenerApiInternet
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.ui.registration.recovery.PasswordRecoveryActivity
 import com.example.kotlincashloan.utils.ColorWindows
 import com.example.kotlincashloan.utils.ObservedInternet
@@ -42,18 +42,26 @@ import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_home.home_forget_password
 import kotlinx.android.synthetic.main.activity_number.*
 import kotlinx.android.synthetic.main.actyviti_questionnaire.*
+import kotlinx.android.synthetic.main.fragment_loans.*
+import kotlinx.android.synthetic.main.fragment_notification.*
 import kotlinx.android.synthetic.main.fragment_profile_setting.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import java.util.*
 import java.util.concurrent.Executor
 
-class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
-    ExistingBottomListener {
+class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottomListener, ListenerApiInternet {
     private var viewModel = LoginViewModel()
     private var tokenId = ""
     private lateinit var timer: TimerListener
     private var inputsAnim = false
     private var recPosition = 0
+    private var isEntrance = false
+    private var genAnim = false
+    private lateinit var handler: Handler
+    private var splash = false
+    private var registration = false
+    private var forgetPassword = false
+    private var biometrics = false
 
     companion object {
         var repeatedClick = 0
@@ -82,10 +90,23 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         AppPreferences.init(application)
         alert = LoadingAlert(this)
         timer = TimerListener(this)
-        initApyService()
+        handler = Handler()
         iniClick()
         initCheck()
         initView()
+
+        if (!AppPreferences.isRestart) {
+            try {
+                splash = intent.extras!!.getBoolean("splash")
+                if (splash && !home_login_code.isChecked) {
+                    //profileAnim анимация для перехода с адного дествия в другое
+                    TransitionAnimation(this).transitionRightActivity(notification_con_lay)
+                }
+                AppPreferences.isRestart = splash
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
     }
 
     // сервис получает логен токен с firebase
@@ -94,42 +115,84 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         if (!AppPreferences.observedInternet) {
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
-        }else{
+            this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        } else {
             home_layout.visibility = View.VISIBLE
             home_no_connection.visibility = View.GONE
-            if (AppPreferences.savePin == ""){
+            if (AppPreferences.savePin == "") {
+                shimmerStart(shimmer_home, this)
+            }else{
                 alert.show()
             }
             val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
             val configSettings = FirebaseRemoteConfigSettings.Builder().build()
             remoteConfig.setConfigSettingsAsync(configSettings);
-            AppPreferences.urlApi = ""
-            AppPreferences.tokenApi = ""
             remoteConfig.fetch(0).addOnCompleteListener(OnCompleteListener<Void?> { task ->
                 if (task.isSuccessful) {
                     remoteConfig.fetchAndActivate()
                     val urlApi = remoteConfig.getString("url_dev")
                     val tokenApi = remoteConfig.getString("token_dev")
-                    AppPreferences.urlApi = urlApi
-                    AppPreferences.tokenApi = tokenApi
-
-//                    https://crm-api-dev.molbulak.ru/api/app/
-
-                    if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                    if (AppPreferences.urlApi != urlApi || AppPreferences.tokenApi != tokenApi){
+                        if (urlApi != "" && tokenApi != ""){
+                            AppPreferences.urlApi = urlApi
+                            AppPreferences.tokenApi = tokenApi
+                        }
+                        selectedInput()
+                        alert.hide()
+                    }else if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                        AppPreferences.urlApi = urlApi
+                        AppPreferences.tokenApi = tokenApi
                         if (recPosition <= 5) {
                             initApyService()
                             recPosition++
                         } else {
-                            alert.hide()
-                            loadingMistakeCode(this)
+                            if (!genAnim) {
+                                //генерирует анимацию перехода
+                                shimmerStop(shimmer_home, this)
+                                genAnim = true
+                            }
+                            home_no_connection.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
+                            home_incorrect.visibility = View.GONE
+                            apiConnection(this, this)
                         }
                     } else {
+                        selectedInput()
                         alert.hide()
                     }
                 } else {
-                    Toast.makeText(this, "Ошибка " + task, Toast.LENGTH_LONG).show()
+                    if (AppPreferences.tokenApi != "" && AppPreferences.urlApi != ""){
+                        selectedInput()
+                    }else{
+                        home_no_connection.visibility = View.GONE
+                        home_layout.visibility = View.VISIBLE
+                        home_incorrect.visibility = View.GONE
+                        apiConnection(this, this)
+                    }
+                    alert.hide()
                 }
             })
+        }
+    }
+    //Обрабатывает вид входа в приложение
+    private fun selectedInput(){
+        if (!registration && !forgetPassword && !biometrics) {
+            if (isEntrance) {
+                isEntrance = false
+                //todo проверить
+                iniResult()
+            }
+        } else {
+            if (registration) {
+                registration()
+                registration = false
+            } else if (forgetPassword) {
+                forgetPassword()
+                forgetPassword = false
+            } else if (biometrics) {
+                biometrics()
+                biometrics = false
+            }
         }
     }
 
@@ -147,19 +210,26 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         }
 
         home_forget_password.setOnClickListener {
-            val intent = Intent(this, PasswordRecoveryActivity::class.java)
-            inputsAnim = true
-            home_touch_id.isChecked = false
-            home_login_code.isChecked = false
-            startActivity(intent)
+            genAnim = false
+            this.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                forgetPassword = true
+                initApyService()
+            } else {
+                forgetPassword()
+            }
+
         }
 
         home_registration.setOnClickListener {
-            val intent = Intent(this, NumberActivity::class.java)
-            inputsAnim = true
-            home_touch_id.isChecked = false
-            home_login_code.isChecked = false
-            startActivity(intent)
+            genAnim = false
+            this.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                registration = true
+                initApyService()
+            } else {
+                registration()
+            }
         }
 
         no_connection_repeat.setOnClickListener {
@@ -167,32 +237,58 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 iniTouchId()
                 home_incorrect.visibility = View.GONE
             } else {
-                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
+                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
                     initApyService()
-                }else{
+                } else {
                     iniResult()
                 }
             }
         }
 
         home_enter.setOnClickListener {
+            isEntrance = true
             if (validate()) {
-                if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == ""){
-                    initApyService()
-                }else{
-                    iniResult()
-                }
+                this.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                initApyService()
             }
         }
     }
 
+    // Преход на окно забыли пароль
+    private fun forgetPassword() {
+        val intent = Intent(this, PasswordRecoveryActivity::class.java)
+        this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        inputsAnim = true
+        home_touch_id.isChecked = false
+        home_login_code.isChecked = false
+        shimmerStop(shimmer_home, this)
+        startActivity(intent)
+    }
+
+    // Преход на окно регистрации
+    private fun registration() {
+        val intent = Intent(this, NumberActivity::class.java)
+        this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        inputsAnim = true
+        home_touch_id.isChecked = false
+        home_login_code.isChecked = false
+        shimmerStop(shimmer_home, this)
+        startActivity(intent)
+    }
+
+
+    lateinit var t: Thread
     private fun iniResult() {
         ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             home_no_connection.visibility = View.VISIBLE
             home_layout.visibility = View.GONE
         } else {
-            alert.show()
+            if (!home_login_code.isChecked) {
+                shimmerStart(shimmer_home, this)
+            } else {
+                alert.show()
+            }
             val map = HashMap<String, String>()
             map.put("password", Hasher.hash(home_text_password.text.toString(), HashType.MD5))
             map.put("login", home_text_login.text.toString())
@@ -209,15 +305,18 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                                 loadingMistake(this)
                             } else if (data.error.code == 400) {
                                 home_incorrect.visibility = View.VISIBLE
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                             } else {
                                 home_no_connection.visibility = View.GONE
                                 home_layout.visibility = View.VISIBLE
                                 home_incorrect.visibility = View.VISIBLE
+                                shimmer_home.visibility = View.GONE
                                 loadingMistake(this)
                             }
                         } else {
@@ -228,6 +327,8 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             if (home_login_code.isChecked) {
                                 home_incorrect.visibility = View.GONE
                                 if (!AppPreferences.isNumber) {
+                                    //генерирует анимацию перехода
+                                    shimmerStop(shimmer_home, this)
                                     initBottomSheet()
                                     AppPreferences.isNumber = true
                                 }
@@ -257,30 +358,48 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                             home_incorrect.visibility = View.VISIBLE
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
                         } else {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             home_no_connection.visibility = View.GONE
                             home_layout.visibility = View.VISIBLE
                             home_incorrect.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
                             loadingMistake(this)
-                        }else{
-                            home_no_connection.visibility = View.VISIBLE
-                            home_layout.visibility = View.GONE
+                        } else if (msg == "600"){
+                            home_no_connection.visibility = View.GONE
+                            home_incorrect.visibility = View.GONE
+                            home_layout.visibility = View.VISIBLE
+                            shimmer_home.visibility = View.GONE
+                            loadingConnection(this)
                         }
                     }
                 }
                 home_enter.isEnabled = true
-                alert.hide()
+                if (home_login_code.isChecked) {
+                    alert.hide()
+                } else {
+                    shimmerStop(shimmer_home, this)
+                }
+                 this.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             })
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+//        if (!home_login_code.isChecked) {
+//            shimmerStop(shimmer_home, this)
+//        }
     }
 
     private fun initCheck() {
@@ -306,10 +425,12 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
                 home_touch_id.isChecked = false
                 home_remember_username.isChecked = true
                 home_remember_username.isClickable = false
+                AppPreferences.isNumber = false
             } else {
                 home_remember_username.isClickable = true
                 AppPreferences.isLoginCode = false
                 AppPreferences.resultPassword = "2"
+                AppPreferences.isNumber = true
             }
         }
 
@@ -345,6 +466,17 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
 
     override fun existingClockListener() {
         home_login_code.isChecked = false
+    }
+
+    override fun existingClockListenerError() {
+        home_no_connection.visibility = View.GONE
+        home_layout.visibility = View.VISIBLE
+        home_incorrect.visibility = View.GONE
+        apiConnection(this, this)
+    }
+
+    override fun existingClockListenerResult() {
+        iniResult()
     }
 
     private fun validate(): Boolean {
@@ -415,7 +547,7 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             } else {
                 AppPreferences.token = ""
             }
-        }else{
+        } else {
             if (AppPreferences.isNumber) {
                 if (repeatedClick != 0) {
                     if (home_login_code.isChecked) {
@@ -461,34 +593,39 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         return true
     }
 
+    // Переход в другое акно по отпичатку пальца
     private fun iniTouchId() {
-        val executor = ContextCompat.getMainExecutor(this)
-        val biometricManager = BiometricManager.from(this)
+        if (!biometrics) {
+            val executor = ContextCompat.getMainExecutor(this)
+            val biometricManager = BiometricManager.from(this)
 
-        when (biometricManager.canAuthenticate()) {
-            BiometricManager.BIOMETRIC_SUCCESS ->
-                authUser(executor)
-            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_msg_no_biometric_hardware),
-                    Toast.LENGTH_LONG
-                ).show()
-                AppPreferences.isTouchId = false
-                home_touch_id.isChecked = false
-            }
-            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
-                Toast.makeText(
-                    this, getString(R.string.error_msg_biometric_hw_unavailable), Toast.LENGTH_LONG
-                ).show()
-            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_msg_biometric_not_setup),
-                    Toast.LENGTH_LONG
-                ).show()
-                AppPreferences.isTouchId = false
-                home_touch_id.isChecked = false
+            when (biometricManager.canAuthenticate()) {
+                BiometricManager.BIOMETRIC_SUCCESS ->
+                    authUser(executor)
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.error_msg_no_biometric_hardware),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    AppPreferences.isTouchId = false
+                    home_touch_id.isChecked = false
+                }
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE ->
+                    Toast.makeText(
+                        this,
+                        getString(R.string.error_msg_biometric_hw_unavailable),
+                        Toast.LENGTH_LONG
+                    ).show()
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.error_msg_biometric_not_setup),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    AppPreferences.isTouchId = false
+                    home_touch_id.isChecked = false
+                }
             }
         }
     }
@@ -510,49 +647,17 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
             .build()
 
         // 1
-        val biometricPrompt = BiometricPrompt(
-            this,
-            executor,
-            object : BiometricPrompt.AuthenticationCallback() {
+        val biometricPrompt =
+            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
                 // 2
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
-                    val map = HashMap<String, String>()
-                    map.put("password", AppPreferences.password.toString())
-                    map.put("login", home_text_login.text.toString())
-                    map.put("uid", AppPreferences.pushNotificationsId.toString())
-                    map.put("system", "1")
-                    alert.show()
-                    viewModel.auth(map).observe(this@HomeActivity, Observer { result ->
-                        val msg = result.msg
-                        val data = result.data
-                        when (result.status) {
-                            Status.SUCCESS -> {
-                                if (data!!.result == null) {
-                                    Toast.makeText(this@HomeActivity, data.error.message, Toast.LENGTH_LONG).show()
-                                } else {
-                                    home_no_connection.visibility = View.GONE
-                                    home_layout.visibility = View.VISIBLE
-                                    tokenId = data.result.token
-                                    viewModel.save(home_text_login.text.toString(), data.result.token)
-                                    val intent = Intent(this@HomeActivity, MainActivity::class.java)
-                                    startActivity(intent)
-                                }
-                            }
-                            Status.ERROR -> {
-                                loadingMistake(this@HomeActivity)
-                            }
-                            Status.NETWORK -> {
-                                if(msg == "601") {
-                                    loadingMistake(this@HomeActivity)
-                                }else{
-                                    home_no_connection.visibility = View.VISIBLE
-                                    home_layout.visibility = View.GONE
-                                }
-                            }
-                        }
-                        alert.hide()
-                    })
+                    if (AppPreferences.tokenApi == "" && AppPreferences.urlApi == "") {
+                        biometrics = true
+                        initApyService()
+                    } else {
+                        biometrics()
+                    }
                 }
 
                 // если я отключаю галочку
@@ -575,5 +680,72 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener,
         biometricPrompt.authenticate(promptInfo)
     }
 
+    override fun onPause() {
+        super.onPause()
+        apiConnection(this, this, true)
+    }
+
+    fun biometrics() {
+        val map = HashMap<String, String>()
+        map.put("password", AppPreferences.password.toString())
+        map.put("login", home_text_login.text.toString())
+        map.put("uid", AppPreferences.pushNotificationsId.toString())
+        map.put("system", "1")
+        if (!home_login_code.isChecked) {
+            shimmerStart(shimmer_home, this@HomeActivity)
+        } else {
+            alert.show()
+        }
+        viewModel.auth(map).observe(this@HomeActivity, Observer { result ->
+            val msg = result.msg
+            val data = result.data
+            when (result.status) {
+                Status.SUCCESS -> {
+                    if (data!!.result == null) {
+                        Toast.makeText(
+                            this@HomeActivity,
+                            data.error.message,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        home_no_connection.visibility = View.GONE
+                        home_layout.visibility = View.VISIBLE
+                        tokenId = data.result.token
+                        viewModel.save(
+                            home_text_login.text.toString(),
+                            data.result.token
+                        )
+                        val intent = Intent(this@HomeActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+                Status.ERROR -> {
+                    home_layout.visibility = View.VISIBLE
+                    loadingMistake(this@HomeActivity)
+                }
+                Status.NETWORK -> {
+                    if (msg == "601") {
+                        home_layout.visibility = View.VISIBLE
+                        loadingMistake(this@HomeActivity)
+                    } else if (msg == "600"){
+                        home_no_connection.visibility = View.GONE
+                        home_layout.visibility = View.VISIBLE
+                        loadingConnection(this)
+                    }
+                }
+            }
+            if (!home_login_code.isChecked) {
+                shimmerStop(shimmer_home, this@HomeActivity)
+            } else {
+                alert.hide()
+            }
+        })
+    }
+
     override fun onBackPressed() {}
+
+    //Клик повторяет запрос на получение api если раниие был потерен интернет
+    override fun listenerOnClickInternet() {
+        initApyService()
+    }
 }

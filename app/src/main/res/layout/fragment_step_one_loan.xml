@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/whiteColor"
     android:layout_height="match_parent"
+    android:background="@color/whiteColor"
     android:orientation="vertical"
     tools:context=".ui.loans.fragment.LoanStepOneFragment">
 
-        <ImageView
-            android:layout_width="137dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginLeft="16dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_money_loan"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:layout_width="137dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="26dp"
+        android:src="@drawable/ic_money_loan"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,9 +25,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="66dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginBottom="66dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,9 +44,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:visibility="gone"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_user" />
+                android:src="@drawable/ic_user"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -66,9 +66,9 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginRight="16dp"
-                android:textColor="@color/blackColor"
                 android:gravity="center"
                 android:text="@string/To_get_a_loan"
+                android:textColor="@color/blackColor"
                 android:textSize="17dp" />
 
             <TextView
@@ -76,10 +76,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="20dp"
-                android:textColor="@color/blackColor"
                 android:layout_marginRight="16dp"
                 android:gravity="center"
                 android:text="@string/click"
+                android:textColor="@color/blackColor"
                 android:textSize="17dp" />
         </LinearLayout>
 
@@ -89,9 +89,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
             android:paddingLeft="75dp"
             android:paddingRight="75dp"
-            android:layout_marginBottom="10dp"
             android:text="Далее"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

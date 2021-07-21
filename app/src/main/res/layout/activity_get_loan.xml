@@ -8,43 +8,65 @@
     tools:context=".ui.loans.GetLoanActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_get_loan"
+        android:id="@+id/layout_get_loan_con"
         android:layout_width="match_parent"
-        android:background="@color/whiteColor"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/whiteColor">
 
-    <com.example.kotlincashloan.utils.DeactivatableViewPager
-        android:id="@+id/get_loan_view_pagers"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/get_loan_stepper_indicator"
-        tools:ignore="MissingConstraints" />
+        <com.example.kotlincashloan.utils.DeactivatableViewPager
+            android:id="@+id/get_loan_view_pagers"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            app:layout_constraintBottom_toTopOf="@+id/get_loan_stepper_indicator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <ImageView
-        android:id="@+id/loan_cross_clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_marginRight="6dp"
-        android:src="@drawable/ic_cross_clear"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        <ImageView
+            android:id="@+id/loan_cross_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_cross_clear"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <com.badoualy.stepperindicator.StepperIndicator
-        android:id="@+id/get_loan_stepper_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="5dp"
-        app:stpi_labels="@array/stepLabels"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints" />
+        <com.badoualy.stepperindicator.StepperIndicator
+            android:id="@+id/get_loan_stepper_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:stpi_labels="@array/stepLabels"
+            tools:ignore="MissingConstraints" />
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_step_loan"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/whiteColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_step_shimmer" />
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

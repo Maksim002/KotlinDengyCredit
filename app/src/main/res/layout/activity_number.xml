@@ -59,8 +59,8 @@
                 android:orientation="horizontal"
                 android:paddingLeft="16dp"
                 android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:paddingRight="10dp">
+                android:paddingRight="10dp"
+                android:paddingBottom="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,9 +73,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@null"
-                        android:editable="true"
-                        android:drawablePadding="2dp"
                         android:drawableRight="@drawable/ic_expend"
+                        android:drawablePadding="2dp"
+                        android:editable="true"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:gravity="center"
@@ -167,6 +167,26 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
     </LinearLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_number"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/whiteColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_shimmer_number" />
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <include
         android:id="@+id/number_no_connection"

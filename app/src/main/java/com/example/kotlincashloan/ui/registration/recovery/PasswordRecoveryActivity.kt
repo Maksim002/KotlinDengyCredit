@@ -11,9 +11,7 @@ import androidx.lifecycle.Observer
 import com.example.kotlincashloan.R
 import com.example.kotlincashloan.adapter.general.ListenerGeneralResult
 import com.example.kotlincashloan.common.GeneralDialogFragment
-import com.example.kotlincashloan.extension.editUtils
-import com.example.kotlincashloan.extension.loadingConnection
-import com.example.kotlincashloan.extension.loadingMistake
+import com.example.kotlincashloan.extension.*
 import com.example.kotlincashloan.service.model.general.GeneralDialogModel
 import com.example.kotlincashloan.ui.registration.login.HomeActivity
 import com.example.kotlincashloan.utils.ColorWindows
@@ -195,11 +193,11 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                         }
                     }
                     Status.NETWORK -> {
-                        if (msg == "600" || msg == "601") {
+                        if (msg == "601") {
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingMistake(this)
-                        } else {
+                        } else if (msg == "600"){
                             recovery_no_questionnaire.visibility = View.GONE
                             password_layout.visibility = View.VISIBLE
                             loadingConnection(this)
@@ -260,9 +258,9 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
         } else {
             val map = HashMap<String, Int>()
             map.put("id", 0)
-            HomeActivity.alert.show()
-            viewModel.listAvailableCountry(map)
-                .observe(this, androidx.lifecycle.Observer { result ->
+//            HomeActivity.alert.show()
+            shimmerStart(shimmer_recovery, this)
+            viewModel.listAvailableCountry(map).observe(this, androidx.lifecycle.Observer { result ->
                     val msg = result.msg
                     val data = result.data
 
@@ -315,18 +313,18 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                             }
                         }
                         Status.NETWORK -> {
-                            if (msg == "600" || msg == "601") {
+                            if (msg == "601") {
                                 recovery_no_questionnaire.visibility = View.GONE
                                 recovery_technical_work.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
-                            } else {
+                            } else if (msg == "600"){
                                 recovery_technical_work.visibility = View.GONE
                                 recovery_no_questionnaire.visibility = View.VISIBLE
                                 password_layout.visibility = View.GONE
                             }
                         }
                     }
-                    HomeActivity.alert.hide()
+                    shimmerStop(shimmer_recovery, this)
                 })
         }
     }

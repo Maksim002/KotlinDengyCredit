@@ -123,4 +123,7 @@ dependencies {
 
     //кодировка md5
     implementation 'com.github.ihimanshurawat:Hasher:1.2'
+
+    //Shimmer Layout
+    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
 }

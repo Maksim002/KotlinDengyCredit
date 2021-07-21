@@ -10,542 +10,602 @@
     android:orientation="vertical"
     tools:context=".ui.loans.LoansFragment">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/loans_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/loans_constraint"
         android:layout_width="match_parent"
-        android:descendantFocusability="beforeDescendants"
-        android:visibility="gone"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/loans_layout"
+            android:layout_width="0dp"
+            android:visibility="visible"
             android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants">
+            android:descendantFocusability="beforeDescendants"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:id="@+id/layout_top"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:descendantFocusability="blocksDescendants">
 
                 <LinearLayout
+                    android:id="@+id/layout_top"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <androidx.cardview.widget.CardView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_margin="15dp"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="30dp">
+                        android:orientation="vertical">
 
-                        <LinearLayout
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:orientation="vertical">
+                            android:layout_margin="15dp"
+                            app:cardCornerRadius="30dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginRight="16dp"
-                                android:orientation="horizontal">
+                                android:layout_margin="10dp"
+                                android:orientation="vertical">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginRight="16dp"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:orientation="horizontal">
+
+                                            <LinearLayout
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:orientation="horizontal">
+
+                                                <ImageView
+                                                    android:layout_width="50dp"
+                                                    android:layout_height="50dp"
+                                                    android:layout_marginTop="7dp"
+                                                    android:layout_weight="0.3"
+                                                    android:src="@drawable/ic_currencys" />
+
+                                            </LinearLayout>
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="wrap_content"
+                                                android:layout_weight="0.7"
+                                                android:orientation="vertical">
+
+                                                <TextView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"
+                                                    android:layout_marginTop="7dp"
+                                                    android:paddingLeft="2dp"
+                                                    android:text="Остаток:"
+                                                    android:textColor="@color/blackColor"
+                                                    android:textSize="12dp" />
+
+                                                <LinearLayout
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="wrap_content"
+                                                    android:orientation="horizontal">
+
+                                                    <TextView
+                                                        android:layout_width="wrap_content"
+                                                        android:layout_height="wrap_content"
+                                                        android:layout_gravity="bottom"
+                                                        android:gravity="center"
+                                                        android:text="₽"
+                                                        android:textColor="@color/blackColor"
+                                                        android:textSize="23sp"
+                                                        android:textStyle="bold" />
+
+                                                    <TextView
+                                                        android:id="@+id/loans_sum"
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="wrap_content"
+                                                        android:layout_gravity="bottom"
+                                                        android:layout_weight="0.2"
+                                                        android:paddingLeft="3dp"
+                                                        android:textColor="@color/blackColor"
+                                                        android:textSize="20sp"
+                                                        android:textStyle="bold"
+                                                        tools:text="25 000" />
+                                                </LinearLayout>
+                                            </LinearLayout>
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:id="@+id/loan_layout_parallel"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:orientation="vertical"
+                                            android:visibility="visible">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:text="Параллельный заём"
+                                                android:textColor="@color/blackColor"
+                                                android:textSize="12dp" />
+
+                                            <Switch
+                                                android:id="@+id/loan_switch"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_gravity="center"
+                                                android:layout_marginTop="3dp"
+                                                android:theme="@style/SCBSwitch"
+                                                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <SeekBar
+                                    android:id="@+id/loans_seekBar"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:progress="0"
+                                    android:progressDrawable="@drawable/progress_drawable"
+                                    android:thumb="@drawable/thumb" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="16dp"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginRight="16dp"
                                     android:orientation="horizontal">
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_weight="1"
-                                        android:orientation="horizontal">
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Уже оплачено:"
+                                            android:textColor="@color/blackColor"
+                                            android:textSize="12dp" />
 
                                         <LinearLayout
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:orientation="horizontal">
 
-                                            <ImageView
-                                                android:layout_width="50dp"
-                                                android:layout_height="50dp"
-                                                android:layout_marginTop="7dp"
-                                                android:layout_weight="0.3"
-                                                android:src="@drawable/ic_currencys" />
-
-                                        </LinearLayout>
-
-                                        <LinearLayout
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="0.7"
-                                            android:orientation="vertical">
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_gravity="center"
+                                                android:layout_marginBottom="6dp"
+                                                android:layout_weight="1"
+                                                android:text="₽"
+                                                android:textColor="@color/blackColor"
+                                                android:textSize="23sp"
+                                                android:textStyle="bold" />
 
                                             <TextView
-                                                android:layout_width="match_parent"
+                                                android:id="@+id/loan_paid"
+                                                android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                android:text="Остаток:"
-                                                android:textSize="12dp"
-                                                android:paddingLeft="2dp"
+                                                android:layout_marginLeft="2dp"
+                                                android:layout_weight="1"
                                                 android:textColor="@color/blackColor"
-                                                android:layout_marginTop="7dp"/>
-
-                                            <LinearLayout
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:orientation="horizontal">
-
-                                                <TextView
-                                                    android:layout_width="wrap_content"
-                                                    android:layout_height="wrap_content"
-                                                    android:text="₽"
-                                                    android:textColor="@color/blackColor"
-                                                    android:textStyle="bold"
-                                                    android:gravity="center"
-                                                    android:textSize="23sp"
-                                                    android:layout_gravity="bottom" />
-
-                                                <TextView
-                                                    android:id="@+id/loans_sum"
-                                                    android:layout_width="match_parent"
-                                                    android:layout_height="wrap_content"
-                                                    android:layout_gravity="bottom"
-                                                    android:layout_weight="0.2"
-                                                    android:paddingLeft="3dp"
-                                                    tools:text="25 000"
-                                                    android:textColor="@color/blackColor"
-                                                    android:textSize="20sp"
-                                                    android:textStyle="bold" />
-                                            </LinearLayout>
+                                                android:textSize="20sp"
+                                                android:textStyle="bold"
+                                                tools:text="25 000" />
                                         </LinearLayout>
                                     </LinearLayout>
 
                                     <LinearLayout
-                                        android:id="@+id/loan_layout_parallel"
-                                        android:layout_width="wrap_content"
+                                        android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="right"
-                                        android:orientation="vertical"
-                                        android:visibility="visible">
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
 
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textSize="12dp"
-                                            android:text="Параллельный заём"
-                                            android:textColor="@color/blackColor" />
+                                            android:text="Общая сумма:"
+                                            android:textColor="@color/blackColor"
+                                            android:textSize="12dp" />
 
-                                        <Switch
-                                            android:id="@+id/loan_switch"
+                                        <LinearLayout
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginTop="3dp"
-                                            android:theme="@style/SCBSwitch" />
+                                            android:orientation="horizontal">
+
+                                            <TextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_gravity="center"
+                                                android:layout_marginBottom="6dp"
+                                                android:layout_weight="1"
+                                                android:text="₽"
+                                                android:textColor="@color/blackColor"
+                                                android:textSize="23sp"
+                                                android:textStyle="bold" />
+
+                                            <TextView
+                                                android:id="@+id/loan_total"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="2dp"
+                                                android:layout_weight="1"
+                                                android:textColor="@color/blackColor"
+                                                android:textSize="20sp"
+                                                android:textStyle="bold"
+                                                tools:text="50 000" />
+                                        </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
+                        </androidx.cardview.widget.CardView>
 
-                            <SeekBar
-                                android:id="@+id/loans_seekBar"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/loan_active_status"
+                                style="@style/RoundedOrangeBackground"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:progress="0"
-                                android:progressDrawable="@drawable/progress_drawable"
-                                android:thumb="@drawable/thumb" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_marginRight="16dp"
-                                android:orientation="horizontal">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="12dp"
-                                        android:text="Уже оплачено:"
-                                        android:textColor="@color/blackColor" />
-
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:text="₽"
-                                            android:textStyle="bold"
-                                            android:textSize="23sp"
-                                            android:layout_marginBottom="6dp"
-                                            android:textColor="@color/blackColor"
-                                            android:layout_weight="1" />
-
-                                        <TextView
-                                            android:id="@+id/loan_paid"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="2dp"
-                                            android:layout_weight="1"
-                                            tools:text="25 000"
-                                            android:textColor="@color/blackColor"
-                                            android:textSize="20sp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Общая сумма:"
-                                        android:textSize="12dp"
-                                        android:textColor="@color/blackColor" />
-
-                                    <LinearLayout
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:text="₽"
-                                            android:textStyle="bold"
-                                            android:textSize="23sp"
-                                            android:layout_marginBottom="6dp"
-                                            android:textColor="@color/blackColor"
-                                            android:layout_weight="1" />
-
-                                        <TextView
-                                            android:id="@+id/loan_total"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_marginLeft="2dp"
-                                            android:layout_weight="1"
-                                            tools:text="50 000"
-                                            android:textColor="@color/blackColor"
-                                            android:textSize="20sp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-                                </LinearLayout>
-                            </LinearLayout>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:orientation="vertical">
-
-                        <Button
-                            android:id="@+id/loan_active_status"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="Внести погашение"
-                            android:layout_gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_status_parallel"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:text="Внести погашение"
-                            android:layout_gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="8dp"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_get_active_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:text="Получить заём"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_edit_active_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:text="Продолжить"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_process_active_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:clickable="false"
-                            android:text="Заявка в обработке"
-                            android:layout_gravity="center"
-                            android:layout_marginBottom="8dp"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_get_parallel_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:text="Параллельный заём"
-                            android:layout_gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="8dp"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_edit_parallel_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:text="Продолжить"
-                            android:layout_gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="8dp"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-
-                        <Button
-                            android:id="@+id/loan_process_parallel_loan"
-                            style="@style/RoundedOrangeBackground"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="72dp"
-                            android:layout_marginRight="72dp"
-                            android:clickable="false"
-                            android:text="Заявка в обработке"
-                            android:layout_gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="8dp"
-                            android:textSize="15sp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/layout_bg"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_top">
-
-                    <TextView
-                        android:id="@+id/text_center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="13dp"
-                        android:text="Следующее погашение:"
-                        android:textColor="@color/whiteColor"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <LinearLayout
-                        android:id="@+id/layout_internal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/text_center">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="26dp"
-                            android:layout_weight="1"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/loan_text_active"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="26dp"
-                                android:gravity="center"
-                                android:padding="20dp"
-                                android:text="@string/loan"
-                                android:textColor="#FEFEFE"
-                                android:textSize="17sp"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginTop="9.2dp"
-                                android:layout_marginBottom="10dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Внести погашение"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
                                 android:textStyle="bold"
                                 android:visibility="gone"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <LinearLayout
-                                android:id="@+id/loan_active_sum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent">
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
 
-                                <ImageView
-                                    android:id="@+id/loan_currency_icon"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="18dp"
-                                    android:layout_gravity="center"
-                                    android:src="@drawable/ic_currency_white" />
+                            <Button
+                                android:id="@+id/loan_status_parallel"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Внести погашение"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
 
-                                <TextView
-                                    android:id="@+id/loan_payment_sum"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_weight="1"
-                                    tools:text="5 000 "
-                                    android:textColor="@color/whiteColor"
-                                    android:textSize="20sp" />
-                            </LinearLayout>
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                            <Button
+                                android:id="@+id/loan_get_active_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Получить заём"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
 
-                        <ImageView
-                            android:id="@+id/loan_trait"
-                            android:layout_width="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="5dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/ic_trait" />
+                            <Button
+                                android:id="@+id/loan_edit_active_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Продолжить"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
 
-                        <TextView
-                            android:id="@+id/loan_payment_date"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginRight="26dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            tools:text="01.08.20"
-                            android:textColor="@color/whiteColor"
-                            android:textSize="20sp" />
+                            <Button
+                                android:id="@+id/loan_process_active_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:clickable="false"
+                                android:text="Заявка в обработке"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
+
+                            <Button
+                                android:id="@+id/loan_get_parallel_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Параллельный заём"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
+
+                            <Button
+                                android:id="@+id/loan_edit_parallel_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:text="Продолжить"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
+
+                            <Button
+                                android:id="@+id/loan_process_parallel_loan"
+                                style="@style/RoundedOrangeBackground"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="72dp"
+                                android:layout_marginRight="72dp"
+                                android:layout_marginBottom="8dp"
+                                android:clickable="false"
+                                android:text="Заявка в обработке"
+                                android:textColor="#FFFFFF"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent" />
+                        </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        android:background="@drawable/layout_bg_bottom"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/layout_bg"
                         android:orientation="vertical"
-                        app:layout_constraintTop_toBottomOf="@+id/layout_internal">
+                        app:layout_constraintTop_toBottomOf="@+id/layout_top">
 
-                        <include
-                            android:id="@+id/loans_loans_null"
-                            layout="@layout/item_loans_null"
-                            android:visibility="gone" />
+                        <TextView
+                            android:id="@+id/text_center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="13dp"
+                            android:text="Следующее погашение:"
+                            android:textColor="@color/whiteColor"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/loans_recycler"
+                        <LinearLayout
+                            android:id="@+id/layout_internal"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="18dp"
-                            android:layout_marginTop="37dp"
-                            android:layout_marginRight="18dp"
-                            android:background="@color/whiteColor"
-                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/text_center">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="26dp"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/loan_text_active"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="9.2dp"
+                                    android:layout_marginRight="26dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:padding="20dp"
+                                    android:text="@string/loan"
+                                    android:textColor="#FEFEFE"
+                                    android:textSize="17sp"
+                                    android:textStyle="bold"
+                                    android:visibility="gone"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <LinearLayout
+                                    android:id="@+id/loan_active_sum"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <ImageView
+                                        android:id="@+id/loan_currency_icon"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="18dp"
+                                        android:layout_gravity="center"
+                                        android:src="@drawable/ic_currency_white" />
+
+                                    <TextView
+                                        android:id="@+id/loan_payment_sum"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:textColor="@color/whiteColor"
+                                        android:textSize="20sp"
+                                        tools:text="5 000 " />
+                                </LinearLayout>
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <ImageView
+                                android:id="@+id/loan_trait"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:src="@drawable/ic_trait" />
+
+                            <TextView
+                                android:id="@+id/loan_payment_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="26dp"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textColor="@color/whiteColor"
+                                android:textSize="20sp"
+                                tools:text="01.08.20" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dp"
+                            android:background="@drawable/layout_bg_bottom"
+                            android:orientation="vertical"
+                            app:layout_constraintTop_toBottomOf="@+id/layout_internal">
+
+                            <include
+                                android:id="@+id/loans_loans_null"
+                                layout="@layout/item_loans_null"
+                                android:visibility="gone" />
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/loans_recycler"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginLeft="18dp"
+                                android:layout_marginTop="37dp"
+                                android:layout_marginRight="18dp"
+                                android:background="@color/whiteColor"
+                                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_loan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/whiteColor"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_shimmer_loans" />
+
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_shimmer_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_rediscovery_loan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/whiteColor"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <include layout="@layout/item_shimmer_loans" />
+
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+    </LinearLayout>
 
     <include
         android:id="@+id/loans_no_connection"

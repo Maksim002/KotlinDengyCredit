@@ -1,5 +1,6 @@
 package com.example.kotlincashloan.ui.loans.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,14 +11,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,6 +31,7 @@ import android.widget.Toast;
 
 import com.example.kotlincashloan.R;
 import com.example.kotlincashloan.adapter.loans.StepClickListener;
+import com.example.kotlincashloan.extension.AnimKt;
 import com.example.kotlincashloan.extension.GetTimerKt;
 import com.example.kotlincashloan.service.model.login.ImageStringModel;
 import com.example.kotlincashloan.service.model.login.SaveLoanResultModel;
@@ -35,6 +41,8 @@ import com.example.kotlincashloan.ui.loans.fragment.dialogue.StepBottomFragment;
 import com.example.kotlincashloan.ui.registration.login.HomeActivity;
 import com.example.kotlincashloan.utils.ObservedInternet;
 import com.example.kotlinscreenscanner.service.model.CommonResponseReject;
+import com.example.kotlinscreenscanner.ui.MainActivity;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.regula.documentreader.api.DocumentReader;
 import com.regula.documentreader.api.completions.IDocumentReaderCompletion;
 import com.regula.documentreader.api.completions.IDocumentReaderInitCompletion;
@@ -58,6 +66,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import retrofit2.http.Header;
 
 import static android.app.Activity.RESULT_OK;
 import static android.graphics.BitmapFactory.decodeStream;
@@ -87,6 +97,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private final boolean doRfid = false;
     private AlertDialog loadingDialog;
 
+    private ShimmerFrameLayout shimmerFrameLayout , startShimmerAnimation;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -103,9 +115,9 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         docImageIv = view.findViewById(R.id.documentImageIv);
 
         layout_status = view.findViewById(R.id.layout_status);
-        status_technical_work = view.findViewById(R.id.status_technical_work);
-        status_no_questionnaire = view.findViewById(R.id.status_no_questionnaire);
-        status_not_found = view.findViewById(R.id.status_not_found);
+        status_technical_work = ((GetLoanActivity)getActivity()).findViewById(R.id.status_technical_work);
+        status_no_questionnaire = ((GetLoanActivity)getActivity()).findViewById(R.id.status_no_questionnaire);
+        status_not_found = ((GetLoanActivity)getActivity()).findViewById(R.id.status_not_found);
         theeIncorrect = view.findViewById(R.id.thee_incorrect);
         threeCrossBack = view.findViewById(R.id.three_cross_back);
 
@@ -113,19 +125,41 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         technical_work = view.findViewById(R.id.technical_work);
         not_found = view.findViewById(R.id.not_found);
 
-        initInternet();
+        shimmerFrameLayout = ((GetLoanActivity)getActivity()).findViewById(R.id.shimmer_step_loan);
+        startShimmerAnimation = view.findViewById(R.id.shimmer_step_thee);
+
         initClick();
         getLists();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    @SuppressLint("HandlerLeak")
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+         Handler s = new Handler(){
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                if (menuVisible && isResumed()){
+                    requireActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    if (!AppPreferences.INSTANCE.isRepeat()){
+                        //генерирует анимацию перехода
+                        AnimKt.animationGeneratorLoan(shimmerFrameLayout, new Handler(), requireActivity());
+                    }
+                    initInternet();
+                }
+            }
+        };
+        s.sendEmptyMessageDelayed(0, 1000);
+    }
+
     //Получает данные на редактирование заёма
     private void getLists() {
-//        if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
-//            if (AppPreferences.INSTANCE.getStatus() == true) {
-//                threeCrossBack.setVisibility(View.GONE);
-//            }
-//        }
-
         if (AppPreferences.INSTANCE.getApplicationStatus() == false) {
             threeCrossBack.setVisibility(View.GONE);
         }else {
@@ -158,6 +192,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
         threeCrossBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AppPreferences.INSTANCE.setRepeat(false);
+                AnimKt.shimmerStart(shimmerFrameLayout, requireActivity());
                 ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(1);
             }
         });
@@ -172,7 +208,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             status_not_found.setVisibility(View.GONE);
             theeIncorrect.setVisibility(View.GONE);
         } else {
-            GetLoanActivity.alert.show();
             map.put("login", AppPreferences.INSTANCE.getLogin());
             map.put("token", AppPreferences.INSTANCE.getToken());
 
@@ -211,6 +246,8 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                 if (AppPreferences.INSTANCE.getStatus() == true) {
                                     getActivity().finish();
                                 } else {
+                                    AppPreferences.INSTANCE.setRepeat(true);
+                                    AnimKt.shimmerStart(shimmerFrameLayout, requireActivity());
                                     ((GetLoanActivity) getActivity()).get_loan_view_pagers.setCurrentItem(3);
                                 }
                             } else if (result.getData().getError() != null) {
@@ -253,7 +290,6 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                             }
                         }
                     }
-                    GetLoanActivity.alert.hide();
                 }
             });
         }
@@ -261,7 +297,7 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
 
     private void errorSaveLoan(String error) {
         if (error != null) {
-            if (error.equals("601") || error.equals("600")) {
+            if (error.equals("601")) {
                 status_technical_work.setVisibility(View.VISIBLE);
                 status_no_questionnaire.setVisibility(View.GONE);
                 layout_status.setVisibility(View.GONE);
@@ -287,6 +323,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
             } else if (error.equals("400")) {
                 theeIncorrect.setText("Отсканируйте документ повторно");
                 theeIncorrect.setVisibility(View.VISIBLE);
+            }else if (error.equals("600")){
+                status_no_questionnaire.setVisibility(View.VISIBLE);
+                status_not_found.setVisibility(View.GONE);
+                status_technical_work.setVisibility(View.GONE);
+                layout_status.setVisibility(View.GONE);
+                theeIncorrect.setVisibility(View.GONE);
             }
         }
     }
@@ -326,9 +368,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
     private void initDocumentReader() {
         if (!DocumentReader.Instance().getDocumentReaderIsReady()) {
 //            final AlertDialog initDialog = showDialog("Инициализация");
-            showScanner.setText("Ожидайте, идет загрузка...");
-            showScanner.setClickable(false);
-
+            try {
+                showScanner.setText("Ожидайте, идет загрузка...");
+                showScanner.setClickable(false);
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
 
             //Reading the license from raw resource file
             try {
@@ -342,8 +387,12 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                 DocumentReader.Instance().prepareDatabase(requireContext(), "Full", new IDocumentReaderPrepareCompletion() {
                     @Override
                     public void onPrepareProgressChanged(int progress) {
+                        try {
+                            showScanner.setText("Загрузка базы данных: " + progress + "%");
+                        }catch (Exception e){
+                            e.fillInStackTrace();
+                        }
 //                        initDialog.setTitle("Загрузка базы данных: " + progress + "%");
-                        showScanner.setText("Загрузка базы данных: " + progress + "%");
                     }
 
                     @Override
@@ -388,17 +437,18 @@ public class LoanStepThreeFragment extends Fragment implements StepClickListener
                                         currentScenario = scenarios.get(3);
                                         DocumentReader.Instance().processParams().scenario = currentScenario;
                                     }
+                                    requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 }
                                 //Initialization was not successful
                                 else {
                                     try {
                                         Toast.makeText(requireContext(), "Init failed:" + e, Toast.LENGTH_LONG).show();
+                                        requireActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     } catch (Exception el) {
                                         el.printStackTrace();
                                     }
                                 }
                             }
-
                         });
                     }
                 });

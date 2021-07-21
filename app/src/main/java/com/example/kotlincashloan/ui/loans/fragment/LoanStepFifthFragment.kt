@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -28,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -59,11 +59,9 @@ import com.regula.documentreader.api.errors.DocumentReaderException
 import com.regula.documentreader.api.results.DocumentReaderResults
 import com.timelysoft.tsjdomcom.service.AppPreferences
 import com.timelysoft.tsjdomcom.service.Status
-import com.timelysoft.tsjdomcom.utils.LoadingAlert
 import com.timelysoft.tsjdomcom.utils.MyUtils
 import kotlinx.android.synthetic.main.activity_get_loan.*
 import kotlinx.android.synthetic.main.fragment_loan_step_fifth.*
-import kotlinx.android.synthetic.main.fragment_loan_step_six.*
 import kotlinx.android.synthetic.main.item_access_restricted.*
 import kotlinx.android.synthetic.main.item_no_connection.*
 import kotlinx.android.synthetic.main.item_not_found.*
@@ -73,7 +71,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
+class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String, Bitmap>, var listLoan: GetLoanModel, var permission: Int,  var applicationStatus: Boolean, var listener: LoanClearListener) : Fragment(), ListenerGeneralResult, DatePickerDialog.OnDateSetListener, StepClickListener{
     private var viewModel = LoansViewModel()
     private var imageViewModel = SharedViewModel()
     private var imageMap = HashMap<String, Bitmap>()
@@ -125,22 +123,16 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
     private val mapSave = mutableMapOf<String, String>()
     private lateinit var idImage: ImageView
     private lateinit var idImageIc: ImageView
-    private lateinit var alert: LoadingAlert
     private var visibilityIm = 0
     private val handler = Handler()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_loan_step_fifth, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alert = LoadingAlert(requireActivity())
 
         if (applicationStatus == false){
             // Отоброожает кнопку если статус true видем закрытия
@@ -149,13 +141,10 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.VISIBLE
         }
 
-        if (permission == 6){
-            alert.show()
-        }
         //формат даты
         simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
-        initRestart()
+
         initClick()
         iniData()
         initHidingFields()
@@ -164,14 +153,24 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
         getLists()
     }
 
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        handler.postDelayed(Runnable { // Do something after 5s = 500ms
+            if (menuVisible && isResumed) {
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                initRestart()
+            }
+        }, 500)
+    }
+
     private fun initRestart() {
         ObservedInternet().observedInternet(requireContext())
         if (!AppPreferences.observedInternet) {
-            six_ste_no_connection.visibility = View.VISIBLE
-            layout_loan_six.visibility = View.GONE
-            six_ste_technical_work.visibility = View.GONE
-            six_ste_access_restricted.visibility = View.GONE
-            six_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
         } else {
             viewModel.errorSaveLoan.value = null
             initListEntryGoal()
@@ -184,6 +183,11 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 thread = Thread(runnable)
                 thread!!.start()
             }
+            if (!AppPreferences.isRepeat){
+                //генерирует анимацию перехода
+                animationGeneratorLoan((activity as GetLoanActivity?)!!.shimmer_step_loan,handler,  requireActivity())
+            }
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 
@@ -230,11 +234,9 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
                 imageViewModel.updateBitmaps(imageMap)
                 // После добовлния удолят bitmap кортинок получаемых с сервира
                 mitmap.clear()
-                alert.hide()
             }
             else{
                 dataImage()
-                alert.hide()
             }
             //при редактирование сравнивает спрятать поля или нет
             if (mitmap["imageA"].toString() != "" && mitmap["imageB"].toString() != ""){
@@ -276,13 +278,13 @@ class LoanStepFifthFragment(var statusValue: Boolean, var mitmap: HashMap<String
 
 override fun onStart() {
     super.onStart()
+    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     if (fifth_goal_name.text.isNotEmpty()) {
         fifth_goal_name.hint = null
     }
     if (contract_type.text.isNotEmpty()) {
         contract_type.hint = null
     }
-//    initRestart()
 }
 
     //Сохронение картинки на сервер
@@ -371,6 +373,7 @@ override fun onStart() {
                 }
             }
             imageString.clear()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
 
         viewModel.errorSaveLoanImg.observe(viewLifecycleOwner, Observer { error ->
@@ -383,12 +386,12 @@ override fun onStart() {
             }
             imageString.clear()
             GetLoanActivity.alert.hide()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
     }
 
     // TODO: 21-2-8 Сохронение доверительные контакты.
     private fun initSaveServer() {
-        GetLoanActivity.alert.show()
         mapSave["login"] = AppPreferences.login.toString()
         mapSave["token"] = AppPreferences.token.toString()
         mapSave["id"] = AppPreferences.applicationId.toString()
@@ -437,21 +440,25 @@ override fun onStart() {
             when (result.status) {
                 Status.SUCCESS -> {
                     if (data!!.result != null) {
-                        layout_fifth.visibility = View.VISIBLE
-                        fifth_ste_technical_work.visibility = View.GONE
-                        fifth_ste_no_connection.visibility = View.GONE
-                        fifth_ste_access_restricted.visibility = View.GONE
-                        fifth_ste_not_found.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+                        (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                        (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
                         if (saveValidate) {
                             (activity as GetLoanActivity?)!!.loan_cross_clear.visibility = View.GONE
-                            if (applicationStatus == false){
-                                if (statusValue == true){
+                            if (!applicationStatus){
+                                if (statusValue){
                                     requireActivity().onBackPressed()
                                 }else{
                                     (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                                    handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                    }, 200)
                                 }
                             } else{
                                 (activity as GetLoanActivity?)!!.get_loan_view_pagers.currentItem = 7
+                                handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                                }, 200)
                             }
                         }
                     } else if (data.error.code != null) {
@@ -467,13 +474,13 @@ override fun onStart() {
                     listListResult(msg!!, activity as AppCompatActivity)
                 }
             }
-            GetLoanActivity.alert.hide()
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         })
     }
 
     //Скрытие полей
     private fun initHidingFields() {
-        if (statusValue == true){
+        if (statusValue){
             hidingLayout = listLoan.nationality_ocr.toString()
         }else{
             hidingLayout = AppPreferences.nationality.toString()
@@ -545,7 +552,6 @@ override fun onStart() {
                 listTypeContract = result.result
                 getListsText()
             } else {
-//                listResult(result.error.code!!)
                 getErrorCode(result.error.code!!)
             }
         })
@@ -553,7 +559,6 @@ override fun onStart() {
         viewModel.errorListTypeContract.observe(viewLifecycleOwner, Observer { error ->
             if (error != null) {
                 listContractError = error
-//                errorList(error)
                 getErrorCode(error.toInt())
             }
         })
@@ -561,39 +566,43 @@ override fun onStart() {
 
     private fun initClick() {
 
-        access_restricted.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.access_restricted.setOnClickListener {
+            listener.loanClearClickListener()
         }
 
-        no_connection_repeat.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.no_connection_repeat.setOnClickListener {
+            listener.loanClearClickListener()
         }
 
-        technical_work.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.technical_work.setOnClickListener {
+            listener.loanClearClickListener()
         }
 
-        not_found.setOnClickListener {
-            initRestart()
+        (activity as GetLoanActivity?)!!.not_found.setOnClickListener {
+            listener.loanClearClickListener()
         }
 
         bottom_loan_fifth.setOnClickListener {
             ObservedInternet().observedInternet(requireContext())
             if (!AppPreferences.observedInternet) {
-                fifth_ste_no_connection.visibility = View.VISIBLE
-                layout_fifth.visibility = View.GONE
-                fifth_ste_technical_work.visibility = View.GONE
-                fifth_ste_access_restricted.visibility = View.GONE
-                fifth_ste_not_found.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.VISIBLE
+                (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+                (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+                (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
             } else {
                 saveValidate = true
                 if (validate()) {
+                    AppPreferences.isRepeat = false
+                    shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
                     initSaveServer()
                 }
             }
         }
 
         fifth_cross_six.setOnClickListener {
+            AppPreferences.isRepeat = false
+            shimmerStart((activity as GetLoanActivity?)!!.shimmer_step_loan, requireActivity())
             (activity as GetLoanActivity?)!!.get_loan_view_pagers.setCurrentItem(5)
             hidingErrors()
         }
@@ -786,11 +795,7 @@ override fun onStart() {
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(
-        list: ArrayList<GeneralDialogModel>,
-        selectionPosition: String,
-        title: String, id: AutoCompleteTextView
-    ) {
+    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(requireActivity().supportFragmentManager, stepBottomFragment.tag)
@@ -976,14 +981,16 @@ override fun onStart() {
                 // TODO: 31.03.21 Проверить ещё раз нужин ли он тут
                 dataImage()
             }
+        }else{
+            handler.postDelayed(Runnable { // Do something after 5s = 500ms
+                requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }, 900)
         }
 
         if (requestCode == REQUEST_BROWSE_PICTURE) {
             if (data!!.data != null) {
                 val selectedImage = data.data
                 val bmp: Bitmap? = selectedImage?.let { getBitmap(it, 1920, 1080) }
-//                russian_patent.setText("Processing image")
-                //                    loadingDialog = showDialog("Processing image");
                 if (bmp != null) {
                     DocumentReader.Instance().recognizeImage(bmp, completion)
                 }
@@ -1194,26 +1201,26 @@ override fun onStart() {
 
     private fun getResultOk() {
         if (listEntryError == "200" && listContractError == "200") {
-            layout_fifth.visibility = View.VISIBLE
-            fifth_ste_technical_work.visibility = View.GONE
-            fifth_ste_no_connection.visibility = View.GONE
-            fifth_ste_access_restricted.visibility = View.GONE
-            fifth_ste_not_found.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.layout_get_loan_con.visibility = View.VISIBLE
+            (activity as GetLoanActivity?)!!.get_loan_no_connection.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_technical_work.visibility = View.GONE
+            (activity as GetLoanActivity?)!!.get_loan_access_restricted.visibility = View.GONE
+            (activity as GetLoanActivity?)!!. get_loan_not_found.visibility = View.GONE
         }
     }
 
     private fun getErrorCode(error: Int){
-        listListResult(error,fifth_ste_technical_work as LinearLayout,fifth_ste_no_connection
-                as LinearLayout,layout_fifth as NestedScrollView,fifth_ste_access_restricted
-                as LinearLayout,fifth_ste_not_found as LinearLayout,requireActivity())
+        listListResult(error, (activity as GetLoanActivity?)!!.get_loan_technical_work as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_no_connection
+                as LinearLayout, (activity as GetLoanActivity?)!!.layout_get_loan_con, (activity as GetLoanActivity?)!!.get_loan_access_restricted
+                as LinearLayout, (activity as GetLoanActivity?)!!.get_loan_not_found as LinearLayout, requireActivity(), true)
     }
 
     private fun initDocumentReader() {
         try {
 
             if (!DocumentReader.Instance().documentReaderIsReady) {
-                text.setText("Ожидайте, идет загрузка...")
-                fifth_potent.setClickable(false)
+                text.text = "Ожидайте, идет загрузка..."
+                fifth_potent.isClickable = false
 
 
                 //Reading the license from raw resource file
@@ -1242,13 +1249,10 @@ override fun onStart() {
                                 p1: DocumentReaderException?
                             ) {
                                 //Initializing the reader
-                                DocumentReader.Instance().initializeReader(
-                                    requireContext(),
-                                    license
-                                ) { success, error_initializeReader ->
+                                DocumentReader.Instance().initializeReader(requireContext(), license) { success, error_initializeReader ->
                                     //добавил трай что бы непадал
                                     try {
-                                        text.setText("Фото патента РФ:")
+                                        text.text = "Фото патента РФ:"
                                         fifth_potent.isClickable = true
                                     } catch (e: Exception) {
                                         e.printStackTrace()

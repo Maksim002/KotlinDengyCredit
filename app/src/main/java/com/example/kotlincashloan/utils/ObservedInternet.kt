@@ -2,7 +2,11 @@ package com.example.kotlincashloan.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.util.Log
 import com.timelysoft.tsjdomcom.service.AppPreferences
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
 class ObservedInternet{
     fun observedInternet(context: Context){
