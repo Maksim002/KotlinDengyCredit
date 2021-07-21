@@ -9,7 +9,6 @@ import com.timelysoft.tsjdomcom.service.AppPreferences
 
 class TimerListenerLoan(var activity: Activity){
     private lateinit var timer: CountDownTimer
-    private val handler = Handler()
     var numberContractions = 0
 
     init {
