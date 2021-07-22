@@ -95,8 +95,6 @@ class MainActivity : AppCompatActivity() {
             setupActionBarWithNavController(navController)
         })
         currentNavController = controller
-
-
     }
 
 //    private fun loadFragment(fragment: Fragment) {
