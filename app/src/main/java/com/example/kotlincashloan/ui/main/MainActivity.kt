@@ -67,7 +67,6 @@ class MainActivity : AppCompatActivity() {
         // BottomNavigationBar with Navigation
         setupBottomNavigationBar()
     }
-
     /**
      * Called on first creation and when restoring state.
      */
