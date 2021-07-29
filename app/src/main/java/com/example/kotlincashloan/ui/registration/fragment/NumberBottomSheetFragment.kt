@@ -68,14 +68,26 @@ class NumberBottomSheetFragment(var idPhone: Int) : BottomSheetDialogFragment() 
                         when (result.status) {
                             Status.SUCCESS -> {
                                 if (data!!.result == null) {
-                                    if (data.error.code == 500 || data.error.code == 409) {
-                                        loadingMistake(activity as AppCompatActivity)
-                                    } else if (data.error.code == 400) {
-                                        number_incorrect.visibility = View.VISIBLE
-                                    } else if (data.error.code == 401) {
-                                        initAuthorized()
-                                    } else {
-                                        loadingMistake(activity as AppCompatActivity)
+                                    if (data.code == 200){
+                                        if (data.error.code == 500 || data.error.code == 409) {
+                                            loadingMistake(activity as AppCompatActivity)
+                                        } else if (data.error.code == 400) {
+                                            number_incorrect.visibility = View.VISIBLE
+                                        } else if (data.error.code == 401) {
+                                            initAuthorized()
+                                        } else {
+                                            loadingMistake(activity as AppCompatActivity)
+                                        }
+                                    }else{
+                                        if (data.code == 500 || data.code == 409) {
+                                            loadingMistake(activity as AppCompatActivity)
+                                        } else if (data.code == 400) {
+                                            number_incorrect.visibility = View.VISIBLE
+                                        } else if (data.code == 401) {
+                                            initAuthorized()
+                                        } else {
+                                            loadingMistake(activity as AppCompatActivity)
+                                        }
                                     }
                                 } else {
                                     number_incorrect.visibility = View.GONE

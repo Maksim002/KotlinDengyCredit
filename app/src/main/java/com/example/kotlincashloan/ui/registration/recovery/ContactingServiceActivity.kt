@@ -271,19 +271,36 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 400) {
-                                password_no_questionnaire.visibility = View.GONE
-                                contacting_layout.visibility = View.VISIBLE
-                                if (!discovery) {
-                                    loadingMistake(this, this)
-                                    discovery = true
+                            if (data.code == 200){
+                                if (data.error.code == 500 || data.error.code == 400) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
+                                    if (!discovery) {
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
+                                } else if (data.error.code == 409) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
+                                    initBottomSheetMistake()
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
                                 }
-                            } else if (data.error.code == 409) {
-                                password_no_questionnaire.visibility = View.GONE
-                                contacting_layout.visibility = View.VISIBLE
-                                initBottomSheetMistake()
-                            } else if (data.error.code == 401) {
-                                initAuthorized()
+                            }else{
+                                if (data.code == 500 || data.code == 400) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
+                                    if (!discovery) {
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
+                                } else if (data.code == 409) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
+                                    initBottomSheetMistake()
+                                } else if (data.code == 401) {
+                                    initAuthorized()
+                                }
                             }
                         } else {
                             password_no_questionnaire.visibility = View.GONE
@@ -388,26 +405,50 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
 //                                }
                                 getType()
                             } else {
-                                countryCode = data.error.code.toString()
-                                if (data.error.code == 403) {
-                                    password_no_questionnaire.visibility = View.GONE
-                                    password_access_restricted.visibility = View.VISIBLE
-                                    contacting_layout.visibility = View.GONE
+                                if (data.code == 200){
+                                    countryCode = data.error.code.toString()
+                                    if (data.error.code == 403) {
+                                        password_no_questionnaire.visibility = View.GONE
+                                        password_access_restricted.visibility = View.VISIBLE
+                                        contacting_layout.visibility = View.GONE
 
-                                } else if (data.error.code == 404) {
-                                    password_no_questionnaire.visibility = View.GONE
-                                    password_not_found.visibility = View.VISIBLE
-                                    contacting_layout.visibility = View.GONE
+                                    } else if (data.error.code == 404) {
+                                        password_no_questionnaire.visibility = View.GONE
+                                        password_not_found.visibility = View.VISIBLE
+                                        contacting_layout.visibility = View.GONE
 
-                                } else if (data.error.code == 401) {
-                                    initAuthorized()
-                                } else {
-                                    if (!discovery) {
-                                        loadingMistake(this, this)
-                                        discovery = true
+                                    } else if (data.error.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        if (!discovery) {
+                                            loadingMistake(this, this)
+                                            discovery = true
+                                        }
+                                        password_no_questionnaire.visibility = View.GONE
+                                        contacting_layout.visibility = View.VISIBLE
                                     }
-                                    password_no_questionnaire.visibility = View.GONE
-                                    contacting_layout.visibility = View.VISIBLE
+                                }else{
+                                    countryCode = data.code.toString()
+                                    if (data.code == 403) {
+                                        password_no_questionnaire.visibility = View.GONE
+                                        password_access_restricted.visibility = View.VISIBLE
+                                        contacting_layout.visibility = View.GONE
+
+                                    } else if (data.code == 404) {
+                                        password_no_questionnaire.visibility = View.GONE
+                                        password_not_found.visibility = View.VISIBLE
+                                        contacting_layout.visibility = View.GONE
+
+                                    } else if (data.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        if (!discovery) {
+                                            loadingMistake(this, this)
+                                            discovery = true
+                                        }
+                                        password_no_questionnaire.visibility = View.GONE
+                                        contacting_layout.visibility = View.VISIBLE
+                                    }
                                 }
                             }
                         }
@@ -484,24 +525,46 @@ class ContactingServiceActivity : AppCompatActivity(), ListenerGeneralResult, Bo
                                 initVisibilities()
                             }
                         } else {
-                            typeCode = data.error.code.toString()
-                            if (data.error.code == 403) {
-                                password_no_questionnaire.visibility = View.GONE
-                                password_access_restricted.visibility = View.VISIBLE
-                                contacting_layout.visibility = View.GONE
-                            } else if (data.error.code == 404) {
-                                password_no_questionnaire.visibility = View.GONE
-                                contacting_layout.visibility = View.GONE
-                                password_not_found.visibility = View.VISIBLE
-                            } else if (data.error.code == 401) {
-                                initAuthorized()
-                            } else {
-                                if (!discovery) {
-                                    loadingMistake(this, this)
-                                    discovery = true
+                            if (data.code == 200){
+                                typeCode = data.error.code.toString()
+                                if (data.error.code == 403) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    password_access_restricted.visibility = View.VISIBLE
+                                    contacting_layout.visibility = View.GONE
+                                } else if (data.error.code == 404) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.GONE
+                                    password_not_found.visibility = View.VISIBLE
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    if (!discovery) {
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
                                 }
-                                password_no_questionnaire.visibility = View.GONE
-                                contacting_layout.visibility = View.VISIBLE
+                            }else{
+                                typeCode = data.code.toString()
+                                if (data.code == 403) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    password_access_restricted.visibility = View.VISIBLE
+                                    contacting_layout.visibility = View.GONE
+                                } else if (data.code == 404) {
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.GONE
+                                    password_not_found.visibility = View.VISIBLE
+                                } else if (data.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    if (!discovery) {
+                                        loadingMistake(this, this)
+                                        discovery = true
+                                    }
+                                    password_no_questionnaire.visibility = View.GONE
+                                    contacting_layout.visibility = View.VISIBLE
+                                }
                             }
                         }
                     }

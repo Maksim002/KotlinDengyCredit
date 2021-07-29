@@ -100,12 +100,22 @@ class PinCodeBottomFragment(private val listener: PintCodeBottomListener) :
                                 initAuthorized()
                                 this.dismiss()
                             } else {
-                                if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
-                                    loadingMistake(activity as AppCompatActivity)
-                                } else if (data.error.code == 401) {
-                                    initTransition()
-                                } else {
-                                    loadingMistake(activity as AppCompatActivity)
+                                if (data.code == 200){
+                                    if (data.error.code == 400 || data.error.code == 500 || data.error.code == 409) {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    } else if (data.error.code == 401) {
+                                        initTransition()
+                                    } else {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    }
+                                }else{
+                                    if (data.code == 400 || data.code == 500 || data.code == 409) {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    } else if (data.code == 401) {
+                                        initTransition()
+                                    } else {
+                                        loadingMistake(activity as AppCompatActivity)
+                                    }
                                 }
                             }
                         }

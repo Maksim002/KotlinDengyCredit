@@ -78,16 +78,30 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404 || data.error.code == 403) {
-                                initVisibilities()
-                                loadingMistake(this)
-                            } else if (data.error.code == 401) {
-                                initAuthorized()
-                            } else if (data.error.code == 409) {
-                                initVisibilities()
-                                initBusyBottomSheet()
-                            } else {
-                                initVisibilities()
+                            if (data.code == 200){
+                                if (data.error.code == 500 || data.error.code == 400 || data.error.code == 404 || data.error.code == 403) {
+                                    initVisibilities()
+                                    loadingMistake(this)
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else if (data.error.code == 409) {
+                                    initVisibilities()
+                                    initBusyBottomSheet()
+                                } else {
+                                    initVisibilities()
+                                }
+                            }else{
+                                if (data.code == 500 || data.code == 400 || data.code == 404 || data.code == 403) {
+                                    initVisibilities()
+                                    loadingMistake(this)
+                                } else if (data.code == 401) {
+                                    initAuthorized()
+                                } else if (data.code == 409) {
+                                    initVisibilities()
+                                    initBusyBottomSheet()
+                                } else {
+                                    initVisibilities()
+                                }
                             }
                         } else {
                             AppPreferences.number = number_list_country.text.toString() + number_phone.text.toString()
@@ -273,20 +287,38 @@ class NumberActivity : AppCompatActivity(), ListenerGeneralResult {
                                 listAvailableCountry = data.result
                                 initVisibilities()
                             } else {
-                                if (data.error.code == 403) {
-                                    number_no_connection.visibility = View.GONE
-                                    number_access_restricted.visibility = View.VISIBLE
-                                    number_layout.visibility = View.GONE
-                                } else if (data.error.code == 404) {
-                                    number_no_connection.visibility = View.GONE
-                                    number_not_found.visibility = View.VISIBLE
-                                    number_layout.visibility = View.GONE
-                                } else if (data.error.code == 401) {
-                                    initAuthorized()
-                                } else {
-                                    number_no_connection.visibility = View.GONE
-                                    number_technical_work.visibility = View.VISIBLE
-                                    number_layout.visibility = View.GONE
+                                if (data.code == 200){
+                                    if (data.error.code == 403) {
+                                        number_no_connection.visibility = View.GONE
+                                        number_access_restricted.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    } else if (data.error.code == 404) {
+                                        number_no_connection.visibility = View.GONE
+                                        number_not_found.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    } else if (data.error.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        number_no_connection.visibility = View.GONE
+                                        number_technical_work.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    }
+                                }else{
+                                    if (data.code == 403) {
+                                        number_no_connection.visibility = View.GONE
+                                        number_access_restricted.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    } else if (data.code == 404) {
+                                        number_no_connection.visibility = View.GONE
+                                        number_not_found.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    } else if (data.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        number_no_connection.visibility = View.GONE
+                                        number_technical_work.visibility = View.VISIBLE
+                                        number_layout.visibility = View.GONE
+                                    }
                                 }
                             }
                         }

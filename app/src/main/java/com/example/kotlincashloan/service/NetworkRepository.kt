@@ -177,7 +177,7 @@ class NetworkRepository {
 
     fun listAvailableCountry(map: Map<String, Int>) = liveData(Dispatchers.IO) {
         try {
-            val response = RetrofitService.apiService().listAvailableCountry(map, generateUrl("listAvailableCountry"))
+            val response = RetrofitService.apiService().listAvailableCountry(map, generateUrl("error404"))
             when {
                 response.isSuccessful -> {
                     if (response.body() != null) {

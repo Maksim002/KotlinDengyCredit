@@ -165,15 +165,28 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 404) {
-                                initBusyBottomSheetError()
-                                initVisibilities()
-                            } else if (data.error.code == 401) {
-                                initAuthorized()
-                            } else {
-                                loadingMistake(this)
-                                recovery_no_questionnaire.visibility = View.GONE
-                                password_layout.visibility = View.VISIBLE
+                            if (data.code == 200){
+                                if (data.error.code == 404) {
+                                    initBusyBottomSheetError()
+                                    initVisibilities()
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    loadingMistake(this)
+                                    recovery_no_questionnaire.visibility = View.GONE
+                                    password_layout.visibility = View.VISIBLE
+                                }
+                            }else{
+                                if (data.code == 404) {
+                                    initBusyBottomSheetError()
+                                    initVisibilities()
+                                } else if (data.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    loadingMistake(this)
+                                    recovery_no_questionnaire.visibility = View.GONE
+                                    password_layout.visibility = View.VISIBLE
+                                }
                             }
                         } else {
                             initBusyBottomSheet()
@@ -274,22 +287,40 @@ class PasswordRecoveryActivity : AppCompatActivity(), ListenerGeneralResult {
                                 availableCountry = result.data.result[0].phoneLength!!.toInt()
                                 initVisibilities()
                             } else {
-                                if (data.error.code == 403) {
-                                    recovery_no_questionnaire.visibility = View.GONE
-                                    recovery_access_restricted.visibility = View.VISIBLE
-                                    password_layout.visibility = View.GONE
+                                if (data.code == 200){
+                                    if (data.error.code == 403) {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_access_restricted.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
+                                    }else if (data.error.code == 404) {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_not_found.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
 
-                                } else if (data.error.code == 404) {
-                                    recovery_no_questionnaire.visibility = View.GONE
-                                    recovery_not_found.visibility = View.VISIBLE
-                                    password_layout.visibility = View.GONE
+                                    } else if (data.error.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_technical_work.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
+                                    }
+                                }else{
+                                    if (data.code == 403) {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_access_restricted.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
+                                    } else if (data.code == 404) {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_not_found.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
 
-                                } else if (data.error.code == 401) {
-                                    initAuthorized()
-                                } else {
-                                    recovery_no_questionnaire.visibility = View.GONE
-                                    recovery_technical_work.visibility = View.VISIBLE
-                                    password_layout.visibility = View.GONE
+                                    } else if (data.code == 401) {
+                                        initAuthorized()
+                                    } else {
+                                        recovery_no_questionnaire.visibility = View.GONE
+                                        recovery_technical_work.visibility = View.VISIBLE
+                                        password_layout.visibility = View.GONE
+                                    }
                                 }
                             }
                         }

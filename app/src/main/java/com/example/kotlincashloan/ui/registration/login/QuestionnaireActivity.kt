@@ -43,7 +43,8 @@ import kotlinx.android.synthetic.main.item_technical_work.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetListener, ListenerGeneralResult {
+class QuestionnaireActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
+    ListenerGeneralResult {
     private var viewModel = LoginViewModel()
     private var data: String = ""
     private var idSex: Int = 0
@@ -98,39 +99,39 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         no_connection_repeat.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0) {
                 initResult()
-            }else{
+            } else {
                 getIdSxs()
             }
         }
 
         access_restricted.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0) {
                 initResult()
-            }else{
+            } else {
                 getIdSxs()
             }
         }
 
         not_found.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0) {
                 initResult()
-            }else{
+            } else {
                 getIdSxs()
             }
         }
 
         technical_work.setOnClickListener {
-            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0){
+            if (idSex != 0 && listSecretQuestionId != 0 && listNationalityId != 0) {
                 initResult()
-            }else{
+            } else {
                 getIdSxs()
             }
         }
     }
 
-    private fun nouInternet(){
+    private fun nouInternet() {
         questionnaire_no_questionnaire.visibility = View.VISIBLE
         questionnaire_layout.visibility = View.GONE
         questionnaire_technical_work.visibility = View.GONE
@@ -152,10 +153,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             map["gender"] = idSex.toString()
             map["nationality"] = listNationalityId.toString()
 
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = questionnaire_phone_number.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = questionnaire_phone_number.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
-               val firstNum = result.append(matchedText.value).toString()
+                val firstNum = result.append(matchedText.value).toString()
                 map["first_phone"] = firstNum
             }
             map["second_phone"] = try {
@@ -175,24 +177,39 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code != 409) {
-                                result()
-                                loadingMistake(this)
-                            } else if (data.error.code == 401) {
-                                initAuthorized()
-                            } else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403) {
-                                result()
-                                loadingMistake(this)
+                            if (data.code == 200) {
+                                if (data.error.code != 409) {
+                                    result()
+                                    loadingMistake(this)
+                                } else if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else if (data.error.code == 400 || data.error.code == 500 || data.error.code == 403) {
+                                    result()
+                                    loadingMistake(this)
+                                } else {
+                                    result()
+                                    initBusyBottomSheet()
+                                }
                             } else {
-                                result()
-                                initBusyBottomSheet()
+                                if (data.code != 409) {
+                                    result()
+                                    loadingMistake(this)
+                                } else if (data.code == 401) {
+                                    initAuthorized()
+                                } else if (data.code == 400 || data.code == 500 || data.code == 403) {
+                                    result()
+                                    loadingMistake(this)
+                                } else {
+                                    result()
+                                    initBusyBottomSheet()
+                                }
                             }
                         } else {
                             result()
                             initBottomSheet()
                         }
                     }
-                    Status.ERROR ->{
+                    Status.ERROR -> {
                         if (msg == "401") {
                             initAuthorized()
                         } else if (msg == "409") {
@@ -203,11 +220,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             loadingMistake(this)
                         }
                     }
-                    Status.NETWORK ->{
-                        if (msg == "601"){
+                    Status.NETWORK -> {
+                        if (msg == "601") {
                             result()
                             loadingMistake(this)
-                        }else if (msg == "600"){
+                        } else if (msg == "600") {
                             result()
                             loadingConnection(this)
                         }
@@ -222,7 +239,13 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun initClock() {
 
         questionnaire_phone_additional.addTextChangedListener {
-            editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Введите правильный номер", false)
+            editUtils(
+                questionnaire_layout_additional,
+                questionnaire_phone_additional,
+                questionnaire_additional_error,
+                "Введите правильный номер",
+                false
+            )
             initCleaningRoom()
         }
 
@@ -233,12 +256,25 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listNationalityCounter.size) {
                     if (i <= listNationalityCounter.size) {
-                        itemDialog.add(GeneralDialogModel(listNationalityCounter[i - 1].name.toString(), "listNationalityCounter", i - 1, 0, listNationalityCounter[i-1].name))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listNationalityCounter[i - 1].name.toString(),
+                                "listNationalityCounter",
+                                i - 1,
+                                0,
+                                listNationalityCounter[i - 1].name
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, counterNationalPosition, "Список доступных стран", questionnaire_available_countries)
+                initBottomSheet(
+                    itemDialog,
+                    counterNationalPosition,
+                    "Список доступных стран",
+                    questionnaire_available_countries
+                )
             }
         }
 
@@ -249,7 +285,15 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listGender.size) {
                     if (i <= listGender.size) {
-                        itemDialog.add(GeneralDialogModel(listGender[i - 1].name.toString(), "listGender", i - 1, 0, listGender[i - 1].name.toString()))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listGender[i - 1].name.toString(),
+                                "listGender",
+                                i - 1,
+                                0,
+                                listGender[i - 1].name.toString()
+                            )
+                        )
                     }
                 }
             }
@@ -269,14 +313,19 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             GeneralDialogModel(
                                 listNationality[i - 1].name.toString(),
                                 "listNationality",
-                                i - 1
-                            , 0)
+                                i - 1, 0
+                            )
                         )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, nationalityPosition, "Выберите гражданство", questionnaire_id_nationality)
+                initBottomSheet(
+                    itemDialog,
+                    nationalityPosition,
+                    "Выберите гражданство",
+                    questionnaire_id_nationality
+                )
             }
         }
 
@@ -287,12 +336,24 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             if (itemDialog.size == 0) {
                 for (i in 1..listSecretQuestion.size) {
                     if (i <= listSecretQuestion.size) {
-                        itemDialog.add(GeneralDialogModel(listSecretQuestion[i - 1].name.toString(), "listSecretQuestion", i - 1, listSecretQuestion[i-1].id))
+                        itemDialog.add(
+                            GeneralDialogModel(
+                                listSecretQuestion[i - 1].name.toString(),
+                                "listSecretQuestion",
+                                i - 1,
+                                listSecretQuestion[i - 1].id
+                            )
+                        )
                     }
                 }
             }
             if (itemDialog.size != 0) {
-                initBottomSheet(itemDialog, questionPosition, "Выберите секретный вопрос", questionnaire_id_secret)
+                initBottomSheet(
+                    itemDialog,
+                    questionPosition,
+                    "Выберите секретный вопрос",
+                    questionnaire_id_secret
+                )
             }
         }
 
@@ -301,7 +362,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                 questionnaire_enter.isClickable = true
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
                 included = true
-            }else{
+            } else {
                 questionnaire_enter.isClickable = false
                 questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
                 included = false
@@ -327,7 +388,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
     }
 
-    private fun initAuthorized(){
+    private fun initAuthorized() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
@@ -361,11 +422,11 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         super.onStart()
         //меняет цвет статус бара
         ColorWindows(this).statusBarTextColor()
-        if (!included){
+        if (!included) {
             questionnaire_enter.isClickable = false
             questionnaire_enter.setBackgroundColor(resources.getColor(R.color.blueColor))
             questionnaire_phone_number.setText(AppPreferences.number.toString())
-        }else{
+        } else {
             questionnaire_enter.isClickable = true
             questionnaire_enter.setBackgroundColor(resources.getColor(R.color.orangeColor))
         }
@@ -379,8 +440,13 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             }, 900)
 
             if (yearSelective != 0 && monthSelective != 0 && dayOfMonthSelective != 0) {
-                showDate(yearSelective, monthSelective, dayOfMonthSelective, R.style.DatePickerSpinner)
-            }else{
+                showDate(
+                    yearSelective,
+                    monthSelective,
+                    dayOfMonthSelective,
+                    R.style.DatePickerSpinner
+                )
+            } else {
                 showDate(1990, 1, 1, R.style.DatePickerSpinner)
             }
         })
@@ -409,7 +475,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     //Регистрация. Выбо пола.
     private fun getIdSxs() {
-         ObservedInternet().observedInternet(this)
+        ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             nouInternet()
         } else {
@@ -427,9 +493,9 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             result()
                             getListNationality()
                         } else {
-                            if (data.error != null){
+                            if (data.error != null) {
                                 errorMessage(data.error.code.toString())
-                            }else{
+                            } else {
                                 errorMessage(data.code.toString())
                             }
                         }
@@ -448,7 +514,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     // Регистрация. Список доступных стран
     private fun getListCountry() {
-         ObservedInternet().observedInternet(this)
+        ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             nouInternet()
         } else {
@@ -464,13 +530,14 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             listNationalityCounter = data.result
                             counterNationalPosition = listNationalityCounter[0].name.toString()
                             questionnaire_available_countries.setText("+" + result.data.result[0].phoneCode.toString())
-                            questionnaire_phone_additional.mask = result.data.result[0].phoneMaskSmall
+                            questionnaire_phone_additional.mask =
+                                result.data.result[0].phoneMaskSmall
                             nationalityCounter = result.data.result[0].phoneLength!!.toInt()
                             result()
                         } else {
-                            if (data.error != null){
+                            if (data.error != null) {
                                 errorMessage(data.error.code.toString())
-                            }else{
+                            } else {
                                 errorMessage(data.code.toString())
                             }
                         }
@@ -489,10 +556,9 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
 
-
     //Регистрация получение грожданство
     private fun getListNationality() {
-         ObservedInternet().observedInternet(this)
+        ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             nouInternet()
         } else {
@@ -509,9 +575,9 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             result()
                             getAutoOperation()
                         } else {
-                            if (data.error != null){
+                            if (data.error != null) {
                                 errorMessage(data.error.code.toString())
-                            }else{
+                            } else {
                                 errorMessage(data.code.toString())
                             }
                         }
@@ -530,7 +596,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     // Регистрация выбор секретного вопроса
     private fun getAutoOperation() {
-         ObservedInternet().observedInternet(this)
+        ObservedInternet().observedInternet(this)
         if (!AppPreferences.observedInternet) {
             nouInternet()
         } else {
@@ -547,9 +613,9 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
                             result()
                             getListCountry()
                         } else {
-                            if (data.error != null){
+                            if (data.error != null) {
                                 errorMessage(data.error.code.toString())
-                            }else{
+                            } else {
                                 errorMessage(data.code.toString())
                             }
                         }
@@ -567,7 +633,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
     }
 
-    private fun result(){
+    private fun result() {
         questionnaire_no_questionnaire.visibility = View.GONE
         questionnaire_technical_work.visibility = View.GONE
         questionnaire_not_found.visibility = View.GONE
@@ -576,7 +642,7 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         questionnaire_layout.visibility = View.VISIBLE
     }
 
-    private fun errorMessage(msg: String){
+    private fun errorMessage(msg: String) {
         if (msg == "404") {
             layout_questionnaire.visibility = View.GONE
             questionnaire_no_questionnaire.visibility = View.GONE
@@ -599,13 +665,13 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
     }
 
-    private fun netWork(msg: String){
+    private fun netWork(msg: String) {
         if (msg == "601") {
             layout_questionnaire.visibility = View.GONE
             questionnaire_no_questionnaire.visibility = View.GONE
             questionnaire_layout.visibility = View.GONE
             questionnaire_technical_work.visibility = View.VISIBLE
-        } else if (msg == "600"){
+        } else if (msg == "600") {
             layout_questionnaire.visibility = View.GONE
             questionnaire_no_questionnaire.visibility = View.VISIBLE
             questionnaire_layout.visibility = View.GONE
@@ -651,19 +717,21 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
             listNationalityCounterId = listNationalityCounter[model.position].id!!.toInt()
             nationalityCounter = listNationalityCounter[model.position].phoneLength!!.toInt()
             codeMack = listNationalityCounter[model.position].phoneCode.toString()
-            questionnaire_phone_additional.mask = listNationalityCounter[model.position].phoneMaskSmall
+            questionnaire_phone_additional.mask =
+                listNationalityCounter[model.position].phoneMaskSmall
         }
     }
 
     //метод удаляет все символы из строки
-    private fun initCleaningRoom(){
+    private fun initCleaningRoom() {
         if (questionnaire_phone_additional.text.toString() != "") {
-            val matchedResults = Regex(pattern = """\d+""").findAll(input = questionnaire_available_countries.text.toString() + questionnaire_phone_additional.text.toString())
+            val matchedResults =
+                Regex(pattern = """\d+""").findAll(input = questionnaire_available_countries.text.toString() + questionnaire_phone_additional.text.toString())
             val result = StringBuilder()
             for (matchedText in matchedResults) {
                 reNum = result.append(matchedText.value).toString()
             }
-        }else{
+        } else {
             reNum = ""
         }
     }
@@ -674,7 +742,12 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     }
 
     //Вызов деалоговова окна с отоброжением получаемого списка.
-    private fun initBottomSheet(list: ArrayList<GeneralDialogModel>, selectionPosition: String, title: String, id: AutoCompleteTextView) {
+    private fun initBottomSheet(
+        list: ArrayList<GeneralDialogModel>,
+        selectionPosition: String,
+        title: String,
+        id: AutoCompleteTextView
+    ) {
         val stepBottomFragment = GeneralDialogFragment(this, list, selectionPosition, title, id)
         stepBottomFragment.isCancelable = false
         stepBottomFragment.show(supportFragmentManager, stepBottomFragment.tag)
@@ -691,13 +764,24 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
     private fun validate(): Boolean {
         var valid = true
         if (questionnaire_text_surnames.text.toString().isEmpty()) {
-            editUtils(questionnaire_text_surnames, questionnaire_surnames_error, "Заполните поле", true)
+            editUtils(
+                questionnaire_text_surnames,
+                questionnaire_surnames_error,
+                "Заполните поле",
+                true
+            )
             valid = false
         }
 
-        if (questionnaire_phone_additional.text!!.isNotEmpty()){
+        if (questionnaire_phone_additional.text!!.isNotEmpty()) {
             if (reNum.length != nationalityCounter) {
-                editUtils(questionnaire_layout_additional, questionnaire_phone_additional, questionnaire_additional_error, "Введите правильный номер", true)
+                editUtils(
+                    questionnaire_layout_additional,
+                    questionnaire_phone_additional,
+                    questionnaire_additional_error,
+                    "Введите правильный номер",
+                    true
+                )
                 valid = false
             }
         }
@@ -719,20 +803,35 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         if (questionnaire_id_nationality.text.toString().isEmpty()) {
-            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите из списка", true)
+            editUtils(
+                questionnaire_id_nationality,
+                questionnaire_nationality_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
         }
 
         if (questionnaire_id_secret.text.toString().isEmpty()) {
-            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите из списка", true)
+            editUtils(
+                questionnaire_id_secret,
+                questionnaire_secret_error,
+                "Выберите из списка",
+                true
+            )
             valid = false
         }
 
         if (questionnaire_secret_response.text.toString().isEmpty()) {
-            editUtils(questionnaire_secret_response, questionnaire_sresponse_error, "Заполните поле", true)
+            editUtils(
+                questionnaire_secret_response,
+                questionnaire_sresponse_error,
+                "Заполните поле",
+                true
+            )
             valid = false
         }
-        if (!valid){
+        if (!valid) {
             Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
         }
         return valid
@@ -740,7 +839,12 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
 
     private fun initViews() {
         questionnaire_text_surnames.addTextChangedListener {
-            editUtils(questionnaire_text_surnames, questionnaire_surnames_error, "Заполните поле", false)
+            editUtils(
+                questionnaire_text_surnames,
+                questionnaire_surnames_error,
+                "Заполните поле",
+                false
+            )
         }
 
         questionnaire_text_name.addTextChangedListener {
@@ -756,15 +860,30 @@ class QuestionnaireActivity : AppCompatActivity() , DatePickerDialog.OnDateSetLi
         }
 
         questionnaire_id_nationality.addTextChangedListener {
-            editUtils(questionnaire_id_nationality, questionnaire_nationality_error, "Выберите из списка", false)
+            editUtils(
+                questionnaire_id_nationality,
+                questionnaire_nationality_error,
+                "Выберите из списка",
+                false
+            )
         }
 
         questionnaire_id_secret.addTextChangedListener {
-            editUtils(questionnaire_id_secret, questionnaire_secret_error, "Выберите из списка", false)
+            editUtils(
+                questionnaire_id_secret,
+                questionnaire_secret_error,
+                "Выберите из списка",
+                false
+            )
         }
 
         questionnaire_secret_response.addTextChangedListener {
-            editUtils(questionnaire_secret_response, questionnaire_sresponse_error, "Заполните поле", false)
+            editUtils(
+                questionnaire_secret_response,
+                questionnaire_sresponse_error,
+                "Заполните поле",
+                false
+            )
         }
 
     }

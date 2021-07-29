@@ -146,13 +146,24 @@ class ExistingBottomFragment(private val listener: ExistingBottomListener) : Bot
                             startActivity(intent)
                             this.dismiss()
                         } else {
-                            if (data.error.code == 401) {
-                                initAuthorized()
-                            } else {
-                                pin_verification_code.setText(initpin)
-                                currentPinInput = ""
-                                loadingMistake(activity as AppCompatActivity)
+                            if (data.code == 200){
+                                if (data.error.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as AppCompatActivity)
+                                }
+                            }else{
+                                if (data.code == 401) {
+                                    initAuthorized()
+                                } else {
+                                    pin_verification_code.setText(initpin)
+                                    currentPinInput = ""
+                                    loadingMistake(activity as AppCompatActivity)
+                                }
                             }
+
                         }
                     }
                     Status.ERROR -> {

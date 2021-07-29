@@ -301,23 +301,44 @@ class HomeActivity : AppCompatActivity(), PintCodeBottomListener, ExistingBottom
                 when (result.status) {
                     Status.SUCCESS -> {
                         if (data!!.result == null) {
-                            if (data.error.code == 500 || data.error.code == 409) {
-                                home_incorrect.visibility = View.VISIBLE
-                                home_no_connection.visibility = View.GONE
-                                home_layout.visibility = View.VISIBLE
-                                shimmer_home.visibility = View.GONE
-                                loadingMistake(this)
-                            } else if (data.error.code == 400) {
-                                home_incorrect.visibility = View.VISIBLE
-                                home_no_connection.visibility = View.GONE
-                                home_layout.visibility = View.VISIBLE
-                                shimmer_home.visibility = View.GONE
-                            } else {
-                                home_no_connection.visibility = View.GONE
-                                home_layout.visibility = View.VISIBLE
-                                home_incorrect.visibility = View.VISIBLE
-                                shimmer_home.visibility = View.GONE
-                                loadingMistake(this)
+                            if (data.code == 200){
+                                if (data.error.code == 500 || data.error.code == 409) {
+                                    home_incorrect.visibility = View.VISIBLE
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                    loadingMistake(this)
+                                } else if (data.error.code == 400) {
+                                    home_incorrect.visibility = View.VISIBLE
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                } else {
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    home_incorrect.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                    loadingMistake(this)
+                                }
+                            }else{
+                                if (data.code == 500 || data.code == 409) {
+                                    home_incorrect.visibility = View.VISIBLE
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                    loadingMistake(this)
+                                } else if (data.code == 400) {
+                                    home_incorrect.visibility = View.VISIBLE
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                } else {
+                                    home_no_connection.visibility = View.GONE
+                                    home_layout.visibility = View.VISIBLE
+                                    home_incorrect.visibility = View.VISIBLE
+                                    shimmer_home.visibility = View.GONE
+                                    loadingMistake(this)
+                                }
                             }
                         } else {
                             home_no_connection.visibility = View.GONE
